@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Презентации · Dr. Vitaly Mikryukov</title>
+<style>
+  :root{
+    --bg:#fbfbfd;--ink:#1d1d1f;--ink-soft:#525258;--ink-light:#86868b;
+    --line:#d2d2d7;--blue:#0071e3;--purple:#5e5ce6;--pink:#ff375f;
+    --card:#ffffff;--shadow:0 2px 12px rgba(0,0,0,0.04),0 12px 40px rgba(0,0,0,0.06);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{min-height:100%;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;
+    background:var(--bg);color:var(--ink);
+    -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+    letter-spacing:-0.011em;padding:clamp(32px,5vw,80px) clamp(20px,4vw,60px);
+  }
+  .container{max-width:1100px;margin:0 auto;}
+  .eyebrow{
+    text-transform:uppercase;letter-spacing:.18em;
+    font-size:14px;font-weight:600;color:var(--blue);margin-bottom:14px;
+  }
+  h1{
+    font-size:clamp(40px,5vw,72px);line-height:1;letter-spacing:-0.035em;font-weight:700;
+    background:linear-gradient(180deg,#1d1d1f 0%,#2a2a2e 60%,#6e6e73 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    margin-bottom:18px;
+  }
+  .subtitle{
+    font-size:clamp(20px,1.6vw,26px);line-height:1.5;
+    color:var(--ink-soft);max-width:780px;margin-bottom:48px;
+  }
+  .grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:20px;
+  }
+  @media (max-width:820px){.grid{grid-template-columns:1fr;}}
+  .card{
+    background:var(--card);border-radius:22px;
+    box-shadow:var(--shadow);border:1px solid rgba(0,0,0,0.04);
+    padding:32px;text-decoration:none;color:var(--ink);
+    display:flex;flex-direction:column;gap:14px;
+    transition:transform .25s ease,box-shadow .25s ease;
+  }
+  .card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,0.10);}
+  .card.science{border-top:5px solid var(--blue);}
+  .card.design{border-top:5px solid var(--purple);}
+  .card .num{
+    font-size:14px;font-weight:600;color:var(--ink-light);
+    letter-spacing:.08em;
+  }
+  .card h2{
+    font-size:26px;line-height:1.2;letter-spacing:-0.02em;font-weight:700;
+  }
+  .card p{
+    font-size:17px;line-height:1.55;color:var(--ink-soft);flex:1;
+  }
+  .card .meta{
+    display:flex;gap:12px;flex-wrap:wrap;margin-top:6px;
+  }
+  .pill{
+    background:rgba(0,113,227,0.08);color:var(--blue);
+    border:1px solid rgba(0,113,227,0.2);
+    padding:6px 12px;border-radius:999px;font-size:13px;font-weight:500;
+  }
+  .pill.purple{background:rgba(94,92,230,0.08);color:var(--purple);border-color:rgba(94,92,230,0.2);}
+  .pill.pink{background:rgba(255,55,95,0.08);color:var(--pink);border-color:rgba(255,55,95,0.2);}
+  .open-btn{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--ink);color:#fff;
+    padding:12px 20px;border-radius:999px;font-size:15px;font-weight:600;
+    align-self:flex-start;margin-top:8px;
+  }
+  .footer{
+    margin-top:60px;padding-top:32px;border-top:1px solid var(--line);
+    font-size:14px;color:var(--ink-light);line-height:1.6;
+  }
+  .footer a{color:var(--blue);text-decoration:none;}
+  .footer a:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="eyebrow">Dr. Vitaly Mikryukov · научные и брендовые материалы</div>
+  <h1>Презентации</h1>
+  <p class="subtitle">
+    Интерактивные презентации. Открываются в любом современном браузере на компьютере или телефоне.
+    Навигация — стрелками клавиатуры, пробелом или свайпом.
+  </p>
+
+  <div class="grid">
+    <a href="picosecond_lasers_rejuvenation.html" class="card science">
+      <div class="num">02 · 25 мая 2026</div>
+      <h2>Пикосекундные лазеры в омоложении кожи</h2>
+      <p>
+        Научный обзор по 20 рецензируемым работам PubMed (2016–2025).
+        Nd:YAG 1064 нм и Alexandrite 755 нм PicoSure: механизмы LIOB,
+        протоколы, реальные данные клинических исследований, гистология,
+        молекулярная биология (TIMP-1, MMP-1). Плюс блок Lutronic (MDF/DFD).
+      </p>
+      <div class="meta">
+        <span class="pill">68 слайдов</span>
+        <span class="pill">20 источников</span>
+        <span class="pill">Реальные снимки из PMC</span>
+        <span class="pill">Tooltip-словарь</span>
+      </div>
+      <span class="open-btn">Открыть →</span>
+    </a>
+
+    <a href="5 стилей · Финал · Dr. Mikryukov.html" class="card design">
+      <div class="num">01 · 20 апреля 2026</div>
+      <h2>5 визуальных стилей бренда</h2>
+      <p>
+        Финальный отбор 5 концептов визуального стиля для бренда.
+        Сравнительный showcase: типографика, цвет, композиция,
+        примеры карусельных постов в каждом стиле.
+      </p>
+      <div class="meta">
+        <span class="pill purple">Brand design</span>
+        <span class="pill purple">5 концептов</span>
+      </div>
+      <span class="open-btn">Открыть →</span>
+    </a>
+  </div>
+
+  <div class="footer">
+    Хостинг: GitHub Pages · обновлено автоматически из репозитория
+    <a href="https://github.com/Dredd-NPC/presentations" target="_blank">github.com/Dredd-NPC/presentations</a>
+  </div>
+</div>
+</body>
+</html>
