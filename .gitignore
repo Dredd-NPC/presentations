@@ -1,3 +1,7 @@
 .DS_Store
 *.swp
 .vscode/
+
+# Offline-портативные версии — собираются локально через build_offline.py,
+# не нужны в репозитории (большой размер, не canonical).
+*_OFFLINE.html
