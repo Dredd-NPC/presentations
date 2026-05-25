@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /
+
+# This site is unlisted — meant for direct link sharing only.
+# Please do not crawl, archive, or index any content here.
