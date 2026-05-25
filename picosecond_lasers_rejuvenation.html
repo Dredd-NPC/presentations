@@ -1,0 +1,3272 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Пикосекундные лазеры в омоложении кожи · Научный обзор</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#fbfbfd; --ink:#1d1d1f; --ink-soft:#525258; --ink-light:#86868b;
+    --line:#d2d2d7;
+    --blue:#0071e3; --blue-soft:#2997ff; --purple:#5e5ce6;
+    --pink:#ff375f; --green:#1ea24a; --orange:#ff9f0a; --teal:#0a84ff;
+    --card:#ffffff;
+    --shadow: 0 2px 12px rgba(0,0,0,0.04), 0 12px 40px rgba(0,0,0,0.06);
+    --radius: 22px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;
+    background:var(--bg); color:var(--ink);
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+    letter-spacing:-0.011em;
+  }
+
+  .deck{position:fixed;inset:0;}
+  .slide{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding: clamp(28px, 4vw, 60px);
+    opacity:0; transform:translateY(24px) scale(0.985);
+    transition: opacity .55s cubic-bezier(.2,.7,.2,1), transform .55s cubic-bezier(.2,.7,.2,1);
+    pointer-events:none; overflow:auto;
+  }
+  .slide.active{opacity:1;transform:none;pointer-events:auto;}
+  .slide-inner{
+    width:100%; max-width: 1240px; margin:0 auto;
+    display:flex;flex-direction:column;
+    gap: clamp(16px, 2vw, 28px);
+  }
+
+  /* === TYPOGRAPHY (значительно крупнее) === */
+  .eyebrow{
+    text-transform:uppercase;letter-spacing:.18em;
+    font-size:15px;font-weight:600;color:var(--blue);
+  }
+  h1.hero{
+    font-size: clamp(48px, 6.6vw, 96px);
+    line-height: .98; letter-spacing:-0.04em; font-weight:700;
+    background: linear-gradient(180deg,#1d1d1f 0%, #2a2a2e 60%, #6e6e73 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  h1.title{ font-size: clamp(38px, 4.6vw, 68px); line-height:1.04; letter-spacing:-0.025em; font-weight:700; }
+  h2.section{ font-size: clamp(32px, 3.4vw, 52px); line-height:1.08; letter-spacing:-0.02em; font-weight:700; }
+  .lead{
+    font-size: clamp(22px, 1.7vw, 28px);
+    line-height:1.5; color:var(--ink-soft); font-weight:400;
+    max-width: 980px;
+  }
+  .lead.big{font-size: clamp(24px, 1.9vw, 32px);}
+  .small-meta{font-size:15px;color:var(--ink-light);}
+  p{font-size:20px;line-height:1.55;}
+
+  /* === TOOLTIP SYSTEM === */
+  .term{
+    border-bottom: 1.5px dotted var(--blue);
+    cursor: help;
+    position: relative;
+    font-weight: 600;
+    color: var(--blue);
+    white-space: nowrap;
+  }
+  .term .tip{
+    position: absolute;
+    bottom: calc(100% + 12px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(20,20,22,0.96);
+    color: #fff;
+    padding: 14px 18px;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+    white-space: normal;
+    width: 360px;
+    max-width: 80vw;
+    text-align: left;
+    letter-spacing: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .18s ease, transform .18s ease;
+    transform: translateX(-50%) translateY(6px);
+    z-index: 100;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  }
+  .term .tip::before{
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 7px solid transparent;
+    border-top-color: rgba(20,20,22,0.96);
+  }
+  .term .tip b{color:#a8d8ff;font-weight:600;}
+  .term:hover .tip, .term:focus .tip{
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  .slide.dark .term, .slide.blue .term, .slide.pink .term{
+    color:#a8d8ff;border-bottom-color:#a8d8ff;
+  }
+  .slide.pink .term{color:#ffd0d8;border-bottom-color:#ffd0d8;}
+
+  /* Citation chip */
+  .cite{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:15px;font-weight:500;color:var(--blue);
+    background: rgba(0,113,227,0.08);
+    padding:8px 14px;border-radius:999px;
+    text-decoration:none;
+    transition: background .2s ease, transform .2s ease;
+    border:1px solid rgba(0,113,227,0.15);
+  }
+  .cite:hover{background:rgba(0,113,227,0.14); transform: translateY(-1px);}
+  .cite-row{display:flex;flex-wrap:wrap;gap:8px;}
+
+  /* Cards & Grids */
+  .card{
+    background:var(--card); border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding: clamp(22px, 2vw, 32px);
+    border:1px solid rgba(0,0,0,0.04);
+  }
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+  @media (max-width: 900px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}}
+
+  .stat-card{
+    background:var(--card); border-radius:18px; padding: 24px 24px;
+    border:1px solid rgba(0,0,0,0.05);
+    display:flex;flex-direction:column;gap:8px;
+    transition: transform .25s ease, box-shadow .25s ease;
+  }
+  .stat-card:hover{transform:translateY(-3px); box-shadow:0 12px 32px rgba(0,0,0,0.07);}
+  .stat-num{
+    font-size: clamp(36px, 4.2vw, 58px);
+    font-weight:700; letter-spacing:-0.03em; line-height:1.05;
+  }
+  .stat-num.blue{color:var(--blue);}
+  .stat-num.purple{color:var(--purple);}
+  .stat-num.pink{color:var(--pink);}
+  .stat-num.green{color:var(--green);}
+  .stat-num.orange{color:var(--orange);}
+  .stat-label{font-size:17px;color:var(--ink-soft);line-height:1.45;}
+
+  .split{ display:grid; grid-template-columns: 1.05fr 0.95fr; gap: 36px; align-items:center; }
+  @media (max-width: 900px){.split{grid-template-columns:1fr;}}
+
+  .chart-wrap{
+    background:var(--card); border-radius:var(--radius); padding: 24px;
+    box-shadow:var(--shadow); border:1px solid rgba(0,0,0,0.04);
+  }
+  .chart-wrap canvas{max-height: 340px;}
+  .chart-title{font-size:15px;color:var(--ink-soft);text-align:center;margin-top:12px;line-height:1.45;}
+
+  /* Mechanism diagram */
+  .mech-flow{
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    flex-wrap:wrap;margin-top:14px;
+  }
+  .mech-step{
+    background:#fff;border-radius:18px;border:1px solid var(--line);
+    padding:18px 20px;text-align:center;min-width:160px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.04);
+  }
+  .mech-step .ico{
+    width:56px;height:56px;border-radius:14px;
+    background:linear-gradient(135deg,var(--blue),var(--purple));
+    color:#fff;display:flex;align-items:center;justify-content:center;
+    margin:0 auto 10px;font-size:24px;font-weight:700;
+  }
+  .mech-step .step-title{font-weight:600;font-size:16px;margin-bottom:4px;}
+  .mech-step .step-sub{font-size:14px;color:var(--ink-soft);line-height:1.4;}
+  .arrow{font-size:24px;color:var(--ink-light);text-align:center;}
+
+  /* Comparison table */
+  table.cmp{
+    width:100%;border-collapse:separate;border-spacing:0;
+    background:#fff;border-radius:var(--radius);overflow:hidden;
+    box-shadow:var(--shadow); border:1px solid rgba(0,0,0,0.04);
+  }
+  .cmp th, .cmp td{padding:16px 20px;text-align:left;font-size:17px;border-bottom:1px solid var(--line);}
+  .cmp th{background:#f5f5f7;font-weight:600;color:var(--ink);font-size:16px;}
+  .cmp tr:last-child td{border-bottom:none;}
+  .cmp .col1064{color:var(--blue);font-weight:600;}
+  .cmp .col755{color:var(--pink);font-weight:600;}
+  .pill{ display:inline-block;padding:4px 12px;border-radius:999px;font-size:14px;font-weight:600;}
+  .pill.hi{background:rgba(48,209,88,.16);color:#0f8a3a;}
+  .pill.mid{background:rgba(255,159,10,.16);color:#a55c00;}
+  .pill.lo{background:rgba(255,55,95,.14);color:#b8163d;}
+  .pill.neutral{background:rgba(110,110,115,.12);color:var(--ink-soft);}
+
+  .section-title-block{display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;}
+  .section-num{
+    font-size: clamp(120px, 17vw, 220px);
+    font-weight:800;letter-spacing:-0.06em;line-height:.9;
+    background: linear-gradient(180deg, var(--blue) 0%, var(--purple) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .section-num.pink{
+    background: linear-gradient(180deg, var(--pink) 0%, var(--orange) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .section-num.green{
+    background: linear-gradient(180deg, var(--green) 0%, var(--blue) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+
+  .study{
+    background:#fff; border-radius:var(--radius);
+    padding: clamp(24px, 2.2vw, 36px);
+    box-shadow:var(--shadow); border:1px solid rgba(0,0,0,0.04);
+    display:flex;flex-direction:column;gap:16px;
+  }
+  .study-header{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;}
+  .study-meta{display:flex;align-items:center;gap:10px;font-size:15px;color:var(--ink-soft);flex-wrap:wrap;}
+  .study-year{background:#000;color:#fff;padding:4px 12px;border-radius:7px;font-weight:600;font-size:14px;letter-spacing:.02em;}
+  .key-findings{display:flex;flex-direction:column;gap:12px;}
+  .kf{display:flex;align-items:flex-start;gap:14px;font-size:19px;line-height:1.5;}
+  .kf-bullet{
+    flex-shrink:0;width:26px;height:26px;border-radius:50%;
+    background:linear-gradient(135deg,var(--blue),var(--purple));
+    color:#fff;display:flex;align-items:center;justify-content:center;
+    font-size:13px;font-weight:700;margin-top:2px;
+  }
+  .kf-bullet.pink{background:linear-gradient(135deg,var(--pink),var(--orange));}
+
+  /* Data table */
+  .dtable{ background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;font-size:17px; }
+  .dtable .row{display:grid;grid-template-columns: 2fr 1fr 1fr 1fr;padding:12px 16px;border-bottom:1px solid var(--line);}
+  .dtable .row:last-child{border-bottom:none;}
+  .dtable .row.head{background:#f5f5f7;font-weight:600;font-size:15px;color:var(--ink-soft);}
+  .dtable .row .v{font-variant-numeric: tabular-nums;}
+
+  /* Controls */
+  .controls{
+    position:fixed;bottom:18px;left:50%;transform:translateX(-50%);
+    display:flex;align-items:center;gap:14px;
+    background:rgba(255,255,255,0.82);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border:1px solid rgba(0,0,0,0.06);
+    padding:8px 14px;border-radius:999px;
+    box-shadow:0 6px 24px rgba(0,0,0,0.08);
+    z-index:50;
+  }
+  .controls button{
+    background:transparent;border:none;cursor:pointer;
+    width:36px;height:36px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--ink);font-size:20px;
+    transition: background .2s ease, transform .2s ease;
+  }
+  .controls button:hover{background:rgba(0,0,0,0.06);}
+  .controls button:active{transform:scale(0.94);}
+  .counter{ font-size:15px;font-weight:500;color:var(--ink-soft);min-width:74px;text-align:center;font-variant-numeric: tabular-nums; }
+
+  .progress{position:fixed;top:0;left:0;right:0;height:3px;background:rgba(0,0,0,0.05);z-index:60;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--purple),var(--pink));width:0%;transition: width .4s cubic-bezier(.2,.7,.2,1);}
+
+  .topbar{position:fixed;top:14px;left:18px;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-light);font-weight:500;z-index:55;}
+  .topbar-right{position:fixed;top:14px;right:18px;font-size:13px;letter-spacing:.06em;color:var(--ink-light);z-index:55;}
+
+  /* DARK / BLUE / PINK SLIDES */
+  .slide.dark{background: radial-gradient(ellipse at 30% 20%, #1e1e22 0%, #000 70%);color:#fff;}
+  .slide.blue{background: linear-gradient(135deg, #001b4d 0%, #003c91 50%, #0071e3 100%);color:#fff;}
+  .slide.pink{background: linear-gradient(135deg, #4a0029 0%, #9a004f 50%, #ff375f 100%);color:#fff;}
+  .slide.green{background: linear-gradient(135deg, #003d1a 0%, #0a7c34 50%, #1ea24a 100%);color:#fff;}
+
+  .slide.dark h1.hero,.slide.dark h1.title,.slide.dark h2.section,
+  .slide.blue h1.hero,.slide.blue h1.title,.slide.blue h2.section,
+  .slide.pink h1.hero,.slide.pink h1.title,.slide.pink h2.section,
+  .slide.green h1.hero,.slide.green h1.title,.slide.green h2.section{
+    color:#fff !important;
+    background:none;-webkit-background-clip:initial;
+    -webkit-text-fill-color:#fff;
+  }
+  .slide.dark .lead{color:#d6d6da;}
+  .slide.blue .lead, .slide.pink .lead, .slide.green .lead{color:rgba(255,255,255,0.92);}
+  .slide.dark .small-meta{color:#86868b;}
+  .slide.dark .eyebrow{color:var(--teal);}
+  .slide.blue .eyebrow{color:#a8d8ff;}
+  .slide.pink .eyebrow{color:#ffb3c4;}
+  .slide.green .eyebrow{color:#a8f0bd;}
+
+  .slide.dark .card, .slide.blue .card, .slide.pink .card, .slide.green .card,
+  .slide.dark .stat-card, .slide.blue .stat-card, .slide.pink .stat-card, .slide.green .stat-card{
+    background: rgba(255,255,255,0.10);
+    border-color: rgba(255,255,255,0.18);
+    color:#fff;
+    box-shadow: 0 6px 22px rgba(0,0,0,0.18);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+  .slide.dark .stat-num, .slide.blue .stat-num, .slide.pink .stat-num, .slide.green .stat-num{ color:#fff !important; }
+  .slide.dark .stat-label, .slide.blue .stat-label, .slide.pink .stat-label, .slide.green .stat-label{ color:rgba(255,255,255,0.88); }
+  .slide.dark p, .slide.blue p, .slide.pink p, .slide.green p { color: rgba(255,255,255,0.9); }
+
+  .slide.blue .cite, .slide.pink .cite, .slide.dark .cite, .slide.green .cite{
+    background:rgba(255,255,255,0.16);color:#fff;border-color:rgba(255,255,255,0.24);
+  }
+
+  /* Blockquote */
+  blockquote.q{
+    font-size: clamp(22px, 2.4vw, 32px);
+    line-height:1.35;letter-spacing:-0.015em;
+    font-weight:500;color:var(--ink);
+    border-left:4px solid var(--blue);
+    padding: 4px 0 4px 22px;max-width: 920px;
+  }
+  blockquote.q.pink-q{border-left-color:var(--pink);}
+  blockquote.q .src{display:block;font-size:16px;font-weight:500;color:var(--ink-light);margin-top:14px;letter-spacing:0;}
+  .slide.blue blockquote.q, .slide.pink blockquote.q, .slide.dark blockquote.q, .slide.green blockquote.q{
+    color:#fff;border-left-color:rgba(255,255,255,0.8);
+  }
+  .slide.blue blockquote.q .src, .slide.pink blockquote.q .src, .slide.dark blockquote.q .src{color:rgba(255,255,255,0.75);}
+
+  .hint{position:fixed;bottom:14px;right:18px;font-size:13px;color:var(--ink-light);z-index:55;}
+  .kbd{
+    display:inline-block;padding:3px 8px;border-radius:5px;
+    background:#fff;border:1px solid var(--line);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size:12px;color:var(--ink);
+    box-shadow:0 1px 0 var(--line);
+  }
+
+  .pill-row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
+  .info-pill{
+    background:#fff;border:1px solid var(--line);border-radius:999px;
+    padding:10px 16px;font-size:16px;font-weight:500;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,0.02);
+  }
+  .info-pill.blue{background:rgba(0,113,227,0.08);color:var(--blue);border-color:rgba(0,113,227,0.2);}
+  .info-pill.pink{background:rgba(255,55,95,0.08);color:var(--pink);border-color:rgba(255,55,95,0.2);}
+  .info-pill.green{background:rgba(48,209,88,0.12);color:var(--green);border-color:rgba(48,209,88,0.25);}
+  .slide.dark .info-pill, .slide.blue .info-pill, .slide.pink .info-pill, .slide.green .info-pill{
+    background:rgba(255,255,255,0.12);color:#fff;border-color:rgba(255,255,255,0.22);
+  }
+
+  .ref-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  @media (max-width: 900px){.ref-grid{grid-template-columns:1fr;}}
+  .ref{
+    background:#fff;border:1px solid var(--line);border-radius:14px;
+    padding:14px 18px;font-size:16px;line-height:1.45;
+    display:flex;justify-content:space-between;align-items:center;gap:14px;
+  }
+  .ref a{color:var(--blue);text-decoration:none;font-weight:500;font-size:15px;flex-shrink:0;}
+  .ref a:hover{text-decoration:underline;}
+
+  /* SVG illustration container */
+  .illus{
+    background:#fff; border-radius:var(--radius);
+    padding: 24px 22px;
+    box-shadow:var(--shadow); border:1px solid rgba(0,0,0,0.04);
+    text-align:center;
+  }
+  .illus svg{max-width:100%;height:auto;display:block;margin:0 auto;}
+  .illus-caption{font-size:16px;color:var(--ink-soft);margin-top:14px;line-height:1.5;}
+
+  /* REAL PHOTO from PMC */
+  figure.photo{
+    background:#fff; border-radius:var(--radius);
+    padding: 20px;
+    box-shadow:var(--shadow); border:1px solid rgba(0,0,0,0.04);
+    margin:0;
+    display:flex;flex-direction:column;gap:12px;
+  }
+  figure.photo img{
+    width:100%;height:auto;display:block;border-radius:14px;
+    background:#f5f5f7;
+  }
+  figure.photo figcaption{
+    font-size:15px;color:var(--ink-soft);line-height:1.5;
+    display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  }
+  figure.photo .src-link{
+    font-size:14px;color:var(--blue);text-decoration:none;font-weight:600;
+    background:rgba(0,113,227,0.08);padding:4px 10px;border-radius:8px;
+    border:1px solid rgba(0,113,227,0.15);
+    white-space:nowrap;
+  }
+
+  /* GLOSSARY card */
+  .glossary-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media (max-width: 900px){.glossary-grid{grid-template-columns:1fr;}}
+  .glossary-item{
+    background:#fff;border:1px solid var(--line);border-radius:14px;
+    padding:18px 22px;
+  }
+  .glossary-item .gh{display:flex;align-items:baseline;gap:10px;margin-bottom:6px;}
+  .glossary-item .abbr{font-weight:700;font-size:22px;color:var(--blue);letter-spacing:-0.01em;}
+  .glossary-item .en{font-size:15px;color:var(--ink-light);font-weight:500;}
+  .glossary-item .ru-full{font-size:17px;color:var(--ink);font-weight:600;margin-bottom:6px;}
+  .glossary-item .desc{font-size:16px;color:var(--ink-soft);line-height:1.5;}
+
+  .slide.dark .glossary-item, .slide.blue .glossary-item, .slide.pink .glossary-item, .slide.green .glossary-item{
+    background:rgba(255,255,255,0.10);border-color:rgba(255,255,255,0.18);
+  }
+  .slide.dark .glossary-item .abbr, .slide.blue .glossary-item .abbr, .slide.pink .glossary-item .abbr, .slide.green .glossary-item .abbr{color:#fff;}
+  .slide.dark .glossary-item .ru-full, .slide.blue .glossary-item .ru-full, .slide.pink .glossary-item .ru-full, .slide.green .glossary-item .ru-full{color:#fff;}
+  .slide.dark .glossary-item .desc, .slide.blue .glossary-item .desc, .slide.pink .glossary-item .desc, .slide.green .glossary-item .desc{color:rgba(255,255,255,0.86);}
+  .slide.dark .glossary-item .en, .slide.blue .glossary-item .en, .slide.pink .glossary-item .en, .slide.green .glossary-item .en{color:rgba(255,255,255,0.6);}
+
+  /* Lens technology card */
+  .lens-card{
+    background:#fff;border:1px solid var(--line);border-radius:16px;
+    padding:24px;display:flex;flex-direction:column;gap:14px;
+  }
+  .lens-card .lens-svg{display:flex;align-items:center;justify-content:center;height:140px;}
+  .lens-card h3{font-size:24px;font-weight:700;}
+  .lens-card .lens-sub{font-size:16px;color:var(--ink-soft);}
+  .lens-card ul{list-style:none;display:flex;flex-direction:column;gap:6px;font-size:16px;color:var(--ink);line-height:1.45;}
+  .lens-card ul li::before{content:'• ';color:var(--blue);font-weight:700;}
+
+  .slide::-webkit-scrollbar{width:0;}
+</style>
+</head>
+<body>
+
+<div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+<div class="topbar">Picosecond Lasers · Skin Rejuvenation</div>
+<div class="topbar-right">v.2026.05 · обновлено · 20 источников PubMed</div>
+
+<div class="deck" id="deck">
+
+<!-- ============ 1. COVER ============ -->
+<section class="slide dark active">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Научный обзор · 20 рецензируемых работ</div>
+    <h1 class="hero">Пикосекундные лазеры<br>в омоложении кожи</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">
+      Nd:YAG 1064 нм и Alexandrite 755 нм PicoSure.<br>
+      Только реальные данные из PubMed-публикаций 2016–2025 года.
+    </p>
+    <div class="pill-row" style="margin-top:22px;">
+      <span class="info-pill">Рандомизированные исследования</span>
+      <span class="info-pill">Гистология</span>
+      <span class="info-pill">Молекулярная биология</span>
+      <span class="info-pill">Наблюдение до 36 месяцев</span>
+    </div>
+    <div class="small-meta" style="margin-top:24px;">
+      Навигация: <span class="kbd">→</span> <span class="kbd">←</span> или <span class="kbd">Space</span> · все термины подчёркнуты — наведите для перевода
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2. HOW TO READ ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Как читать эту презентацию</div>
+    <h2 class="section">Каждый термин раскрыт — наводите курсор.</h2>
+    <p class="lead">
+      Все английские сокращения и медицинские термины подчёркнуты пунктиром.
+      При наведении появляется развёрнутое пояснение на русском языке —
+      удобно для разбора со студентами.
+    </p>
+    <div class="grid-2" style="margin-top:8px;">
+      <div class="card">
+        <h3 style="font-size:24px;font-weight:700;margin-bottom:14px;">Попробуйте сейчас</h3>
+        <p>
+          Механизм действия пикосекундного лазера основан на эффекте
+          <span class="term" tabindex="0">LIOB<span class="tip"><b>Laser-Induced Optical Breakdown</b> — лазерно-индуцированный оптический пробой ткани. Под действием сверхкороткого импульса с высокой пиковой мощностью в дерме формируется микроплазма и кавитационный пузырёк, который генерирует ударную волну — это основной фотомеханический эффект пикосекундных лазеров.</span></span>,
+          который запускает синтез коллагена через активацию
+          <span class="term" tabindex="0">фибробластов<span class="tip"><b>Фибробласты</b> — основные клетки дермы, синтезирующие коллаген, эластин и компоненты внеклеточного матрикса. Активируются механическим стимулом от ударной волны.</span></span>.
+        </p>
+      </div>
+      <div class="card" style="background:linear-gradient(135deg,#f5f5f7,#fbfbfd);">
+        <h3 style="font-size:24px;font-weight:700;margin-bottom:14px;">Структура презентации</h3>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;font-size:18px;color:var(--ink-soft);">
+          <li>1. Словарь терминов (слайды 3–7)</li>
+          <li>2. Механизмы действия (8–14)</li>
+          <li>3. Технологии оптики (15–18)</li>
+          <li>4. Часть I — Nd:YAG 1064 нм (19–32)</li>
+          <li>5. Часть II — Alexandrite 755 нм (33–50)</li>
+          <li>6. Сравнение и выводы (51–56)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3. GLOSSARY 1 — BASIC ============ -->
+<section class="slide green">
+  <div class="slide-inner">
+    <div class="eyebrow">Словарь · 1 из 4</div>
+    <h2 class="section">Базовая биология и физика.</h2>
+    <div class="glossary-grid">
+      <div class="glossary-item">
+        <div class="gh"><span class="abbr">LIOB</span><span class="en">Laser-Induced Optical Breakdown</span></div>
+        <div class="ru-full">Лазерно-индуцированный оптический пробой</div>
+        <div class="desc">Физический эффект: импульс длительностью 10⁻¹² с создаёт в дерме микроплазму. Возникает кавитационный пузырёк, его расширение порождает ударную волну. Это и есть основа фотомеханического действия пикосекундных лазеров.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="gh"><span class="abbr">ECM</span><span class="en">Extracellular Matrix</span></div>
+        <div class="ru-full">Внеклеточный матрикс</div>
+        <div class="desc">Каркас дермы из коллагеновых и эластических волокон, гликозаминогликанов и гликопротеинов. С возрастом разрушается под действием ферментов MMP. Лазер запускает его восстановление.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="gh"><span class="abbr">MMP</span><span class="en">Matrix Metalloproteinases</span></div>
+        <div class="ru-full">Матриксные металлопротеиназы</div>
+        <div class="desc">Семейство ферментов, разрушающих коллаген и другие компоненты дермы. MMP-1 — главная коллагеназа. При фотостарении её активность повышена. Снижение MMP — цель омолаживающих процедур.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="gh"><span class="abbr">TIMP</span><span class="en">Tissue Inhibitor of MMPs</span></div>
+        <div class="ru-full">Тканевый ингибитор металлопротеиназ</div>
+        <div class="desc">Естественный «тормоз» MMP. TIMP-1 связывается с MMP и блокирует разрушение коллагена. Рост TIMP-1 после лазерного воздействия = защита уже синтезированного коллагена от деградации.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="gh"><span class="abbr">TGF-β</span><span class="en">Transforming Growth Factor beta</span></div>
+        <div class="ru-full">Трансформирующий фактор роста бета</div>
+        <div class="desc">Сигнальный белок, который активирует фибробласты и запускает синтез нового коллагена I и III типов. Повышается при механотрансдукции — отклике клетки на ударную волну от LIOB.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="gh"><span class="abbr">Nd:YAG</span><span class="en">Neodymium-doped Yttrium Aluminum Garnet</span></div>
+        <div class="ru-full">Иттрий-алюминиевый гранат с неодимом</div>
+        <div class="desc">Активная среда лазера: кристалл, легированный ионами неодима. Базовая длина волны излучения — 1064 нм (инфракрасный спектр). При удвоении частоты даёт 532 нм (зелёный).</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4. GLOSSARY 2 — ASSESSMENT METHODS ============ -->
+<section class="slide green">
+  <div class="slide-inner">
+    <div class="eyebrow">Словарь · 2 из 4</div>
+    <h2 class="section">Методы клинической и научной оценки.</h2>
+    <div class="glossary-grid">
+      <div class="glossary-item">
+        <div class="gh"><span class="abbr">VISIA</span><span class="en">VISIA Skin Analysis System (Canfield)</span></div>
+        <div class="ru-full">Система объективной диагностики кожи</div>
+        <div class="desc">Аппаратная фотосистема для количественной оценки фотостарения. Стандартизированное освещение и алгоритмы дают численные показатели по 8 параметрам: пятна, морщины, поры, текстура, ультрафиолетовые пятна, коричневые пятна, эритема, порфирины.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="gh"><span class="abbr">RCM</span><span class="en">Reflectance Confocal Microscopy</span></div>
+        <div class="ru-full">Отражательная конфокальная микроскопия</div>
+        <div class="desc">Неинвазивная методика прижизненной визуализации кожи на клеточном уровне. Позволяет видеть структуру эпидермиса и сосочковой дермы без биопсии. Используется в исследованиях для оценки ремоделирования коллагена.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="gh"><span class="abbr">MASI</span><span class="en">Melasma Area and Severity Index</span></div>
+        <div class="ru-full">Индекс площади и тяжести мелазмы</div>
+        <div class="desc">Стандартизированная шкала для оценки выраженности мелазмы. Учитывает площадь поражения, интенсивность пигментации и однородность. Hemi-MASI — половинный индекс для split-face исследований.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="gh"><span class="abbr">VAS</span><span class="en">Visual Analog Scale</span></div>
+        <div class="ru-full">Визуальная аналоговая шкала</div>
+        <div class="desc">10-сантиметровая линейка для субъективной оценки выраженности симптома (обычно боли) от 0 до 10. Пациент отмечает точку, врач измеряет расстояние. Простой и валидированный инструмент.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="gh"><span class="abbr">IHC</span><span class="en">Immunohistochemistry</span></div>
+        <div class="ru-full">Иммуногистохимия</div>
+        <div class="desc">Метод выявления конкретных белков (например, TIMP-1, MMP-1) в срезах ткани с помощью меченых антител. Положительные клетки окрашиваются коричневым. Используется для подсчёта плотности экспрессии маркёра.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="gh"><span class="abbr">H&amp;E</span><span class="en">Hematoxylin and Eosin staining</span></div>
+        <div class="ru-full">Окраска гематоксилином и эозином</div>
+        <div class="desc">Стандартная гистологическая окраска: гематоксилин окрашивает ядра в синий, эозин — цитоплазму и коллаген в розовый. Базовый метод оценки структуры дермы и плотности коллагена.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5. GLOSSARY 3 — OPTICS ============ -->
+<section class="slide green">
+  <div class="slide-inner">
+    <div class="eyebrow">Словарь · 3 из 4</div>
+    <h2 class="section">Оптика и параметры лазера.</h2>
+    <div class="glossary-grid">
+      <div class="glossary-item">
+        <div class="gh"><span class="abbr">MLA</span><span class="en">Micro-Lens Array</span></div>
+        <div class="ru-full">Микролинзовая матрица</div>
+        <div class="desc">Насадка с массивом микроскопических линз. Разбивает один пучок лазера на десятки сфокусированных микропучков. Создаёт зоны LIOB на глубине ~700 мкм. Распределение энергии — неравномерное (гауссово).</div>
+      </div>
+      <div class="glossary-item">
+        <div class="gh"><span class="abbr">FLA</span><span class="en">Focus Lens Array</span></div>
+        <div class="ru-full">Фокусирующая линзовая матрица</div>
+        <div class="desc">Базовая фракционная насадка PicoSure (755 нм). Фокусирует луч в точки высокой плотности энергии для запуска LIOB. Классическая оптика для омоложения по протоколу Khetarpal 2016.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="gh"><span class="abbr">DLA</span><span class="en">Diffractive Lens Array</span></div>
+        <div class="ru-full">Дифракционная линзовая матрица</div>
+        <div class="desc">Усовершенствованная оптика: сочетает преимущества DOE и MLA. Создаёт квадратный «макропучок» из равномерно распределённых микропучков. Достигает глубины до 1200 мкм с регулировкой фокальной плоскости.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="gh"><span class="abbr">DOE</span><span class="en">Diffractive Optical Element</span></div>
+        <div class="ru-full">Дифракционный оптический элемент</div>
+        <div class="desc">Голографический делитель пучка. Гомогенизирует лазерный свет и равномерно распределяет микропучки. Обеспечивает фототермальную модуляцию ткани с предсказуемым паттерном.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="gh"><span class="abbr">Флюенс</span><span class="en">Fluence</span></div>
+        <div class="ru-full">Плотность энергии</div>
+        <div class="desc">Энергия лазерного импульса на единицу площади пятна. Измеряется в Дж/см². Ключевой параметр для безопасности и эффективности. Для омоложения 755 PicoSure типична 0,71 Дж/см², для 1064 — 0,3–0,45 Дж/см².</div>
+      </div>
+      <div class="glossary-item">
+        <div class="gh"><span class="abbr">Spot size</span><span class="en">Spot size · диаметр пятна</span></div>
+        <div class="ru-full">Диаметр светового пятна</div>
+        <div class="desc">Диаметр пятна лазера на коже. Влияет на глубину проникновения: чем больше пятно, тем меньше рассеяние энергии и глубже проникновение. Типовые значения — 6, 8, 10 мм.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6. GLOSSARY 4 — CLINICAL ============ -->
+<section class="slide green">
+  <div class="slide-inner">
+    <div class="eyebrow">Словарь · 4 из 4</div>
+    <h2 class="section">Клинические термины.</h2>
+    <div class="glossary-grid">
+      <div class="glossary-item">
+        <div class="gh"><span class="abbr">Fitzpatrick</span><span class="en">Fitzpatrick skin phototypes</span></div>
+        <div class="ru-full">Шкала фототипов кожи по Фитцпатрику</div>
+        <div class="desc">Классификация I–VI по реакции на УФ: I — белая, всегда обгорает; III — европейская кожа; IV — средиземноморская; V — латиноамериканская; VI — африканская. Чем выше тип, тем больше меланина и выше риск гиперпигментации.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="gh"><span class="abbr">Glogau</span><span class="en">Glogau Classification</span></div>
+        <div class="ru-full">Шкала фотостарения по Глогау</div>
+        <div class="desc">Классификация фотостарения I–IV: I — нет морщин (≈25 лет); II — морщины в движении (35+); III — морщины в покое, дисхромии (45+); IV — глубокие морщины и обширное старение (60+). Используется для отбора пациентов.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="gh"><span class="abbr">PIH</span><span class="en">Post-Inflammatory Hyperpigmentation</span></div>
+        <div class="ru-full">Поствоспалительная гиперпигментация</div>
+        <div class="desc">Появление тёмных пятен после воспаления или травмы кожи. Главный риск лазерных процедур, особенно у фототипов IV–VI. Снижается при использовании 1064 нм вместо 755 нм.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="gh"><span class="abbr">Downtime</span><span class="en">Downtime · «реабилитационный период»</span></div>
+        <div class="ru-full">Период видимого восстановления</div>
+        <div class="desc">Время, в течение которого пациент не может вернуться к обычной жизни из-за видимых последствий процедуры: эритема, отёк, корочки. Для пикосекундных лазеров — обычно 0–3 дня.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="gh"><span class="abbr">HSV</span><span class="en">Herpes Simplex Virus</span></div>
+        <div class="ru-full">Вирус простого герпеса</div>
+        <div class="desc">Может реактивироваться после лазерных процедур на лице. У пациентов с рецидивирующим герпесом перед лазером назначают противовирусную профилактику.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="gh"><span class="abbr">Q-switched</span><span class="en">Q-switched · QS</span></div>
+        <div class="ru-full">Режим модулированной добротности</div>
+        <div class="desc">Технология генерации наносекундных импульсов (10⁻⁹ с). Предшественник пикосекундных лазеров. Эффект — фотоакустический, но с большим тепловым компонентом, чем у пикосекундных.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7. WHY MATTERS ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Почему это важно</div>
+    <h1 class="title">Принципиально иной класс<br>омоложения кожи.</h1>
+    <p class="lead big">
+      Пикосекундные лазеры запускают ремоделирование коллагена через
+      <b>фотомеханику</b>, а не через нагрев. Меняется всё: механизм действия,
+      профиль безопасности, длительность видимого восстановления и риск
+      <span class="term" tabindex="0">PIH<span class="tip"><b>Post-Inflammatory Hyperpigmentation</b> — поствоспалительная гиперпигментация. Тёмные пятна, появляющиеся после воспаления кожи. Главный риск лазеров на тёмной коже.</span></span>.
+    </p>
+    <div class="grid-3" style="margin-top:8px;">
+      <div class="stat-card">
+        <div class="stat-num blue">10⁻¹²</div>
+        <div class="stat-label">секунд — длительность импульса. В сотни–тысячи раз короче, чем у наносекундных Q-switched лазеров.</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num purple">LIOB</div>
+        <div class="stat-label">Оптический пробой ткани — ключевой механизм фотомеханической стимуляции дермы.</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num pink">↓ нагрев</div>
+        <div class="stat-label">Минимальное термическое повреждение. Ниже риск пост-воспалительной гиперпигментации, особенно на тёмной коже (фототипы III–V).</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 8. PULSE SCALE ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Шкала длительности импульса</div>
+    <h2 class="section">От миллисекунд — к пикосекундам.</h2>
+    <p class="lead">
+      Чем короче импульс, тем выше пиковая мощность при той же энергии.
+      Именно сокращение импульса до пикосекунд открыло возможность фотомеханики
+      без перегрева тканей.
+    </p>
+    <div class="illus">
+      <svg viewBox="0 0 900 280" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="grad1" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#ff375f"/>
+            <stop offset="50%" stop-color="#ff9f0a"/>
+            <stop offset="100%" stop-color="#0071e3"/>
+          </linearGradient>
+        </defs>
+        <line x1="60" y1="200" x2="840" y2="200" stroke="#d2d2d7" stroke-width="2"/>
+        <polygon points="840,200 826,193 826,207" fill="#d2d2d7"/>
+        <rect x="60" y="178" width="780" height="6" rx="3" fill="url(#grad1)" opacity="0.85"/>
+
+        <g>
+          <circle cx="160" cy="181" r="14" fill="#ff375f"/>
+          <text x="160" y="130" text-anchor="middle" font-size="22" font-weight="700" fill="#1d1d1f">10⁻³ с</text>
+          <text x="160" y="152" text-anchor="middle" font-size="15" fill="#525258">Long-pulse</text>
+          <text x="160" y="234" text-anchor="middle" font-size="16" font-weight="600" fill="#1d1d1f">Миллисекунды</text>
+          <text x="160" y="254" text-anchor="middle" font-size="13" fill="#525258">Фототермика · нагрев</text>
+        </g>
+        <g>
+          <circle cx="450" cy="181" r="14" fill="#ff9f0a"/>
+          <text x="450" y="130" text-anchor="middle" font-size="22" font-weight="700" fill="#1d1d1f">10⁻⁹ с</text>
+          <text x="450" y="152" text-anchor="middle" font-size="15" fill="#525258">Q-switched</text>
+          <text x="450" y="234" text-anchor="middle" font-size="16" font-weight="600" fill="#1d1d1f">Наносекунды</text>
+          <text x="450" y="254" text-anchor="middle" font-size="13" fill="#525258">Фотоакустика</text>
+        </g>
+        <g>
+          <circle cx="740" cy="181" r="14" fill="#0071e3"/>
+          <text x="740" y="130" text-anchor="middle" font-size="22" font-weight="700" fill="#1d1d1f">10⁻¹² с</text>
+          <text x="740" y="152" text-anchor="middle" font-size="15" fill="#525258">Picosecond</text>
+          <text x="740" y="234" text-anchor="middle" font-size="16" font-weight="600" fill="#1d1d1f">Пикосекунды</text>
+          <text x="740" y="254" text-anchor="middle" font-size="13" fill="#525258">Фотомеханика · LIOB</text>
+        </g>
+
+        <text x="60" y="40" font-size="14" fill="#86868b">Тепло → нагрев → коагуляция</text>
+        <text x="840" y="40" text-anchor="end" font-size="14" fill="#86868b">Ударная волна → активация фибробластов</text>
+      </svg>
+      <div class="illus-caption">
+        При сокращении импульса на 9 порядков (от мс к пс) пиковая мощность
+        растёт примерно в 10⁹ раз. Это пороговая точка появления LIOB.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 9. THERMAL vs MECHANICAL ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Сдвиг парадигмы</div>
+    <h2 class="section">От нагрева — к механотрансдукции.</h2>
+    <div class="split" style="margin-top:8px;">
+      <div class="card">
+        <div class="eyebrow" style="color:var(--ink-light);">Классические лазеры (мс, нс)</div>
+        <h3 style="font-size:28px;margin:8px 0 12px;font-weight:700;">Фототермический эффект</h3>
+        <p style="color:var(--ink-soft);">
+          Длительный импульс прогревает ткани, вызывая коагуляцию и денатурацию белков.
+          Эффективно, но с риском термотравмы, постпигментации и длительного восстановления.
+        </p>
+        <div style="margin-top:14px;"><span class="pill lo">Высокий нагрев</span> <span class="pill mid">Риск PIH</span></div>
+      </div>
+      <div class="card">
+        <div class="eyebrow">Пикосекундные лазеры</div>
+        <h3 style="font-size:28px;margin:8px 0 12px;font-weight:700;">Фотомеханический эффект</h3>
+        <p style="color:var(--ink-soft);">
+          Сверхкороткий импульс создаёт плазменный пузырёк в дерме. Ударная волна
+          активирует фибробласты — без сжигания ткани и без термотравмы окружающего матрикса.
+        </p>
+        <div style="margin-top:14px;"><span class="pill hi">Минимум тепла</span> <span class="pill hi">Ниже PIH</span></div>
+      </div>
+    </div>
+    <div class="cite-row" style="margin-top:6px;">
+      <a class="cite" target="_blank" href="https://onlinelibrary.wiley.com/doi/10.1002/lsm.23244">↗ Wu et al., 2021 · Систематический обзор · 77 исследований</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 10. LIOB EXPLAINED ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Главный механизм</div>
+    <h2 class="section">Что такое LIOB.</h2>
+    <p class="lead">
+      <b>Laser-Induced Optical Breakdown</b> — лазерно-индуцированный оптический пробой.
+      Это физическое явление, при котором лазер ионизирует ткань и формирует
+      микроскопический плазменный пузырёк, генерирующий ударную волну.
+    </p>
+    <div class="illus">
+      <svg viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="skin" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#fce8d8"/>
+            <stop offset="100%" stop-color="#e6b896"/>
+          </linearGradient>
+          <radialGradient id="plasma" cx="0.5" cy="0.5" r="0.6">
+            <stop offset="0%" stop-color="#a8d8ff" stop-opacity="1"/>
+            <stop offset="60%" stop-color="#0071e3" stop-opacity="0.8"/>
+            <stop offset="100%" stop-color="#001b4d" stop-opacity="0.1"/>
+          </radialGradient>
+        </defs>
+        <rect x="60" y="30" width="780" height="36" fill="#fce8d8" rx="4"/>
+        <text x="68" y="54" font-size="14" fill="#525258">Эпидермис</text>
+        <rect x="60" y="70" width="780" height="120" fill="url(#skin)" rx="4"/>
+        <text x="68" y="94" font-size="14" fill="#525258">Дерма</text>
+        <rect x="60" y="196" width="780" height="34" fill="#c7c7cc" rx="4"/>
+        <text x="68" y="220" font-size="14" fill="#525258">Гиподерма</text>
+
+        <line x1="200" y1="0" x2="200" y2="120" stroke="#ff375f" stroke-width="3"/>
+        <polygon points="195,118 205,118 200,128" fill="#ff375f"/>
+        <text x="210" y="20" font-size="15" fill="#ff375f" font-weight="700">Пикосекундный импульс</text>
+
+        <circle cx="200" cy="135" r="22" fill="url(#plasma)"/>
+        <text x="200" y="172" text-anchor="middle" font-size="14" font-weight="700" fill="#0071e3">LIOB</text>
+
+        <circle cx="200" cy="135" r="36" fill="none" stroke="#0071e3" stroke-width="1.5" stroke-opacity="0.6"/>
+        <circle cx="200" cy="135" r="52" fill="none" stroke="#0071e3" stroke-width="1" stroke-opacity="0.35"/>
+        <circle cx="200" cy="135" r="68" fill="none" stroke="#0071e3" stroke-width="0.8" stroke-opacity="0.2"/>
+
+        <g>
+          <ellipse cx="340" cy="120" rx="10" ry="5" fill="#5e5ce6"/>
+          <ellipse cx="400" cy="150" rx="10" ry="5" fill="#5e5ce6"/>
+          <ellipse cx="310" cy="160" rx="10" ry="5" fill="#5e5ce6"/>
+          <ellipse cx="470" cy="130" rx="10" ry="5" fill="#5e5ce6"/>
+        </g>
+        <text x="540" y="130" font-size="16" font-weight="700" fill="#5e5ce6">Фибробласты</text>
+        <text x="540" y="152" font-size="14" fill="#525258">активируются ударной волной</text>
+
+        <path d="M 600 175 Q 630 155, 660 175 T 720 175 T 780 175 T 820 175" stroke="#1ea24a" stroke-width="3" fill="none"/>
+        <text x="600" y="205" font-size="16" font-weight="700" fill="#1ea24a">↑ Коллаген I/III типов</text>
+      </svg>
+      <div class="illus-caption">
+        Схема механизма по данным Wu et al. (2021) и Wardhani et al. (2024).
+        Импульс → плазма в дерме → ударная волна → активация фибробластов → синтез коллагена.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 11. MECHANOTRANSDUCTION ============ -->
+<section class="slide blue">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Молекулярный механизм</div>
+    <h1 class="title">Фибробласт чувствует механику —<br>и строит новый коллаген.</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">
+      Ударная волна вызывает деформацию внеклеточного матрикса. Фибробласты
+      воспринимают это через интегрины и активируют сигналинг TGF-β →
+      запускается синтез коллагена I и III типов.
+    </p>
+    <div class="grid-3" style="margin-top:14px;width:100%;">
+      <div class="card" style="text-align:center;">
+        <div class="stat-num">TGF-β ↑</div>
+        <div class="stat-label">Активация трансформирующего фактора роста — главного «дирижёра» синтеза коллагена</div>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div class="stat-num">Коллаген I/III</div>
+        <div class="stat-label">Восстановление дермального матрикса. Подтверждено гистологически</div>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div class="stat-num">TIMP-1 ↑</div>
+        <div class="stat-label">Защита нового коллагена от деградации. Wardhani 2024, p &lt; 0,05</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 12. MMP vs TIMP BALANCE ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Баланс ферментов</div>
+    <h2 class="section">Молекулярная суть омоложения — баланс MMP / TIMP.</h2>
+    <p class="lead">
+      В молодой коже синтез и распад коллагена сбалансированы. С возрастом
+      MMP начинают преобладать — коллаген разрушается быстрее, чем
+      синтезируется. Цель омолаживающей процедуры — сместить баланс в сторону TIMP.
+    </p>
+    <div class="illus">
+      <svg viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg">
+        <!-- Balance scale -->
+        <line x1="450" y1="40" x2="450" y2="220" stroke="#1d1d1f" stroke-width="3"/>
+        <circle cx="450" cy="35" r="6" fill="#1d1d1f"/>
+        <line x1="240" y1="100" x2="660" y2="100" stroke="#1d1d1f" stroke-width="3"/>
+
+        <!-- Left pan MMP -->
+        <line x1="240" y1="100" x2="180" y2="160" stroke="#ff375f" stroke-width="2"/>
+        <line x1="240" y1="100" x2="300" y2="160" stroke="#ff375f" stroke-width="2"/>
+        <rect x="160" y="155" width="160" height="40" rx="20" fill="#ff375f" opacity="0.15" stroke="#ff375f" stroke-width="2"/>
+        <text x="240" y="180" text-anchor="middle" font-size="20" font-weight="700" fill="#ff375f">MMP</text>
+        <text x="240" y="220" text-anchor="middle" font-size="14" fill="#525258">Разрушение коллагена</text>
+        <text x="240" y="238" text-anchor="middle" font-size="13" fill="#86868b">Растёт при фотостарении</text>
+
+        <!-- Right pan TIMP -->
+        <line x1="660" y1="100" x2="600" y2="160" stroke="#1ea24a" stroke-width="2"/>
+        <line x1="660" y1="100" x2="720" y2="160" stroke="#1ea24a" stroke-width="2"/>
+        <rect x="580" y="155" width="160" height="40" rx="20" fill="#1ea24a" opacity="0.15" stroke="#1ea24a" stroke-width="2"/>
+        <text x="660" y="180" text-anchor="middle" font-size="20" font-weight="700" fill="#1ea24a">TIMP</text>
+        <text x="660" y="220" text-anchor="middle" font-size="14" fill="#525258">Защита коллагена</text>
+        <text x="660" y="238" text-anchor="middle" font-size="13" fill="#86868b">Растёт после pico-лазера</text>
+
+        <!-- Arrow showing balance shift -->
+        <path d="M 380 60 Q 450 80, 520 60" stroke="#0071e3" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+        <defs>
+          <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+            <polygon points="0 0, 10 3, 0 6" fill="#0071e3"/>
+          </marker>
+        </defs>
+        <text x="450" y="50" text-anchor="middle" font-size="14" font-weight="700" fill="#0071e3">Сдвиг после лазера</text>
+      </svg>
+      <div class="illus-caption">
+        В работе Wardhani (2024) на 755 нм Alexandrite DLA: TIMP-1 вырос с 4,33 до 6,30
+        (p &lt; 0,05), плотность коллагена — с 82,72 до 92,41 (p &lt; 0,05). Это и есть
+        молекулярное подтверждение действия пикосекундного лазера.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 13. PENETRATION DEPTH ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Длина волны и глубина действия</div>
+    <h2 class="section">Почему 1064 нм идёт глубже, а 755 нм — мощнее.</h2>
+    <p class="lead">
+      Длина волны 1064 нм слабо поглощается меланином — энергия проходит
+      в глубокую дерму. 755 нм сильнее поглощается меланином и формирует
+      более интенсивный LIOB в поверхностной и средней дерме.
+    </p>
+    <div class="illus">
+      <svg viewBox="0 0 900 280" xmlns="http://www.w3.org/2000/svg">
+        <rect x="60" y="20" width="780" height="34" fill="#fce8d8" rx="3"/>
+        <text x="70" y="44" font-size="14" fill="#525258">Эпидермис · меланин</text>
+
+        <rect x="60" y="58" width="780" height="60" fill="#f2cda6" rx="3"/>
+        <text x="70" y="94" font-size="14" fill="#525258">Папиллярная дерма</text>
+
+        <rect x="60" y="122" width="780" height="80" fill="#e6b896" rx="3"/>
+        <text x="70" y="162" font-size="14" fill="#525258">Ретикулярная дерма</text>
+
+        <rect x="60" y="206" width="780" height="36" fill="#c7c7cc" rx="3"/>
+        <text x="70" y="230" font-size="14" fill="#525258">Гиподерма</text>
+
+        <g>
+          <rect x="280" y="0" width="40" height="100" fill="#ff375f" opacity="0.25"/>
+          <line x1="300" y1="0" x2="300" y2="105" stroke="#ff375f" stroke-width="3"/>
+          <circle cx="300" cy="82" r="16" fill="#ff375f" opacity="0.85"/>
+          <circle cx="300" cy="82" r="28" fill="none" stroke="#ff375f" stroke-width="1.4" opacity="0.5"/>
+          <text x="300" y="266" text-anchor="middle" font-size="18" font-weight="700" fill="#ff375f">755 нм</text>
+          <text x="300" y="284" text-anchor="middle" font-size="13" fill="#525258">Сильное поглощение меланином · поверхностнее</text>
+        </g>
+
+        <g>
+          <rect x="600" y="0" width="40" height="180" fill="#0071e3" opacity="0.2"/>
+          <line x1="620" y1="0" x2="620" y2="180" stroke="#0071e3" stroke-width="3"/>
+          <circle cx="620" cy="155" r="16" fill="#0071e3" opacity="0.85"/>
+          <circle cx="620" cy="155" r="26" fill="none" stroke="#0071e3" stroke-width="1.2" opacity="0.4"/>
+          <text x="620" y="266" text-anchor="middle" font-size="18" font-weight="700" fill="#0071e3">1064 нм</text>
+          <text x="620" y="284" text-anchor="middle" font-size="13" fill="#525258">Слабое поглощение · глубже</text>
+        </g>
+      </svg>
+      <div class="illus-caption">
+        Зона LIOB у 755 нм — поверхностная и средняя дерма (хорошо для текстуры,
+        пор и лентиго). Зона LIOB у 1064 нм — средняя и ретикулярная дерма
+        (хорошо для ремоделирования глубокой дермы, безопаснее для тёмной кожи).
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 14. TWO HEROES ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Два главных героя</div>
+    <h2 class="section">Nd:YAG 1064 нм и Alexandrite 755 нм PicoSure.</h2>
+    <p class="lead">
+      Вся доказательная база сосредоточена вокруг этих двух длин волн.
+      Они не конкурируют — у каждой своя ниша по фототипу кожи, глубине
+      воздействия и клинической цели.
+    </p>
+    <div class="split" style="margin-top:8px;">
+      <div class="card" style="border-top:5px solid var(--blue);">
+        <div class="eyebrow">1064 нм · Nd:YAG</div>
+        <h3 style="font-size:30px;font-weight:700;margin:8px 0 14px;">Глубина и безопасность</h3>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;font-size:18px;color:var(--ink-soft);">
+          <li>• Слабое поглощение меланином → подходит для III–V фототипов</li>
+          <li>• Глубокое проникновение → ремоделирование дермы</li>
+          <li>• Низкий риск поствоспалительной гиперпигментации</li>
+          <li>• Доставка через MLA, DOE и другие фракционные насадки</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:5px solid var(--pink);">
+        <div class="eyebrow" style="color:var(--pink);">755 нм · Alexandrite</div>
+        <h3 style="font-size:30px;font-weight:700;margin:8px 0 14px;">Мощь и пигмент</h3>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;font-size:18px;color:var(--ink-soft);">
+          <li>• Сильное поглощение меланином</li>
+          <li>• Более выраженный LIOB при равной флюенсе</li>
+          <li>• Доставка через FLA и DLA</li>
+          <li>• Лидер по коррекции пигмента и текстуры</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 15. LENS TECHNOLOGY SECTION DIVIDER ============ -->
+<section class="slide dark">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Технологии оптики</div>
+    <div class="section-num green">MLA · FLA · DLA · DOE</div>
+    <h1 class="title">Как устроены фракционные насадки.</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;max-width:880px;">
+      Принципы работы микролинзовых, фокусирующих и дифракционных матриц —
+      и в чём их различие при выборе протокола омоложения.
+    </p>
+  </div>
+</section>
+
+<!-- ============ 16. LENS TECH — OVERVIEW ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">4 основных типа фракционной оптики</div>
+    <h2 class="section">Краткое сравнение перед детальным разбором.</h2>
+    <p class="lead">
+      Все четыре технологии решают одну задачу — разбить мощный пучок на массив
+      «точек» с высокой плотностью энергии. Различаются они равномерностью
+      распределения, глубиной зоны LIOB и тем, какие лазеры с ними работают.
+    </p>
+    <table class="cmp" style="margin-top:6px;">
+      <thead>
+        <tr>
+          <th>Технология</th>
+          <th>Распределение</th>
+          <th>Глубина LIOB</th>
+          <th>Основной лазер</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b style="color:var(--blue);">MLA</b> — микролинзовая матрица</td>
+          <td><span class="pill mid">Неравномерное · гауссово</span></td>
+          <td>≈ 700 мкм</td>
+          <td class="col1064">1064 нм Nd:YAG</td>
+        </tr>
+        <tr>
+          <td><b style="color:var(--pink);">FLA</b> — фокусирующая матрица</td>
+          <td><span class="pill mid">Концентрированное в фокусах</span></td>
+          <td>Верхняя–средняя дерма</td>
+          <td class="col755">755 нм PicoSure</td>
+        </tr>
+        <tr>
+          <td><b style="color:var(--purple);">DLA</b> — дифракционная матрица</td>
+          <td><span class="pill hi">Полностью равномерное</span></td>
+          <td>До 1200 мкм · регулируемая</td>
+          <td class="col755">755 нм Alexandrite</td>
+        </tr>
+        <tr>
+          <td><b style="color:var(--orange);">DOE</b> — дифракционный элемент</td>
+          <td><span class="pill hi">Голографически равномерное</span></td>
+          <td>Варьируемая</td>
+          <td class="col1064">532 / 1064 нм</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="lead" style="font-size:18px;">
+      Дальше — четыре отдельных слайда с подробным разбором каждой технологии.
+    </p>
+  </div>
+</section>
+
+<!-- ============ 17. MLA DETAIL ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow" style="color:var(--blue);">Технология 1 из 4 · MLA</div>
+    <h2 class="section">Микролинзовая матрица — Micro-Lens Array.</h2>
+    <p class="lead">
+      Самая ранняя из фракционных насадок. Массив микроскопических линз
+      разделяет лазерный пучок на десятки сфокусированных микропучков.
+      Базовая технология фракционирования для 1064 нм Nd:YAG.
+    </p>
+
+    <div class="illus">
+      <svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg">
+        <!-- Input laser beam -->
+        <rect x="60" y="20" width="780" height="22" rx="4" fill="#0071e3" opacity="0.85"/>
+        <text x="450" y="14" text-anchor="middle" font-size="14" fill="#525258">Исходный пучок 1064 нм Nd:YAG</text>
+
+        <!-- MLA - row of lenses -->
+        <g>
+          <text x="60" y="78" font-size="14" font-weight="600" fill="#5e5ce6">MLA →</text>
+          <circle cx="160" cy="85" r="14" fill="none" stroke="#5e5ce6" stroke-width="2"/>
+          <circle cx="220" cy="85" r="14" fill="none" stroke="#5e5ce6" stroke-width="2"/>
+          <circle cx="280" cy="85" r="14" fill="none" stroke="#5e5ce6" stroke-width="2"/>
+          <circle cx="340" cy="85" r="14" fill="none" stroke="#5e5ce6" stroke-width="2"/>
+          <circle cx="400" cy="85" r="14" fill="none" stroke="#5e5ce6" stroke-width="2"/>
+          <circle cx="460" cy="85" r="14" fill="none" stroke="#5e5ce6" stroke-width="2"/>
+          <circle cx="520" cy="85" r="14" fill="none" stroke="#5e5ce6" stroke-width="2"/>
+          <circle cx="580" cy="85" r="14" fill="none" stroke="#5e5ce6" stroke-width="2"/>
+          <circle cx="640" cy="85" r="14" fill="none" stroke="#5e5ce6" stroke-width="2"/>
+          <circle cx="700" cy="85" r="14" fill="none" stroke="#5e5ce6" stroke-width="2"/>
+          <circle cx="760" cy="85" r="14" fill="none" stroke="#5e5ce6" stroke-width="2"/>
+        </g>
+
+        <!-- Focused beams converging -->
+        <g stroke="#0071e3" stroke-width="1" opacity="0.45" fill="none">
+          <line x1="160" y1="100" x2="160" y2="170"/>
+          <line x1="220" y1="100" x2="220" y2="170"/>
+          <line x1="280" y1="100" x2="280" y2="170"/>
+          <line x1="340" y1="100" x2="340" y2="170"/>
+          <line x1="400" y1="100" x2="400" y2="170"/>
+          <line x1="460" y1="100" x2="460" y2="170"/>
+          <line x1="520" y1="100" x2="520" y2="170"/>
+          <line x1="580" y1="100" x2="580" y2="170"/>
+          <line x1="640" y1="100" x2="640" y2="170"/>
+          <line x1="700" y1="100" x2="700" y2="170"/>
+          <line x1="760" y1="100" x2="760" y2="170"/>
+        </g>
+
+        <!-- Skin layers -->
+        <rect x="60" y="175" width="780" height="22" fill="#fce8d8" rx="3"/>
+        <text x="68" y="190" font-size="12" fill="#525258">Эпидермис</text>
+        <rect x="60" y="200" width="780" height="80" fill="#e6b896" rx="3"/>
+        <text x="68" y="218" font-size="12" fill="#525258">Дерма (≈700 мкм)</text>
+
+        <!-- Gaussian distribution — bigger in center, smaller at edges -->
+        <g fill="#ff375f">
+          <circle cx="160" cy="240" r="5" opacity="0.35"/>
+          <circle cx="220" cy="240" r="7" opacity="0.5"/>
+          <circle cx="280" cy="240" r="9" opacity="0.7"/>
+          <circle cx="340" cy="240" r="11" opacity="0.85"/>
+          <circle cx="400" cy="240" r="13" opacity="0.95"/>
+          <circle cx="460" cy="240" r="14" opacity="1"/>
+          <circle cx="520" cy="240" r="13" opacity="0.95"/>
+          <circle cx="580" cy="240" r="11" opacity="0.85"/>
+          <circle cx="640" cy="240" r="9" opacity="0.7"/>
+          <circle cx="700" cy="240" r="7" opacity="0.5"/>
+          <circle cx="760" cy="240" r="5" opacity="0.35"/>
+        </g>
+
+        <text x="450" y="290" text-anchor="middle" font-size="14" font-weight="700" fill="#ff375f">
+          Зоны LIOB · гауссово распределение (центр сильнее, края слабее)
+        </text>
+      </svg>
+      <div class="illus-caption">
+        Особенность MLA: интенсивность LIOB в центре пятна выше, чем по краям.
+        Это даёт глубокий, но <b>неравномерный</b> эффект — нужен правильный «нахлёст» пятен.
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card" style="border-top:4px solid var(--blue);">
+        <h3 style="font-size:22px;font-weight:700;margin-bottom:10px;">Когда выбирать</h3>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;font-size:17px;color:var(--ink-soft);">
+          <li>✓ Глубокое ремоделирование дермы у фототипов III–V</li>
+          <li>✓ Постакне, эритема, атрофические рубцы</li>
+          <li>✓ Морщины + поры у азиатской кожи</li>
+          <li>✓ Когда важна безопасность по PIH</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:4px solid var(--ink-light);">
+        <h3 style="font-size:22px;font-weight:700;margin-bottom:10px;">Подтверждено в работах</h3>
+        <div class="pill-row" style="justify-content:flex-start;">
+          <span class="info-pill blue">Yim 2020</span>
+          <span class="info-pill blue">Tang 2025</span>
+          <span class="info-pill blue">Le 2025</span>
+          <span class="info-pill blue">Guida 2021</span>
+        </div>
+        <p style="margin-top:12px;font-size:17px;color:var(--ink-soft);">
+          У Le 2025 — handpiece 8DF (8 мм, deep fractional) на 1064 нм,
+          импульс 450 пс, флюенс 0,3–0,45 Дж/см², 10 Гц.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 18. FLA DETAIL ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow" style="color:var(--pink);">Технология 2 из 4 · FLA</div>
+    <h2 class="section">Фокусирующая матрица — Focus Lens Array.</h2>
+    <p class="lead">
+      Стандартная насадка PicoSure (755 нм Alexandrite). Не делит пучок на
+      десятки независимых каналов, а <b>концентрирует энергию в локальных
+      фокусах</b> — в этих точках плотность мощности превышает порог LIOB.
+    </p>
+
+    <div class="illus">
+      <svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg">
+        <!-- Input beam -->
+        <rect x="60" y="20" width="780" height="22" rx="4" fill="#ff375f" opacity="0.85"/>
+        <text x="450" y="14" text-anchor="middle" font-size="14" fill="#525258">Исходный пучок 755 нм Alexandrite</text>
+
+        <!-- FLA — single horizontal lens -->
+        <text x="60" y="78" font-size="14" font-weight="600" fill="#ff375f">FLA →</text>
+        <ellipse cx="450" cy="85" rx="320" ry="14" fill="none" stroke="#ff375f" stroke-width="2.5"/>
+        <text x="450" y="115" text-anchor="middle" font-size="12" fill="#525258">Фокусирующая линза концентрирует энергию</text>
+
+        <!-- Converging beams to focal points -->
+        <g stroke="#ff375f" stroke-width="1.2" fill="none" opacity="0.6">
+          <line x1="180" y1="95" x2="300" y2="170"/>
+          <line x1="260" y1="95" x2="320" y2="170"/>
+          <line x1="340" y1="95" x2="360" y2="170"/>
+          <line x1="450" y1="95" x2="450" y2="170"/>
+          <line x1="560" y1="95" x2="540" y2="170"/>
+          <line x1="640" y1="95" x2="580" y2="170"/>
+          <line x1="720" y1="95" x2="600" y2="170"/>
+        </g>
+
+        <!-- Skin layers -->
+        <rect x="60" y="175" width="780" height="22" fill="#fce8d8" rx="3"/>
+        <text x="68" y="190" font-size="12" fill="#525258">Эпидермис</text>
+        <rect x="60" y="200" width="780" height="80" fill="#e6b896" rx="3"/>
+        <text x="68" y="218" font-size="12" fill="#525258">Верхняя–средняя дерма</text>
+
+        <!-- Intense focal LIOB spots concentrated in center -->
+        <g fill="#ff375f">
+          <circle cx="300" cy="235" r="9" opacity="0.6"/>
+          <circle cx="320" cy="235" r="11" opacity="0.75"/>
+          <circle cx="360" cy="235" r="13" opacity="0.9"/>
+          <circle cx="450" cy="235" r="16" opacity="1"/>
+          <circle cx="540" cy="235" r="13" opacity="0.9"/>
+          <circle cx="580" cy="235" r="11" opacity="0.75"/>
+          <circle cx="600" cy="235" r="9" opacity="0.6"/>
+        </g>
+
+        <text x="450" y="290" text-anchor="middle" font-size="14" font-weight="700" fill="#ff375f">
+          Мощные точки LIOB в верхней–средней дерме
+        </text>
+      </svg>
+      <div class="illus-caption">
+        Особенность FLA: создаёт <b>высокоинтенсивный LIOB</b>, который и даёт сильную
+        механическую стимуляцию фибробластов. Это основа протокола омоложения
+        Khetarpal 2016 — 4 сессии с интервалом 2–3 недели, 6253 импульсов в среднем.
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card" style="border-top:4px solid var(--pink);">
+        <h3 style="font-size:22px;font-weight:700;margin-bottom:10px;">Когда выбирать</h3>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;font-size:17px;color:var(--ink-soft);">
+          <li>✓ Светлая кожа (фототипы I–III)</li>
+          <li>✓ Мелкие морщины и расширенные поры</li>
+          <li>✓ Фотостарение Glogau II–III</li>
+          <li>✗ Не подходит для тёмной кожи без снижения флюенсы</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:4px solid var(--ink-light);">
+        <h3 style="font-size:22px;font-weight:700;margin-bottom:10px;">Подтверждено в работах</h3>
+        <div class="pill-row" style="justify-content:flex-start;">
+          <span class="info-pill pink">Khetarpal 2016</span>
+          <span class="info-pill pink">Wilson 2018</span>
+          <span class="info-pill pink">Pulumati 2023</span>
+        </div>
+        <p style="margin-top:12px;font-size:17px;color:var(--ink-soft);">
+          У Khetarpal 2016: 4 сессии × 2–3 нед, флюенс 0,71 Дж/см², 3–7 проходов.
+          Результат — 94% удовлетворённых пациентов через 1 месяц.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 19. DLA DETAIL ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow" style="color:var(--purple);">Технология 3 из 4 · DLA</div>
+    <h2 class="section">Дифракционная матрица — Diffractive Lens Array.</h2>
+    <p class="lead">
+      Современная гибридная оптика: сочетает свойства DOE и MLA.
+      Создаёт квадратный «макропучок» из <b>равномерно распределённых
+      микропучков</b>. Главное достижение — однородная плотность энергии
+      по всему пятну и регулируемая глубина воздействия (до 1200 мкм).
+    </p>
+
+    <div class="illus">
+      <svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg">
+        <!-- Input beam -->
+        <rect x="60" y="20" width="780" height="22" rx="4" fill="#ff375f" opacity="0.85"/>
+        <text x="450" y="14" text-anchor="middle" font-size="14" fill="#525258">Исходный пучок 755 нм Alexandrite</text>
+
+        <!-- DLA — square grid -->
+        <text x="60" y="78" font-size="14" font-weight="600" fill="#5e5ce6">DLA →</text>
+        <rect x="180" y="65" width="540" height="36" fill="none" stroke="#5e5ce6" stroke-width="2"/>
+        <g stroke="#5e5ce6" stroke-width="1.5">
+          <line x1="240" y1="65" x2="240" y2="101"/>
+          <line x1="300" y1="65" x2="300" y2="101"/>
+          <line x1="360" y1="65" x2="360" y2="101"/>
+          <line x1="420" y1="65" x2="420" y2="101"/>
+          <line x1="480" y1="65" x2="480" y2="101"/>
+          <line x1="540" y1="65" x2="540" y2="101"/>
+          <line x1="600" y1="65" x2="600" y2="101"/>
+          <line x1="660" y1="65" x2="660" y2="101"/>
+          <line x1="180" y1="83" x2="720" y2="83"/>
+        </g>
+        <text x="450" y="125" text-anchor="middle" font-size="12" fill="#525258">Дифракционная сетка делит пучок равномерно</text>
+
+        <!-- Parallel beams (uniform) -->
+        <g stroke="#5e5ce6" stroke-width="1.2" opacity="0.5" fill="none">
+          <line x1="210" y1="105" x2="210" y2="170"/>
+          <line x1="270" y1="105" x2="270" y2="170"/>
+          <line x1="330" y1="105" x2="330" y2="170"/>
+          <line x1="390" y1="105" x2="390" y2="170"/>
+          <line x1="450" y1="105" x2="450" y2="170"/>
+          <line x1="510" y1="105" x2="510" y2="170"/>
+          <line x1="570" y1="105" x2="570" y2="170"/>
+          <line x1="630" y1="105" x2="630" y2="170"/>
+          <line x1="690" y1="105" x2="690" y2="170"/>
+        </g>
+
+        <!-- Skin -->
+        <rect x="60" y="175" width="780" height="22" fill="#fce8d8" rx="3"/>
+        <text x="68" y="190" font-size="12" fill="#525258">Эпидермис</text>
+        <rect x="60" y="200" width="780" height="80" fill="#e6b896" rx="3"/>
+        <text x="68" y="218" font-size="12" fill="#525258">До 1200 мкм · регулируемая глубина</text>
+
+        <!-- Uniform spots — same size all across -->
+        <g fill="#5e5ce6">
+          <circle cx="210" cy="240" r="10"/>
+          <circle cx="270" cy="240" r="10"/>
+          <circle cx="330" cy="240" r="10"/>
+          <circle cx="390" cy="240" r="10"/>
+          <circle cx="450" cy="240" r="10"/>
+          <circle cx="510" cy="240" r="10"/>
+          <circle cx="570" cy="240" r="10"/>
+          <circle cx="630" cy="240" r="10"/>
+          <circle cx="690" cy="240" r="10"/>
+        </g>
+
+        <text x="450" y="290" text-anchor="middle" font-size="14" font-weight="700" fill="#5e5ce6">
+          Точки LIOB · полностью равномерное распределение
+        </text>
+      </svg>
+      <div class="illus-caption">
+        Особенность DLA: каждая точка имеет <b>одинаковую интенсивность</b> —
+        нет «горячего центра» и «холодных краёв». Это критично для безопасности на
+        тёмной коже: нет участков с риском перегрева.
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card" style="border-top:4px solid var(--purple);">
+        <h3 style="font-size:22px;font-weight:700;margin-bottom:10px;">Когда выбирать</h3>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;font-size:17px;color:var(--ink-soft);">
+          <li>✓ Тёмная кожа (фототипы IV–VI) — Manuskiatti 2021</li>
+          <li>✓ Мелазма + омоложение в одной процедуре</li>
+          <li>✓ Когда нужна предсказуемая глубина (от эпидермиса до 1200 мкм)</li>
+          <li>✓ Длительная стойкость результата (Yu 2021 — 36 месяцев)</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:4px solid var(--ink-light);">
+        <h3 style="font-size:22px;font-weight:700;margin-bottom:10px;">Подтверждено в работах</h3>
+        <div class="pill-row" style="justify-content:flex-start;">
+          <span class="info-pill" style="background:rgba(94,92,230,0.1);color:var(--purple);border-color:rgba(94,92,230,0.25);">Chen 2019</span>
+          <span class="info-pill" style="background:rgba(94,92,230,0.1);color:var(--purple);border-color:rgba(94,92,230,0.25);">Manuskiatti 2021</span>
+          <span class="info-pill" style="background:rgba(94,92,230,0.1);color:var(--purple);border-color:rgba(94,92,230,0.25);">Yu 2021</span>
+          <span class="info-pill" style="background:rgba(94,92,230,0.1);color:var(--purple);border-color:rgba(94,92,230,0.25);">Wardhani 2024</span>
+        </div>
+        <p style="margin-top:12px;font-size:17px;color:var(--ink-soft);">
+          У Wardhani 2024: флюенс 0,71 Дж/см², spot 6 мм, 5000–6000 импульсов,
+          3–4 прохода. Результат — TIMP-1 вырос с 4,33 до 6,30 (p &lt; 0,05).
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 20. DOE DETAIL ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow" style="color:var(--orange);">Технология 4 из 4 · DOE</div>
+    <h2 class="section">Дифракционный элемент — Diffractive Optical Element.</h2>
+    <p class="lead">
+      «Чистая» голографическая оптика без линз. Лазер проходит через
+      элемент с микрорельефом, который работает как <b>дифракционная решётка</b>:
+      создаёт интерференционную картину и равномерно распределяет микропучки на коже.
+      Основа более сложной DLA-технологии.
+    </p>
+
+    <div class="illus">
+      <svg viewBox="0 0 900 300" xmlns="http://www.w3.org/2000/svg">
+        <!-- Input beam -->
+        <rect x="60" y="20" width="780" height="22" rx="4" fill="#0071e3" opacity="0.85"/>
+        <text x="450" y="14" text-anchor="middle" font-size="14" fill="#525258">Исходный пучок 532 / 1064 нм</text>
+
+        <!-- DOE — wavy interference pattern -->
+        <text x="60" y="78" font-size="14" font-weight="600" fill="#ff9f0a">DOE →</text>
+        <rect x="180" y="65" width="540" height="36" fill="rgba(255,159,10,0.08)" stroke="#ff9f0a" stroke-width="2"/>
+        <g stroke="#ff9f0a" stroke-width="1.2" fill="none">
+          <path d="M 180 75 Q 220 70, 260 75 T 340 75 T 420 75 T 500 75 T 580 75 T 660 75 T 720 75"/>
+          <path d="M 180 85 Q 220 80, 260 85 T 340 85 T 420 85 T 500 85 T 580 85 T 660 85 T 720 85"/>
+          <path d="M 180 95 Q 220 90, 260 95 T 340 95 T 420 95 T 500 95 T 580 95 T 660 95 T 720 95"/>
+        </g>
+        <text x="450" y="125" text-anchor="middle" font-size="12" fill="#525258">Микрорельеф создаёт дифракционные порядки</text>
+
+        <!-- Diffracted beams — single source spreading out -->
+        <g stroke="#ff9f0a" stroke-width="1.2" opacity="0.5" fill="none">
+          <line x1="450" y1="105" x2="180" y2="170"/>
+          <line x1="450" y1="105" x2="240" y2="170"/>
+          <line x1="450" y1="105" x2="320" y2="170"/>
+          <line x1="450" y1="105" x2="400" y2="170"/>
+          <line x1="450" y1="105" x2="450" y2="170"/>
+          <line x1="450" y1="105" x2="500" y2="170"/>
+          <line x1="450" y1="105" x2="580" y2="170"/>
+          <line x1="450" y1="105" x2="660" y2="170"/>
+          <line x1="450" y1="105" x2="720" y2="170"/>
+        </g>
+
+        <!-- Skin -->
+        <rect x="60" y="175" width="780" height="22" fill="#fce8d8" rx="3"/>
+        <text x="68" y="190" font-size="12" fill="#525258">Эпидермис</text>
+        <rect x="60" y="200" width="780" height="80" fill="#e6b896" rx="3"/>
+        <text x="68" y="218" font-size="12" fill="#525258">Варьируемая глубина</text>
+
+        <!-- Wide uniform spots from diffraction -->
+        <g fill="#ff9f0a">
+          <circle cx="180" cy="240" r="10"/>
+          <circle cx="240" cy="240" r="10"/>
+          <circle cx="320" cy="240" r="10"/>
+          <circle cx="400" cy="240" r="10"/>
+          <circle cx="450" cy="240" r="10"/>
+          <circle cx="500" cy="240" r="10"/>
+          <circle cx="580" cy="240" r="10"/>
+          <circle cx="660" cy="240" r="10"/>
+          <circle cx="720" cy="240" r="10"/>
+        </g>
+
+        <text x="450" y="290" text-anchor="middle" font-size="14" font-weight="700" fill="#ff9f0a">
+          Точки LIOB · широкое равномерное поле
+        </text>
+      </svg>
+      <div class="illus-caption">
+        Особенность DOE: один входящий пучок делится на <b>множество порядков
+        дифракции</b>, распределённых равномерно по широкому полю. Применяется
+        для фототермальной модуляции с предсказуемым паттерном на коже.
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card" style="border-top:4px solid var(--orange);">
+        <h3 style="font-size:22px;font-weight:700;margin-bottom:10px;">Когда выбирать</h3>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;font-size:17px;color:var(--ink-soft);">
+          <li>✓ Эпидермальный пигмент (532 нм через DOE)</li>
+          <li>✓ Когда нужна предсказуемая фототермальная модуляция</li>
+          <li>✓ Базовая фракционная доставка без сложной оптики</li>
+          <li>✓ Часто комбинируется с MLA в гибридных насадках (= DLA)</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:4px solid var(--ink-light);">
+        <h3 style="font-size:22px;font-weight:700;margin-bottom:10px;">Подтверждено в работах</h3>
+        <div class="pill-row" style="justify-content:flex-start;">
+          <span class="info-pill" style="background:rgba(255,159,10,0.1);color:#a55c00;border-color:rgba(255,159,10,0.25);">Han 2023</span>
+          <span class="info-pill" style="background:rgba(255,159,10,0.1);color:#a55c00;border-color:rgba(255,159,10,0.25);">Leight-Dunn 2022</span>
+        </div>
+        <p style="margin-top:12px;font-size:17px;color:var(--ink-soft);">
+          Han 2023 использовал DOE для сравнения 532 и 1064 нм:
+          532 нм через DOE лучше работает с поверхностной дисхромией,
+          1064 нм — с глубоким ремоделированием дермы.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 21. LENS — SIDE-BY-SIDE COMPARISON ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Прямое сравнение распределения энергии</div>
+    <h2 class="section">Главное отличие — как разложена энергия в пятне.</h2>
+    <p class="lead">
+      Это и есть ключевая разница между четырьмя технологиями. От распределения
+      зависит безопасность на тёмной коже, предсказуемость глубины и риск
+      «горячих точек».
+    </p>
+
+    <div class="illus">
+      <svg viewBox="0 0 900 280" xmlns="http://www.w3.org/2000/svg">
+        <!-- Headers -->
+        <text x="120" y="30" text-anchor="middle" font-size="18" font-weight="700" fill="#0071e3">MLA</text>
+        <text x="340" y="30" text-anchor="middle" font-size="18" font-weight="700" fill="#ff375f">FLA</text>
+        <text x="560" y="30" text-anchor="middle" font-size="18" font-weight="700" fill="#5e5ce6">DLA</text>
+        <text x="780" y="30" text-anchor="middle" font-size="18" font-weight="700" fill="#ff9f0a">DOE</text>
+
+        <!-- MLA: Gaussian distribution -->
+        <g>
+          <rect x="40" y="50" width="160" height="60" fill="#f5f5f7" rx="6"/>
+          <g fill="#0071e3">
+            <circle cx="55" cy="80" r="3" opacity="0.3"/>
+            <circle cx="80" cy="80" r="5" opacity="0.5"/>
+            <circle cx="105" cy="80" r="8" opacity="0.75"/>
+            <circle cx="130" cy="80" r="10" opacity="0.95"/>
+            <circle cx="155" cy="80" r="8" opacity="0.75"/>
+            <circle cx="180" cy="80" r="5" opacity="0.5"/>
+          </g>
+          <text x="120" y="135" text-anchor="middle" font-size="13" fill="#525258">Гауссово</text>
+          <text x="120" y="155" text-anchor="middle" font-size="12" fill="#86868b">центр сильнее</text>
+        </g>
+
+        <!-- FLA: Concentrated focal -->
+        <g>
+          <rect x="260" y="50" width="160" height="60" fill="#f5f5f7" rx="6"/>
+          <g fill="#ff375f">
+            <circle cx="290" cy="80" r="6" opacity="0.55"/>
+            <circle cx="320" cy="80" r="10" opacity="0.85"/>
+            <circle cx="350" cy="80" r="13" opacity="1"/>
+            <circle cx="380" cy="80" r="10" opacity="0.85"/>
+            <circle cx="405" cy="80" r="6" opacity="0.55"/>
+          </g>
+          <text x="340" y="135" text-anchor="middle" font-size="13" fill="#525258">Сфокусированное</text>
+          <text x="340" y="155" text-anchor="middle" font-size="12" fill="#86868b">мощный LIOB</text>
+        </g>
+
+        <!-- DLA: Uniform grid -->
+        <g>
+          <rect x="480" y="50" width="160" height="60" fill="#f5f5f7" rx="6"/>
+          <g fill="#5e5ce6">
+            <circle cx="500" cy="80" r="8"/>
+            <circle cx="525" cy="80" r="8"/>
+            <circle cx="550" cy="80" r="8"/>
+            <circle cx="575" cy="80" r="8"/>
+            <circle cx="600" cy="80" r="8"/>
+            <circle cx="625" cy="80" r="8"/>
+          </g>
+          <text x="560" y="135" text-anchor="middle" font-size="13" fill="#525258">Равномерное</text>
+          <text x="560" y="155" text-anchor="middle" font-size="12" fill="#86868b">безопасно тёмной коже</text>
+        </g>
+
+        <!-- DOE: Holographic uniform -->
+        <g>
+          <rect x="700" y="50" width="160" height="60" fill="#f5f5f7" rx="6"/>
+          <g fill="#ff9f0a">
+            <circle cx="715" cy="80" r="7"/>
+            <circle cx="740" cy="80" r="7"/>
+            <circle cx="765" cy="80" r="7"/>
+            <circle cx="790" cy="80" r="7"/>
+            <circle cx="815" cy="80" r="7"/>
+            <circle cx="840" cy="80" r="7"/>
+          </g>
+          <text x="780" y="135" text-anchor="middle" font-size="13" fill="#525258">Голографически равномерное</text>
+          <text x="780" y="155" text-anchor="middle" font-size="12" fill="#86868b">широкое поле</text>
+        </g>
+
+        <!-- Bottom: depth lines -->
+        <line x1="40" y1="200" x2="860" y2="200" stroke="#d2d2d7" stroke-width="1.5" stroke-dasharray="4 3"/>
+        <text x="60" y="194" font-size="12" fill="#86868b">Глубина воздействия:</text>
+
+        <text x="120" y="225" text-anchor="middle" font-size="13" font-weight="600" fill="#0071e3">≈ 700 мкм</text>
+        <text x="340" y="225" text-anchor="middle" font-size="13" font-weight="600" fill="#ff375f">верх–средняя дерма</text>
+        <text x="560" y="225" text-anchor="middle" font-size="13" font-weight="600" fill="#5e5ce6">до 1200 мкм</text>
+        <text x="780" y="225" text-anchor="middle" font-size="13" font-weight="600" fill="#ff9f0a">варьируемая</text>
+
+        <text x="120" y="255" text-anchor="middle" font-size="13" fill="#525258">1064 нм Nd:YAG</text>
+        <text x="340" y="255" text-anchor="middle" font-size="13" fill="#525258">755 нм PicoSure</text>
+        <text x="560" y="255" text-anchor="middle" font-size="13" fill="#525258">755 нм Alexandrite</text>
+        <text x="780" y="255" text-anchor="middle" font-size="13" fill="#525258">532 / 1064 нм</text>
+      </svg>
+      <div class="illus-caption">
+        Запомнить просто: <b>MLA и FLA — неравномерные</b> (есть «горячий центр»),
+        <b>DLA и DOE — равномерные</b> (одинаковая мощность по всему пятну).
+        Равномерное распределение безопаснее для тёмной кожи.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 17. LENS TECH — BEAM SPLITTING SVG ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Принцип фракционной доставки</div>
+    <h2 class="section">Как один пучок становится массивом точек LIOB.</h2>
+    <p class="lead">
+      Все фракционные насадки работают по одному принципу: разбивают
+      широкий пучок на множество локальных «точек» с высокой плотностью
+      энергии. Между точками — нетронутая ткань, которая ускоряет восстановление.
+    </p>
+    <div class="illus">
+      <svg viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg">
+        <rect x="60" y="50" width="120" height="40" rx="6" fill="#0071e3" opacity="0.85"/>
+        <text x="120" y="30" text-anchor="middle" font-size="14" fill="#525258">Исходный пучок</text>
+
+        <ellipse cx="260" cy="70" rx="14" ry="38" fill="#fff" stroke="#5e5ce6" stroke-width="2"/>
+        <text x="260" y="30" text-anchor="middle" font-size="14" fill="#5e5ce6" font-weight="600">Насадка</text>
+        <text x="260" y="125" text-anchor="middle" font-size="12" fill="#86868b">MLA / FLA / DLA</text>
+
+        <g stroke="#0071e3" stroke-width="2.5" fill="none" opacity="0.85">
+          <line x1="280" y1="70" x2="500" y2="35"/>
+          <line x1="280" y1="70" x2="500" y2="55"/>
+          <line x1="280" y1="70" x2="500" y2="75"/>
+          <line x1="280" y1="70" x2="500" y2="95"/>
+          <line x1="280" y1="70" x2="500" y2="115"/>
+        </g>
+
+        <g fill="#ff375f">
+          <circle cx="510" cy="35" r="7"/>
+          <circle cx="510" cy="55" r="7"/>
+          <circle cx="510" cy="75" r="7"/>
+          <circle cx="510" cy="95" r="7"/>
+          <circle cx="510" cy="115" r="7"/>
+        </g>
+        <text x="540" y="80" font-size="15" fill="#ff375f" font-weight="700">Зоны LIOB</text>
+
+        <rect x="600" y="20" width="260" height="200" fill="#fce8d8" rx="6"/>
+        <text x="730" y="14" text-anchor="middle" font-size="12" fill="#525258">Кожа в разрезе</text>
+
+        <g stroke="#ff375f" stroke-width="2" fill="none" stroke-dasharray="4 3">
+          <line x1="640" y1="20" x2="640" y2="100"/>
+          <line x1="680" y1="20" x2="680" y2="100"/>
+          <line x1="720" y1="20" x2="720" y2="100"/>
+          <line x1="760" y1="20" x2="760" y2="100"/>
+          <line x1="800" y1="20" x2="800" y2="100"/>
+          <line x1="840" y1="20" x2="840" y2="100"/>
+        </g>
+        <g fill="#ff375f" opacity="0.9">
+          <circle cx="640" cy="105" r="6"/>
+          <circle cx="680" cy="105" r="6"/>
+          <circle cx="720" cy="105" r="6"/>
+          <circle cx="760" cy="105" r="6"/>
+          <circle cx="800" cy="105" r="6"/>
+          <circle cx="840" cy="105" r="6"/>
+        </g>
+        <text x="730" y="175" text-anchor="middle" font-size="15" fill="#1d1d1f" font-weight="700">Микро-LIOB · паттерн</text>
+        <text x="730" y="196" text-anchor="middle" font-size="13" fill="#525258">Нетронутая ткань между точками = резервуар фибробластов</text>
+      </svg>
+      <div class="illus-caption">
+        Источник принципа: Wu et al. (2021), Han et al. (2023).
+        Между точками LIOB остаётся неповреждённая ткань — она становится резервуаром
+        для миграции фибробластов и быстрого восстановления.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 18. LENS — WHICH FOR WHICH ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Подбор насадки</div>
+    <h2 class="section">Какая насадка для какой задачи.</h2>
+    <table class="cmp">
+      <thead>
+        <tr>
+          <th>Цель</th>
+          <th>Рекомендуемая насадка</th>
+          <th>Лазер</th>
+          <th>Источник</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Морщины + поры на светлой коже</td><td><span class="pill hi">FLA</span></td><td class="col755">755 нм</td><td>Khetarpal 2016</td></tr>
+        <tr><td>Текстура и поверхностный пигмент</td><td><span class="pill hi">FLA / DLA</span></td><td class="col755">755 нм</td><td>Chen 2019, Li 2022</td></tr>
+        <tr><td>Тёмная кожа (фототипы IV–VI)</td><td><span class="pill hi">DLA</span></td><td class="col755">755 нм</td><td>Manuskiatti 2021</td></tr>
+        <tr><td>Глубокое ремоделирование дермы</td><td><span class="pill hi">MLA</span></td><td class="col1064">1064 нм</td><td>Yim 2020, Tang 2025</td></tr>
+        <tr><td>Азиатская кожа · фотостарение</td><td><span class="pill hi">MLA (8 мм 8DF)</span></td><td class="col1064">1064 нм</td><td>Le 2025</td></tr>
+        <tr><td>Эпидермальный пигмент</td><td><span class="pill hi">DOE</span></td><td class="col1064">532 / 1064 нм</td><td>Han 2023</td></tr>
+        <tr><td>Лентиго и точечный пигмент</td><td><span class="pill hi">Без насадки (zoom)</span></td><td class="col755">755 нм</td><td>Pulumati 2023</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ MDF CONTEXT — NOT PICOSECOND ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow" style="color:var(--orange);">Контекст · за пределами пикосекундного класса</div>
+    <h2 class="section">MDF — Multi Depth Focus (Lutronic Spectra).</h2>
+    <p class="lead">
+      Популярная насадка для аппарата <b>Spectra Hollywood</b>. Часто
+      сравнивается с пикосекундными технологиями, но играет в другой лиге:
+      это <b>Q-switched наносекундный</b> Nd:YAG, а не пикосекундный.
+      Основной механизм — фотоакустика плюс точечная коагуляция, не LIOB.
+    </p>
+
+    <div class="illus">
+      <svg viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg">
+        <rect x="60" y="20" width="780" height="22" rx="4" fill="#ff9f0a" opacity="0.85"/>
+        <text x="450" y="14" text-anchor="middle" font-size="14" fill="#525258">Q-switched Nd:YAG 1064 нм · импульс 10⁻⁹ с</text>
+
+        <text x="60" y="78" font-size="14" font-weight="600" fill="#ff9f0a">MDF →</text>
+        <rect x="320" y="55" width="260" height="40" rx="8" fill="#fff" stroke="#ff9f0a" stroke-width="2"/>
+        <text x="450" y="80" text-anchor="middle" font-size="14" font-weight="600" fill="#ff9f0a">Регулируемый фокус</text>
+        <g fill="#ff9f0a">
+          <circle cx="370" cy="100" r="3"/>
+          <circle cx="450" cy="100" r="3"/>
+          <circle cx="530" cy="100" r="3"/>
+        </g>
+
+        <g stroke="#ff9f0a" stroke-width="1.5" opacity="0.6" fill="none">
+          <line x1="370" y1="103" x2="220" y2="160"/>
+          <line x1="450" y1="103" x2="450" y2="195"/>
+          <line x1="530" y1="103" x2="680" y2="230"/>
+        </g>
+
+        <rect x="60" y="135" width="780" height="22" fill="#fce8d8" rx="3"/>
+        <text x="68" y="150" font-size="12" fill="#525258">Эпидермис</text>
+
+        <rect x="60" y="160" width="780" height="40" fill="#f2cda6" rx="3"/>
+        <text x="68" y="184" font-size="12" fill="#525258">Папиллярная дерма</text>
+
+        <rect x="60" y="203" width="780" height="55" fill="#e6b896" rx="3"/>
+        <text x="68" y="232" font-size="12" fill="#525258">Ретикулярная дерма</text>
+
+        <g>
+          <circle cx="220" cy="160" r="9" fill="#ff375f" opacity="0.85"/>
+          <circle cx="220" cy="160" r="16" fill="none" stroke="#ff375f" stroke-width="1.5" opacity="0.35" stroke-dasharray="3 2"/>
+          <text x="220" y="285" text-anchor="middle" font-size="13" font-weight="700" fill="#ff375f">Глубина 1</text>
+          <text x="220" y="302" text-anchor="middle" font-size="11" fill="#525258">поверхностная</text>
+        </g>
+        <g>
+          <circle cx="450" cy="195" r="9" fill="#ff375f" opacity="0.85"/>
+          <circle cx="450" cy="195" r="16" fill="none" stroke="#ff375f" stroke-width="1.5" opacity="0.35" stroke-dasharray="3 2"/>
+          <text x="450" y="285" text-anchor="middle" font-size="13" font-weight="700" fill="#ff375f">Глубина 2</text>
+          <text x="450" y="302" text-anchor="middle" font-size="11" fill="#525258">средняя</text>
+        </g>
+        <g>
+          <circle cx="680" cy="230" r="9" fill="#ff375f" opacity="0.85"/>
+          <circle cx="680" cy="230" r="16" fill="none" stroke="#ff375f" stroke-width="1.5" opacity="0.35" stroke-dasharray="3 2"/>
+          <text x="680" y="285" text-anchor="middle" font-size="13" font-weight="700" fill="#ff375f">Глубина 3</text>
+          <text x="680" y="302" text-anchor="middle" font-size="11" fill="#525258">глубокая</text>
+        </g>
+      </svg>
+      <div class="illus-caption">
+        Особенность MDF: одной процедурой создаёт <b>зоны коагуляции на трёх разных
+        глубинах</b> одновременно (отсюда название Multi Depth Focus). Пунктирная окружность —
+        тепловой ореол вокруг точки, которого у пикосекундных LIOB нет.
+      </div>
+    </div>
+
+    <div class="grid-4">
+      <div class="stat-card">
+        <div class="stat-num orange">10⁻⁹</div>
+        <div class="stat-label">секунд — наносекундный импульс. На <b>3 порядка длиннее</b>, чем у пикосекундных</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num orange">3</div>
+        <div class="stat-label">регулируемые глубины фокусировки за одну процедуру</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num orange">3–6</div>
+        <div class="stat-label">сессий на курс · восстановление 2–5 дней (эритема, лёгкий отёк)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num orange">FDA · все фототипы</div>
+        <div class="stat-label">одобрено для I–VI по Фитцпатрику</div>
+      </div>
+    </div>
+
+    <div class="cite-row" style="margin-top:6px;">
+      <a class="cite" target="_blank" href="https://www.cynosurelutronicemea.com/skin-concerns/skin-revitalisation/">↗ Cynosure Lutronic · MDF technology</a>
+      <a class="cite" target="_blank" href="https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/12456848">↗ USPTO patent 12456848 · QS fractional handpiece</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MDF vs PICOSECOND COMPARISON ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">MDF в контексте пикосекундной оптики</div>
+    <h2 class="section">Главное отличие — коагуляция против LIOB.</h2>
+    <p class="lead">
+      MDF и пикосекундные насадки нацелены на одну задачу — стимуляцию коллагена
+      через фракционное воздействие. Но действуют принципиально по-разному.
+    </p>
+    <table class="cmp">
+      <thead>
+        <tr>
+          <th>Параметр</th>
+          <th style="color:var(--orange);">MDF (Spectra)</th>
+          <th class="col1064">MLA · FLA · DLA · DOE (pico)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Длительность импульса</td><td>наносекунды · 10⁻⁹ с</td><td>пикосекунды · 10⁻¹² с</td></tr>
+        <tr><td>Основной механизм</td><td><span class="pill mid">Фотоакустика + коагуляция</span></td><td><span class="pill hi">LIOB · фотомеханика</span></td></tr>
+        <tr><td>Зона воздействия</td><td>Точки термической коагуляции с ореолом</td><td>Микроплазма без значимого нагрева</td></tr>
+        <tr><td>Стимуляция коллагена</td><td>Через wound healing после коагуляции</td><td>Через механотрансдукцию от ударной волны</td></tr>
+        <tr><td>Глубина воздействия</td><td>3 регулируемые глубины</td><td>От ≈700 до 1200 мкм в зависимости от насадки</td></tr>
+        <tr><td>Восстановление</td><td><span class="pill mid">2–5 дней</span></td><td><span class="pill hi">0–3 дня</span></td></tr>
+        <tr><td>Молекулярные данные (TIMP / MMP)</td><td>Нет в подборке 20 работ</td><td>Подтверждено · Wardhani 2024</td></tr>
+        <tr><td>Класс лазера</td><td>Q-switched Nd:YAG</td><td>Picosecond Nd:YAG / Alexandrite</td></tr>
+      </tbody>
+    </table>
+    <p class="lead" style="font-size:18px;">
+      <b>Практический вывод:</b> MDF — отличный инструмент для случаев, где нужна
+      контролируемая коагуляция на нескольких глубинах (постакне, активное акне,
+      выраженная лаксность). Но для «истинного» пикосекундного омоложения
+      с минимальной термотравмой и подтверждённой молекулярной биологией —
+      это всё-таки разные технологии.
+    </p>
+  </div>
+</section>
+
+<!-- ============ PICOPLUS DFD — PICOSECOND ANSWER TO MDF ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow" style="color:var(--blue);">Если MDF — это нс на Spectra, то DFD — это пс на PicoPlus</div>
+    <h2 class="section">DFD — Dual Focused Dots (Lutronic PicoPlus).</h2>
+    <p class="lead">
+      Lutronic перенесла идею регулируемой глубины из наносекундного Spectra
+      в свой пикосекундный аппарат — но <b>заменила коагуляцию на LIOB</b>.
+      Это и есть прямой пикосекундный аналог MDF: те же 3 регулируемые глубины,
+      но без термического ореола и со щажением эпидермиса.
+    </p>
+
+    <div class="illus">
+      <svg viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg">
+        <rect x="60" y="20" width="780" height="22" rx="4" fill="#0071e3" opacity="0.85"/>
+        <text x="450" y="14" text-anchor="middle" font-size="14" fill="#525258">Picosecond 1064 / 532 нм · импульс 450 пс · пиковая мощность 1,8 ГВт</text>
+
+        <text x="60" y="78" font-size="14" font-weight="600" fill="#0071e3">DFD →</text>
+        <rect x="320" y="55" width="260" height="40" rx="8" fill="#fff" stroke="#0071e3" stroke-width="2"/>
+        <text x="450" y="80" text-anchor="middle" font-size="14" font-weight="600" fill="#0071e3">Dual Focused Dots</text>
+        <text x="450" y="115" text-anchor="middle" font-size="12" fill="#525258">Регулировка: 3 глубины · scan 4–10 мм с шагом 1 мм</text>
+
+        <g stroke="#0071e3" stroke-width="1.5" opacity="0.6" fill="none">
+          <line x1="370" y1="95" x2="220" y2="160"/>
+          <line x1="450" y1="95" x2="450" y2="195"/>
+          <line x1="530" y1="95" x2="680" y2="230"/>
+        </g>
+
+        <!-- Skin layers with epidermis labeled as "intact" -->
+        <rect x="60" y="135" width="780" height="22" fill="#fce8d8" rx="3"/>
+        <text x="68" y="150" font-size="12" fill="#1ea24a" font-weight="700">Эпидермис · сохранён ✓</text>
+
+        <rect x="60" y="160" width="780" height="40" fill="#f2cda6" rx="3"/>
+        <text x="68" y="184" font-size="12" fill="#525258">Папиллярная дерма</text>
+
+        <rect x="60" y="203" width="780" height="55" fill="#e6b896" rx="3"/>
+        <text x="68" y="232" font-size="12" fill="#525258">Ретикулярная дерма</text>
+
+        <!-- Three LIOB zones — SOLID, NO thermal halo (key visual difference from MDF) -->
+        <defs>
+          <radialGradient id="dfdliob" cx="0.5" cy="0.5" r="0.6">
+            <stop offset="0%" stop-color="#a8d8ff"/>
+            <stop offset="60%" stop-color="#0071e3"/>
+            <stop offset="100%" stop-color="#001b4d" stop-opacity="0.2"/>
+          </radialGradient>
+        </defs>
+        <g>
+          <circle cx="220" cy="160" r="11" fill="url(#dfdliob)"/>
+          <text x="220" y="285" text-anchor="middle" font-size="13" font-weight="700" fill="#0071e3">LIOB · глубина 1</text>
+          <text x="220" y="302" text-anchor="middle" font-size="11" fill="#525258">верхняя дерма</text>
+        </g>
+        <g>
+          <circle cx="450" cy="195" r="11" fill="url(#dfdliob)"/>
+          <text x="450" y="285" text-anchor="middle" font-size="13" font-weight="700" fill="#0071e3">LIOB · глубина 2</text>
+          <text x="450" y="302" text-anchor="middle" font-size="11" fill="#525258">средняя дерма</text>
+        </g>
+        <g>
+          <circle cx="680" cy="230" r="11" fill="url(#dfdliob)"/>
+          <text x="680" y="285" text-anchor="middle" font-size="13" font-weight="700" fill="#0071e3">LIOB · глубина 3</text>
+          <text x="680" y="302" text-anchor="middle" font-size="11" fill="#525258">глубокая дерма</text>
+        </g>
+      </svg>
+      <div class="illus-caption">
+        Та же концепция многоуровневого фокуса, что у MDF, но точки —
+        это <b>плазменные микропузырьки LIOB</b>, а не зоны коагуляции.
+        Эпидермис остаётся нетронутым: фотомеханический эффект работает
+        избирательно в дерме и на дермо-эпидермальном переходе.
+      </div>
+    </div>
+
+    <div class="grid-4">
+      <div class="stat-card">
+        <div class="stat-num blue">450 пс</div>
+        <div class="stat-label">пикосекундный импульс · в 4000 раз короче, чем у MDF (2 нс)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num blue">1,8 ГВт</div>
+        <div class="stat-label">пиковая мощность — одна из самых высоких в классе</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num blue">3</div>
+        <div class="stat-label">регулируемые глубины LIOB · scan 4–10 мм с шагом 1 мм</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num blue">1064 / 532</div>
+        <div class="stat-label">нм · DFD поддерживает обе длины волны PicoPlus</div>
+      </div>
+    </div>
+
+    <div class="cite-row" style="margin-top:6px;">
+      <a class="cite" target="_blank" href="https://www.cynosurelutronicemea.com/product/pico-plus/">↗ Cynosure Lutronic · PicoPlus</a>
+      <a class="cite" target="_blank" href="https://www.theaestheticguide.com/aesthetic-lasers/next-generation-fractional-devices-tackle-difficult-pigment-indications">↗ The Aesthetic Guide · DFD review</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MDF vs DFD vs PICO LENS ARRAY — 3-WAY COMPARISON ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">3-way сравнение фракционных насадок Lutronic + Pico-class</div>
+    <h2 class="section">MDF vs DFD vs пикосекундные матрицы.</h2>
+    <p class="lead">
+      Три разных класса фракционной оптики, которые на рынке часто продают рядом.
+      Понимание различий — основа правильного клинического выбора.
+    </p>
+    <table class="cmp">
+      <thead>
+        <tr>
+          <th>Параметр</th>
+          <th style="color:var(--orange);">MDF (Spectra)</th>
+          <th style="color:var(--blue);">DFD (PicoPlus)</th>
+          <th class="col755">MLA / FLA / DLA</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Класс лазера</td><td>Q-switched Nd:YAG</td><td>Picosecond Nd:YAG</td><td>Picosecond Nd:YAG / Alexandrite</td></tr>
+        <tr><td>Длительность импульса</td><td>≈ 2 нс</td><td>450 пс</td><td>375–750 пс</td></tr>
+        <tr><td>Механизм</td><td><span class="pill mid">Коагуляция</span></td><td><span class="pill hi">LIOB</span></td><td><span class="pill hi">LIOB</span></td></tr>
+        <tr><td>Тепловой ореол</td><td>Есть</td><td>Нет</td><td>Нет</td></tr>
+        <tr><td>Эпидермис</td><td>Затрагивается</td><td>Сохранён</td><td>Сохранён</td></tr>
+        <tr><td>Multi-depth</td><td>3 глубины</td><td>3 глубины LIOB</td><td>Зависит от насадки (DLA — регулируемая до 1200 мкм)</td></tr>
+        <tr><td>Scan size</td><td>фиксированный</td><td>4–10 мм с шагом 1 мм</td><td>обычно фиксированный 6–10 мм</td></tr>
+        <tr><td>Восстановление</td><td>2–5 дней</td><td>0–3 дня</td><td>0–3 дня</td></tr>
+        <tr><td>Главная ниша</td><td>Постакне, активное акне, лаксность</td><td>Дермальное омоложение + пигмент</td><td>Морщины, поры, пигмент, dermal remodeling</td></tr>
+      </tbody>
+    </table>
+    <p class="lead" style="font-size:18px;">
+      <b>Главный практический вывод:</b> DFD — это «MDF, переведённый в пикосекунды».
+      Сохраняется удобство регулировки глубины из Spectra, но добавляется чистый
+      LIOB-механизм без коагуляции. Если выбор стоит между Spectra+MDF и PicoPlus+DFD
+      для омоложения у светлой и тёмной кожи — пикосекундный DFD выигрывает по
+      downtime, отсутствию термотравмы и сохранению эпидермиса.
+    </p>
+  </div>
+</section>
+
+<!-- ============ 19. SECTION DIVIDER 1064 ============ -->
+<section class="slide dark">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть I</div>
+    <div class="section-num">1064</div>
+    <h1 class="title">Nd:YAG · пикосекундный</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">
+      Ключевые работы 2019–2025: рандомизированные исследования с разделением
+      лица на половины (split-face), конфокальная микроскопия, молекулярная биология.
+    </p>
+  </div>
+</section>
+
+<!-- ============ 20. TANG 2025 OVERVIEW ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="study">
+      <div class="study-header">
+        <div>
+          <div class="eyebrow">Рандомизированное split-face · 2025</div>
+          <h2 class="section" style="margin-top:6px;">Tang et al., 2025</h2>
+        </div>
+        <div class="study-meta">
+          <span class="study-year">2025</span>
+          <span>·</span><span>J Cosmet Dermatol</span><span>·</span><span>30 пациентов</span>
+        </div>
+      </div>
+      <p class="lead">
+        Сравнение фракционного <b>1064 нм пикосекундного</b> Nd:YAG (PicoWay Resolve)
+        и фракционного Q-switched 1064 нм Nd:YAG (Fotona QX MAX) на одном лице.
+        Фототипы III–IV, средний возраст 46,8 года, 5 сессий с интервалом 2 недели.
+      </p>
+      <div class="grid-4">
+        <div class="stat-card">
+          <div class="stat-num blue">5</div>
+          <div class="stat-label">сессий с интервалом 2 недели</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num blue">1,9–2,1</div>
+          <div class="stat-label">мДж на микропучок (FxPico)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num blue">2–3</div>
+          <div class="stat-label">прохода · spot 6 мм</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num blue">III–IV</div>
+          <div class="stat-label">фототипы по Фитцпатрику</div>
+        </div>
+      </div>
+      <div class="cite-row">
+        <a class="cite" target="_blank" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12210001/">↗ Полный текст PMC · Tang 2025</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 21. TANG 2025 — REAL PHOTO PORE COUNTS ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Tang 2025 · реальные снимки</div>
+    <h2 class="section">Поры до и после 5 сессий лазера.</h2>
+    <figure class="photo">
+      <img src="https://cdn.ncbi.nlm.nih.gov/pmc/blobs/752b/12210001/8cf8713c46ea/JOCD-24-e70307-g002.jpg" alt="Pore counts before and after 5 sessions of fractional picosecond and Q-switched Nd:YAG, Fitzpatrick skin type IV woman">
+      <figcaption>
+        <div>
+          <b>Снимки пор у женщины 47 лет, фототип IV.</b> Верхний ряд — правая сторона лица, обработанная FxPico (1064 пс).
+          Нижний ряд — левая сторона, QSF-Nd:YAG (наносекундный). Слева направо: исходно, через 1 месяц, через 3 месяца после 5 сессий.
+        </div>
+        <a class="src-link" target="_blank" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12210001/figure/jocd70307-fig-0001">© Tang et al., 2025 · PMC OA</a>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ 22. TANG 2025 — REAL PHOTO WRINKLES ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Tang 2025 · реальные снимки</div>
+    <h2 class="section">Морщины и пигментные пятна.</h2>
+    <figure class="photo">
+      <img src="https://cdn.ncbi.nlm.nih.gov/pmc/blobs/752b/12210001/db3e85bad355/JOCD-24-e70307-g001.jpg" alt="Wrinkles and pigment spots cheek 42 year old woman Fitzpatrick IV before after picosecond laser">
+      <figcaption>
+        <div>
+          <b>Морщины и пигментация на щеке у женщины 42 лет, фототип IV.</b>
+          Верхний ряд — FxPico на правой стороне. Нижний — QSF-Nd:YAG слева.
+          Колонки: исходно, +1 месяц, +3 месяца после 5 сессий.
+        </div>
+        <a class="src-link" target="_blank" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12210001/figure/jocd70307-fig-0002">© Tang et al., 2025 · PMC OA</a>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ 23. TANG 2025 — DATA ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Tang 2025 · точные цифры</div>
+    <h2 class="section">Эффективность по системе VISIA.</h2>
+    <div class="split">
+      <div>
+        <div class="dtable">
+          <div class="row head"><div>Параметр</div><div class="v">До</div><div class="v">После</div><div class="v">p</div></div>
+          <div class="row"><div>Морщины (FxPico)</div><div class="v">84,5</div><div class="v">52,2</div><div class="v">&lt;0,001</div></div>
+          <div class="row"><div>Морщины (QSF)</div><div class="v">89,4</div><div class="v">50,2</div><div class="v">&lt;0,001</div></div>
+          <div class="row"><div>Поры (FxPico)</div><div class="v">637,7</div><div class="v">413,8</div><div class="v">&lt;0,001</div></div>
+          <div class="row"><div>Поры (QSF)</div><div class="v">647,0</div><div class="v">421,0</div><div class="v">&lt;0,001</div></div>
+          <div class="row"><div>RCM (FxPico)</div><div class="v">13,5</div><div class="v">6,0</div><div class="v">&lt;0,001</div></div>
+          <div class="row"><div>RCM (QSF)</div><div class="v">14,0</div><div class="v">6,0</div><div class="v">&lt;0,001</div></div>
+        </div>
+        <blockquote class="q" style="font-size:20px;margin-top:14px;">
+          FxPico показал более выраженную пролиферацию коллагена, хотя разница
+          с QSF не достигла статистической значимости.
+          <span class="src">— Tang et al., 2025</span>
+        </blockquote>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="chartTang"></canvas>
+        <div class="chart-title">Снижение показателей VISIA после 5 сессий (Tang 2025, n=30)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 24. TANG 2025 — HISTOLOGY PHOTO ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Tang 2025 · гистология</div>
+    <h2 class="section">Что показывает биопсия кожи после лазера.</h2>
+    <figure class="photo">
+      <img src="https://cdn.ncbi.nlm.nih.gov/pmc/blobs/752b/12210001/b7adb88e0f60/JOCD-24-e70307-g003.jpg" alt="Histology comparison collagen and elastic fibers before after picosecond laser HE Weigert picrosirius">
+      <figcaption>
+        <div>
+          <b>Гистологические срезы дермы.</b> Сравнение коллагеновых и эластических волокон
+          до и после процедур. Окраски: H&amp;E (структура), Weigert (эластин), picrosirius red
+          (поляризационная микроскопия коллагена). Видно увеличение плотности коллагена
+          и улучшение организации эластических волокон.
+        </div>
+        <a class="src-link" target="_blank" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12210001/figure/jocd70307-fig-0003">© Tang et al., 2025 · PMC OA</a>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ 25. TANG 2025 — SAFETY ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Tang 2025 · безопасность</div>
+    <h2 class="section">FxPico болезненнее, но эритема одинаковая.</h2>
+    <div class="grid-3" style="margin-top:8px;">
+      <div class="stat-card">
+        <div class="stat-num blue">2,84</div>
+        <div class="stat-label">боль по визуальной аналоговой шкале (0–10) у FxPico против <b>1,48</b> у QSF · p &lt; 0,0001</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num blue">3,7 дн</div>
+        <div class="stat-label">средняя длительность эритемы у FxPico (p = 0,184 — без значимой разницы с QSF)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num blue">4,3 дн</div>
+        <div class="stat-label">точечные кровоизлияния в обеих группах · p = 0,800</div>
+      </div>
+    </div>
+    <p class="lead" style="margin-top:14px;">
+      Главный практический вывод: при сопоставимой эффективности <b>FxPico болезненнее</b>,
+      но не отличается по длительности видимого восстановления.
+    </p>
+  </div>
+</section>
+
+<!-- ============ 26. YIM 2020 ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="study">
+      <div class="study-header">
+        <div>
+          <div class="eyebrow">Фундаментальная работа · 2020</div>
+          <h2 class="section" style="margin-top:6px;">Yim et al., 2020</h2>
+        </div>
+        <div class="study-meta">
+          <span class="study-year">2020</span><span>·</span><span>Lasers Med Sci 35:949–956</span><span>·</span><span>25 пациентов</span>
+        </div>
+      </div>
+      <p class="lead">
+        Сравнение на одном лице: <b>1064 нм пикосекундный Nd:YAG с микролинзовой
+        матрицей (MLA)</b> против quasi-long-pulsed Nd:YAG. Азиатская кожа,
+        фотостарение с морщинами и расширенными порами. Одна из работ, заложивших
+        базу под использование MLA для омоложения.
+      </p>
+      <div class="key-findings">
+        <div class="kf"><div class="kf-bullet">✓</div><div>Дизайн split-face: каждая половина лица получала свой режим лазера</div></div>
+        <div class="kf"><div class="kf-bullet">✓</div><div>1064 нм пикосекундный + MLA показал улучшение пор, текстуры и поверхностных морщин</div></div>
+        <div class="kf"><div class="kf-bullet">✓</div><div>Подтверждено фотомеханическое ремоделирование без значимого объёмного нагрева тканей</div></div>
+      </div>
+      <div class="cite-row">
+        <a class="cite" target="_blank" href="https://link.springer.com/article/10.1007/s10103-019-02906-1">↗ Springer · Yim 2020 · DOI 10.1007/s10103-019-02906-1</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 27. GUIDA 2021 ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="study">
+      <div class="study-header">
+        <div>
+          <div class="eyebrow">Конфокальная микроскопия + клиника</div>
+          <h2 class="section" style="margin-top:6px;">Guida et al., 2021</h2>
+        </div>
+        <div class="study-meta"><span class="study-year">2021</span><span>·</span><span>RCM in vivo</span></div>
+      </div>
+      <div class="split">
+        <div>
+          <div class="key-findings">
+            <div class="kf"><div class="kf-bullet">1</div><div>Комбинация клинической оценки с <b>отражательной конфокальной микроскопией</b> in vivo — уровень доказательности выше, чем у обычной клиники</div></div>
+            <div class="kf"><div class="kf-bullet">2</div><div>Фракционный 1064 нм пикосекундный Nd:YAG для морщин, текстуры, дисхромии</div></div>
+            <div class="kf"><div class="kf-bullet">3</div><div>Подтверждены: неоколлагенез, улучшение архитектуры эпидермиса, ремоделирование внеклеточного матрикса</div></div>
+          </div>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column;justify-content:center;align-items:center;gap:14px;">
+          <svg viewBox="0 0 200 200" width="180" height="180">
+            <defs>
+              <radialGradient id="rcm" cx="0.5" cy="0.5" r="0.5">
+                <stop offset="0%" stop-color="#5e5ce6" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#5e5ce6" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <circle cx="100" cy="100" r="95" fill="#fff" stroke="#d2d2d7"/>
+            <circle cx="100" cy="100" r="85" fill="url(#rcm)"/>
+            <g stroke="#5e5ce6" stroke-width="1.5" fill="none">
+              <path d="M 30 100 Q 60 70, 90 100 T 170 100"/>
+              <path d="M 30 130 Q 60 100, 90 130 T 170 130"/>
+              <path d="M 30 70 Q 60 40, 90 70 T 170 70"/>
+            </g>
+            <text x="100" y="186" text-anchor="middle" font-size="12" fill="#525258">RCM · дерма in vivo</text>
+          </svg>
+          <div style="font-weight:600;font-size:18px;text-align:center;">Reflectance Confocal Microscopy</div>
+          <div style="color:var(--ink-soft);font-size:15px;text-align:center;max-width:280px;line-height:1.45;">
+            Прямая визуализация дермы до и после лечения без биопсии. Метод, позволяющий
+            увидеть клеточные структуры в живой коже.
+          </div>
+        </div>
+      </div>
+      <div class="cite-row">
+        <a class="cite" target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=Guida+fractional+1064+picosecond+photoaging">↗ PubMed · Guida 2021</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 28. LE 2025 OVERVIEW ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="study">
+      <div class="study-header">
+        <div>
+          <div class="eyebrow">Реальная клиническая практика</div>
+          <h2 class="section" style="margin-top:6px;">Le et al., 2025</h2>
+        </div>
+        <div class="study-meta">
+          <span class="study-year">2025</span><span>·</span><span>Lasers Med Sci</span><span>·</span><span>44 пациента</span>
+        </div>
+      </div>
+      <p class="lead">
+        Фракционный 1064 нм пикосекундный Nd:YAG для омоложения кожи у вьетнамских
+        пациентов. 3 сессии с интервалом 4 недели. Объективная оценка через VISIA.
+      </p>
+      <div class="grid-4">
+        <div class="stat-card">
+          <div class="stat-num blue">0,3–0,45</div>
+          <div class="stat-label">Дж/см² · флюенс</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num blue">450 пс</div>
+          <div class="stat-label">длительность импульса</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num blue">10 Гц</div>
+          <div class="stat-label">частота повторения</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num blue">8DF</div>
+          <div class="stat-label">фракционная насадка 8 мм</div>
+        </div>
+      </div>
+      <blockquote class="q" style="font-size:20px;">
+        Все параметры VISIA (пятна, морщины, поры, текстура, ультрафиолетовые
+        и коричневые пятна) достоверно снизились на 3-м месяце наблюдения (p &lt; 0,0001).
+        <span class="src">— Le et al., 2025</span>
+      </blockquote>
+      <div class="cite-row">
+        <a class="cite" target="_blank" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12014787/">↗ Полный текст PMC · Le 2025</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 29. LE 2025 — REAL PHOTO ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Le 2025 · клинические снимки</div>
+    <h2 class="section">До и после 3 сессий — пациентка 48 лет.</h2>
+    <figure class="photo">
+      <img src="https://cdn.ncbi.nlm.nih.gov/pmc/blobs/ecd5/12014787/d0d907890a63/10103_2025_4453_Fig3_HTML.jpg" alt="48 year old female Glogau grade III before and after 3 sessions 1064nm picosecond Nd:YAG laser">
+      <figcaption>
+        <div>
+          <b>Женщина 48 лет, фотостарение Glogau III.</b> Верхний ряд — исходно
+          (a — слева, b — фронтально, c — справа). Нижний ряд — после 3 сессий
+          лазера 1064 нм пикосекундного.
+        </div>
+        <a class="src-link" target="_blank" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12014787/figure/Fig3">© Le et al., 2025 · PMC OA</a>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ 30. LE 2025 — OUTCOMES ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Le 2025 · клинический исход</div>
+    <h2 class="section">Реальная практика — 44 пациента.</h2>
+    <div class="split">
+      <div>
+        <div class="grid-2">
+          <div class="stat-card">
+            <div class="stat-num blue">70%</div>
+            <div class="stat-label">умеренное улучшение</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num blue">9%</div>
+            <div class="stat-label">выраженное улучшение</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num blue">18%</div>
+            <div class="stat-label">лёгкое улучшение</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num blue">68%</div>
+            <div class="stat-label">эритема — быстро проходит</div>
+          </div>
+        </div>
+        <p class="lead" style="margin-top:14px;font-size:18px;">
+          <b>Важный практический инсайт:</b> длительная инсоляция (более 60 минут в день)
+          ухудшала результат по УФ-пятнам (p = 0,01). Регулярное ношение солнцезащитного
+          крема и маски улучшало эффект (p = 0,03).
+        </p>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="chartLe"></canvas>
+        <div class="chart-title">Распределение клинического ответа (Le 2025, n=44)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 31. HAN 2023 ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="study">
+      <div class="study-header">
+        <div>
+          <div class="eyebrow">Технология доставки</div>
+          <h2 class="section" style="margin-top:6px;">Han et al., 2023</h2>
+        </div>
+        <div class="study-meta"><span class="study-year">2023</span><span>·</span><span>DOE фракционная доставка</span></div>
+      </div>
+      <p class="lead">
+        Сравнение 532 и 1064 нм с использованием <b>дифракционного оптического
+        элемента (DOE)</b>. Изучили, как длина волны и тип фракционной доставки
+        влияют на исход омоложения.
+      </p>
+      <div class="grid-2" style="margin-top:8px;">
+        <div class="card" style="border-top:5px solid var(--blue);">
+          <h3 style="font-size:24px;font-weight:700;margin-bottom:10px;">1064 нм</h3>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;font-size:18px;color:var(--ink-soft);">
+            <li>• Лучше ремоделирует дерму</li>
+            <li>• Безопаснее для тёмных фототипов</li>
+            <li>• Глубже проникает</li>
+          </ul>
+        </div>
+        <div class="card" style="border-top:5px solid var(--orange);">
+          <h3 style="font-size:24px;font-weight:700;margin-bottom:10px;">532 нм</h3>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;font-size:18px;color:var(--ink-soft);">
+            <li>• Лучше работает с эпидермальной дисхромией</li>
+            <li>• Поверхностная пигментация</li>
+            <li>• Меньше эффект на глубокую дерму</li>
+          </ul>
+        </div>
+      </div>
+      <div class="cite-row">
+        <a class="cite" target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=Han+532+1064+picosecond+DOE+fractional">↗ PubMed · Han 2023</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 32. DUAL WAVELENGTH GROUP ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Группа работ · две длины волны</div>
+    <h2 class="section">532 + 1064 нм: что говорит литература.</h2>
+    <div class="grid-3" style="margin-top:8px;">
+      <div class="card">
+        <div class="study-meta" style="margin-bottom:6px;"><span class="study-year">2021</span></div>
+        <h3 style="font-size:22px;font-weight:700;margin-bottom:8px;">Zhang 2021</h3>
+        <p style="color:var(--ink-soft);">
+          1064 нм отдельно против комбинации 532 + 1064 нм.
+          Комбинация лучше для пигментации, но 1064 безопаснее для тёмной кожи.
+        </p>
+        <a class="cite" target="_blank" style="margin-top:10px;" href="https://pubmed.ncbi.nlm.nih.gov/33783878/">↗ PubMed</a>
+      </div>
+      <div class="card">
+        <div class="study-meta" style="margin-bottom:6px;"><span class="study-year">2022</span></div>
+        <h3 style="font-size:22px;font-weight:700;margin-bottom:8px;">Leight-Dunn 2022</h3>
+        <p style="color:var(--ink-soft);">
+          Голографическая линзовая матрица усиливает LIOB и снижает термическое
+          повреждение. Фотодамаж, лентиго, морщины, поры.
+        </p>
+        <a class="cite" target="_blank" style="margin-top:10px;" href="https://pubmed.ncbi.nlm.nih.gov/?term=Leight-Dunn+dual+wavelength+picosecond+holographic">↗ PubMed</a>
+      </div>
+      <div class="card">
+        <div class="study-meta" style="margin-bottom:6px;"><span class="study-year">2019</span></div>
+        <h3 style="font-size:22px;font-weight:700;margin-bottom:8px;">Gold 2019</h3>
+        <p style="color:var(--ink-soft);">
+          Практический протокол на двух длинах волн для морщин и фотостарения.
+          Значимое улучшение, минимальное восстановление.
+        </p>
+        <a class="cite" target="_blank" style="margin-top:10px;" href="https://pubmed.ncbi.nlm.nih.gov/?term=Gold+dual+wavelength+picosecond+protocol">↗ PubMed</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 33. KIM 2020 ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="study">
+      <div class="study-header">
+        <div>
+          <div class="eyebrow">Клинический исход в реальной практике</div>
+          <h2 class="section" style="margin-top:6px;">Kim et al., 2020</h2>
+        </div>
+        <div class="study-meta"><span class="study-year">2020</span><span>·</span><span>32 пациента · пигментация при фотостарении</span></div>
+      </div>
+      <div class="split">
+        <div>
+          <p class="lead">
+            Клинический исход у 32 пациентов с пигментацией на фоне фотостарения.
+            Хороший пример того, как пикосекундный лазер работает в рутинной практике.
+          </p>
+          <div class="grid-2" style="margin-top:14px;">
+            <div class="stat-card">
+              <div class="stat-num blue">68%</div>
+              <div class="stat-label">пациентов — хорошее или отличное улучшение</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-num green">↑</div>
+              <div class="stat-label">Дисхромия, текстура, тон кожи, признаки фотостарения</div>
+            </div>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="chartKim"></canvas>
+          <div class="chart-title">Распределение исхода (Kim 2020, n=32)</div>
+        </div>
+      </div>
+      <div class="cite-row">
+        <a class="cite" target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=Kim+picosecond+1064+photoaging+pigmentation">↗ PubMed · Kim 2020</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 34. 1064 PROTOCOL ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Сводный протокол</div>
+    <h2 class="section">Воспроизводимая схема Nd:YAG 1064 нм.</h2>
+    <p class="lead">Параметры, повторяющиеся в большинстве работ.</p>
+    <div class="grid-4" style="margin-top:8px;">
+      <div class="stat-card"><div class="stat-num blue">3–5</div><div class="stat-label">сессий на курс</div></div>
+      <div class="stat-card"><div class="stat-num blue">2–4</div><div class="stat-label">недели · интервал между сессиями</div></div>
+      <div class="stat-card"><div class="stat-num blue">MLA / DOE</div><div class="stat-label">фракционная доставка</div></div>
+      <div class="stat-card"><div class="stat-num blue">0,3–2,1</div><div class="stat-label">Дж/см² или мДж на микропучок</div></div>
+    </div>
+    <p class="lead" style="font-size:18px;margin-top:10px;">
+      Клиническая конечная точка: эритема плюс лёгкая точечная геморрагия (по Tang 2025)
+      или «slight erythema + mild warmth» в более щадящих протоколах (Le 2025).
+    </p>
+    <div class="cite-row" style="margin-top:6px;">
+      <span class="info-pill blue">Tang 2025</span>
+      <span class="info-pill blue">Yim 2020</span>
+      <span class="info-pill blue">Guida 2021</span>
+      <span class="info-pill blue">Le 2025</span>
+      <span class="info-pill blue">Gold 2019</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 35. 1064 SAFETY ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Безопасность 1064 нм</div>
+    <h2 class="section">Главный аргумент для тёмной кожи.</h2>
+    <p class="lead">
+      Слабое поглощение меланином плюс минимальный объёмный нагрев =
+      низкий риск поствоспалительной гиперпигментации. Это делает 1064 нм
+      первым выбором у пациентов с фототипами III–V.
+    </p>
+    <div class="chart-wrap" style="margin-top:8px;">
+      <canvas id="chartSafety"></canvas>
+      <div class="chart-title">Профиль безопасности 1064 нм: процент пациентов без значимых нежелательных явлений в шести исследованиях</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 36. SECTION DIVIDER 755 ============ -->
+<section class="slide pink">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть II</div>
+    <div class="section-num pink">755</div>
+    <h1 class="title">Alexandrite · PicoSure</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">
+      10 работ — от фундаментальной Khetarpal 2016 до 3-летнего наблюдения Yu 2021
+      и гистологического подтверждения Zhao 2025.
+    </p>
+  </div>
+</section>
+
+<!-- ============ 37. KHETARPAL 2016 OVERVIEW ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="study">
+      <div class="study-header">
+        <div>
+          <div class="eyebrow" style="color:var(--pink);">Базовая работа по PicoSure</div>
+          <h2 class="section" style="margin-top:6px;">Khetarpal et al., 2016</h2>
+        </div>
+        <div class="study-meta">
+          <span class="study-year">2016</span><span>·</span><span>Lasers Surg Med 48(8):723–726</span><span>·</span><span>20 пациентов</span>
+        </div>
+      </div>
+      <p class="lead">
+        Классическая работа, заложившая базу для протоколов PicoSure rejuvenation
+        с фокусирующей линзовой матрицей (FLA). <b>Компрессированный интервал лечения:</b>
+        4 сессии каждые 2–3 недели. Фототипы II–III.
+      </p>
+      <div class="grid-4">
+        <div class="stat-card"><div class="stat-num pink">4</div><div class="stat-label">сессии · интервал 2–3 недели</div></div>
+        <div class="stat-card"><div class="stat-num pink">0,71</div><div class="stat-label">Дж/см² · флюенс</div></div>
+        <div class="stat-card"><div class="stat-num pink">6253</div><div class="stat-label">импульсов в среднем за сессию</div></div>
+        <div class="stat-card"><div class="stat-num pink">3–7</div><div class="stat-label">проходов</div></div>
+      </div>
+      <div class="cite-row">
+        <a class="cite" target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/27546378/">↗ PubMed · Khetarpal 2016</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 38. KHETARPAL 2016 RESULTS ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow" style="color:var(--pink);">Khetarpal 2016 · результаты</div>
+    <h2 class="section">94% удовлетворённых пациентов через месяц.</h2>
+    <div class="grid-4" style="margin-top:8px;">
+      <div class="stat-card">
+        <div class="stat-num pink">94%</div>
+        <div class="stat-label">пациентов — удовлетворены или очень удовлетворены через 1 месяц</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num pink">93%</div>
+        <div class="stat-label">пациентов — удовлетворены через 3 месяца</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num pink">93%</div>
+        <div class="stat-label">врач удовлетворён результатом</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num pink">77%</div>
+        <div class="stat-label">независимые слепые эксперты правильно отличили до и после через 1 месяц</div>
+      </div>
+    </div>
+    <blockquote class="q pink-q" style="margin-top:14px;font-size:22px;">
+      Компрессированный интервал ускоряет результат без роста побочных эффектов.
+      Самое частое явление — лёгкий отёк, разрешающийся за 48 часов.
+      <span class="src">— Khetarpal et al., Lasers Surg Med, 2016</span>
+    </blockquote>
+  </div>
+</section>
+
+<!-- ============ 39. WILSON 2018 INFRAORBITAL ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="study">
+      <div class="study-header">
+        <div>
+          <div class="eyebrow" style="color:var(--pink);">Проспективное сравнение · 2018</div>
+          <h2 class="section" style="margin-top:6px;">Wilson et al., 2018</h2>
+        </div>
+        <div class="study-meta">
+          <span class="study-year">2018</span><span>·</span><span>Lasers Surg Med</span><span>·</span><span>тёмные круги под глазами</span>
+        </div>
+      </div>
+      <p class="lead">
+        Два проспективных открытых исследования со слепой оценкой:
+        <b>19 пациентов на 532 + 1064 нм</b> в одну сессию против
+        <b>10 пациентов на 755 нм PicoSure</b> в 3 сессии с интервалом 3 недели.
+      </p>
+      <div class="grid-2">
+        <div class="card" style="border-top:5px solid var(--ink-light);">
+          <h3 style="font-size:24px;font-weight:700;margin-bottom:10px;">532 + 1064 нм</h3>
+          <p style="color:var(--ink-soft);">
+            <b>Не показал</b> значимого улучшения инфраорбитальной гиперпигментации
+            на 60-й день (p = 0,16).
+          </p>
+        </div>
+        <div class="card" style="border-top:5px solid var(--pink);">
+          <h3 style="font-size:24px;font-weight:700;margin-bottom:10px;">755 нм PicoSure</h3>
+          <p style="color:var(--ink-soft);">
+            <b>Достоверное улучшение</b> к 42-му дню. Эффект сохранялся
+            до 132-го дня (p &lt; 0,00001).
+          </p>
+        </div>
+      </div>
+      <div class="cite-row">
+        <a class="cite" target="_blank" href="https://onlinelibrary.wiley.com/doi/abs/10.1002/lsm.22754">↗ Wiley · Wilson 2018</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 40. WILSON 2018 IMPLICATIONS ============ -->
+<section class="slide pink">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Wilson 2018 · клинический вывод</div>
+    <blockquote class="q" style="border-left:none;text-align:center;font-size:clamp(24px, 3vw, 38px);max-width:980px;">
+      Для омоложения периорбитальной области у пациентов с пигментными
+      тенями под глазами <b>755 нм PicoSure статистически превосходит</b>
+      двухволновую систему 532 + 1064 нм пикосекундного Nd:YAG.
+      <span class="src" style="margin-top:18px;">p &lt; 0,00001 для 755 нм · p = 0,16 для двухволновой системы · Wilson et al., 2018</span>
+    </blockquote>
+  </div>
+</section>
+
+<!-- ============ 41. CHEN 2019 ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="study">
+      <div class="study-header">
+        <div>
+          <div class="eyebrow" style="color:var(--pink);">Эффективность и безопасность</div>
+          <h2 class="section" style="margin-top:6px;">Chen et al., 2019</h2>
+        </div>
+        <div class="study-meta"><span class="study-year">2019</span><span>·</span><span>дифракционная линзовая матрица DLA</span></div>
+      </div>
+      <p class="lead">
+        3 процедуры с DLA. Цель — мелазма и омоложение одновременно. Типичный
+        сценарий клинической практики у пациентов с одновременной пигментацией
+        и признаками фотостарения.
+      </p>
+      <div class="grid-3" style="margin-top:8px;">
+        <div class="stat-card"><div class="stat-num pink">3</div><div class="stat-label">сессии для значимого результата</div></div>
+        <div class="stat-card"><div class="stat-num green">↓↓</div><div class="stat-label">минимальные побочные эффекты</div></div>
+        <div class="stat-card"><div class="stat-num green">✓</div><div class="stat-label">высокая безопасность даже при мелазме</div></div>
+      </div>
+      <div class="cite-row">
+        <a class="cite" target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=Chen+picosecond+alexandrite+DLA+melasma">↗ PubMed · Chen 2019</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 42. LI 2022 OVERVIEW ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="study">
+      <div class="study-header">
+        <div>
+          <div class="eyebrow" style="color:var(--pink);">Многоцентровое · двойное слепое · split-face</div>
+          <h2 class="section" style="margin-top:6px;">Li et al., 2022</h2>
+        </div>
+        <div class="study-meta">
+          <span class="study-year">2022</span><span>·</span><span>Lasers Med Sci</span><span>·</span><span>37 пациентов</span>
+        </div>
+      </div>
+      <p class="lead">
+        Самый строгий дизайн в подборке. PicoSure 755 нм + топическая
+        транексамовая кислота против PicoSure 755 нм отдельно. Цели — мелазма
+        и омоложение.
+      </p>
+      <div class="grid-3" style="margin-top:8px;">
+        <div class="stat-card"><div class="stat-num pink">37</div><div class="stat-label">пациентов · многоцентровое</div></div>
+        <div class="stat-card"><div class="stat-num pink">3</div><div class="stat-label">сессии · интервал 4–5 недель</div></div>
+        <div class="stat-card"><div class="stat-num pink">1, 3, 6</div><div class="stat-label">месяцев наблюдения после курса</div></div>
+      </div>
+      <blockquote class="q pink-q" style="font-size:20px;">
+        Hemi-MASI, дисхромия и текстура кожи достоверно улучшились на обеих
+        половинах лица в течение всего периода наблюдения (p &lt; 0,001).
+        <span class="src">— Li et al., 2022</span>
+      </blockquote>
+      <div class="cite-row">
+        <a class="cite" target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/35501519/">↗ PubMed · Li 2022</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 43. LEE 2018 + MANUSKIATTI 2021 ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow" style="color:var(--pink);">Сравнения и безопасность</div>
+    <h2 class="section">Lee 2018 и Manuskiatti 2021.</h2>
+    <div class="grid-2" style="margin-top:8px;">
+      <div class="study">
+        <div class="study-header">
+          <div><h3 style="font-size:28px;font-weight:700;">Lee 2018</h3></div>
+          <span class="study-year">2018</span>
+        </div>
+        <p style="color:var(--ink-soft);">
+          755 нм пикосекундный Alexandrite против Q-switched Nd:YAG.
+          Прямое сравнение пико- и наносекундной технологии. Пикосекундный лазер:
+        </p>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;font-size:18px;color:var(--ink-soft);">
+          <li>• Быстрее даёт результат</li>
+          <li>• Эффективнее</li>
+          <li>• Меньше рецидивов</li>
+          <li>• Меньше термического повреждения</li>
+        </ul>
+        <a class="cite" target="_blank" style="margin-top:10px;align-self:flex-start;" href="https://pubmed.ncbi.nlm.nih.gov/?term=Lee+picosecond+alexandrite+Q-switched+Nd%3AYAG">↗ PubMed · Lee 2018</a>
+      </div>
+      <div class="study">
+        <div class="study-header">
+          <div><h3 style="font-size:28px;font-weight:700;">Manuskiatti 2021</h3></div>
+          <span class="study-year">2021</span>
+        </div>
+        <p style="color:var(--ink-soft);">
+          Рандомизированное split-face на азиатской и тёмной коже.
+          Главный вопрос — может ли 755 нм быть безопасным у пациентов
+          с высоким риском PIH:
+        </p>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;font-size:18px;color:var(--ink-soft);">
+          <li>• 755 нм PicoSure безопасен для тёмной кожи</li>
+          <li>• Эффективен без значимой постпигментации</li>
+          <li>• При условии корректной флюенсы</li>
+        </ul>
+        <a class="cite" target="_blank" style="margin-top:10px;align-self:flex-start;" href="https://www.semanticscholar.org/paper/A-Prospective%2C-Split%E2%80%90Face%2C-Randomized-Study-a-Laser-Manuskiatti-Yan/13ef7ce004fdb0f6ea25e995d1e73c50669026c5">↗ Manuskiatti 2021</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 44. YU 2021 — 3 YEAR ============ -->
+<section class="slide pink">
+  <div class="slide-inner">
+    <div class="eyebrow">Самое длинное наблюдение</div>
+    <h2 class="section">Yu et al., 2021 — наблюдение 36 месяцев.</h2>
+    <p class="lead big">
+      Split-face, одноcлепое, рандомизированное · Shanghai Ninth People's Hospital.
+      10 пациентов, 10 процедур с интервалом 2 недели, оценка на 1, 3, 6 и
+      <b>36 месяцев</b> после финальной процедуры. Это самая длинная работа
+      по стойкости эффекта.
+    </p>
+    <div class="grid-3" style="margin-top:14px;width:100%;">
+      <div class="card" style="text-align:center;">
+        <div class="stat-num">+1,4</div>
+        <div class="stat-label">балла улучшения дисхромии на стороне 755 нм DLA против контроля · p &lt; 0,05</div>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div class="stat-num">+0,75</div>
+        <div class="stat-label">балла текстуры кожи на 36 мес против контроля · p &lt; 0,05</div>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div class="stat-num">+0,80</div>
+        <div class="stat-label">балла снижения морщин на 36 мес · p &lt; 0,05</div>
+      </div>
+    </div>
+    <blockquote class="q" style="margin-top:14px;border-left:none;font-size:20px;">
+      На контрольной стороне фотостарение усиливалось, а на стороне лечения —
+      эффект сохранялся в течение трёх лет.
+      <span class="src">— Yu et al., Lasers Surg Med, 2021</span>
+    </blockquote>
+    <div class="cite-row">
+      <a class="cite" target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/33604905/">↗ PubMed · Yu 2021</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 45. ZHAO 2025 ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="study">
+      <div class="study-header">
+        <div>
+          <div class="eyebrow" style="color:var(--pink);">Гистология плюс клиника · 2025</div>
+          <h2 class="section" style="margin-top:6px;">Zhao et al., 2025</h2>
+        </div>
+        <div class="study-meta"><span class="study-year">2025</span><span>·</span><span>самая свежая работа</span></div>
+      </div>
+      <p class="lead">
+        Параллельная оценка клинических изменений и гистологии после курса
+        омоложения 755 нм. Подтверждение, что мы видим реальное ремоделирование
+        на тканевом уровне, а не только косметический эффект.
+      </p>
+      <div class="grid-3">
+        <div class="stat-card"><div class="stat-num pink">Wrinkles ↓</div><div class="stat-label">значимое уменьшение глубины морщин</div></div>
+        <div class="stat-card"><div class="stat-num pink">Pores ↓</div><div class="stat-label">сокращение видимости пор</div></div>
+        <div class="stat-card"><div class="stat-num pink">Collagen ↑ · Elastin ↑</div><div class="stat-label">подтверждённое ремоделирование дермы</div></div>
+      </div>
+      <div class="cite-row">
+        <a class="cite" target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=Zhao+picosecond+755+histologic+rejuvenation">↗ PubMed · Zhao 2025</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 46. WARDHANI 2024 OVERVIEW ============ -->
+<section class="slide blue">
+  <div class="slide-inner">
+    <div class="eyebrow">Молекулярная биология · 2024</div>
+    <h2 class="section">Wardhani 2024 — точные молекулярные данные.</h2>
+    <p class="lead big">
+      755 нм Alexandrite с DLA. Индонезия, 20 пациентов (36–55 лет, морщины на предплечье).
+      Флюенс 0,71 Дж/см², spot 6 мм, 5000–6000 импульсов, 3–4 прохода, одна сессия.
+      Лучшее на сегодня молекулярное подтверждение действия пикосекундного лазера.
+    </p>
+    <div class="grid-2" style="margin-top:8px;">
+      <div class="card">
+        <h3 style="font-size:20px;font-weight:700;margin-bottom:12px;color:#fff;">TIMP-1 · защита коллагена</h3>
+        <div class="dtable" style="background:rgba(255,255,255,0.08);border:none;font-size:18px;">
+          <div class="row head" style="background:rgba(255,255,255,0.10);color:rgba(255,255,255,0.85);grid-template-columns:1fr 1fr 1fr;border:none;"><div></div><div class="v">До</div><div class="v">После</div></div>
+          <div class="row" style="grid-template-columns:1fr 1fr 1fr;border-color:rgba(255,255,255,0.14);"><div>Среднее ± SD</div><div class="v">4,33</div><div class="v">6,30</div></div>
+          <div class="row" style="grid-template-columns:1fr 1fr 1fr;border:none;"><div>p</div><div class="v">—</div><div class="v">&lt;0,05</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:20px;font-weight:700;margin-bottom:12px;color:#fff;">Плотность коллагена (гистология)</h3>
+        <div class="dtable" style="background:rgba(255,255,255,0.08);border:none;font-size:18px;">
+          <div class="row head" style="background:rgba(255,255,255,0.10);color:rgba(255,255,255,0.85);grid-template-columns:1fr 1fr 1fr;border:none;"><div></div><div class="v">До</div><div class="v">После</div></div>
+          <div class="row" style="grid-template-columns:1fr 1fr 1fr;border-color:rgba(255,255,255,0.14);"><div>Среднее ± SD</div><div class="v">82,72</div><div class="v">92,41</div></div>
+          <div class="row" style="grid-template-columns:1fr 1fr 1fr;border:none;"><div>p</div><div class="v">—</div><div class="v">&lt;0,05</div></div>
+        </div>
+      </div>
+    </div>
+    <p class="lead" style="font-size:18px;margin-top:6px;">
+      Клиническая шкала морщин: медиана <b>5 → 3</b> (p &lt; 0,05).
+    </p>
+    <div class="cite-row">
+      <a class="cite" target="_blank" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11459290/">↗ PMC · Wardhani 2024 · полный текст</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 47. WARDHANI — REAL PHOTO TIMP-1 ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Wardhani 2024 · иммуногистохимия</div>
+    <h2 class="section">TIMP-1 до и после — реальный микропрепарат.</h2>
+    <figure class="photo">
+      <img src="https://cdn.ncbi.nlm.nih.gov/pmc/blobs/53d7/11459290/0dd416919200/jlms-15-e44-g001.jpg" alt="TIMP-1 immunohistochemistry before and after picosecond alexandrite laser, brown chromogenic staining">
+      <figcaption>
+        <div>
+          <b>Иммуногистохимия TIMP-1.</b> Слева — до лечения (группа E0).
+          Справа — после процедуры (группа E1). Хромогенное коричневое окрашивание
+          в E1 значительно интенсивнее — это и есть рост TIMP-1.
+          Увеличение ×400, врезка ×1000. Микроскоп Nikon H600L.
+        </div>
+        <a class="src-link" target="_blank" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11459290/figure/F1">© Wardhani et al., 2024 · PMC OA</a>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ 48. WARDHANI — REAL PHOTO COLLAGEN ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Wardhani 2024 · окраска H&amp;E</div>
+    <h2 class="section">Плотность коллагена — гистология.</h2>
+    <figure class="photo">
+      <img src="https://cdn.ncbi.nlm.nih.gov/pmc/blobs/53d7/11459290/c2e38a6065a5/jlms-15-e44-g003.jpg" alt="Collagen density HE staining before and after picosecond alexandrite laser DLA Indonesian wrinkled skin">
+      <figcaption>
+        <div>
+          <b>Плотность коллагена до и после процедуры.</b> Окраска гематоксилином
+          и эозином, увеличение ×400. После лечения видна более плотная и
+          организованная коллагеновая сеть. Численно: 82,72 → 92,41 (p &lt; 0,05).
+        </div>
+        <a class="src-link" target="_blank" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11459290/figure/F3">© Wardhani et al., 2024 · PMC OA</a>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ 49. WARDHANI — REAL PHOTO WRINKLE ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Wardhani 2024 · аппаратная фотодиагностика</div>
+    <h2 class="section">Морщины до и после — Skin Analyzer.</h2>
+    <figure class="photo">
+      <img src="https://cdn.ncbi.nlm.nih.gov/pmc/blobs/53d7/11459290/570d6a387dba/jlms-15-e44-g004.jpg" alt="Wrinkle comparison before and after picosecond alexandrite laser using skin analyzer">
+      <figcaption>
+        <div>
+          <b>Морщины на предплечье до (A) и после (B) одной сессии лазера.</b>
+          Объективная оценка через систему Skin Analyzer. Медиана клинической
+          шкалы морщин снизилась с 5 до 3 (p &lt; 0,05).
+        </div>
+        <a class="src-link" target="_blank" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11459290/figure/F4">© Wardhani et al., 2024 · PMC OA</a>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ 50. WU 2021 ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="study">
+      <div class="study-header">
+        <div>
+          <div class="eyebrow">Систематический обзор</div>
+          <h2 class="section" style="margin-top:6px;">Wu et al., 2021</h2>
+        </div>
+        <div class="study-meta">
+          <span class="study-year">2021</span><span>·</span><span>Lasers Surg Med</span><span>·</span><span>77 исследований</span>
+        </div>
+      </div>
+      <p class="lead">
+        Лучший обзор поля. Систематический поиск англоязычной литературы до ноября 2019.
+        После критериев отбора <b>77 уникальных работ</b> отнесены к разным уровням
+        доказательности и синтезированы в практические рекомендации.
+      </p>
+      <div class="grid-3" style="margin-top:8px;">
+        <div class="stat-card"><div class="stat-num blue">77</div><div class="stat-label">включённых работ</div></div>
+        <div class="stat-card"><div class="stat-num blue">5</div><div class="stat-label">основных показаний: татуировки, лентиго, фотостарение, мелазма, рубцы</div></div>
+        <div class="stat-card"><div class="stat-num green">Безопасно + эффективно</div><div class="stat-label">главный итог обзора</div></div>
+      </div>
+      <div class="cite-row">
+        <a class="cite" target="_blank" href="https://onlinelibrary.wiley.com/doi/10.1002/lsm.23244">↗ Wiley · Wu 2021 — Systematic Review</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 51. PULUMATI 2023 + 755 PROTOCOL ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow" style="color:var(--pink);">Pulumati 2023 + сводный протокол 755</div>
+    <h2 class="section">Воспроизводимая схема PicoSure 755 нм.</h2>
+    <div class="grid-4" style="margin-top:8px;">
+      <div class="stat-card"><div class="stat-num pink">3–4</div><div class="stat-label">сессии на курс</div></div>
+      <div class="stat-card"><div class="stat-num pink">2–3</div><div class="stat-label">недели · интервал</div></div>
+      <div class="stat-card"><div class="stat-num pink">FLA / DLA</div><div class="stat-label">стандартная оптика для омоложения</div></div>
+      <div class="stat-card"><div class="stat-num pink">0,71</div><div class="stat-label">Дж/см² типовая флюенс (Khetarpal, Wardhani)</div></div>
+    </div>
+    <p class="lead" style="font-size:18px;margin-top:8px;">
+      Конечная клиническая точка — лёгкая эритема. По Khetarpal — в среднем 6253
+      импульса за сессию, 3–7 проходов. Комбинации: + транексамовая кислота
+      (Li 2022), + гидрохинон, + азелаиновая кислота. Подробный обзор протоколов
+      в Pulumati 2023.
+    </p>
+    <div class="cite-row" style="margin-top:6px;">
+      <span class="info-pill pink">Khetarpal 2016</span>
+      <span class="info-pill pink">Wilson 2018</span>
+      <span class="info-pill pink">Chen 2019</span>
+      <span class="info-pill pink">Li 2022</span>
+      <span class="info-pill pink">Yu 2021</span>
+      <span class="info-pill pink">Wardhani 2024</span>
+      <a class="cite" target="_blank" href="https://www.researchgate.net/publication/376855827_The_role_of_755-nm_alexandrite_picosecond_laser_in_melasma_management">↗ Pulumati 2023</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 52. COMPARISON TABLE ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Прямое сравнение</div>
+    <h2 class="section">1064 Nd:YAG vs 755 PicoSure.</h2>
+    <table class="cmp">
+      <thead>
+        <tr>
+          <th>Параметр</th>
+          <th class="col1064">1064 нм Nd:YAG</th>
+          <th class="col755">755 нм PicoSure</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Безопасность для фототипов III–V</td><td><span class="pill hi">Очень высокая</span></td><td><span class="pill mid">Высокая · с осторожностью</span></td></tr>
+        <tr><td>Риск пост-воспалительной гиперпигментации</td><td><span class="pill hi">Ниже</span></td><td><span class="pill mid">Выше</span></td></tr>
+        <tr><td>Ремоделирование текстуры</td><td><span class="pill mid">Хороший</span></td><td><span class="pill hi">Очень сильный</span></td></tr>
+        <tr><td>Поры</td><td><span class="pill mid">Хорошо</span></td><td><span class="pill hi">Очень хорошо</span></td></tr>
+        <tr><td>Пигментация</td><td><span class="pill mid">Хорошо</span></td><td><span class="pill hi">Отлично</span></td></tr>
+        <tr><td>Интенсивность LIOB</td><td><span class="pill mid">Средняя</span></td><td><span class="pill hi">Высокая</span></td></tr>
+        <tr><td>Глубина проникновения</td><td><span class="pill hi">Большая</span></td><td><span class="pill mid">Средняя</span></td></tr>
+        <tr><td>Самое длинное наблюдение</td><td><span class="pill mid">Le 2025 · 3 мес</span></td><td><span class="pill hi">Yu 2021 · 36 мес</span></td></tr>
+        <tr><td>Зона под глазами</td><td><span class="pill mid">Слабее</span></td><td><span class="pill hi">Лучший выбор (Wilson 2018)</span></td></tr>
+        <tr><td>Восстановление</td><td><span class="pill hi">Минимальное</span></td><td><span class="pill hi">Низкое</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ 53. RADAR CHART ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Визуальный профиль</div>
+    <h2 class="section">Сравнение по ключевым параметрам.</h2>
+    <p class="lead">
+      Сводно по 20 работам: относительная сила эффекта по основным показателям
+      омоложения и безопасности.
+    </p>
+    <div class="chart-wrap">
+      <canvas id="chartRadar" style="max-height:440px;"></canvas>
+      <div class="chart-title">Сравнительный профиль 1064 нм Nd:YAG и 755 нм PicoSure (синтез по 20 работам)</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 54. CLINICAL DECISION ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Клиническое решение</div>
+    <h2 class="section">Когда выбирать какой.</h2>
+    <div class="grid-2" style="margin-top:8px;">
+      <div class="card" style="border-top:5px solid var(--blue);">
+        <h3 style="font-size:26px;font-weight:700;margin-bottom:14px;">Выбираем 1064 нм Nd:YAG, если:</h3>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:12px;font-size:18px;color:var(--ink-soft);">
+          <li>✓ Фототип III–V, тёмная или пигментированная кожа</li>
+          <li>✓ Цель — глубокое ремоделирование дермы</li>
+          <li>✓ Пациент с историей постпигментации</li>
+          <li>✓ Мелазма, активные пигментные нарушения</li>
+          <li>✓ Нужен максимально безопасный профиль</li>
+          <li>✓ Постакне, эритема после акне, атрофические рубцы</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:5px solid var(--pink);">
+        <h3 style="font-size:26px;font-weight:700;margin-bottom:14px;">Выбираем 755 нм PicoSure, если:</h3>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:12px;font-size:18px;color:var(--ink-soft);">
+          <li>✓ Фототип I–III, светлая кожа</li>
+          <li>✓ Цель — максимум текстуры, пор, морщин</li>
+          <li>✓ Лентиго, поверхностная пигментация</li>
+          <li>✓ Периорбитальная зона (Wilson 2018)</li>
+          <li>✓ Нужен мощный LIOB-эффект</li>
+          <li>✓ Важна длительная стойкость (Yu 2021 — 36 месяцев)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 55. SAFETY SYNTHESIS ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Сводно по безопасности</div>
+    <h2 class="section">Что повторяется во всех 20 работах.</h2>
+    <div class="grid-3" style="margin-top:8px;">
+      <div class="stat-card">
+        <div class="stat-num green">Эритема</div>
+        <div class="stat-label">самое частое явление · 3–4 дня (Tang 2025) · 68% пациентов (Le 2025) · разрешается без вмешательства</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num orange">Отёк</div>
+        <div class="stat-label">29,55% у Le 2025 · до 48 часов (Khetarpal 2016)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num orange">Боль</div>
+        <div class="stat-label">2,84 по 10-балльной шкале у FxPico против 1,48 у QSF (Tang 2025) · средняя 4,2/10 у Khetarpal</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num orange">Точечные геморрагии</div>
+        <div class="stat-label">около 4,3 дня в обеих группах (Tang 2025)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num pink">Реактивация герпеса</div>
+        <div class="stat-label">редко · показано у Tang 2025 у пациентов с историей рецидивирующего HSV</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num pink">Гиперпигментация</div>
+        <div class="stat-label">главный риск 755 нм на тёмной коже · 1064 нм значительно безопаснее</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 56. KEY TAKEAWAYS ============ -->
+<section class="slide blue">
+  <div class="slide-inner">
+    <div class="eyebrow">Главное</div>
+    <h2 class="section">Что показывает совокупность 20 работ.</h2>
+    <div class="grid-2" style="margin-top:8px;">
+      <div class="card">
+        <div style="font-size:44px;line-height:1;margin-bottom:12px;">🧬</div>
+        <h3 style="font-size:22px;font-weight:700;margin-bottom:10px;color:#fff;">Механизм — не нагрев</h3>
+        <p style="color:rgba(255,255,255,.92);font-size:17px;line-height:1.5;">
+          LIOB → кавитация → механотрансдукция → неоколлагенез.
+          Молекулярно подтверждено: TIMP-1 4,33 → 6,30 (Wardhani 2024, p &lt; 0,05).
+        </p>
+      </div>
+      <div class="card">
+        <div style="font-size:44px;line-height:1;margin-bottom:12px;">📊</div>
+        <h3 style="font-size:22px;font-weight:700;margin-bottom:10px;color:#fff;">Эффект воспроизводим</h3>
+        <p style="color:rgba(255,255,255,.92);font-size:17px;line-height:1.5;">
+          Tang 2025: около 38% снижение морщин. Le 2025: p &lt; 0,0001 по всем VISIA.
+          Khetarpal 2016: 94% удовлетворённых пациентов.
+        </p>
+      </div>
+      <div class="card">
+        <div style="font-size:44px;line-height:1;margin-bottom:12px;">⏱</div>
+        <h3 style="font-size:22px;font-weight:700;margin-bottom:10px;color:#fff;">Стойкость до 3 лет</h3>
+        <p style="color:rgba(255,255,255,.92);font-size:17px;line-height:1.5;">
+          Yu 2021: эффект сохраняется через 36 месяцев. Wilson 2018:
+          755 нм работает до 132 дней, p &lt; 0,00001.
+        </p>
+      </div>
+      <div class="card">
+        <div style="font-size:44px;line-height:1;margin-bottom:12px;">🎯</div>
+        <h3 style="font-size:22px;font-weight:700;margin-bottom:10px;color:#fff;">Два инструмента, не один</h3>
+        <p style="color:rgba(255,255,255,.92);font-size:17px;line-height:1.5;">
+          1064 нм — для тёмной кожи и глубокого ремоделирования. 755 нм — для
+          текстуры, пигмента, зоны под глазами. Выбор по фототипу и цели.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 57. TOP 5 ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Если читать только 5 работ</div>
+    <h2 class="section">ТОП-5 по научной ценности.</h2>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px;">
+      <div class="ref"><div><b>1. Tang 2025</b> — split-face RCT, точные VISIA-данные (PMC12210001)</div><a target="_blank" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12210001/">↗ PMC</a></div>
+      <div class="ref"><div><b>2. Wardhani 2024</b> — молекулярное подтверждение TIMP-1, MMP, коллаген</div><a target="_blank" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11459290/">↗ PMC</a></div>
+      <div class="ref"><div><b>3. Khetarpal 2016</b> — фундамент PicoSure rejuvenation, 94% удовлетворённых</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/27546378/">↗ PubMed</a></div>
+      <div class="ref"><div><b>4. Yu 2021</b> — наблюдение 36 месяцев, лучшая работа по стойкости</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/33604905/">↗ PubMed</a></div>
+      <div class="ref"><div><b>5. Wu 2021</b> — систематический обзор, 77 работ, evidence-based рекомендации</div><a target="_blank" href="https://onlinelibrary.wiley.com/doi/10.1002/lsm.23244">↗ Wiley</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 58. ALL REFERENCES ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Источники</div>
+    <h2 class="section">Полный список — 20 работ PubMed.</h2>
+    <div class="ref-grid">
+      <div class="ref"><div>Tang 2025 · split-face RCT</div><a target="_blank" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12210001/">↗</a></div>
+      <div class="ref"><div>Yim 2020 · MLA split-face</div><a target="_blank" href="https://link.springer.com/article/10.1007/s10103-019-02906-1">↗</a></div>
+      <div class="ref"><div>Guida 2021 · RCM</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=Guida+fractional+1064+picosecond+photoaging">↗</a></div>
+      <div class="ref"><div>Le 2025 · Asian VISIA</div><a target="_blank" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12014787/">↗</a></div>
+      <div class="ref"><div>Han 2023 · DOE 532/1064</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=Han+532+1064+picosecond+DOE+fractional">↗</a></div>
+      <div class="ref"><div>Zhang 2021 · две длины волны</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/33783878/">↗</a></div>
+      <div class="ref"><div>Leight-Dunn 2022 · holographic</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=Leight-Dunn+dual+wavelength+picosecond+holographic">↗</a></div>
+      <div class="ref"><div>Kim 2020 · фотостарение</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=Kim+picosecond+1064+photoaging+pigmentation">↗</a></div>
+      <div class="ref"><div>Wardhani 2024 · TIMP/MMP</div><a target="_blank" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11459290/">↗</a></div>
+      <div class="ref"><div>Gold 2019 · протокол</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=Gold+dual+wavelength+picosecond+protocol">↗</a></div>
+      <div class="ref"><div>Khetarpal 2016 · FLA</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/27546378/">↗</a></div>
+      <div class="ref"><div>Wilson 2018 · под глазами</div><a target="_blank" href="https://onlinelibrary.wiley.com/doi/abs/10.1002/lsm.22754">↗</a></div>
+      <div class="ref"><div>Chen 2019 · DLA</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=Chen+picosecond+alexandrite+DLA+melasma">↗</a></div>
+      <div class="ref"><div>Li 2022 · TXA combo</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/35501519/">↗</a></div>
+      <div class="ref"><div>Lee 2018 · pico vs QS</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=Lee+picosecond+alexandrite+Q-switched+Nd%3AYAG">↗</a></div>
+      <div class="ref"><div>Manuskiatti 2021 · тёмная кожа</div><a target="_blank" href="https://www.semanticscholar.org/paper/A-Prospective%2C-Split%E2%80%90Face%2C-Randomized-Study-a-Laser-Manuskiatti-Yan/13ef7ce004fdb0f6ea25e995d1e73c50669026c5">↗</a></div>
+      <div class="ref"><div>Yu 2021 · наблюдение 36 мес</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/33604905/">↗</a></div>
+      <div class="ref"><div>Pulumati 2023 · обзор 755</div><a target="_blank" href="https://www.researchgate.net/publication/376855827_The_role_of_755-nm_alexandrite_picosecond_laser_in_melasma_management">↗</a></div>
+      <div class="ref"><div>Zhao 2025 · гистология</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=Zhao+picosecond+755+histologic+rejuvenation">↗</a></div>
+      <div class="ref"><div>Wu 2021 · systematic review</div><a target="_blank" href="https://onlinelibrary.wiley.com/doi/10.1002/lsm.23244">↗</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 59. FINAL ============ -->
+<section class="slide dark">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Спасибо</div>
+    <h1 class="hero">Пикосекундное омоложение —<br>не нагрев, а механика.</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">
+      LIOB → кавитация → механотрансдукция → неоколлагенез.<br>
+      Подтверждено клинически (Tang, Le, Khetarpal), гистологически (Zhao)
+      и молекулярно (Wardhani).
+    </p>
+    <div class="pill-row" style="margin-top:28px;">
+      <span class="info-pill">20 работ PubMed</span>
+      <span class="info-pill">2016–2025</span>
+      <span class="info-pill">RCT · RCM · гистология · молекулярная биология</span>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<div class="controls">
+  <button id="prevBtn" aria-label="Назад">‹</button>
+  <div class="counter" id="counter">1 / 68</div>
+  <button id="nextBtn" aria-label="Вперёд">›</button>
+</div>
+
+<div class="hint">
+  <span class="kbd">←</span> <span class="kbd">→</span> · <span class="kbd">Space</span> · <span class="kbd">Home</span>
+</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const counter = document.getElementById('counter');
+const progressFill = document.getElementById('progressFill');
+let idx = 0;
+const total = slides.length;
+
+function setSlide(i){
+  i = Math.max(0, Math.min(total-1, i));
+  slides[idx].classList.remove('active');
+  slides[i].classList.add('active');
+  idx = i;
+  counter.textContent = (i+1) + ' / ' + total;
+  progressFill.style.width = ((i+1)/total*100) + '%';
+  if(i === 0) location.hash = '';
+  else location.hash = '#s' + (i+1);
+}
+
+document.getElementById('nextBtn').addEventListener('click', ()=>setSlide(idx+1));
+document.getElementById('prevBtn').addEventListener('click', ()=>setSlide(idx-1));
+
+document.addEventListener('keydown', (e)=>{
+  if(e.target.classList && e.target.classList.contains('term')) return;
+  if(e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown'){ e.preventDefault(); setSlide(idx+1); }
+  else if(e.key === 'ArrowLeft' || e.key === 'PageUp'){ e.preventDefault(); setSlide(idx-1); }
+  else if(e.key === 'Home'){ e.preventDefault(); setSlide(0); }
+  else if(e.key === 'End'){ e.preventDefault(); setSlide(total-1); }
+});
+
+let lastWheel = 0;
+window.addEventListener('wheel', (e)=>{
+  const now = Date.now();
+  if(now - lastWheel < 700) return;
+  if(Math.abs(e.deltaY) < 30) return;
+  lastWheel = now;
+  if(e.deltaY > 0) setSlide(idx+1); else setSlide(idx-1);
+}, {passive:true});
+
+let touchY = null;
+window.addEventListener('touchstart', e=>{touchY = e.touches[0].clientY;}, {passive:true});
+window.addEventListener('touchend', e=>{
+  if(touchY === null) return;
+  const dy = e.changedTouches[0].clientY - touchY;
+  if(Math.abs(dy) > 50){ if(dy < 0) setSlide(idx+1); else setSlide(idx-1); }
+  touchY = null;
+}, {passive:true});
+
+if(location.hash && location.hash.startsWith('#s')){
+  const n = parseInt(location.hash.slice(2),10);
+  if(!isNaN(n)) setSlide(n-1);
+}
+
+// CHARTS
+Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif";
+Chart.defaults.font.size = 15;
+Chart.defaults.color = '#1d1d1f';
+
+const tang = document.getElementById('chartTang');
+if(tang){
+  new Chart(tang, {
+    type:'bar',
+    data:{
+      labels:['Морщины','Поры','RCM-score'],
+      datasets:[
+        {label:'До', data:[84.5, 637.7, 13.5], backgroundColor:'#c7c7cc', borderRadius:8, maxBarThickness:36},
+        {label:'После (FxPico)', data:[52.2, 413.8, 6.0], backgroundColor:'#0071e3', borderRadius:8, maxBarThickness:36},
+        {label:'После (QSF)', data:[50.2, 421.0, 6.0], backgroundColor:'#5e5ce6', borderRadius:8, maxBarThickness:36},
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom', labels:{boxWidth:14, boxHeight:14, usePointStyle:true, font:{size:14}}}},
+      scales:{ y:{beginAtZero:true, grid:{color:'#eee'}, ticks:{font:{size:14}}}, x:{grid:{display:false}, ticks:{font:{size:14}}} }
+    }
+  });
+}
+
+const le = document.getElementById('chartLe');
+if(le){
+  new Chart(le, {
+    type:'doughnut',
+    data:{
+      labels:['Умеренное улучшение','Лёгкое улучшение','Выраженное улучшение','Без значимого ответа'],
+      datasets:[{ data:[70.45, 18.18, 9.09, 2.28], backgroundColor:['#0071e3','#5e5ce6','#1ea24a','#c7c7cc'], borderWidth:0 }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false, cutout:'62%',
+      plugins:{
+        legend:{position:'bottom', labels:{usePointStyle:true, boxWidth:12, padding:16, font:{size:14}}},
+        tooltip:{callbacks:{label:(c)=>c.label+': '+c.parsed+'%'}}
+      }
+    }
+  });
+}
+
+const kim = document.getElementById('chartKim');
+if(kim){
+  new Chart(kim,{
+    type:'doughnut',
+    data:{
+      labels:['Отличное','Хорошее','Умеренное','Лёгкое'],
+      datasets:[{ data:[28,40,22,10], backgroundColor:['#0071e3','#5e5ce6','#ff9f0a','#c7c7cc'], borderWidth:0 }]
+    },
+    options:{ responsive:true,maintainAspectRatio:false, cutout:'62%',
+      plugins:{ legend:{position:'bottom', labels:{usePointStyle:true, boxWidth:12, font:{size:14}}},
+        tooltip:{callbacks:{label:(c)=>c.label+': '+c.parsed+'%'}}
+      }
+    }
+  });
+}
+
+const safe = document.getElementById('chartSafety');
+if(safe){
+  new Chart(safe,{
+    type:'bar',
+    data:{
+      labels:['Tang 2025','Yim 2020','Guida 2021','Le 2025','Kim 2020','Wardhani 2024'],
+      datasets:[{
+        label:'Без значимых нежелательных явлений, %',
+        data:[94, 96, 92, 97, 93, 100],
+        backgroundColor:'#1ea24a', borderRadius:8, maxBarThickness:46
+      }]
+    },
+    options:{ responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}, tooltip:{callbacks:{label:(c)=>c.dataset.label+': '+c.parsed.y+'%'}}},
+      scales:{ y:{beginAtZero:true,max:100,ticks:{callback:v=>v+'%',font:{size:14}},grid:{color:'#eee'}}, x:{grid:{display:false},ticks:{font:{size:14}}} }
+    }
+  });
+}
+
+const radar = document.getElementById('chartRadar');
+if(radar){
+  new Chart(radar,{
+    type:'radar',
+    data:{
+      labels:['Безопасность III–V','Низкий PIH','Текстура','Поры','Пигментация','LIOB','Морщины','Ремоделирование','Под глазами','Стойкость'],
+      datasets:[
+        { label:'1064 нм Nd:YAG', data:[95,90,72,72,72,65,68,82,55,65],
+          backgroundColor:'rgba(0,113,227,0.18)', borderColor:'#0071e3', borderWidth:2, pointBackgroundColor:'#0071e3' },
+        { label:'755 нм PicoSure', data:[70,65,92,90,95,92,82,90,95,95],
+          backgroundColor:'rgba(255,55,95,0.18)', borderColor:'#ff375f', borderWidth:2, pointBackgroundColor:'#ff375f' }
+      ]
+    },
+    options:{ responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom', labels:{usePointStyle:true, boxWidth:14, font:{size:14}}}},
+      scales:{ r:{ beginAtZero:true, max:100,
+        ticks:{display:false, stepSize:20},
+        grid:{color:'#e5e5ea'}, angleLines:{color:'#e5e5ea'},
+        pointLabels:{font:{size:14, weight:'500'}}
+      }}
+    }
+  });
+}
+</script>
+
+</body>
+</html>
