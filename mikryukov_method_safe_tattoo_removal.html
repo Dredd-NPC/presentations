@@ -1,0 +1,2035 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="googlebot" content="noindex,nofollow,noarchive">
+<title>Метод Микрюкова · безопасное удаление татуировок</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#fbfbfd; --ink:#1d1d1f; --ink-soft:#525258; --ink-light:#86868b;
+    --line:#d2d2d7;
+    --blue:#0071e3; --blue-soft:#2997ff; --purple:#5e5ce6;
+    --pink:#ff375f; --green:#1ea24a; --orange:#ff9f0a; --teal:#0a84ff;
+    --red:#d70015; --cyan:#5ac8fa;
+    --card:#ffffff;
+    --shadow: 0 2px 12px rgba(0,0,0,0.04), 0 12px 40px rgba(0,0,0,0.06);
+    --radius: 22px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;
+    background:var(--bg); color:var(--ink);
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+    letter-spacing:-0.011em;
+  }
+
+  .deck{position:fixed;inset:0;}
+  .slide{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding: clamp(28px, 4vw, 60px);
+    opacity:0; transform:translateY(24px) scale(0.985);
+    transition: opacity .55s cubic-bezier(.2,.7,.2,1), transform .55s cubic-bezier(.2,.7,.2,1);
+    pointer-events:none; overflow:auto;
+  }
+  .slide.active{opacity:1;transform:none;pointer-events:auto;}
+  .slide-inner{
+    width:100%; max-width: 1240px; margin:0 auto;
+    display:flex;flex-direction:column;
+    gap: clamp(16px, 2vw, 28px);
+  }
+
+  /* TYPOGRAPHY */
+  .eyebrow{ text-transform:uppercase;letter-spacing:.18em;font-size:15px;font-weight:600;color:var(--blue); }
+  h1.hero{
+    font-size: clamp(48px, 6.6vw, 96px);
+    line-height: .98; letter-spacing:-0.04em; font-weight:700;
+    background: linear-gradient(180deg,#1d1d1f 0%, #2a2a2e 60%, #6e6e73 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  h1.title{ font-size: clamp(38px, 4.6vw, 68px); line-height:1.04; letter-spacing:-0.025em; font-weight:700; }
+  h2.section{ font-size: clamp(32px, 3.4vw, 52px); line-height:1.08; letter-spacing:-0.02em; font-weight:700; }
+  .lead{
+    font-size: clamp(22px, 1.7vw, 28px);
+    line-height:1.5; color:var(--ink-soft); font-weight:400;
+    max-width: 980px;
+  }
+  .lead.big{font-size: clamp(24px, 1.9vw, 32px);}
+  .small-meta{font-size:15px;color:var(--ink-light);}
+  p{font-size:20px;line-height:1.55;}
+
+  /* TOOLTIP SYSTEM */
+  .term{
+    border-bottom: 1.5px dotted var(--blue);
+    cursor: help; position: relative;
+    font-weight: 600; color: var(--blue);
+    white-space: nowrap;
+  }
+  .term .tip{
+    position: absolute; bottom: calc(100% + 12px); left: 50%;
+    transform: translateX(-50%) translateY(6px);
+    background: rgba(20,20,22,0.96); color: #fff;
+    padding: 14px 18px; border-radius: 14px;
+    font-size: 16px; font-weight: 400; line-height: 1.5;
+    white-space: normal; width: 360px; max-width: 80vw;
+    text-align: left; letter-spacing: 0;
+    opacity: 0; pointer-events: none;
+    transition: opacity .18s ease, transform .18s ease;
+    z-index: 100;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  }
+  .term .tip::before{
+    content:''; position:absolute; top:100%; left:50%;
+    transform: translateX(-50%);
+    border: 7px solid transparent;
+    border-top-color: rgba(20,20,22,0.96);
+  }
+  .term .tip b{color:#a8d8ff;font-weight:600;}
+  .term:hover .tip, .term:focus .tip{
+    opacity: 1; transform: translateX(-50%) translateY(0);
+  }
+  .slide.dark .term, .slide.blue .term, .slide.pink .term, .slide.red .term{
+    color:#a8d8ff;border-bottom-color:#a8d8ff;
+  }
+  .slide.pink .term{color:#ffd0d8;border-bottom-color:#ffd0d8;}
+  .slide.red .term{color:#ffd0d8;border-bottom-color:#ffd0d8;}
+
+  /* Citation chip */
+  .cite{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:15px;font-weight:500;color:var(--blue);
+    background: rgba(0,113,227,0.08);
+    padding:8px 14px;border-radius:999px;
+    text-decoration:none;
+    transition: background .2s ease, transform .2s ease;
+    border:1px solid rgba(0,113,227,0.15);
+  }
+  .cite:hover{background:rgba(0,113,227,0.14); transform: translateY(-1px);}
+  .cite-row{display:flex;flex-wrap:wrap;gap:8px;}
+
+  /* Cards & Grids */
+  .card{
+    background:var(--card); border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding: clamp(22px, 2vw, 32px);
+    border:1px solid rgba(0,0,0,0.04);
+  }
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+  @media (max-width: 900px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}}
+
+  .stat-card{
+    background:var(--card); border-radius:18px; padding: 24px 24px;
+    border:1px solid rgba(0,0,0,0.05);
+    display:flex;flex-direction:column;gap:8px;
+    transition: transform .25s ease, box-shadow .25s ease;
+  }
+  .stat-card:hover{transform:translateY(-3px); box-shadow:0 12px 32px rgba(0,0,0,0.07);}
+  .stat-num{
+    font-size: clamp(36px, 4.2vw, 58px);
+    font-weight:700; letter-spacing:-0.03em; line-height:1.05;
+  }
+  .stat-num.blue{color:var(--blue);}
+  .stat-num.purple{color:var(--purple);}
+  .stat-num.pink{color:var(--pink);}
+  .stat-num.green{color:var(--green);}
+  .stat-num.orange{color:var(--orange);}
+  .stat-num.red{color:var(--red);}
+  .stat-label{font-size:17px;color:var(--ink-soft);line-height:1.45;}
+
+  .split{ display:grid; grid-template-columns: 1.05fr 0.95fr; gap: 36px; align-items:center; }
+  @media (max-width: 900px){.split{grid-template-columns:1fr;}}
+
+  .chart-wrap{
+    background:var(--card); border-radius:var(--radius); padding: 24px;
+    box-shadow:var(--shadow); border:1px solid rgba(0,0,0,0.04);
+  }
+  .chart-wrap canvas{max-height: 360px;}
+  .chart-title{font-size:15px;color:var(--ink-soft);text-align:center;margin-top:12px;line-height:1.45;}
+
+  /* Comparison table */
+  table.cmp{
+    width:100%;border-collapse:separate;border-spacing:0;
+    background:#fff;border-radius:var(--radius);overflow:hidden;
+    box-shadow:var(--shadow); border:1px solid rgba(0,0,0,0.04);
+  }
+  .cmp th, .cmp td{padding:16px 20px;text-align:left;font-size:17px;border-bottom:1px solid var(--line);}
+  .cmp th{background:#f5f5f7;font-weight:600;color:var(--ink);font-size:16px;}
+  .cmp tr:last-child td{border-bottom:none;}
+  .pill{ display:inline-block;padding:4px 12px;border-radius:999px;font-size:14px;font-weight:600;}
+  .pill.hi{background:rgba(48,209,88,.16);color:#0f8a3a;}
+  .pill.mid{background:rgba(255,159,10,.16);color:#a55c00;}
+  .pill.lo{background:rgba(255,55,95,.14);color:#b8163d;}
+  .pill.danger{background:rgba(215,0,21,.14);color:#a30010;}
+
+  .section-title-block{display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;}
+  .section-num{
+    font-size: clamp(110px, 14vw, 180px);
+    font-weight:800;letter-spacing:-0.06em;line-height:.9;
+    background: linear-gradient(180deg, var(--blue) 0%, var(--purple) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .section-num.pink{ background: linear-gradient(180deg, var(--pink) 0%, var(--orange) 100%); -webkit-background-clip:text;background-clip:text;color:transparent;}
+  .section-num.red{ background: linear-gradient(180deg, var(--red) 0%, var(--pink) 100%); -webkit-background-clip:text;background-clip:text;color:transparent;}
+  .section-num.green{ background: linear-gradient(180deg, var(--green) 0%, var(--cyan) 100%); -webkit-background-clip:text;background-clip:text;color:transparent;}
+  .section-num.orange{ background: linear-gradient(180deg, var(--orange) 0%, var(--pink) 100%); -webkit-background-clip:text;background-clip:text;color:transparent;}
+
+  .key-findings{display:flex;flex-direction:column;gap:12px;}
+  .kf{display:flex;align-items:flex-start;gap:14px;font-size:19px;line-height:1.5;}
+  .kf-bullet{
+    flex-shrink:0;width:28px;height:28px;border-radius:50%;
+    background:linear-gradient(135deg,var(--blue),var(--purple));
+    color:#fff;display:flex;align-items:center;justify-content:center;
+    font-size:14px;font-weight:700;margin-top:2px;
+  }
+  .kf-bullet.pink{background:linear-gradient(135deg,var(--pink),var(--orange));}
+  .kf-bullet.red{background:linear-gradient(135deg,var(--red),var(--pink));}
+  .kf-bullet.green{background:linear-gradient(135deg,var(--green),var(--cyan));}
+
+  /* Controls */
+  .controls{
+    position:fixed;bottom:18px;left:50%;transform:translateX(-50%);
+    display:flex;align-items:center;gap:14px;
+    background:rgba(255,255,255,0.82);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border:1px solid rgba(0,0,0,0.06);
+    padding:8px 14px;border-radius:999px;
+    box-shadow:0 6px 24px rgba(0,0,0,0.08);
+    z-index:50;
+  }
+  .controls button{
+    background:transparent;border:none;cursor:pointer;
+    width:36px;height:36px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--ink);font-size:20px;
+    transition: background .2s ease, transform .2s ease;
+  }
+  .controls button:hover{background:rgba(0,0,0,0.06);}
+  .controls button:active{transform:scale(0.94);}
+  .counter{ font-size:15px;font-weight:500;color:var(--ink-soft);min-width:74px;text-align:center;font-variant-numeric: tabular-nums; }
+
+  .progress{position:fixed;top:0;left:0;right:0;height:3px;background:rgba(0,0,0,0.05);z-index:60;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--purple),var(--pink));width:0%;transition: width .4s cubic-bezier(.2,.7,.2,1);}
+
+  .topbar{position:fixed;top:14px;left:18px;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-light);font-weight:500;z-index:55;}
+  .topbar-right{position:fixed;top:14px;right:18px;font-size:13px;letter-spacing:.06em;color:var(--ink-light);z-index:55;}
+
+  /* DARK / BLUE / PINK / RED slides */
+  .slide.dark{background: radial-gradient(ellipse at 30% 20%, #1e1e22 0%, #000 70%);color:#fff;}
+  .slide.blue{background: linear-gradient(135deg, #001b4d 0%, #003c91 50%, #0071e3 100%);color:#fff;}
+  .slide.pink{background: linear-gradient(135deg, #4a0029 0%, #9a004f 50%, #ff375f 100%);color:#fff;}
+  .slide.red{background: linear-gradient(135deg, #3a0008 0%, #7a000f 50%, #d70015 100%);color:#fff;}
+  .slide.green{background: linear-gradient(135deg, #003d1a 0%, #0a7c34 50%, #1ea24a 100%);color:#fff;}
+  .slide.amber{background: linear-gradient(135deg, #4a2200 0%, #b86b00 50%, #ff9f0a 100%);color:#fff;}
+
+  .slide.dark h1.hero,.slide.dark h1.title,.slide.dark h2.section,
+  .slide.blue h1.hero,.slide.blue h1.title,.slide.blue h2.section,
+  .slide.pink h1.hero,.slide.pink h1.title,.slide.pink h2.section,
+  .slide.red h1.hero,.slide.red h1.title,.slide.red h2.section,
+  .slide.green h1.hero,.slide.green h1.title,.slide.green h2.section,
+  .slide.amber h1.hero,.slide.amber h1.title,.slide.amber h2.section{
+    color:#fff !important;
+    background:none;-webkit-background-clip:initial;
+    -webkit-text-fill-color:#fff;
+  }
+  .slide.dark .lead{color:#d6d6da;}
+  .slide.blue .lead, .slide.pink .lead, .slide.red .lead, .slide.green .lead, .slide.amber .lead{color:rgba(255,255,255,0.92);}
+  .slide.dark .small-meta{color:#86868b;}
+  .slide.dark .eyebrow{color:var(--teal);}
+  .slide.blue .eyebrow{color:#a8d8ff;}
+  .slide.pink .eyebrow, .slide.red .eyebrow{color:#ffb3c4;}
+  .slide.green .eyebrow{color:#a8f0bd;}
+  .slide.amber .eyebrow{color:#ffd9a0;}
+
+  .slide.dark .card, .slide.blue .card, .slide.pink .card, .slide.red .card, .slide.green .card, .slide.amber .card,
+  .slide.dark .stat-card, .slide.blue .stat-card, .slide.pink .stat-card, .slide.red .stat-card, .slide.green .stat-card, .slide.amber .stat-card{
+    background: rgba(255,255,255,0.10);
+    border-color: rgba(255,255,255,0.18);
+    color:#fff;
+    box-shadow: 0 6px 22px rgba(0,0,0,0.18);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+  .slide.dark .stat-num, .slide.blue .stat-num, .slide.pink .stat-num, .slide.red .stat-num, .slide.green .stat-num, .slide.amber .stat-num{ color:#fff !important; }
+  .slide.dark .stat-label, .slide.blue .stat-label, .slide.pink .stat-label, .slide.red .stat-label, .slide.green .stat-label, .slide.amber .stat-label{ color:rgba(255,255,255,0.88); }
+  .slide.dark p, .slide.blue p, .slide.pink p, .slide.red p, .slide.green p, .slide.amber p { color: rgba(255,255,255,0.9); }
+
+  .slide.blue .cite, .slide.pink .cite, .slide.dark .cite, .slide.green .cite, .slide.red .cite, .slide.amber .cite{
+    background:rgba(255,255,255,0.16);color:#fff;border-color:rgba(255,255,255,0.24);
+  }
+
+  /* Blockquote */
+  blockquote.q{
+    font-size: clamp(22px, 2.4vw, 32px);
+    line-height:1.35;letter-spacing:-0.015em;
+    font-weight:500;color:var(--ink);
+    border-left:4px solid var(--blue);
+    padding: 4px 0 4px 22px;max-width: 920px;
+  }
+  blockquote.q.pink-q{border-left-color:var(--pink);}
+  blockquote.q .src{display:block;font-size:16px;font-weight:500;color:var(--ink-light);margin-top:14px;letter-spacing:0;}
+  .slide.blue blockquote.q, .slide.pink blockquote.q, .slide.dark blockquote.q, .slide.green blockquote.q, .slide.red blockquote.q, .slide.amber blockquote.q{
+    color:#fff;border-left-color:rgba(255,255,255,0.8);
+  }
+  .slide.blue blockquote.q .src, .slide.pink blockquote.q .src, .slide.dark blockquote.q .src, .slide.red blockquote.q .src, .slide.amber blockquote.q .src{color:rgba(255,255,255,0.75);}
+
+  .hint{position:fixed;bottom:14px;right:18px;font-size:13px;color:var(--ink-light);z-index:55;}
+  .kbd{
+    display:inline-block;padding:3px 8px;border-radius:5px;
+    background:#fff;border:1px solid var(--line);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size:12px;color:var(--ink);
+    box-shadow:0 1px 0 var(--line);
+  }
+
+  .pill-row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
+  .info-pill{
+    background:#fff;border:1px solid var(--line);border-radius:999px;
+    padding:10px 16px;font-size:16px;font-weight:500;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,0.02);
+  }
+  .info-pill.blue{background:rgba(0,113,227,0.08);color:var(--blue);border-color:rgba(0,113,227,0.2);}
+  .info-pill.pink{background:rgba(255,55,95,0.08);color:var(--pink);border-color:rgba(255,55,95,0.2);}
+  .info-pill.red{background:rgba(215,0,21,0.08);color:var(--red);border-color:rgba(215,0,21,0.2);}
+  .info-pill.green{background:rgba(48,209,88,0.12);color:var(--green);border-color:rgba(48,209,88,0.25);}
+  .info-pill.amber{background:rgba(255,159,10,0.12);color:#a55c00;border-color:rgba(255,159,10,0.25);}
+  .slide.dark .info-pill, .slide.blue .info-pill, .slide.pink .info-pill, .slide.red .info-pill, .slide.green .info-pill, .slide.amber .info-pill{
+    background:rgba(255,255,255,0.12);color:#fff;border-color:rgba(255,255,255,0.22);
+  }
+
+  .ref-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  @media (max-width: 900px){.ref-grid{grid-template-columns:1fr;}}
+  .ref{
+    background:#fff;border:1px solid var(--line);border-radius:14px;
+    padding:14px 18px;font-size:16px;line-height:1.45;
+    display:flex;justify-content:space-between;align-items:center;gap:14px;
+  }
+  .ref a{color:var(--blue);text-decoration:none;font-weight:500;font-size:15px;flex-shrink:0;}
+  .ref a:hover{text-decoration:underline;}
+
+  /* SVG illustration container */
+  .illus{
+    background:#fff; border-radius:var(--radius);
+    padding: 24px 22px;
+    box-shadow:var(--shadow); border:1px solid rgba(0,0,0,0.04);
+    text-align:center;
+  }
+  .illus svg{max-width:100%;height:auto;display:block;margin:0 auto;}
+  .illus-caption{font-size:16px;color:var(--ink-soft);margin-top:14px;line-height:1.5;}
+
+  /* GLOSSARY card */
+  .glossary-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media (max-width: 900px){.glossary-grid{grid-template-columns:1fr;}}
+  .glossary-item{
+    background:#fff;border:1px solid var(--line);border-radius:14px;
+    padding:18px 22px;
+  }
+  .glossary-item .gh{display:flex;align-items:baseline;gap:10px;margin-bottom:6px;flex-wrap:wrap;}
+  .glossary-item .abbr{font-weight:700;font-size:22px;color:var(--blue);letter-spacing:-0.01em;}
+  .glossary-item .en{font-size:15px;color:var(--ink-light);font-weight:500;}
+  .glossary-item .ru-full{font-size:17px;color:var(--ink);font-weight:600;margin-bottom:6px;}
+  .glossary-item .desc{font-size:16px;color:var(--ink-soft);line-height:1.5;}
+
+  .slide.dark .glossary-item, .slide.blue .glossary-item, .slide.pink .glossary-item, .slide.green .glossary-item, .slide.red .glossary-item, .slide.amber .glossary-item{
+    background:rgba(255,255,255,0.10);border-color:rgba(255,255,255,0.18);
+  }
+  .slide.dark .glossary-item .abbr, .slide.blue .glossary-item .abbr, .slide.pink .glossary-item .abbr, .slide.green .glossary-item .abbr, .slide.red .glossary-item .abbr, .slide.amber .glossary-item .abbr{color:#fff;}
+  .slide.dark .glossary-item .ru-full, .slide.blue .glossary-item .ru-full, .slide.pink .glossary-item .ru-full, .slide.green .glossary-item .ru-full, .slide.red .glossary-item .ru-full, .slide.amber .glossary-item .ru-full{color:#fff;}
+  .slide.dark .glossary-item .desc, .slide.blue .glossary-item .desc, .slide.pink .glossary-item .desc, .slide.green .glossary-item .desc, .slide.red .glossary-item .desc, .slide.amber .glossary-item .desc{color:rgba(255,255,255,0.86);}
+  .slide.dark .glossary-item .en, .slide.blue .glossary-item .en, .slide.pink .glossary-item .en, .slide.green .glossary-item .en, .slide.red .glossary-item .en, .slide.amber .glossary-item .en{color:rgba(255,255,255,0.6);}
+
+  .formula{
+    font-size: clamp(28px, 3.5vw, 48px);
+    text-align:center; padding: 24px 0;
+    color:var(--ink); font-weight: 500;
+    letter-spacing:-0.01em;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-style: italic;
+  }
+  .slide.dark .formula, .slide.blue .formula, .slide.pink .formula, .slide.red .formula, .slide.green .formula, .slide.amber .formula{color:#fff;}
+  .formula .frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 6px;}
+  .formula .frac .num, .formula .frac .den{padding:4px 8px;}
+  .formula .frac .num{border-bottom: 2px solid currentColor;}
+
+  .slide::-webkit-scrollbar{width:0;}
+</style>
+</head>
+<body>
+
+<div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+<div class="topbar">Метод Микрюкова · конференция</div>
+<div class="topbar-right">v.2026.05 · авторская концепция</div>
+
+<div class="deck" id="deck">
+
+<!-- 1. COVER -->
+<section class="slide dark active">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Авторская методика · клиническая концепция</div>
+    <h1 class="hero">Как работать на любом лазере<br>без пузырей и осложнений</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">
+      <b>Метод Микрюкова</b><br>
+      Персонализированная оценка риска лазерного повреждения кожи при удалении татуировок
+    </p>
+    <div class="pill-row" style="margin-top:22px;">
+      <span class="info-pill">Inflammatory Load Theory</span>
+      <span class="info-pill">Pigment-Dermis Ratio</span>
+      <span class="info-pill">Controlled cooling</span>
+    </div>
+    <div class="small-meta" style="margin-top:24px;">
+      <span class="kbd">→</span> <span class="kbd">←</span> для навигации · все термины подчёркнуты — наведите для пояснения
+    </div>
+  </div>
+</section>
+
+<!-- 2. ABOUT ME -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Кто говорит</div>
+    <h2 class="section">Виталий Микрюков, к.м.н.</h2>
+    <div class="grid-4" style="margin-top:14px;">
+      <div class="stat-card">
+        <div class="stat-num blue">PhD</div>
+        <div class="stat-label">Кандидат медицинских наук</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num blue">18+ лет</div>
+        <div class="stat-label">практики в эстетической дерматологии и лазерных технологиях</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num blue">3 рынка</div>
+        <div class="stat-label">клиническая работа в РФ, Бразилии и Мексике</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num blue">Специализация</div>
+        <div class="stat-label">удаление татуировок и татуажа, коррекция осложнений лазерных процедур</div>
+      </div>
+    </div>
+    <p class="lead" style="margin-top:6px;">
+      Концепция, которую я представляю — это синтез 18 лет наблюдений в клинике
+      и современной литературы по биологии воспаления и фотофизике лазеров.
+      Цель — превратить интуитивный навык в воспроизводимую модель.
+    </p>
+  </div>
+</section>
+
+<!-- 3. HOW TO READ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Как читать эту презентацию</div>
+    <h2 class="section">Каждый термин раскрыт — наведите курсор.</h2>
+    <p class="lead">
+      Все английские сокращения и медицинские термины подчёркнуты пунктиром.
+      При наведении появляется развёрнутое пояснение на русском языке.
+    </p>
+    <div class="card" style="margin-top:14px;">
+      <h3 style="font-size:24px;font-weight:700;margin-bottom:14px;">Попробуйте сейчас</h3>
+      <p>
+        Пузырь после лазера — это не «правильная реакция мощности», а
+        <span class="term" tabindex="0">декомпенсированный воспалительный ответ<span class="tip"><b>Декомпенсированный воспалительный ответ</b> — состояние, когда воспалительная нагрузка превышает компенсаторные возможности тканей. Микроциркуляция не справляется с отёком, происходит отслойка эпидермиса от дермы. Это морфологическая «авария» — а не норма.</span></span>
+        тканей, при котором микроциркуляция не справляется с
+        <span class="term" tabindex="0">отёком<span class="tip"><b>Отёк (edema)</b> — накопление жидкости в межтканевом пространстве из-за роста проницаемости сосудов. Запускается медиаторами воспаления — гистамином, брадикинином, цитокинами IL-1 и TNF-α.</span></span>,
+        и происходит
+        <span class="term" tabindex="0">отслойка дермо-эпидермального соединения<span class="tip"><b>Дермо-эпидермальное соединение</b> — анатомическая граница между эпидермисом и сосочковой дермой. Скрепляется базальной мембраной. При избыточном давлении жидкости снизу эпидермис отделяется — формируется пузырь. Универсальный механизм для ожогов, переломов лодыжки, мозолей.</span></span>.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- 4. INDUSTRY PROBLEM -->
+<section class="slide red">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Главная проблема индустрии</div>
+    <h1 class="title" style="max-width:980px;">Большинство осложнений возникает<br>не из-за «плохого лазера».</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;max-width:880px;">
+      А из-за неправильной оценки способности кожи выдержать воспалительный ответ
+      на конкретное воздействие.
+    </p>
+    <div class="pill-row" style="margin-top:28px;">
+      <span class="info-pill">Пузыри</span>
+      <span class="info-pill">Рубцы</span>
+      <span class="info-pill">PIH</span>
+      <span class="info-pill">Некроз</span>
+      <span class="info-pill">Задержка заживления</span>
+    </div>
+  </div>
+</section>
+
+<!-- 5. STRUCTURE -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">О чём будем говорить</div>
+    <h2 class="section">Три логических блока.</h2>
+    <div class="grid-3" style="margin-top:14px;">
+      <div class="card" style="border-top:5px solid var(--blue);">
+        <div class="eyebrow">Блок 1</div>
+        <h3 style="font-size:24px;font-weight:700;margin:8px 0 12px;">Оценка риска</h3>
+        <p style="color:var(--ink-soft);font-size:17px;">
+          Отношение объёма пигмента к объёму дермы как основа решения.
+          Три группы риска. Почему одинаковые параметры работают по-разному.
+        </p>
+      </div>
+      <div class="card" style="border-top:5px solid var(--pink);">
+        <div class="eyebrow" style="color:var(--pink);">Блок 2</div>
+        <h3 style="font-size:24px;font-weight:700;margin:8px 0 12px;">Контроль воспаления</h3>
+        <p style="color:var(--ink-soft);font-size:17px;">
+          Универсальность воспалительного ответа. Аналогии: ожоги, переломы,
+          мозоли. Пузырь как универсальный биологический феномен.
+        </p>
+      </div>
+      <div class="card" style="border-top:5px solid var(--green);">
+        <div class="eyebrow" style="color:var(--green);">Блок 3</div>
+        <h3 style="font-size:24px;font-weight:700;margin:8px 0 12px;">Метод Микрюкова</h3>
+        <p style="color:var(--ink-soft);font-size:17px;">
+          Inflammatory Load Theory. 4 этапа клинической работы.
+          Контролируемое охлаждение как практический инструмент.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. SECTION DIVIDER BLOCK 1 -->
+<section class="slide dark">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Блок 1</div>
+    <div class="section-num">01</div>
+    <h1 class="title">Оценка риска<br>и физика лазеров</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">
+      Разные лазеры — разные механизмы повреждения. Но одинаковые биологические пределы тканей.
+    </p>
+  </div>
+</section>
+
+<!-- 7. PULSE DURATION SCALE -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Шкала длительности импульса</div>
+    <h2 class="section">От миллисекунд — к пикосекундам.</h2>
+    <p class="lead">
+      Чем короче импульс, тем выше пиковая мощность и тем сильнее доля
+      фотомеханического эффекта в общем повреждении ткани. Это меняет всё.
+    </p>
+    <div class="illus">
+      <svg viewBox="0 0 900 280" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="grad1" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#ff375f"/>
+            <stop offset="50%" stop-color="#ff9f0a"/>
+            <stop offset="100%" stop-color="#0071e3"/>
+          </linearGradient>
+        </defs>
+        <line x1="60" y1="200" x2="840" y2="200" stroke="#d2d2d7" stroke-width="2"/>
+        <polygon points="840,200 826,193 826,207" fill="#d2d2d7"/>
+        <rect x="60" y="178" width="780" height="6" rx="3" fill="url(#grad1)" opacity="0.85"/>
+
+        <g>
+          <circle cx="160" cy="181" r="14" fill="#ff375f"/>
+          <text x="160" y="130" text-anchor="middle" font-size="22" font-weight="700" fill="#1d1d1f">10⁻³ с</text>
+          <text x="160" y="152" text-anchor="middle" font-size="15" fill="#525258">Long-pulse</text>
+          <text x="160" y="234" text-anchor="middle" font-size="16" font-weight="600" fill="#1d1d1f">Миллисекунды</text>
+          <text x="160" y="254" text-anchor="middle" font-size="13" fill="#525258">Фототермика · нагрев</text>
+        </g>
+        <g>
+          <circle cx="450" cy="181" r="14" fill="#ff9f0a"/>
+          <text x="450" y="130" text-anchor="middle" font-size="22" font-weight="700" fill="#1d1d1f">10⁻⁹ с</text>
+          <text x="450" y="152" text-anchor="middle" font-size="15" fill="#525258">Q-switched</text>
+          <text x="450" y="234" text-anchor="middle" font-size="16" font-weight="600" fill="#1d1d1f">Наносекунды</text>
+          <text x="450" y="254" text-anchor="middle" font-size="13" fill="#525258">Смешанный механизм</text>
+        </g>
+        <g>
+          <circle cx="740" cy="181" r="14" fill="#0071e3"/>
+          <text x="740" y="130" text-anchor="middle" font-size="22" font-weight="700" fill="#1d1d1f">10⁻¹² с</text>
+          <text x="740" y="152" text-anchor="middle" font-size="15" fill="#525258">Picosecond</text>
+          <text x="740" y="234" text-anchor="middle" font-size="16" font-weight="600" fill="#1d1d1f">Пикосекунды</text>
+          <text x="740" y="254" text-anchor="middle" font-size="13" fill="#525258">Фотоакустика · LIOB</text>
+        </g>
+      </svg>
+      <div class="illus-caption">
+        Каждое сокращение импульса на 3 порядка увеличивает пиковую мощность в 1000 раз
+        при той же энергии. Это смещает баланс «нагрев vs ударная волна» в сторону механики.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 8. MECHANISM COMPARISON -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Разные лазеры — разные механизмы</div>
+    <h2 class="section">Сравнение по доминирующему эффекту.</h2>
+    <table class="cmp">
+      <thead>
+        <tr>
+          <th>Класс лазера</th>
+          <th>Длительность импульса</th>
+          <th>Доминирующий механизм</th>
+          <th>Объём нагрева</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>Long-pulsed</b></td>
+          <td>миллисекунды (10⁻³ с)</td>
+          <td><span class="pill lo">Фототермический</span></td>
+          <td><span class="pill lo">Большой</span></td>
+        </tr>
+        <tr>
+          <td><b>Q-switched наносекундный</b></td>
+          <td>наносекунды (10⁻⁹ с)</td>
+          <td><span class="pill mid">Фототермический преобладает</span></td>
+          <td><span class="pill mid">Средний</span></td>
+        </tr>
+        <tr>
+          <td><b>Субнаносекундный</b></td>
+          <td>≈ 100–800 пс</td>
+          <td><span class="pill mid">Смешанный</span></td>
+          <td><span class="pill mid">Умеренный</span></td>
+        </tr>
+        <tr>
+          <td><b>Picosecond</b></td>
+          <td>пикосекунды (10⁻¹² с)</td>
+          <td><span class="pill hi">Фотоакустический</span></td>
+          <td><span class="pill hi">Минимальный</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="cite-row">
+      <a class="cite" target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/6836297/">↗ Anderson & Parrish, 1983 · Science 220:524-527</a>
+      <a class="cite" target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/22986470/">↗ Brauer et al., 2012 · Arch Dermatol</a>
+    </div>
+  </div>
+</section>
+
+<!-- 9. ANDERSON PARRISH -->
+<section class="slide blue">
+  <div class="slide-inner">
+    <div class="eyebrow">Фундамент 1983 года</div>
+    <h2 class="section">Anderson & Parrish — селективный фототермолиз.</h2>
+    <p class="lead big">
+      «Selective Photothermolysis: Precise Microsurgery by Selective Absorption of
+      Pulsed Radiation» (Science 220:524–527, 1983). 3300+ цитирований —
+      это фундамент всей лазерной дерматологии.
+    </p>
+    <blockquote class="q" style="margin-top:14px;font-size:24px;">
+      Селективное повреждение микрососудов и
+      <span class="term" tabindex="0">меланосом<span class="tip"><b>Меланосомы</b> — органеллы внутри меланоцитов, содержащие пигмент меланин. Их размер ≈1 мкм определяет «правильную» длительность импульса для селективного фототермолиза.</span></span>
+      внутри меланоцитов показано после импульсов 577 нм (3×10⁻⁷ с)
+      и 351 нм (2×10⁻⁸ с) соответственно.
+      <span class="src">— Anderson R.R., Parrish J.A., 1983</span>
+    </blockquote>
+    <div class="grid-3" style="margin-top:8px;">
+      <div class="card" style="text-align:center;">
+        <div class="stat-num">TRT</div>
+        <div class="stat-label"><b>Thermal Relaxation Time</b> — время охлаждения мишени до 50% начальной температуры</div>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div class="stat-num">τ &lt; TRT</div>
+        <div class="stat-label">Если импульс короче TRT — энергия удерживается в мишени, окружение не греется</div>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div class="stat-num">Селективность</div>
+        <div class="stat-label">Можно поразить пигмент без термотравмы соседних структур</div>
+      </div>
+    </div>
+    <div class="cite-row">
+      <a class="cite" target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/6836297/">↗ PubMed · Anderson & Parrish 1983</a>
+    </div>
+  </div>
+</section>
+
+<!-- 10. EVEN PICO HAS LIMITS -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Центральная мысль доклада</div>
+    <h1 class="title" style="max-width:1100px;">Даже пикосекундный лазер<br>может дать тяжёлое осложнение.</h1>
+    <p class="lead big" style="margin-top:8px;">
+      Если объём воспаления превышает биологический резерв тканей.
+    </p>
+    <div class="card" style="border-top:5px solid var(--red);margin-top:8px;">
+      <h3 style="font-size:24px;font-weight:700;margin-bottom:14px;">Почему это важно</h3>
+      <p>
+        Маркетинг лазерных систем построен на тезисе «pico не вызывает ожогов».
+        Это правда только для <b>прямого термического повреждения</b>. Но
+        фотоакустическое воздействие при превышении дозы запускает ту же
+        каскадную воспалительную реакцию — с тем же конечным результатом:
+        пузырь, рубец, гиперпигментация.
+      </p>
+    </div>
+    <blockquote class="q" style="font-size:22px;">
+      Pico снижает прямую термотравму, но не отменяет биологические пределы тканей.
+      <span class="src">— Inflammatory Load Theory · Mikryukov 2026</span>
+    </blockquote>
+  </div>
+</section>
+
+<!-- 11. CORE PRINCIPLE -->
+<section class="slide blue">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Основной принцип методики</div>
+    <h1 class="title" style="max-width:1100px;">Не существует «безопасных настроек»<br>вне контекста тканей.</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;max-width:880px;">
+      Безопасность определяется не лазером.
+      Она определяется отношением объёма пигмента к резерву дермы.
+    </p>
+    <div class="formula" style="margin-top:32px;">
+      Risk &nbsp;∝&nbsp;
+      <span class="frac">
+        <span class="num">Pigment Volume</span>
+        <span class="den">Dermal Reserve</span>
+      </span>
+    </div>
+    <p class="lead" style="margin-top:18px;font-size:20px;">
+      Ты не оцениваешь только цвет. Не только мощность. Не только тип лазера.<br>
+      Ты оцениваешь: <b>какой процент дермы будет вовлечён в воспаление после импульса</b>.
+    </p>
+  </div>
+</section>
+
+<!-- 12. DERMAL RESERVE VISUALIZATION -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Что значит «резерв дермы»</div>
+    <h2 class="section">Между зонами повреждения должна остаться живая ткань.</h2>
+    <p class="lead">
+      Эта живая ткань — резервуар фибробластов и сосудов для восстановления.
+      Когда её слишком мало (или нет вообще) — заживление срывается.
+    </p>
+    <div class="illus">
+      <svg viewBox="0 0 900 280" xmlns="http://www.w3.org/2000/svg">
+        <!-- Three skin samples side by side -->
+
+        <!-- HIGH RISK: dense pigment, thin dermis -->
+        <g>
+          <rect x="40" y="40" width="240" height="20" fill="#fce8d8" rx="3"/>
+          <text x="160" y="34" text-anchor="middle" font-size="13" fill="#525258">Эпидермис</text>
+          <rect x="40" y="63" width="240" height="120" fill="#e6b896" rx="3"/>
+          <!-- dense pigment -->
+          <g fill="#1d1d1f" opacity="0.85">
+            <circle cx="60" cy="100" r="12"/><circle cx="90" cy="110" r="14"/><circle cx="125" cy="95" r="13"/>
+            <circle cx="155" cy="115" r="15"/><circle cx="185" cy="100" r="12"/><circle cx="215" cy="120" r="14"/>
+            <circle cx="245" cy="100" r="12"/><circle cx="75" cy="140" r="13"/><circle cx="110" cy="150" r="14"/>
+            <circle cx="145" cy="140" r="12"/><circle cx="180" cy="155" r="13"/><circle cx="220" cy="145" r="14"/>
+          </g>
+          <text x="160" y="210" text-anchor="middle" font-size="18" font-weight="700" fill="#d70015">ВЫСОКИЙ РИСК</text>
+          <text x="160" y="232" text-anchor="middle" font-size="13" fill="#525258">Плотный пигмент</text>
+          <text x="160" y="250" text-anchor="middle" font-size="13" fill="#525258">Тонкая дерма</text>
+          <text x="160" y="268" text-anchor="middle" font-size="12" fill="#86868b">резерв ткани ≈ 10%</text>
+        </g>
+
+        <!-- MEDIUM RISK -->
+        <g>
+          <rect x="330" y="40" width="240" height="20" fill="#fce8d8" rx="3"/>
+          <text x="450" y="34" text-anchor="middle" font-size="13" fill="#525258">Эпидермис</text>
+          <rect x="330" y="63" width="240" height="120" fill="#e6b896" rx="3"/>
+          <g fill="#1d1d1f" opacity="0.85">
+            <circle cx="360" cy="100" r="10"/><circle cx="400" cy="125" r="11"/><circle cx="445" cy="105" r="10"/>
+            <circle cx="485" cy="135" r="11"/><circle cx="525" cy="115" r="10"/>
+            <circle cx="380" cy="155" r="10"/><circle cx="430" cy="160" r="11"/><circle cx="490" cy="155" r="10"/>
+          </g>
+          <text x="450" y="210" text-anchor="middle" font-size="18" font-weight="700" fill="#ff9f0a">СРЕДНИЙ РИСК</text>
+          <text x="450" y="232" text-anchor="middle" font-size="13" fill="#525258">Умеренный пигмент</text>
+          <text x="450" y="250" text-anchor="middle" font-size="13" fill="#525258">Достаточная дерма</text>
+          <text x="450" y="268" text-anchor="middle" font-size="12" fill="#86868b">резерв ткани ≈ 40%</text>
+        </g>
+
+        <!-- LOW RISK -->
+        <g>
+          <rect x="620" y="40" width="240" height="20" fill="#fce8d8" rx="3"/>
+          <text x="740" y="34" text-anchor="middle" font-size="13" fill="#525258">Эпидермис</text>
+          <rect x="620" y="63" width="240" height="120" fill="#e6b896" rx="3"/>
+          <g fill="#1d1d1f" opacity="0.65">
+            <circle cx="660" cy="115" r="7"/><circle cx="710" cy="130" r="6"/>
+            <circle cx="770" cy="120" r="7"/><circle cx="820" cy="135" r="6"/>
+            <circle cx="690" cy="160" r="6"/><circle cx="760" cy="155" r="7"/>
+          </g>
+          <text x="740" y="210" text-anchor="middle" font-size="18" font-weight="700" fill="#1ea24a">НИЗКИЙ РИСК</text>
+          <text x="740" y="232" text-anchor="middle" font-size="13" fill="#525258">Старая выцветшая</text>
+          <text x="740" y="250" text-anchor="middle" font-size="13" fill="#525258">Толстая дерма</text>
+          <text x="740" y="268" text-anchor="middle" font-size="12" fill="#86868b">резерв ткани ≈ 70%</text>
+        </g>
+      </svg>
+      <div class="illus-caption">
+        Одна и та же плотность энергии лазера даст совершенно разный исход
+        в зависимости от того, сколько живой ткани останется между зонами повреждения.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 13. SECTION DIVIDER RISK GROUPS -->
+<section class="slide red">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Три группы риска</div>
+    <div class="section-num red">3</div>
+    <h1 class="title">Классификация по риску<br>осложнений</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">
+      Высокий · Средний · Низкий. Определяется анатомией, плотностью пигмента и резервом дермы — а не названием лазера.
+    </p>
+  </div>
+</section>
+
+<!-- 14. HIGH RISK characteristics -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow" style="color:var(--red);">Группа 1 · ВЫСОКИЙ РИСК</div>
+    <h2 class="section">Когда дерма не справится — что бы вы ни делали.</h2>
+    <div class="grid-2" style="margin-top:8px;">
+      <div class="card" style="border-top:5px solid var(--red);">
+        <h3 style="font-size:24px;font-weight:700;margin-bottom:14px;">Характеристики</h3>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;font-size:18px;color:var(--ink-soft);">
+          <li>• Тонкая кожа</li>
+          <li>• Высокая концентрация пигмента</li>
+          <li>• Плотный black packing</li>
+          <li>• Небольшой объём дермы</li>
+          <li>• Сниженный микроциркуляторный резерв</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:5px solid var(--red);">
+        <h3 style="font-size:24px;font-weight:700;margin-bottom:14px;">Типичные локализации</h3>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;font-size:18px;color:var(--ink-soft);">
+          <li>✗ Внутренняя поверхность запястья</li>
+          <li>✗ Лодыжка</li>
+          <li>✗ Шея</li>
+          <li>✗ Пальцы</li>
+          <li>✗ Веко, периорбитальная зона</li>
+          <li>✗ Декольте у возрастных пациентов</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 15. HIGH RISK mechanism -->
+<section class="slide red">
+  <div class="slide-inner">
+    <div class="eyebrow">Группа 1 · механизм</div>
+    <h2 class="section">Что происходит при интенсивной обработке.</h2>
+    <div class="key-findings" style="margin-top:14px;">
+      <div class="kf"><div class="kf-bullet red">1</div><div>Воспаление охватывает практически <b>весь объём дермы</b></div></div>
+      <div class="kf"><div class="kf-bullet red">2</div><div>Нарушается микроциркуляция — сосуды теряют способность отвести отёк</div></div>
+      <div class="kf"><div class="kf-bullet red">3</div><div>Возникает выраженный отёк, плазма выходит в межтканевое пространство</div></div>
+      <div class="kf"><div class="kf-bullet red">4</div><div>Резко возрастает риск: пузыри → некроз → рубцевание</div></div>
+    </div>
+    <blockquote class="q" style="margin-top:18px;font-size:24px;">
+      Это не проблема мощности лазера.
+      Это <b>отсутствие достаточного объёма интактной дермы</b>
+      между зонами повреждения.
+      <span class="src">— Inflammatory Load Theory</span>
+    </blockquote>
+  </div>
+</section>
+
+<!-- 16. MEDIUM RISK -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow" style="color:var(--orange);">Группа 2 · СРЕДНИЙ РИСК</div>
+    <h2 class="section">Зона компромиссов — здесь решает аккуратность.</h2>
+    <div class="grid-2" style="margin-top:8px;">
+      <div class="card" style="border-top:5px solid var(--orange);">
+        <h3 style="font-size:24px;font-weight:700;margin-bottom:14px;">Характеристики</h3>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;font-size:18px;color:var(--ink-soft);">
+          <li>• Средняя плотность пигмента</li>
+          <li>• Достаточный объём дермы</li>
+          <li>• Умеренная площадь воспаления</li>
+          <li>• Микроциркуляция в норме, но с ограниченным резервом</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:5px solid var(--orange);">
+        <h3 style="font-size:24px;font-weight:700;margin-bottom:14px;">Практический вывод</h3>
+        <p style="font-size:18px;color:var(--ink-soft);">
+          Допустима средняя плотность энергии, умеренная интенсивность,
+          контролируемое воспаление. Ткани сохраняют резерв,
+          но <b>запас прочности невелик</b> — каждая ошибка по дозе
+          сразу даёт осложнение.
+        </p>
+        <div class="pill-row" style="justify-content:flex-start;margin-top:14px;">
+          <span class="info-pill amber">Предплечье</span>
+          <span class="info-pill amber">Голень</span>
+          <span class="info-pill amber">Поясница</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 17. LOW RISK -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow" style="color:var(--green);">Группа 3 · НИЗКИЙ РИСК</div>
+    <h2 class="section">Когда у тканей есть запас.</h2>
+    <div class="grid-2" style="margin-top:8px;">
+      <div class="card" style="border-top:5px solid var(--green);">
+        <h3 style="font-size:24px;font-weight:700;margin-bottom:14px;">Характеристики</h3>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;font-size:18px;color:var(--ink-soft);">
+          <li>• Старая татуировка, мало пигмента</li>
+          <li>• Faded — частично выведенный пигмент</li>
+          <li>• Толстая кожа</li>
+          <li>• Большой дермальный резерв</li>
+          <li>• Хорошая сосудистая сеть</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:5px solid var(--green);">
+        <h3 style="font-size:24px;font-weight:700;margin-bottom:14px;">Типичные локализации</h3>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;font-size:18px;color:var(--ink-soft);">
+          <li>✓ Лопатка</li>
+          <li>✓ Плечо</li>
+          <li>✓ Бедро</li>
+          <li>✓ Спина</li>
+          <li>✓ Ягодицы</li>
+        </ul>
+        <p style="margin-top:14px;font-size:17px;color:var(--ink-soft);">
+          Даже интенсивное воздействие не вовлекает всю дерму,
+          воспаление остаётся локальным, ткани способны безопасно восстановиться.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 18. SAME ENERGY DIFFERENT OUTCOMES -->
+<section class="slide pink">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Главный клинический тезис блока 1</div>
+    <blockquote class="q" style="border-left:none;text-align:center;font-size:clamp(26px, 3.4vw, 42px);max-width:1040px;">
+      Одинаковая плотность энергии<br>
+      может быть <b>безопасной на лопатке</b><br>
+      и <b>катастрофической на запястье</b>.
+      <span class="src" style="margin-top:18px;">Метод Микрюкова · принцип контекстной безопасности</span>
+    </blockquote>
+  </div>
+</section>
+
+<!-- 19. WHY BLISTERS - section -->
+<section class="slide red">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Главный научный блок</div>
+    <div class="section-num red">02</div>
+    <h1 class="title">Почему возникают пузыри</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;max-width:860px;">
+      Это не «нормальная реакция лазера». И не показатель «хорошей мощности».
+    </p>
+  </div>
+</section>
+
+<!-- 20. BLISTER = INFLAMMATION -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Переопределение понятия</div>
+    <h1 class="title" style="max-width:1100px;">Пузырь — это признак чрезмерного<br>воспалительного повреждения тканей.</h1>
+    <p class="lead big" style="margin-top:8px;">
+      Не «эффективности», не «работающей мощности», не «правильной дозы».
+      <br>Это морфологический маркер того, что биологический предел был пройден.
+    </p>
+    <div class="card" style="border-top:5px solid var(--red);margin-top:14px;">
+      <h3 style="font-size:22px;font-weight:700;margin-bottom:12px;">Что происходит механически</h3>
+      <p>
+        Избыточное разрушение пигмента + сосудов + клеток + внеклеточного матрикса
+        вызывает:
+      </p>
+      <div class="pill-row" style="justify-content:flex-start;margin-top:14px;">
+        <span class="info-pill red">Massive cytokine release</span>
+        <span class="info-pill red">Vascular permeability ↑↑</span>
+        <span class="info-pill red">Edema</span>
+        <span class="info-pill red">Separation DEJ</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 21. CYTOKINE CASCADE SVG -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Молекулярный каскад</div>
+    <h2 class="section">От повреждения до пузыря — общая схема.</h2>
+    <div class="illus">
+      <svg viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg">
+        <!-- 6 boxes in a row connected by arrows -->
+        <g>
+          <rect x="20" y="80" width="120" height="80" rx="10" fill="#ffe9ec" stroke="#ff375f" stroke-width="2"/>
+          <text x="80" y="110" text-anchor="middle" font-size="14" font-weight="700" fill="#ff375f">Tissue Injury</text>
+          <text x="80" y="130" text-anchor="middle" font-size="12" fill="#525258">разрушение</text>
+          <text x="80" y="148" text-anchor="middle" font-size="12" fill="#525258">клеток и матрикса</text>
+        </g>
+        <polygon points="145,115 165,125 145,135" fill="#86868b"/>
+
+        <g>
+          <rect x="170" y="80" width="120" height="80" rx="10" fill="#fff4e0" stroke="#ff9f0a" stroke-width="2"/>
+          <text x="230" y="110" text-anchor="middle" font-size="14" font-weight="700" fill="#ff9f0a">DAMPs</text>
+          <text x="230" y="130" text-anchor="middle" font-size="12" fill="#525258">сигналы тревоги</text>
+          <text x="230" y="148" text-anchor="middle" font-size="12" fill="#525258">от повреждённых клеток</text>
+        </g>
+        <polygon points="295,115 315,125 295,135" fill="#86868b"/>
+
+        <g>
+          <rect x="320" y="80" width="120" height="80" rx="10" fill="#f0eaff" stroke="#5e5ce6" stroke-width="2"/>
+          <text x="380" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#5e5ce6">Цитокины</text>
+          <text x="380" y="124" text-anchor="middle" font-size="11" fill="#525258">IL-1, TNF-α</text>
+          <text x="380" y="140" text-anchor="middle" font-size="11" fill="#525258">PG, гистамин</text>
+          <text x="380" y="156" text-anchor="middle" font-size="11" fill="#525258">VEGF</text>
+        </g>
+        <polygon points="445,115 465,125 445,135" fill="#86868b"/>
+
+        <g>
+          <rect x="470" y="80" width="120" height="80" rx="10" fill="#e0f0ff" stroke="#0071e3" stroke-width="2"/>
+          <text x="530" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#0071e3">Vascular</text>
+          <text x="530" y="124" text-anchor="middle" font-size="14" font-weight="700" fill="#0071e3">permeability</text>
+          <text x="530" y="144" text-anchor="middle" font-size="11" fill="#525258">сосуды «протекают»</text>
+        </g>
+        <polygon points="595,115 615,125 595,135" fill="#86868b"/>
+
+        <g>
+          <rect x="620" y="80" width="120" height="80" rx="10" fill="#e0f7ff" stroke="#0a84ff" stroke-width="2"/>
+          <text x="680" y="110" text-anchor="middle" font-size="14" font-weight="700" fill="#0a84ff">Edema</text>
+          <text x="680" y="130" text-anchor="middle" font-size="12" fill="#525258">плазма выходит</text>
+          <text x="680" y="148" text-anchor="middle" font-size="12" fill="#525258">в межтканевое</text>
+        </g>
+        <polygon points="745,115 765,125 745,135" fill="#86868b"/>
+
+        <g>
+          <rect x="770" y="80" width="120" height="80" rx="10" fill="#ffe9ec" stroke="#d70015" stroke-width="2"/>
+          <text x="830" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#d70015">Separation</text>
+          <text x="830" y="124" text-anchor="middle" font-size="11" fill="#525258">отслойка</text>
+          <text x="830" y="140" text-anchor="middle" font-size="11" fill="#525258">эпидермиса</text>
+          <text x="830" y="156" text-anchor="middle" font-size="11" fill="#d70015" font-weight="700">→ ПУЗЫРЬ</text>
+        </g>
+      </svg>
+      <div class="illus-caption">
+        Этот каскад работает <b>универсально</b> для всех типов повреждения кожи:
+        лазер, ожог, перелом, мозоль, ультрафиолет. Различны только триггеры —
+        биология ответа одинакова. См. Eming, Krieg, Davidson (2007) и Singer & Clark (1999).
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 22. MIKRYUKOV MAIN IDEA -->
+<section class="slide blue">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Главная идея методики</div>
+    <blockquote class="q" style="border-left:none;text-align:center;font-size:clamp(24px, 3.2vw, 40px);max-width:1080px;">
+      Не максимальное разрушение пигмента за процедуру.<br>
+      <br>
+      А <b>максимальное удаление пигмента<br>при сохранении способности тканей<br>к восстановлению.</b>
+      <span class="src" style="margin-top:18px;">Метод Микрюкова · 2026</span>
+    </blockquote>
+  </div>
+</section>
+
+<!-- 23. SECTION DIVIDER BLOCK 2 -->
+<section class="slide dark">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Блок 2</div>
+    <div class="section-num">02</div>
+    <h1 class="title">Воспаление —<br>универсальный механизм</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">
+      Лазер вызывает повреждение разными путями. Но реакция тканей —
+      одна и та же биологическая программа.
+    </p>
+  </div>
+</section>
+
+<!-- 24. INFLAMMATION IS UNIVERSAL -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Универсальность воспаления</div>
+    <h2 class="section">Независимо от природы повреждения.</h2>
+    <p class="lead">
+      Термическое, механическое, фотоакустическое, травматическое — каждое
+      из этих повреждений запускает <b>одну и ту же каскадную программу</b>:
+      выброс цитокинов, рост сосудистой проницаемости, отёк, отслойка эпидермиса.
+    </p>
+    <div class="illus">
+      <svg viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg">
+        <!-- 4 triggers converging to one outcome -->
+        <g>
+          <rect x="20" y="20" width="180" height="50" rx="10" fill="#ffe9ec" stroke="#ff375f" stroke-width="2"/>
+          <text x="110" y="42" text-anchor="middle" font-size="15" font-weight="700" fill="#ff375f">Термическое</text>
+          <text x="110" y="60" text-anchor="middle" font-size="13" fill="#525258">ожог</text>
+        </g>
+        <g>
+          <rect x="20" y="90" width="180" height="50" rx="10" fill="#fff4e0" stroke="#ff9f0a" stroke-width="2"/>
+          <text x="110" y="112" text-anchor="middle" font-size="15" font-weight="700" fill="#ff9f0a">Механическое</text>
+          <text x="110" y="130" text-anchor="middle" font-size="13" fill="#525258">перелом, удар</text>
+        </g>
+        <g>
+          <rect x="20" y="160" width="180" height="50" rx="10" fill="#f0eaff" stroke="#5e5ce6" stroke-width="2"/>
+          <text x="110" y="182" text-anchor="middle" font-size="15" font-weight="700" fill="#5e5ce6">Фотоакустическое</text>
+          <text x="110" y="200" text-anchor="middle" font-size="13" fill="#525258">лазер</text>
+        </g>
+        <g>
+          <rect x="20" y="230" width="180" height="50" rx="10" fill="#e0f7ff" stroke="#0a84ff" stroke-width="2"/>
+          <text x="110" y="252" text-anchor="middle" font-size="15" font-weight="700" fill="#0a84ff">Shear stress</text>
+          <text x="110" y="270" text-anchor="middle" font-size="13" fill="#525258">мозоль, трение</text>
+        </g>
+
+        <!-- Arrows converging -->
+        <g stroke="#86868b" stroke-width="2" fill="none">
+          <path d="M 200 45 Q 320 100, 440 145"/>
+          <path d="M 200 115 Q 320 130, 440 145"/>
+          <path d="M 200 185 Q 320 165, 440 145"/>
+          <path d="M 200 255 Q 320 195, 440 145"/>
+        </g>
+
+        <!-- Common pathway box -->
+        <g>
+          <rect x="450" y="100" width="260" height="100" rx="14" fill="#1d1d1f"/>
+          <text x="580" y="135" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">Универсальный каскад</text>
+          <text x="580" y="158" text-anchor="middle" font-size="13" fill="#a8d8ff">Tissue injury → Cytokines →</text>
+          <text x="580" y="176" text-anchor="middle" font-size="13" fill="#a8d8ff">Permeability → Edema</text>
+        </g>
+
+        <polygon points="715,145 740,135 740,155" fill="#86868b"/>
+
+        <!-- Common outcome -->
+        <g>
+          <rect x="750" y="115" width="130" height="70" rx="10" fill="#ffe9ec" stroke="#d70015" stroke-width="2"/>
+          <text x="815" y="145" text-anchor="middle" font-size="17" font-weight="700" fill="#d70015">ПУЗЫРЬ</text>
+          <text x="815" y="167" text-anchor="middle" font-size="12" fill="#525258">одинаковая</text>
+          <text x="815" y="180" text-anchor="middle" font-size="12" fill="#525258">морфология</text>
+        </g>
+      </svg>
+      <div class="illus-caption">
+        Четыре разные причины → один каскад → один морфологический результат.
+        Это разрушает миф «есть пузырь — значит ожог».
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 25. THERMAL BURN -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Аналогия 1 · термический ожог</div>
+    <h2 class="section">Пузырь от ожога — не из-за температуры самой по себе.</h2>
+    <p class="lead">
+      А из-за <b>воспалительно-сосудистой реакции</b>, которую температура запускает.
+      Это объясняет, почему холодная вода после ожога так драматически меняет исход:
+      она тормозит каскад до того, как он успеет повредить ткань.
+    </p>
+    <blockquote class="q" style="font-size:22px;">
+      Sample sizes of burns at 24 h showed that prolonged duration of cooling
+      with running water (≥20 минут) <b>significantly reduced burn depth</b>
+      compared to shorter cooling.
+      <span class="src">— Cuttle et al., 2008 · Burns. Optimal duration of cooling for an acute scald contact burn injury in a porcine model</span>
+    </blockquote>
+    <div class="cite-row">
+      <a class="cite" target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/18695595/">↗ Cuttle 2008 · PubMed</a>
+    </div>
+  </div>
+</section>
+
+<!-- 26. FRACTURE BLISTERS -->
+<section class="slide amber">
+  <div class="slide-inner">
+    <div class="eyebrow">Аналогия 2 · переломы лодыжки</div>
+    <h2 class="section">Fracture blisters — сильнейший аргумент.</h2>
+    <p class="lead big">
+      При переломе лодыжки <b>нет лазера. Нет нагрева. Нет ожога.</b><br>
+      Но есть massive tissue injury, отёк, повреждение сосудов и dermo-epidermal separation.
+      Результат — практически идентичные пузыри.
+    </p>
+    <div class="card" style="margin-top:8px;">
+      <h3 style="font-size:22px;font-weight:700;margin-bottom:12px;color:#fff;">Биомеханическое исследование Giordano & Koval</h3>
+      <p style="color:rgba(255,255,255,0.9);">
+        60 трупных образцов кожи лодыжки подвергались разным уровням
+        одноосного растяжения с гистологическим анализом. Dermo-epidermal
+        separation <b>возникала при растяжении ≥152%</b> — паттерн идентичен
+        биопсии настоящих fracture blisters. Клинически выделено 2 типа:
+        прозрачные (с остаточными эпителиальными клетками) и кровянистые
+        (полная dermoepidermal cleavage).
+      </p>
+      <div class="cite-row" style="margin-top:14px;">
+        <a class="cite" target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/7602633/">↗ Giordano et al., 1995 · J Orthop Trauma</a>
+        <a class="cite" target="_blank" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3088393/">↗ Fracture Blisters review · PMC</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 27. FRICTION + SUNBURN BLISTERS -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Аналогии 3 и 4</div>
+    <h2 class="section">Мозоли и солнечные ожоги — та же история.</h2>
+    <div class="grid-2" style="margin-top:8px;">
+      <div class="card" style="border-top:5px solid var(--blue);">
+        <h3 style="font-size:24px;font-weight:700;margin-bottom:10px;">Friction blisters (мозоли)</h3>
+        <p style="color:var(--ink-soft);">
+          Причина — <b>shear stress</b> и механическая травма. Лазера нет, ожога нет.
+          Но механизм тот же: воспаление, отёк, разделение слоёв,
+          накопление жидкости.
+        </p>
+      </div>
+      <div class="card" style="border-top:5px solid var(--orange);">
+        <h3 style="font-size:24px;font-weight:700;margin-bottom:10px;">Sunburn blisters</h3>
+        <p style="color:var(--ink-soft);">
+          Причина — <b>UV-injury</b> и апоптоз кератиноцитов. Запускается
+          воспалительный каскад. Результат — пузырь.
+          Морфологически почти неотличим от ожогового.
+        </p>
+      </div>
+    </div>
+    <blockquote class="q" style="font-size:26px;margin-top:8px;">
+      Причины разные. <b>Биология ответа — одна.</b>
+      <span class="src">— ключевой тезис блока 2</span>
+    </blockquote>
+  </div>
+</section>
+
+<!-- 28. LASER MECHANISM -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Что происходит при агрессивном лазере</div>
+    <h2 class="section">Соединяем все элементы.</h2>
+    <p class="lead">Лазерное воздействие вызывает:</p>
+    <div class="grid-4" style="margin-top:8px;">
+      <div class="stat-card"><div class="stat-num red">1</div><div class="stat-label">Разрушение пигмента</div></div>
+      <div class="stat-card"><div class="stat-num red">2</div><div class="stat-label">Сосудистую травму</div></div>
+      <div class="stat-card"><div class="stat-num red">3</div><div class="stat-label">Повреждение клеток</div></div>
+      <div class="stat-card"><div class="stat-num red">4</div><div class="stat-label">Выброс медиаторов воспаления</div></div>
+    </div>
+    <p class="lead" style="margin-top:14px;font-size:20px;">
+      Если плотность энергии слишком высокая, вовлечён слишком большой объём дермы
+      или нарушена микроциркуляция — воспаление <b>выходит за пределы
+      компенсаторных возможностей тканей</b>.
+    </p>
+    <div class="card" style="border-top:5px solid var(--red);margin-top:6px;">
+      <p>Тогда появляются: massive edema · blisters · ischemia · delayed healing · scarring risk.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 29. CORE FORMULATION -->
+<section class="slide red">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Очень сильная научная формулировка</div>
+    <blockquote class="q" style="border-left:none;text-align:center;font-size:clamp(24px, 3.2vw, 40px);max-width:1080px;">
+      Осложнение — это <b>не факт воздействия лазера</b>.<br>
+      <br>
+      Осложнение — это потеря тканями способности<br>
+      контролировать воспалительный ответ.
+      <span class="src" style="margin-top:18px;">Inflammatory Load Theory · Mikryukov 2026</span>
+    </blockquote>
+  </div>
+</section>
+
+<!-- 30. WHY PICO ALSO -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Важно для современной аудитории</div>
+    <h2 class="section">Почему пикосекундные лазеры тоже дают пузыри.</h2>
+    <p class="lead">
+      Маркетинг говорит: «pico не вызывает ожогов». Это технически верно
+      для <b>прямого термического повреждения</b>. Но не для воспалительного ответа.
+    </p>
+    <div class="grid-2" style="margin-top:8px;">
+      <div class="card" style="border-top:5px solid var(--green);">
+        <h3 style="font-size:22px;font-weight:700;margin-bottom:10px;">Что pico делает лучше</h3>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;font-size:17px;color:var(--ink-soft);">
+          <li>✓ Снижает прямую термотравму</li>
+          <li>✓ Меньше bulk heating дермы</li>
+          <li>✓ Селективнее по пигменту</li>
+          <li>✓ Меньше collateral thermal damage</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:5px solid var(--red);">
+        <h3 style="font-size:22px;font-weight:700;margin-bottom:10px;">Что pico НЕ отменяет</h3>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;font-size:17px;color:var(--ink-soft);">
+          <li>✗ Биологические пределы тканей</li>
+          <li>✗ Inflammatory overload при перегрузке</li>
+          <li>✗ Photoacoustic injury → cytokines</li>
+          <li>✗ Vascular trauma при высокой флюенсе</li>
+        </ul>
+      </div>
+    </div>
+    <blockquote class="q" style="margin-top:6px;font-size:22px;">
+      Цель безопасного удаления — не максимальное разрушение пигмента,
+      а <b>разрушение пигмента в пределах воспалительной способности тканей</b>.
+      <span class="src">— Mikryukov 2026</span>
+    </blockquote>
+  </div>
+</section>
+
+<!-- 31. SECTION DIVIDER BLOCK 3 -->
+<section class="slide green">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Блок 3 · финал</div>
+    <div class="section-num green">03</div>
+    <h1 class="title">Метод Микрюкова</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">
+      Inflammatory Load Theory как практическая модель.
+      4 этапа, которые превращают интуицию в воспроизводимый протокол.
+    </p>
+  </div>
+</section>
+
+<!-- 32. MAIN CONCLUSION -->
+<section class="slide blue">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Главный вывод</div>
+    <h1 class="title" style="max-width:1100px;">Осложнения определяются<br>не лазером.</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;max-width:880px;">
+      Не брендом. Не длиной волны. Не маркетингом системы.<br>
+      А <b>способностью тканей контролировать воспалительный ответ</b>.
+    </p>
+  </div>
+</section>
+
+<!-- 33. MAIN FORMULA -->
+<section class="slide">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Основная идея метода Микрюкова</div>
+    <h2 class="section">Любой лазер работает безопасно,<br>если не превышать воспалительный резерв.</h2>
+    <div class="formula" style="margin-top:32px;">
+      Safe Treatment = Effective Pigment Damage − Excessive Inflammatory Load
+    </div>
+    <p class="lead" style="font-size:22px;">
+      Это не «безопасные настройки». Это <b>принцип расчёта на каждом конкретном пациенте</b>.
+    </p>
+  </div>
+</section>
+
+<!-- 34. NOT FIXED PARAMETERS -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Что отличает метод от стандартных протоколов</div>
+    <h2 class="section">Метод Микрюкова — это не фиксированные параметры.</h2>
+    <p class="lead big">
+      Это <b>система клинического прогнозирования</b> реакции тканей.
+    </p>
+    <div class="card" style="border-top:5px solid var(--red);margin-top:14px;">
+      <h3 style="font-size:24px;font-weight:700;margin-bottom:14px;">Почему фиксированные настройки не работают</h3>
+      <p>
+        Не существует универсальной плотности энергии. Универсального прохода.
+        Универсального протокола. Потому что <b>каждая татуировка имеет
+        разный воспалительный потенциал</b>.
+      </p>
+      <p style="margin-top:14px;">
+        Именно поэтому одинаковые параметры на двух разных татуировках могут дать
+        либо идеальное заживление, либо тяжёлое осложнение.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- 35. DOCTOR TASK -->
+<section class="slide pink">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Ключевая задача врача</div>
+    <blockquote class="q" style="border-left:none;text-align:center;font-size:clamp(24px, 3.2vw, 38px);max-width:1080px;">
+      Не «максимально разрушить пигмент».<br><br>
+      А <b>разрушить максимально возможный объём пигмента<br>
+      без потери тканями контроля над воспалением.</b>
+      <span class="src" style="margin-top:18px;">— ключевая формулировка метода</span>
+    </blockquote>
+  </div>
+</section>
+
+<!-- 36. SECTION - COOLING -->
+<section class="slide dark">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Практический инструмент контроля</div>
+    <div class="section-num green">❄</div>
+    <h1 class="title">Контролируемое<br>охлаждение тканей</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;max-width:920px;">
+      Единственный реальный способ управлять воспалительной нагрузкой
+      после того, как импульс лазера уже произошёл.
+    </p>
+  </div>
+</section>
+
+<!-- 37. WHAT COOLING DOES -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Важное уточнение</div>
+    <h2 class="section">Охлаждение не «лечит». Оно снижает воспалительную нагрузку.</h2>
+    <p class="lead">
+      Я не утверждаю, что холод волшебным образом убирает осложнения. Я говорю:
+      охлаждение работает на <b>четырёх параллельных биологических уровнях</b>,
+      и каждый из них уменьшает inflammatory load на ткани.
+    </p>
+    <div class="grid-4" style="margin-top:14px;">
+      <div class="stat-card"><div class="stat-num blue">1</div><div class="stat-label">Снижение метаболизма тканей</div></div>
+      <div class="stat-card"><div class="stat-num blue">2</div><div class="stat-label">Уменьшение сосудистой проницаемости</div></div>
+      <div class="stat-card"><div class="stat-num blue">3</div><div class="stat-label">Подавление медиаторов воспаления</div></div>
+      <div class="stat-card"><div class="stat-num blue">4</div><div class="stat-label">Снижение глубины вторичного повреждения</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 38. COOLING MECHANISM 1 -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow" style="color:var(--blue);">Механизм 1 из 4</div>
+    <h2 class="section">Снижение метаболизма тканей.</h2>
+    <p class="lead">
+      Каждые −10 °C снижают клеточный метаболизм примерно вдвое (правило Q₁₀).
+      Это даёт прямой эффект на исход:
+    </p>
+    <div class="grid-3" style="margin-top:14px;">
+      <div class="stat-card">
+        <div class="stat-num blue">↓ O₂ demand</div>
+        <div class="stat-label">Меньше потребность клеток в кислороде</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num blue">↓ ATP</div>
+        <div class="stat-label">Меньше расход аденозинтрифосфата</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num blue">↓ ischemic injury</div>
+        <div class="stat-label">Меньше вторичное ишемическое повреждение</div>
+      </div>
+    </div>
+    <p class="lead" style="font-size:18px;margin-top:8px;">
+      Подтверждено в работах по cryotherapy и protective hypothermia в
+      реаниматологии. См. Singbartl & Green, Hubbard 2004, Bleakley 2004.
+    </p>
+  </div>
+</section>
+
+<!-- 39. COOLING MECHANISM 2 -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow" style="color:var(--blue);">Механизм 2 из 4</div>
+    <h2 class="section">Уменьшение сосудистой проницаемости.</h2>
+    <p class="lead">
+      Холод вызывает вазоконстрикцию и стабилизирует эндотелий —
+      сосуды перестают «протекать», плазма не выходит в ткань.
+    </p>
+    <div class="grid-3" style="margin-top:14px;">
+      <div class="stat-card">
+        <div class="stat-num blue">↓ edema</div>
+        <div class="stat-label">Меньше отёк дермы</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num blue">↓ plasma leakage</div>
+        <div class="stat-label">Меньше выход плазмы в межтканевое пространство</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num blue">↓ inflammatory swelling</div>
+        <div class="stat-label">Меньше воспалительная припухлость</div>
+      </div>
+    </div>
+    <blockquote class="q" style="margin-top:8px;font-size:22px;">
+      Местное охлаждение снижает кожную ишемию под давлением — подтверждено
+      на животных моделях.
+      <span class="src">— Local cooling reduces skin ischemia under surface pressure (Mihara et al., 2015)</span>
+    </blockquote>
+  </div>
+</section>
+
+<!-- 40. COOLING MECHANISM 3 -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow" style="color:var(--blue);">Механизм 3 из 4</div>
+    <h2 class="section">Подавление медиаторов воспаления.</h2>
+    <p class="lead">
+      Холод уменьшает активность ферментов, синтезирующих провоспалительные
+      медиаторы. Это работает на молекулярном уровне.
+    </p>
+    <div class="grid-3" style="margin-top:14px;">
+      <div class="stat-card">
+        <div class="stat-num blue">↓ цитокины</div>
+        <div class="stat-label">Меньше активность IL-1, TNF-α</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num blue">↓ простагландины</div>
+        <div class="stat-label">Снижение COX-активности</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num blue">↓ гистамин</div>
+        <div class="stat-label">Сниженная дегрануляция тучных клеток</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 41. COOLING MECHANISM 4 - PRIMARY VS SECONDARY -->
+<section class="slide blue">
+  <div class="slide-inner">
+    <div class="eyebrow">Механизм 4 из 4 — самый важный</div>
+    <h2 class="section">Снижение глубины вторичного повреждения.</h2>
+    <p class="lead big">
+      Primary injury уже произошла — это сам импульс лазера, его не вернуть.
+      Но <b>secondary inflammatory expansion</b> можно остановить.
+      Именно она формирует осложнение через часы после процедуры.
+    </p>
+    <div class="illus" style="margin-top:14px;">
+      <svg viewBox="0 0 900 220" xmlns="http://www.w3.org/2000/svg">
+        <!-- Time axis -->
+        <line x1="60" y1="170" x2="840" y2="170" stroke="#fff" stroke-width="2"/>
+        <polygon points="840,170 826,163 826,177" fill="#fff"/>
+        <text x="840" y="195" text-anchor="end" font-size="14" fill="#a8d8ff">время</text>
+
+        <!-- Primary injury - sharp spike -->
+        <g>
+          <rect x="100" y="40" width="6" height="130" fill="#ff375f"/>
+          <text x="103" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="#ffd0d8">PRIMARY</text>
+          <text x="103" y="190" text-anchor="middle" font-size="12" fill="#a8d8ff">импульс</text>
+        </g>
+
+        <!-- Secondary injury - rising curve -->
+        <g>
+          <path d="M 110 165 Q 200 165, 300 130 T 500 80 T 700 70" stroke="#ff9f0a" stroke-width="3" fill="none"/>
+          <path d="M 110 165 L 110 165 Q 200 165, 300 130 T 500 80 T 700 70 L 700 165 Z" fill="#ff9f0a" opacity="0.2"/>
+          <text x="450" y="60" text-anchor="middle" font-size="15" font-weight="700" fill="#ffd9a0">SECONDARY INFLAMMATORY EXPANSION</text>
+          <text x="450" y="195" text-anchor="middle" font-size="12" fill="#a8d8ff">часы после процедуры</text>
+        </g>
+
+        <!-- Cooling intervention -->
+        <g>
+          <rect x="150" y="100" width="200" height="50" rx="10" fill="rgba(255,255,255,0.18)" stroke="#a8d8ff" stroke-width="2" stroke-dasharray="4 3"/>
+          <text x="250" y="125" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">COOLING</text>
+          <text x="250" y="143" text-anchor="middle" font-size="11" fill="#a8d8ff">останавливает каскад</text>
+        </g>
+      </svg>
+      <div class="illus-caption" style="color:rgba(255,255,255,0.85);">
+        Primary injury — мгновенная и фиксированная. Secondary expansion развивается
+        часами и определяет глубину итогового повреждения. Здесь и работает охлаждение.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 42. CUTTLE 2008 DATA -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Ключевая работа по охлаждению</div>
+    <h2 class="section">Cuttle et al., 2008 — точные данные.</h2>
+    <p class="lead">
+      Свиная модель глубокого дермального ожога. Сравнение
+      длительности и температуры охлаждения проточной водой.
+    </p>
+    <div class="grid-4">
+      <div class="stat-card">
+        <div class="stat-num blue">15 °C</div>
+        <div class="stat-label">оптимальная температура воды</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num blue">20 мин</div>
+        <div class="stat-label">минимально необходимое время</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num green">↑ реэпителизация</div>
+        <div class="stat-label">статистически значимое улучшение</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num green">↑ tensile strength</div>
+        <div class="stat-label">лучшая прочность рубцовой ткани</div>
+      </div>
+    </div>
+    <blockquote class="q" style="font-size:20px;">
+      A higher proportion of burns treated for 20 and 30 minutes showed
+      improvement compared with those treated for 5 and 10 minutes only,
+      with this difference reaching statistical significance.
+      <span class="src">— Cuttle et al., 2008 · Burns 34(8):1176–82</span>
+    </blockquote>
+    <div class="cite-row">
+      <a class="cite" target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/18695595/">↗ PubMed · Cuttle 2008</a>
+      <a class="cite" target="_blank" href="https://onlinelibrary.wiley.com/doi/10.1111/j.1524-475X.2008.00413.x">↗ Wound Repair Regen · optimal temperature</a>
+    </div>
+  </div>
+</section>
+
+<!-- 43. HOURS NOT MINUTES -->
+<section class="slide green">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Важная зрелая мысль</div>
+    <blockquote class="q" style="border-left:none;text-align:center;font-size:clamp(24px, 3.2vw, 40px);max-width:1080px;">
+      Во многих случаях осложнение формируется<br>
+      <b>не в момент импульса</b>,<br>
+      а в течение следующих часов —<br>
+      как результат прогрессирующего воспаления.
+      <span class="src" style="margin-top:18px;">Инструмент остановки этого процесса — охлаждение</span>
+    </blockquote>
+  </div>
+</section>
+
+<!-- 44. COOLING IS NOT ADDITION -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Принципиальная позиция метода</div>
+    <h2 class="section">Охлаждение — не «дополнение». Это часть лечения.</h2>
+    <p class="lead big">
+      Лазерное удаление татуировок — это <b>управляемая воспалительная травма</b>.
+      Если воспаление не прогнозировать, не контролировать, не ограничивать —
+      осложнения становятся неизбежными.
+    </p>
+    <blockquote class="q" style="margin-top:14px;font-size:24px;">
+      Большинство специалистов учатся работать лазером.<br>
+      Но <b>не учатся управлять воспалением</b>.<br>
+      А именно это определяет исход процедуры.
+      <span class="src">— Mikryukov, конференционный тезис</span>
+    </blockquote>
+  </div>
+</section>
+
+<!-- 45. METHOD 4 STEPS overview -->
+<section class="slide dark">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Метод Микрюкова</div>
+    <h1 class="title">4 этапа клинической работы</h1>
+    <div class="grid-4" style="width:100%;margin-top:14px;">
+      <div class="card" style="text-align:center;">
+        <div class="stat-num">①</div>
+        <h3 style="font-size:18px;font-weight:700;color:#fff;margin-top:8px;">Оценка риска</h3>
+        <div class="stat-label">воспалительный потенциал</div>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div class="stat-num">②</div>
+        <h3 style="font-size:18px;font-weight:700;color:#fff;margin-top:8px;">Подбор интенсивности</h3>
+        <div class="stat-label">индивидуально</div>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div class="stat-num">③</div>
+        <h3 style="font-size:18px;font-weight:700;color:#fff;margin-top:8px;">Контроль нагрузки</h3>
+        <div class="stat-label">staged treatment</div>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div class="stat-num">④</div>
+        <h3 style="font-size:18px;font-weight:700;color:#fff;margin-top:8px;">Длительное охлаждение</h3>
+        <div class="stat-label">умеренное · продолжительное</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 46. STEP 1 -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow" style="color:var(--blue);">Этап 1 из 4</div>
+    <h2 class="section">Оценка воспалительного риска.</h2>
+    <p class="lead">
+      Перед первым импульсом — клиническая оценка по пяти параметрам:
+    </p>
+    <div class="grid-3" style="margin-top:14px;">
+      <div class="stat-card"><div class="stat-num blue">Объём</div><div class="stat-label">пигмента в татуировке (плотность × площадь × глубина)</div></div>
+      <div class="stat-card"><div class="stat-num blue">Резерв</div><div class="stat-label">дермы — толщина и структура</div></div>
+      <div class="stat-card"><div class="stat-num blue">Локализация</div><div class="stat-label">анатомическая зона и её особенности</div></div>
+      <div class="stat-card"><div class="stat-num blue">Кожа</div><div class="stat-label">фототип, толщина эпидермиса</div></div>
+      <div class="stat-card"><div class="stat-num blue">Сосуды</div><div class="stat-label">vascular reserve, признаки нарушения микроциркуляции</div></div>
+      <div class="stat-card"><div class="stat-num blue">Анамнез</div><div class="stat-label">пациент: рубцовая склонность, заболевания соединительной ткани</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 47. STEP 2 -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow" style="color:var(--blue);">Этап 2 из 4</div>
+    <h2 class="section">Индивидуальный подбор интенсивности.</h2>
+    <p class="lead">
+      На основе оценки риска — настройка параметров под конкретного пациента.
+      Не «стандартный протокол», а <b>прогнозируемая доза</b>.
+    </p>
+    <div class="grid-3" style="margin-top:14px;">
+      <div class="stat-card"><div class="stat-num blue">Тип лазера</div><div class="stat-label">пико / нано / dual-wavelength</div></div>
+      <div class="stat-card"><div class="stat-num blue">Длительность</div><div class="stat-label">импульса · ps / sub-ns / ns</div></div>
+      <div class="stat-card"><div class="stat-num blue">Fluence</div><div class="stat-label">плотность энергии под зону</div></div>
+      <div class="stat-card"><div class="stat-num blue">Spot size</div><div class="stat-label">диаметр пятна влияет на глубину</div></div>
+      <div class="stat-card"><div class="stat-num blue">Распределение</div><div class="stat-label">единичные импульсы или паттерн</div></div>
+      <div class="stat-card"><div class="stat-num blue">Площадь</div><div class="stat-label">за один сеанс — staged подход</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 48. STEP 3 -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow" style="color:var(--blue);">Этап 3 из 4</div>
+    <h2 class="section">Контроль воспалительной нагрузки.</h2>
+    <p class="lead big">
+      Во время процедуры — управление общим воспалительным «бюджетом» сеанса.
+      Это включает осознанное ограничение excessive injury и staged treatment.
+    </p>
+    <div class="key-findings">
+      <div class="kf"><div class="kf-bullet green">✓</div><div>Ограничение площади и плотности воздействия за один визит</div></div>
+      <div class="kf"><div class="kf-bullet green">✓</div><div>Staged treatment — разделение крупных татуировок на зоны</div></div>
+      <div class="kf"><div class="kf-bullet green">✓</div><div>Контроль клинических endpoint'ов (frosting, эритема, петехии)</div></div>
+      <div class="kf"><div class="kf-bullet green">✓</div><div>Предотвращение inflammatory overload — остановиться раньше, чем «прокипит»</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 49. STEP 4 -->
+<section class="slide green">
+  <div class="slide-inner">
+    <div class="eyebrow">Этап 4 из 4</div>
+    <h2 class="section">Длительное умеренное охлаждение.</h2>
+    <p class="lead big">
+      После импульса — управление вторичным повреждением. Не короткий «холодный
+      компресс на 5 минут». А <b>продолжительное умеренное охлаждение</b>,
+      соизмеримое с длительностью inflammatory expansion.
+    </p>
+    <div class="grid-4" style="margin-top:14px;width:100%;">
+      <div class="card" style="text-align:center;">
+        <div class="stat-num">15 °C</div>
+        <div class="stat-label">оптимальная температура (Cuttle 2008)</div>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div class="stat-num">≥20 мин</div>
+        <div class="stat-label">минимально работающее время</div>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div class="stat-num">↓ secondary</div>
+        <div class="stat-label">снижение вторичного повреждения</div>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div class="stat-num">↑ tissue survival</div>
+        <div class="stat-label">сохранение жизнеспособности ткани</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 50. METHOD ALGORITHM SVG -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Алгоритм принятия решений</div>
+    <h2 class="section">Метод как процесс — от пациента до результата.</h2>
+    <div class="illus">
+      <svg viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg">
+        <!-- Step boxes -->
+        <g>
+          <rect x="40" y="30" width="180" height="70" rx="14" fill="#e0f0ff" stroke="#0071e3" stroke-width="2"/>
+          <text x="130" y="55" text-anchor="middle" font-size="13" font-weight="700" fill="#0071e3">1. ОЦЕНКА</text>
+          <text x="130" y="74" text-anchor="middle" font-size="11" fill="#525258">пигмент / дерма</text>
+          <text x="130" y="90" text-anchor="middle" font-size="11" fill="#525258">риск-группа</text>
+        </g>
+
+        <polygon points="225,65 245,55 245,75" fill="#86868b"/>
+
+        <g>
+          <rect x="250" y="30" width="180" height="70" rx="14" fill="#f0eaff" stroke="#5e5ce6" stroke-width="2"/>
+          <text x="340" y="55" text-anchor="middle" font-size="13" font-weight="700" fill="#5e5ce6">2. ПОДБОР</text>
+          <text x="340" y="74" text-anchor="middle" font-size="11" fill="#525258">интенсивность</text>
+          <text x="340" y="90" text-anchor="middle" font-size="11" fill="#525258">под пациента</text>
+        </g>
+
+        <polygon points="435,65 455,55 455,75" fill="#86868b"/>
+
+        <g>
+          <rect x="460" y="30" width="180" height="70" rx="14" fill="#fff4e0" stroke="#ff9f0a" stroke-width="2"/>
+          <text x="550" y="55" text-anchor="middle" font-size="13" font-weight="700" fill="#ff9f0a">3. КОНТРОЛЬ</text>
+          <text x="550" y="74" text-anchor="middle" font-size="11" fill="#525258">воспалительная</text>
+          <text x="550" y="90" text-anchor="middle" font-size="11" fill="#525258">нагрузка</text>
+        </g>
+
+        <polygon points="645,65 665,55 665,75" fill="#86868b"/>
+
+        <g>
+          <rect x="670" y="30" width="180" height="70" rx="14" fill="#e0f7ec" stroke="#1ea24a" stroke-width="2"/>
+          <text x="760" y="55" text-anchor="middle" font-size="13" font-weight="700" fill="#1ea24a">4. ОХЛАЖДЕНИЕ</text>
+          <text x="760" y="74" text-anchor="middle" font-size="11" fill="#525258">длительное</text>
+          <text x="760" y="90" text-anchor="middle" font-size="11" fill="#525258">умеренное</text>
+        </g>
+
+        <!-- Feedback loop -->
+        <path d="M 760 100 Q 760 200, 450 250 Q 130 200, 130 100" stroke="#86868b" stroke-width="2" fill="none" stroke-dasharray="6 4"/>
+        <polygon points="130,105 122,90 138,90" fill="#86868b"/>
+
+        <text x="450" y="240" text-anchor="middle" font-size="13" fill="#525258" font-weight="600">Оценка результата → корректировка следующего визита</text>
+
+        <!-- Outcome -->
+        <g>
+          <rect x="280" y="270" width="340" height="40" rx="12" fill="#1d1d1f"/>
+          <text x="450" y="296" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">Безопасное удаление + сохранение тканей</text>
+        </g>
+      </svg>
+      <div class="illus-caption">
+        Это не линейный протокол, а замкнутый цикл. Каждый визит даёт информацию
+        о реакции тканей конкретного пациента — следующий визит корректируется.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 51. SECTION DIVIDER FINAL -->
+<section class="slide dark">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Финал</div>
+    <div class="section-num">∎</div>
+    <h1 class="title">Что отличает<br>опытного специалиста</h1>
+  </div>
+</section>
+
+<!-- 52. BLISTER REDEFINED -->
+<section class="slide red">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Переопределение пузыря</div>
+    <blockquote class="q" style="border-left:none;text-align:center;font-size:clamp(24px, 3.2vw, 40px);max-width:1080px;">
+      Пузырь — это <b>не показатель эффективности</b>.<br>
+      И не обязательный этап удаления.<br><br>
+      Это признак того, что ткани<br>
+      потеряли контроль над воспалительным ответом.
+      <span class="src" style="margin-top:18px;">— ключевая формулировка доклада</span>
+    </blockquote>
+  </div>
+</section>
+
+<!-- 53. EXPERT DIFFERENCE -->
+<section class="slide">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Чем отличается опытный специалист</div>
+    <h1 class="title" style="max-width:1100px;">Не тем, что он умеет<br>«стрелять мощнее».</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;max-width:900px;margin-top:14px;">
+      А тем, что он <b>понимает биологию тканей<br>
+      и умеет прогнозировать воспаление.</b>
+    </p>
+  </div>
+</section>
+
+<!-- 54. CLOSING THESIS -->
+<section class="slide blue">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Финальная мысль</div>
+    <blockquote class="q" style="border-left:none;text-align:center;font-size:clamp(24px, 3.2vw, 38px);max-width:1080px;">
+      Лучшее удаление татуировки — это не максимальное разрушение пигмента
+      за одну процедуру.<br><br>
+      Это <b>максимальный результат при сохранении способности тканей
+      к полноценному восстановлению.</b>
+      <span class="src" style="margin-top:18px;">— Метод Микрюкова</span>
+    </blockquote>
+  </div>
+</section>
+
+<!-- 55. SCIENTIFIC TENETS -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">5 научных тезисов метода</div>
+    <h2 class="section">То, что нужно запомнить из доклада.</h2>
+    <div class="key-findings" style="margin-top:14px;">
+      <div class="kf"><div class="kf-bullet">1</div><div>Чем выше концентрация хромофора, тем выше локальное поглощение энергии — но <b>повреждение определяется не только лазером</b>, а объёмом тканей, вовлечённых во воспалительный ответ</div></div>
+      <div class="kf"><div class="kf-bullet">2</div><div>Пузырь — следствие <b>сосудисто-воспалительного повреждения</b>, а не показатель «хорошей мощности»</div></div>
+      <div class="kf"><div class="kf-bullet">3</div><div><b>Интактная дерма между зонами повреждения</b> — ключевой фактор безопасного заживления</div></div>
+      <div class="kf"><div class="kf-bullet">4</div><div>Пикосекундные лазеры уменьшают thermal injury, но <b>не отменяют биологические пределы тканей</b></div></div>
+      <div class="kf"><div class="kf-bullet">5</div><div>Длительное умеренное охлаждение — главный практический инструмент <b>остановки secondary inflammatory expansion</b></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 56. GLOSSARY 1 -->
+<section class="slide green">
+  <div class="slide-inner">
+    <div class="eyebrow">Словарь · 1 из 2</div>
+    <h2 class="section">Биология и физика.</h2>
+    <div class="glossary-grid">
+      <div class="glossary-item">
+        <div class="gh"><span class="abbr">LIOB</span><span class="en">Laser-Induced Optical Breakdown</span></div>
+        <div class="ru-full">Лазерно-индуцированный оптический пробой</div>
+        <div class="desc">Физический эффект пикосекундных лазеров: импульс ионизирует ткань и формирует микроплазму. Возникает кавитационный пузырёк и ударная волна — основа фотомеханического действия.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="gh"><span class="abbr">TRT</span><span class="en">Thermal Relaxation Time</span></div>
+        <div class="ru-full">Время термической релаксации</div>
+        <div class="desc">Введено Anderson & Parrish (1983). Время охлаждения мишени до 50% начальной температуры. Если импульс короче TRT — энергия удерживается в мишени селективно.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="gh"><span class="abbr">DAMPs</span><span class="en">Damage-Associated Molecular Patterns</span></div>
+        <div class="ru-full">Молекулярные паттерны повреждения</div>
+        <div class="desc">«Сигналы тревоги», которые выбрасывают повреждённые клетки. Запускают иммунный ответ и воспалительный каскад — HMGB1, S100, мочевая кислота, ATP вне клетки.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="gh"><span class="abbr">IL-1, TNF-α</span><span class="en">Interleukin-1, Tumor Necrosis Factor-α</span></div>
+        <div class="ru-full">Провоспалительные цитокины</div>
+        <div class="desc">Главные «дирижёры» острого воспалительного ответа. Активируют сосуды, лейкоциты, повышают проницаемость капилляров и температуру тканей.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="gh"><span class="abbr">DEJ</span><span class="en">Dermo-Epidermal Junction</span></div>
+        <div class="ru-full">Дермо-эпидермальное соединение</div>
+        <div class="desc">Анатомическая граница между эпидермисом и сосочковой дермой, скреплённая базальной мембраной. Зона разделения при формировании любых пузырей.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="gh"><span class="abbr">PIH</span><span class="en">Post-Inflammatory Hyperpigmentation</span></div>
+        <div class="ru-full">Поствоспалительная гиперпигментация</div>
+        <div class="desc">Тёмные пятна после воспаления или травмы кожи. Главный риск лазерных процедур, особенно у фототипов IV–VI. Прямо коррелирует с интенсивностью воспалительного ответа.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 57. GLOSSARY 2 -->
+<section class="slide green">
+  <div class="slide-inner">
+    <div class="eyebrow">Словарь · 2 из 2</div>
+    <h2 class="section">Клинические термины.</h2>
+    <div class="glossary-grid">
+      <div class="glossary-item">
+        <div class="gh"><span class="abbr">Fluence</span><span class="en">Fluence · флюенс</span></div>
+        <div class="ru-full">Плотность энергии</div>
+        <div class="desc">Энергия лазерного импульса на единицу площади пятна (Дж/см²). Ключевой параметр и для эффективности, и для безопасности.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="gh"><span class="abbr">Black packing</span><span class="en">Black packing</span></div>
+        <div class="ru-full">Плотная заливка чёрным пигментом</div>
+        <div class="desc">Часть татуировки с максимальной концентрацией пигмента (часто чёрного). Максимальное локальное поглощение энергии — максимальный воспалительный риск.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="gh"><span class="abbr">Frosting</span><span class="en">Frosting</span></div>
+        <div class="ru-full">«Заиндевелость» — белый налёт</div>
+        <div class="desc">Клинический endpoint при удалении татуировок — образование белёсой плёнки в момент импульса. Указывает на формирование газовых микропузырьков в дерме.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="gh"><span class="abbr">Staged treatment</span><span class="en">Staged treatment</span></div>
+        <div class="ru-full">Поэтапное лечение</div>
+        <div class="desc">Разделение крупной татуировки на зоны, обрабатываемые в разные визиты. Снижает суммарную воспалительную нагрузку за один сеанс.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="gh"><span class="abbr">Primary injury</span><span class="en">Primary injury</span></div>
+        <div class="ru-full">Первичное повреждение</div>
+        <div class="desc">Мгновенный эффект от самого импульса лазера — фототермический или фотомеханический. Фиксирован, неизменяем после процедуры.</div>
+      </div>
+      <div class="glossary-item">
+        <div class="gh"><span class="abbr">Secondary injury</span><span class="en">Secondary inflammatory expansion</span></div>
+        <div class="ru-full">Вторичное воспалительное расширение</div>
+        <div class="desc">Прогрессирующее повреждение в часы после процедуры из-за развития воспалительного каскада. Зона, в которой работает охлаждение.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 58. REFERENCES BLOCK 1 -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Литература · блок 1 · физика и риск</div>
+    <h2 class="section">Источники по селективному фототермолизу и пико-vs-нано.</h2>
+    <div class="ref-grid">
+      <div class="ref"><div><b>Anderson & Parrish, 1983</b> · фундамент селективного фототермолиза, Science 220:524-527</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/6836297/">↗ PubMed</a></div>
+      <div class="ref"><div><b>Ross et al., 1998</b> · сравнение пико и нано в татуировках, photoacoustic vs photothermal</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=Ross+picosecond+nanosecond+tattoo+1998">↗ PubMed</a></div>
+      <div class="ref"><div><b>Brauer et al., 2012</b> · 755 ps Alexandrite, blue/green tattoo pigment, Arch Dermatol</div><a target="_blank" href="https://jamanetwork.com/journals/jamadermatology/fullarticle/1158557">↗ JAMA Derm</a></div>
+      <div class="ref"><div><b>Tanghetti</b> · fractional picosecond — LIOB, кавитация, механобиология</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=Tanghetti+fractional+picosecond">↗ PubMed</a></div>
+      <div class="ref"><div><b>Kossida et al., 2012</b> · optimal tattoo removal in theory and practice</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=Kossida+optimal+tattoo+removal">↗ PubMed</a></div>
+      <div class="ref"><div><b>Herd et al., 2016</b> · complications of tattoo removal — blistering, scarring, PIH</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=Herd+complications+tattoo+removal">↗ PubMed</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- 59. REFERENCES BLOCK 2 -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Литература · блок 2 · воспаление</div>
+    <h2 class="section">Универсальность воспалительного ответа и пузыри.</h2>
+    <div class="ref-grid">
+      <div class="ref"><div><b>Eming, Krieg, Davidson</b> · Inflammation in Wound Repair and Tissue Regeneration — каскад, медиаторы</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=Eming+inflammation+wound+repair">↗ PubMed</a></div>
+      <div class="ref"><div><b>Singer & Clark</b> · Cutaneous Wound Healing — классика тканевого ответа</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=Singer+Clark+cutaneous+wound+healing">↗ PubMed</a></div>
+      <div class="ref"><div><b>Arturson</b> · Pathophysiology of burn injury — capillary leakage, edema, blister</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=Arturson+burn+pathophysiology">↗ PubMed</a></div>
+      <div class="ref"><div><b>Giordano & Koval, 1995</b> · Fracture Blisters — биомеханика DEJ separation</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/7602633/">↗ PubMed</a></div>
+      <div class="ref"><div><b>Fracture Blisters Review</b> · pathophysiology and management</div><a target="_blank" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3088393/">↗ PMC</a></div>
+      <div class="ref"><div><b>Karia et al.</b> · Friction Blisters — shear injury, epidermal separation</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=friction+blister+shear+stress">↗ PubMed</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- 60. REFERENCES BLOCK 3 -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Литература · блок 3 · охлаждение</div>
+    <h2 class="section">Контролируемое охлаждение как часть лечения.</h2>
+    <div class="ref-grid">
+      <div class="ref"><div><b>Cuttle et al., 2008</b> · Optimal duration of cooling for burn injury (porcine model). Burns 34(8):1176-82</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/18695595/">↗ PubMed</a></div>
+      <div class="ref"><div><b>Cuttle et al., 2008</b> · Optimal temperature for burn cooling. Wound Repair Regen — 15°C × 20 мин</div><a target="_blank" href="https://onlinelibrary.wiley.com/doi/10.1111/j.1524-475X.2008.00413.x">↗ Wiley</a></div>
+      <div class="ref"><div><b>Bleakley et al., 2004</b> · The Use of Ice in Injury Management — обзор</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=Bleakley+ice+injury+management">↗ PubMed</a></div>
+      <div class="ref"><div><b>Hubbard et al., 2004</b> · Cryotherapy and inflammation modulation</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=Hubbard+cryotherapy+inflammation">↗ PubMed</a></div>
+      <div class="ref"><div><b>Singbartl & Green</b> · Cooling and tissue oxygen demand</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=Singbartl+cooling+oxygen+demand">↗ PubMed</a></div>
+      <div class="ref"><div><b>Mihara et al., 2015</b> · Local cooling reduces skin ischemia under surface pressure in rats</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=Mihara+local+cooling+skin+ischemia">↗ PubMed</a></div>
+      <div class="ref"><div><b>Meeusen & Lievens</b> · Cryotherapy in Sports Injuries — vasoconstriction, edema</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=Meeusen+Lievens+cryotherapy">↗ PubMed</a></div>
+      <div class="ref"><div><b>BBA First Aid Guidelines</b> · 20 минут проточной воды при ожоге — клинический стандарт</div><a target="_blank" href="https://www.britishburnassociation.org/wp-content/uploads/2017/06/BBA-First-Aid-Guideline-24.7.18.pdf">↗ BBA</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- 61. FINAL -->
+<section class="slide dark">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Спасибо за внимание</div>
+    <h1 class="hero">Метод Микрюкова —<br>это про биологию, а не про лазер.</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">
+      Оцени риск. Подбери под пациента. Контролируй нагрузку. Охлади ткани.<br>
+      Любой лазер становится безопасным, если работать в пределах биологического резерва.
+    </p>
+    <div class="pill-row" style="margin-top:32px;">
+      <span class="info-pill">Inflammatory Load Theory</span>
+      <span class="info-pill">Pigment / Dermal Reserve</span>
+      <span class="info-pill">Controlled cooling</span>
+      <span class="info-pill">Mikryukov 2026</span>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<div class="controls">
+  <button id="prevBtn" aria-label="Назад">‹</button>
+  <div class="counter" id="counter">1 / 61</div>
+  <button id="nextBtn" aria-label="Вперёд">›</button>
+</div>
+
+<div class="hint">
+  <span class="kbd">←</span> <span class="kbd">→</span> · <span class="kbd">Space</span> · <span class="kbd">Home</span>
+</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const counter = document.getElementById('counter');
+const progressFill = document.getElementById('progressFill');
+let idx = 0;
+const total = slides.length;
+
+function setSlide(i){
+  i = Math.max(0, Math.min(total-1, i));
+  slides[idx].classList.remove('active');
+  slides[i].classList.add('active');
+  idx = i;
+  counter.textContent = (i+1) + ' / ' + total;
+  progressFill.style.width = ((i+1)/total*100) + '%';
+  if(i === 0) location.hash = '';
+  else location.hash = '#s' + (i+1);
+}
+
+document.getElementById('nextBtn').addEventListener('click', ()=>setSlide(idx+1));
+document.getElementById('prevBtn').addEventListener('click', ()=>setSlide(idx-1));
+
+document.addEventListener('keydown', (e)=>{
+  if(e.target.classList && e.target.classList.contains('term')) return;
+  if(e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown'){ e.preventDefault(); setSlide(idx+1); }
+  else if(e.key === 'ArrowLeft' || e.key === 'PageUp'){ e.preventDefault(); setSlide(idx-1); }
+  else if(e.key === 'Home'){ e.preventDefault(); setSlide(0); }
+  else if(e.key === 'End'){ e.preventDefault(); setSlide(total-1); }
+});
+
+let lastWheel = 0;
+window.addEventListener('wheel', (e)=>{
+  const now = Date.now();
+  if(now - lastWheel < 700) return;
+  if(Math.abs(e.deltaY) < 30) return;
+  lastWheel = now;
+  if(e.deltaY > 0) setSlide(idx+1); else setSlide(idx-1);
+}, {passive:true});
+
+let touchY = null;
+window.addEventListener('touchstart', e=>{touchY = e.touches[0].clientY;}, {passive:true});
+window.addEventListener('touchend', e=>{
+  if(touchY === null) return;
+  const dy = e.changedTouches[0].clientY - touchY;
+  if(Math.abs(dy) > 50){ if(dy < 0) setSlide(idx+1); else setSlide(idx-1); }
+  touchY = null;
+}, {passive:true});
+
+if(location.hash && location.hash.startsWith('#s')){
+  const n = parseInt(location.hash.slice(2),10);
+  if(!isNaN(n)) setSlide(n-1);
+}
+
+// Initial counter update with real slide count
+counter.textContent = '1 / ' + total;
+</script>
+
+</body>
+</html>
