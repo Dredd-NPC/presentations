@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="googlebot" content="noindex,nofollow,noarchive">
+<title>Мелазма и Nd:YAG Q-switch лазеры · Лекция для клуба ЛазерПРО</title>
+<style>
+  :root{
+    --bg:#fbfbfd; --ink:#1d1d1f; --ink-soft:#3a3a3f; --ink-light:#86868b;
+    --line:#d2d2d7;
+    --blue:#0a84ff; --pink:#ff2d55; --green:#30d158;
+    --orange:#ff9500; --red:#ff3b30; --purple:#5e5ce6;
+    --teal:#5ac8fa; --brown:#8b5a2b; --amber:#ffcc00;
+    --card:#ffffff; --card-edge: rgba(0,0,0,0.05);
+    --shadow: 0 2px 12px rgba(0,0,0,0.04), 0 12px 40px rgba(0,0,0,0.06);
+    --radius: 22px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;
+    background:var(--bg); color:var(--ink);
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+    letter-spacing:-0.011em;
+  }
+  .deck{position:fixed;inset:0;}
+  .slide{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding: clamp(40px, 5vh, 80px) clamp(28px, 2.6vw, 60px);
+    opacity:0; transform:translateY(24px) scale(0.985);
+    transition: opacity .55s cubic-bezier(.2,.7,.2,1), transform .55s cubic-bezier(.2,.7,.2,1);
+    pointer-events:none; overflow:auto;
+  }
+  .slide.active{opacity:1;transform:none;pointer-events:auto;}
+  .slide-inner{
+    width:100%;
+    max-width: clamp(1200px, 95vw, 1920px);
+    margin:0 auto;
+    display:flex;flex-direction:column;
+    gap: clamp(12px, 1.4vw, 22px);
+  }
+
+  /* TYPOGRAPHY */
+  .eyebrow{text-transform:uppercase;letter-spacing:.18em;font-size:clamp(18px,1.2vw,22px);font-weight:600;color:var(--blue);}
+  h1.hero{
+    font-size: clamp(72px, 8.4vw, 144px);
+    line-height:.98; letter-spacing:-0.04em; font-weight:700;
+    background: linear-gradient(180deg,#1d1d1f 0%, #2a2a2e 60%, #6e6e73 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  h1.title{font-size: clamp(52px, 6vw, 100px); line-height:1.04; letter-spacing:-0.025em; font-weight:700; color:var(--ink);}
+  h2.section{font-size: clamp(44px, 4.6vw, 80px); line-height:1.08; letter-spacing:-0.02em; font-weight:700; color:var(--ink);}
+  .lead{font-size: clamp(28px, 2.2vw, 42px); line-height:1.45; color:var(--ink-soft); font-weight:400; max-width:1400px;}
+  .lead.big{font-size: clamp(32px, 2.6vw, 48px); line-height:1.35;}
+  p{font-size: clamp(22px, 1.5vw, 28px); line-height:1.55; color:var(--ink);}
+
+  /* Cards & grids */
+  .card{
+    background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow);
+    padding: clamp(22px, 1.9vw, 34px); border:1px solid var(--card-edge); position:relative;
+  }
+  .card h3{font-size:clamp(26px,1.9vw,34px);font-weight:700;color:var(--ink);margin-bottom:10px;line-height:1.25;}
+  .card p, .card li{font-size:clamp(20px,1.5vw,26px);line-height:1.5;color:var(--ink-soft);}
+  .card ul{padding-left:22px;display:flex;flex-direction:column;gap:8px;}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:clamp(18px,1.4vw,26px);}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,1.2vw,22px);}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(14px,1vw,18px);}
+  @media (max-width:900px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}}
+
+  .stat-card{
+    background:var(--card); border-radius:20px;
+    padding: clamp(20px,1.7vw,30px);
+    border:1px solid var(--card-edge);
+    display:flex;flex-direction:column;gap:8px;
+    box-shadow:var(--shadow);
+  }
+  .stat-num{font-size:clamp(48px,5.2vw,84px);font-weight:700;line-height:.95;letter-spacing:-0.03em;
+    background:linear-gradient(135deg,var(--blue),var(--purple));
+    -webkit-background-clip:text;background-clip:text;color:transparent;}
+  .stat-card.red .stat-num{background:linear-gradient(135deg,var(--red),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .stat-card.amber .stat-num{background:linear-gradient(135deg,var(--orange),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .stat-card.green .stat-num{background:linear-gradient(135deg,var(--green),var(--teal));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .stat-label{font-size:clamp(20px,1.4vw,26px);font-weight:500;color:var(--ink-soft);line-height:1.4;}
+  .stat-label-big{font-size:clamp(24px,1.7vw,32px);font-weight:600;color:var(--ink);line-height:1.35;}
+
+  /* Coloured slides */
+  .slide.dark{background:linear-gradient(160deg,#0f0f12 0%, #1d1d1f 100%);color:#fff;}
+  .slide.dark h1.hero{background:linear-gradient(180deg,#fff 0%, #ddd 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .slide.dark h1.title{color:#fff;}
+  .slide.dark h2.section{color:#fff;}
+  .slide.dark .lead{color:rgba(255,255,255,0.86);}
+  .slide.dark .eyebrow{color:#a8d8ff;}
+  .slide.dark .card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.10);}
+  .slide.dark .card h3{color:#fff;}
+  .slide.dark .card p, .slide.dark .card li{color:rgba(255,255,255,0.84);}
+
+  .slide.blue{background:linear-gradient(160deg,#003d8a 0%, #0a84ff 100%);color:#fff;}
+  .slide.pink{background:linear-gradient(160deg,#7a0c30 0%, #ff2d55 100%);color:#fff;}
+  .slide.red{background:linear-gradient(160deg,#a30010 0%, #ff3b30 100%);color:#fff;}
+  .slide.amber{background:linear-gradient(160deg,#5c3d00 0%, #ff9500 100%);color:#fff;}
+  .slide.green{background:linear-gradient(160deg,#0f6e2f 0%, #30d158 100%);color:#fff;}
+  .slide.purple{background:linear-gradient(160deg,#2c1a7c 0%, #5e5ce6 100%);color:#fff;}
+  .slide.blue h1, .slide.blue h2.section, .slide.blue h1.title{color:#fff;}
+  .slide.pink h1, .slide.pink h2.section, .slide.pink h1.title{color:#fff;}
+  .slide.red h1, .slide.red h2.section, .slide.red h1.title{color:#fff;}
+  .slide.amber h1, .slide.amber h2.section, .slide.amber h1.title{color:#fff;}
+  .slide.green h1, .slide.green h2.section, .slide.green h1.title{color:#fff;}
+  .slide.purple h1, .slide.purple h2.section, .slide.purple h1.title{color:#fff;}
+  .slide.blue .lead, .slide.pink .lead, .slide.red .lead, .slide.amber .lead, .slide.green .lead, .slide.purple .lead{color:rgba(255,255,255,0.92);}
+  .slide.blue .eyebrow, .slide.pink .eyebrow, .slide.red .eyebrow, .slide.amber .eyebrow, .slide.green .eyebrow, .slide.purple .eyebrow{color:rgba(255,255,255,0.85);}
+  .slide.blue .card, .slide.pink .card, .slide.red .card, .slide.amber .card, .slide.green .card, .slide.purple .card{background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.15);backdrop-filter:blur(8px);}
+  .slide.blue .card h3, .slide.pink .card h3, .slide.red .card h3, .slide.amber .card h3, .slide.green .card h3, .slide.purple .card h3{color:#fff;}
+  .slide.blue .card p, .slide.blue .card li, .slide.pink .card p, .slide.pink .card li, .slide.red .card p, .slide.red .card li, .slide.amber .card p, .slide.amber .card li, .slide.green .card p, .slide.green .card li, .slide.purple .card p, .slide.purple .card li{color:rgba(255,255,255,0.92);}
+  .slide.blue .stat-card, .slide.pink .stat-card, .slide.red .stat-card, .slide.amber .stat-card, .slide.green .stat-card, .slide.purple .stat-card{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.18);}
+  .slide.blue .stat-num, .slide.pink .stat-num, .slide.red .stat-num, .slide.amber .stat-num, .slide.green .stat-num, .slide.purple .stat-num{background:linear-gradient(135deg,#fff,#fff);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .slide.blue .stat-label, .slide.pink .stat-label, .slide.red .stat-label, .slide.amber .stat-label, .slide.green .stat-label, .slide.purple .stat-label,
+  .slide.blue .stat-label-big, .slide.pink .stat-label-big, .slide.red .stat-label-big, .slide.amber .stat-label-big, .slide.green .stat-label-big, .slide.purple .stat-label-big{color:rgba(255,255,255,0.95);}
+
+  /* Section number */
+  .section-num{
+    font-size:clamp(140px,17vw,260px);
+    font-weight:700;line-height:.85;letter-spacing:-0.05em;
+    background:linear-gradient(180deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.05) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    margin-bottom:12px;
+  }
+  .section-title-block{text-align:center;align-items:center;}
+
+  /* Quote */
+  blockquote.q{
+    font-size:clamp(28px,2.6vw,44px); line-height:1.32; letter-spacing:-0.015em;
+    font-weight:500; color:var(--ink);
+    border-left:5px solid var(--blue);
+    padding:6px 0 6px 28px; max-width:1400px;
+  }
+  blockquote.q .src{display:block;font-size:clamp(18px,1.2vw,22px);font-weight:500;color:var(--ink-light);margin-top:18px;letter-spacing:0;}
+  .slide.dark blockquote.q, .slide.blue blockquote.q, .slide.pink blockquote.q, .slide.red blockquote.q, .slide.amber blockquote.q, .slide.green blockquote.q, .slide.purple blockquote.q{color:#fff;border-left-color:rgba(255,255,255,0.8);}
+  .slide.dark blockquote.q .src, .slide.blue blockquote.q .src, .slide.pink blockquote.q .src, .slide.red blockquote.q .src, .slide.amber blockquote.q .src, .slide.green blockquote.q .src, .slide.purple blockquote.q .src{color:rgba(255,255,255,0.75);}
+
+  /* Pills / chips */
+  .pill{display:inline-block;padding:6px 14px;border-radius:999px;font-size:clamp(15px,1vw,18px);font-weight:600;}
+  .pill.hi{background:rgba(48,209,88,.16);color:#0f8a3a;}
+  .pill.mid{background:rgba(255,149,0,.16);color:#a55c00;}
+  .pill.lo{background:rgba(255,45,85,.14);color:#b8163d;}
+  .pill.danger{background:rgba(255,59,48,.16);color:#a30010;}
+  .pill-row{display:flex;gap:10px;flex-wrap:wrap;}
+  .info-pill{display:inline-flex;padding:10px 22px;border-radius:999px;font-size:clamp(20px,1.4vw,26px);font-weight:600;background:rgba(10,132,255,0.10);color:var(--blue);}
+  .slide.dark .info-pill{background:rgba(168,216,255,0.18);color:#a8d8ff;}
+
+  /* Key findings list */
+  .key-findings{display:flex;flex-direction:column;gap:clamp(12px,1.1vw,20px);}
+  .kf{display:flex;align-items:flex-start;gap:20px;font-size:clamp(24px,1.85vw,34px);line-height:1.42;color:var(--ink);}
+  .slide.dark .kf, .slide.blue .kf, .slide.pink .kf, .slide.red .kf, .slide.amber .kf, .slide.green .kf, .slide.purple .kf{color:#fff;}
+  .kf-bullet{
+    flex-shrink:0;
+    width:clamp(34px,2.4vw,44px); height:clamp(34px,2.4vw,44px);
+    border-radius:50%;
+    background:linear-gradient(135deg, var(--blue), var(--purple));
+    color:#fff; display:flex; align-items:center; justify-content:center;
+    font-size:clamp(15px,1.1vw,19px); font-weight:700; margin-top:3px;
+  }
+  .kf-bullet.red{background:linear-gradient(135deg, var(--red), var(--pink));}
+  .kf-bullet.green{background:linear-gradient(135deg, var(--green), var(--teal));}
+  .kf-bullet.amber{background:linear-gradient(135deg, var(--orange), var(--pink));}
+
+  /* Compare table */
+  table.cmp{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
+  .cmp th, .cmp td{padding:clamp(14px,1.1vw,22px) clamp(16px,1.3vw,24px);text-align:left;font-size:clamp(20px,1.5vw,26px);border-bottom:1px solid var(--line);line-height:1.4;}
+  .cmp th{background:#f5f5f7;font-weight:600;color:var(--ink);font-size:clamp(19px,1.35vw,24px);}
+  .cmp tr:last-child td{border-bottom:none;}
+
+  /* Illustration container */
+  .illus{
+    background:#fff; border-radius:var(--radius);
+    padding: clamp(20px,1.7vw,30px);
+    box-shadow:var(--shadow); border:1px solid rgba(0,0,0,0.04);
+    text-align:center;
+  }
+  .illus svg{max-width:100%;height:auto;display:block;margin:0 auto;}
+  .illus-caption{font-size:clamp(18px,1.3vw,24px);color:var(--ink-soft);margin-top:14px;line-height:1.5;}
+
+  /* Source chip */
+  .src-chip{display:inline-block;padding:8px 16px;border-radius:999px;background:rgba(10,132,255,0.08);color:var(--blue);font-size:clamp(16px,1.1vw,20px);font-weight:500;}
+  .slide.dark .src-chip, .slide.blue .src-chip, .slide.pink .src-chip, .slide.red .src-chip, .slide.amber .src-chip, .slide.green .src-chip, .slide.purple .src-chip{background:rgba(255,255,255,0.18);color:#fff;}
+
+  /* Author badge */
+  .author-badge{display:inline-block;padding:8px 18px;border-radius:999px;background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;font-size:clamp(16px,1.1vw,20px);font-weight:600;letter-spacing:0.02em;}
+
+  /* Progress bar */
+  .progress{position:fixed;top:0;left:0;right:0;height:2px;background:rgba(0,0,0,0.04);z-index:60;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--purple),var(--pink));width:0%;transition:width .4s cubic-bezier(.2,.7,.2,1);opacity:0.55;}
+
+  /* Animations */
+  @keyframes magicalFadeIn{
+    0%{opacity:0;transform:translateY(24px);filter:blur(3px);}
+    60%{filter:blur(0);}
+    100%{opacity:1;transform:translateY(0);filter:blur(0);}
+  }
+  .slide.active .stat-card,
+  .slide.active .card,
+  .slide.active .illus,
+  .slide.active blockquote.q,
+  .slide.active table.cmp{
+    animation: magicalFadeIn .8s cubic-bezier(.2,.7,.2,1) backwards;
+  }
+  .slide.active .grid-2 > *:nth-child(1), .slide.active .grid-3 > *:nth-child(1), .slide.active .grid-4 > *:nth-child(1){animation-delay:.12s;}
+  .slide.active .grid-2 > *:nth-child(2), .slide.active .grid-3 > *:nth-child(2), .slide.active .grid-4 > *:nth-child(2){animation-delay:.26s;}
+  .slide.active .grid-3 > *:nth-child(3), .slide.active .grid-4 > *:nth-child(3){animation-delay:.40s;}
+  .slide.active .grid-4 > *:nth-child(4){animation-delay:.54s;}
+  .slide.active .key-findings .kf:nth-child(1){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .12s;}
+  .slide.active .key-findings .kf:nth-child(2){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .24s;}
+  .slide.active .key-findings .kf:nth-child(3){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .36s;}
+  .slide.active .key-findings .kf:nth-child(4){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .48s;}
+  .slide.active .key-findings .kf:nth-child(5){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .60s;}
+  .slide.active .key-findings .kf:nth-child(6){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .72s;}
+
+  /* TOOLTIP TERMS */
+  .term{
+    border-bottom:1.5px dotted var(--blue); cursor:help; position:relative;
+    font-weight:600; color:var(--blue);
+  }
+  .term .tip{
+    position:absolute; bottom:calc(100% + 12px); left:50%;
+    transform:translateX(-50%) translateY(6px);
+    background:rgba(20,20,22,0.96); color:#fff;
+    padding:14px 18px; border-radius:14px;
+    font-size:16px; font-weight:400; line-height:1.5;
+    white-space:normal; width:340px; max-width:80vw;
+    text-align:left; letter-spacing:0;
+    opacity:0; pointer-events:none;
+    transition: opacity .18s ease, transform .18s ease;
+    z-index:100;
+    box-shadow:0 10px 30px rgba(0,0,0,0.25);
+  }
+  .term .tip::before{
+    content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%);
+    border:7px solid transparent; border-top-color: rgba(20,20,22,0.96);
+  }
+  .term .tip b{color:#a8d8ff;}
+  .term:hover .tip, .term:focus .tip{opacity:1; transform:translateX(-50%) translateY(0);}
+  .slide.dark .term, .slide.blue .term, .slide.pink .term, .slide.red .term, .slide.amber .term, .slide.green .term, .slide.purple .term{
+    color:#a8d8ff; border-bottom-color:#a8d8ff;
+  }
+  /* Inline term inside a card heading or list item - keep weight from parent */
+  .card h3 .term, .card li .term, .card p .term{color:inherit;border-bottom-color:rgba(10,132,255,0.45);}
+  .slide.dark .card h3 .term, .slide.dark .card li .term, .slide.dark .card p .term,
+  .slide.blue .card h3 .term, .slide.blue .card li .term, .slide.blue .card p .term,
+  .slide.pink .card h3 .term, .slide.pink .card li .term, .slide.pink .card p .term,
+  .slide.red .card h3 .term, .slide.red .card li .term, .slide.red .card p .term,
+  .slide.amber .card h3 .term, .slide.amber .card li .term, .slide.amber .card p .term,
+  .slide.green .card h3 .term, .slide.green .card li .term, .slide.green .card p .term,
+  .slide.purple .card h3 .term, .slide.purple .card li .term, .slide.purple .card p .term{
+    color:inherit;border-bottom-color:rgba(168,216,255,0.65);
+  }
+
+  .slide::-webkit-scrollbar{width:0;}
+</style>
+</head>
+<body>
+
+<div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="deck" id="deck">
+
+<!-- 01. COVER -->
+<section class="slide dark active">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Лекция для клуба ЛазерПРО</div>
+    <h1 class="hero">Мелазма<br>и <span class="term">Nd:YAG<span class="tip"><b>Neodymium-doped Yttrium Aluminum Garnet</b> — лазерная среда на основе кристалла иттрий-алюминиевого граната с примесью неодима. Длины волн 1064 нм и 532 нм.</span></span> лазеры</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">
+      Современный взгляд на патогенез и доказанные методы лечения.<br>
+      Почему лазер — не первая линия, а инструмент в комплексной схеме.
+    </p>
+    <div class="pill-row" style="margin-top:22px;justify-content:center;">
+      <span class="info-pill">© В. Микрюков, к.м.н.</span>
+      <span class="info-pill">2026</span>
+    </div>
+  </div>
+</section>
+
+<!-- 02. ГЛАВНЫЙ ТЕЗИС -->
+<section class="slide pink">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Главный тезис лекции</div>
+    <blockquote class="q" style="border-left:none;text-align:center;font-size:clamp(34px,4vw,56px);max-width:1500px;line-height:1.28;">
+      Мелазма — это <b>не проблема меланина</b>.<br>
+      Это хроническое заболевание<br><b>кожной экосистемы</b>: меланоциты,<br>сосуды, воспаление, базальная мембрана.
+      <span class="src" style="margin-top:26px;">© В. Микрюков, 2026</span>
+    </blockquote>
+  </div>
+</section>
+
+<!-- 03. SECTION I — ФИЗИОЛОГИЯ -->
+<section class="slide dark">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть I</div>
+    <div class="section-num">01</div>
+    <h1 class="title">Физиология меланоцитов</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">
+      Что должен знать каждый специалист<br>до того, как взять в руки лазер.
+    </p>
+  </div>
+</section>
+
+<!-- 04. МЕЛАНОЦИТ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Меланоцит</div>
+    <h2 class="section">Где живёт <span style="color:var(--blue)">меланоцит</span></h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Базальный слой эпидермиса</h3>
+        <p>Меланоцит — специализированная клетка, синтезирующая меланин. Единственная клетка в коже с такой функцией. Расположен в <b>базальном слое эпидермиса</b> и в <b>луковице волоса</b>.</p>
+      </div>
+      <div class="card">
+        <h3>10–25% базальных клеток</h3>
+        <p>Меланоциты составляют <b>10–25% от общего числа клеток базального слоя</b>. Один меланоцит снабжает меланином <b>≈40 кератиноцитов</b> вокруг себя через дендритные отростки.</p>
+      </div>
+    </div>
+    <div class="grid-3" style="margin-top:8px;">
+      <div class="stat-card"><div class="stat-num">10–25%</div><div class="stat-label">меланоцитов в базальном слое</div></div>
+      <div class="stat-card green"><div class="stat-num">≈40</div><div class="stat-label">кератиноцитов снабжает 1 меланоцит</div></div>
+      <div class="stat-card amber"><div class="stat-num">1873</div><div class="stat-label">год — термин «меланин» от греч. «чёрный»</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 05. МЕЛАНИН — ЧТО ЭТО -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Меланин · биология</div>
+    <h2 class="section">Меланин —<br>не только в коже</h2>
+    <p class="lead">Меланины — естественный пигмент организма. Находятся <b>не только в коже и волосах</b>: значимые количества обнаруживаются во внутреннем ухе, отделах мозга, радужной оболочке глаза.</p>
+    <div class="grid-3">
+      <div class="card"><h3>Кожа и волосы</h3><p>Основной видимый компартмент. Гранулы меланина в кератиноцитах.</p></div>
+      <div class="card"><h3>Внутреннее ухо</h3><p>Маленькие количества — участвуют в работе клеток улитки.</p></div>
+      <div class="card"><h3>Мозг и радужка</h3><p>Substantia nigra мозга, пигментный слой сетчатки и радужная оболочка.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 06. ЭУМЕЛАНИН vs ФЕОМЕЛАНИН -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Два типа меланина</div>
+    <h2 class="section">Эумеланин <span style="color:var(--ink-light);font-weight:400;">vs</span> <span style="color:var(--orange)">феомеланин</span></h2>
+    <div class="grid-2">
+      <div class="card" style="border-left:5px solid #4a3022;">
+        <h3 style="color:#4a3022;">Эумеланин</h3>
+        <p><b>Азотсодержащее вещество</b> от тёмно-коричневого до чёрного цвета. Преобразует UV-излучение в тепло и блокирует его вредное влияние практически на 100%. <b>Мощный фотопротектор.</b></p>
+      </div>
+      <div class="card" style="border-left:5px solid var(--orange);">
+        <h3 style="color:var(--orange);">Феомеланин</h3>
+        <p>Красноватый, <b>серосодержащий</b> пигмент. Распределён диффузно, не образует гранул. Плохо защищает от UV. Более того — под действием света <b>генерирует активные формы кислорода и свободные радикалы</b>, повреждающие клетки.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 07. ФОРМИРОВАНИЕ ЦВЕТА КОЖИ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Формирование цвета кожи</div>
+    <h2 class="section">Передача меланосом<br>кератиноциту</h2>
+    <p class="lead">Цвет кожи определяется накоплением гранул меланина в кератиноцитах. Кератиноцит, родившись в базальном слое, движется вверх — по пути <b>соприкасается с дендритами меланоцита</b> и получает порцию меланосом для защиты ядра.</p>
+    <div class="card" style="border-left:5px solid var(--blue);">
+      <p style="font-size:clamp(22px,1.7vw,30px);"><b>Сколько меланосом попадает в кератиноцит — настолько тёмный цвет кожи получится.</b> Количество меланоцитов у людей разных рас примерно одинаковое — отличается активность и тип меланина.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 08. SECTION II — МЕЛАЗМА -->
+<section class="slide dark">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть II</div>
+    <div class="section-num">02</div>
+    <h1 class="title">Что такое мелазма</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">
+      От «маски беременности»<br>до современного определения.
+    </p>
+  </div>
+</section>
+
+<!-- 09. ОПРЕДЕЛЕНИЕ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Определение</div>
+    <h2 class="section">Мелазма — это…</h2>
+    <div class="grid-2" style="align-items:stretch;">
+      <div style="display:flex;flex-direction:column;gap:clamp(12px,1.1vw,18px);">
+        <div class="card" style="border-left:5px solid var(--orange);">
+          <p style="font-size:clamp(22px,1.7vw,28px);"><b>Приобретённая гиперпигментация</b>, характеризующаяся <b>двусторонними неравномерными коричневыми пятнами</b> на открытых участках кожи (лицо, реже предплечья).</p>
+        </div>
+        <div class="card"><h3>Историческое</h3><p><b>Хлоазма</b>, «маска беременности» — устаревшие термины. Гормональные изменения как объяснение.</p></div>
+        <div class="card"><h3>Современное</h3><p>Гетерогенный патогенез: <b>меланоциты + кератиноциты + тучные клетки + нарушение регуляции генов + васкуляризация + разрушение базальной мембраны</b>.</p></div>
+      </div>
+      <div class="illus" style="display:flex;align-items:center;justify-content:center;padding:0;overflow:hidden;">
+        <img src="melasma_assets/melasma_face_clinical.jpeg" alt="Клинический пример мелазмы на лице" style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius);">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10. ЭПИДЕМИОЛОГИЯ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Эпидемиология</div>
+    <h2 class="section">Кто болеет мелазмой</h2>
+    <div class="grid-4">
+      <div class="stat-card red"><div class="stat-num">80–90%</div><div class="stat-label-big">пациентов — женщины</div></div>
+      <div class="stat-card amber"><div class="stat-num">III–V</div><div class="stat-label-big">фототипы по Фитцпатрику</div></div>
+      <div class="stat-card"><div class="stat-num">Asia · LatAm</div><div class="stat-label-big">этнические группы повышенного риска</div></div>
+      <div class="stat-card green"><div class="stat-num">↑↑↑</div><div class="stat-label-big">частота рецидивов после лечения</div></div>
+    </div>
+    <div class="illus" style="background:#fff;padding:clamp(10px,0.8vw,16px);">
+      <img src="melasma_assets/fitzpatrick_phototypes.png" alt="Фототипы кожи по Фитцпатрику I–VI" style="width:100%;max-height:32vh;object-fit:contain;border-radius:10px;">
+      <div class="illus-caption">Фототипы по Фитцпатрику I–VI. Мелазма наиболее часто встречается у III–V — азиатские, латиноамериканские, средиземноморские группы.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 11. СДВИГ ПАРАДИГМЫ -->
+<section class="slide blue">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Сдвиг парадигмы</div>
+    <blockquote class="q" style="border-left:none;text-align:center;font-size:clamp(32px,3.6vw,52px);max-width:1500px;line-height:1.3;">
+      Раньше считали:<br>«мелазма = много меланина».<br><br>
+      Сегодня:<br><b>мелазма = нарушение регуляции<br>меланогенеза + сосудистый<br>+ воспалительный + дермальный компоненты</b>.
+    </blockquote>
+  </div>
+</section>
+
+<!-- 12. SECTION III — ПАТОГЕНЕЗ -->
+<section class="slide dark">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть III</div>
+    <div class="section-num">03</div>
+    <h1 class="title">Современный патогенез</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">
+      6 механизмов, которые работают одновременно.
+    </p>
+  </div>
+</section>
+
+<!-- 13. 6 МЕХАНИЗМОВ — OVERVIEW -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Обзор</div>
+    <h2 class="section">6 факторов <span style="color:var(--orange)">патогенеза</span></h2>
+    <div class="grid-3">
+      <div class="card" style="border-top:5px solid var(--amber);"><h3>1. УФ + видимый свет</h3><p>UV-A, UV-B и видимый свет активируют меланогенез через MITF и OPN3-рецептор.</p></div>
+      <div class="card" style="border-top:5px solid var(--pink);"><h3>2. Гормоны</h3><p>Эстроген, прогестерон, <span class="term">ЗГТ<span class="tip"><b>Заместительная гормональная терапия</b> — приём эстрогенов в пери- и постменопаузе.</span></span>, <span class="term">КОК<span class="tip"><b>Комбинированные оральные контрацептивы</b> — содержат эстроген и прогестерон. Известный триггер мелазмы.</span></span>. Рецепторы эстрогена в очагах мелазмы.</p></div>
+      <div class="card" style="border-top:5px solid var(--purple);"><h3>3. Генетика</h3><p>Семейные случаи. Этническая предрасположенность III–V фототипов.</p></div>
+      <div class="card" style="border-top:5px solid var(--red);"><h3>4. Воспаление</h3><p><span class="term">IL-1<span class="tip"><b>Interleukin-1</b> — провоспалительный цитокин. Активирует меланоциты.</span></span>, <span class="term">TNF-α<span class="tip"><b>Tumor Necrosis Factor alpha</b> — фактор некроза опухоли альфа. Усиливает экспрессию тирозиназы.</span></span>, <span class="term">COX<span class="tip"><b>Cyclooxygenase</b> — циклооксигеназа. Фермент синтеза простагландинов.</span></span>, простагландины — хроническая активация меланоцитов.</p></div>
+      <div class="card" style="border-top:5px solid var(--blue);"><h3>5. Сосуды</h3><p>VEGF, ангиогенез, тучные клетки. Повышенная сосудистая плотность в очаге.</p></div>
+      <div class="card" style="border-top:5px solid var(--brown);"><h3>6. Базальная мембрана</h3><p>Разрушение → миграция меланоцитов и меланина в дерму → хронические рецидивы.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 14. УФ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Механизм 1 · Ультрафиолет</div>
+    <h2 class="section">UV-A и UV-B — главные триггеры</h2>
+    <div class="grid-2">
+      <div class="card" style="border-left:5px solid var(--amber);"><h3>UV-B (280–320 нм)</h3><p>Прямое <b>повреждение ДНК</b> кератиноцитов → P53 → <span class="term">POMC<span class="tip"><b>Proopiomelanocortin</b> — проопиомеланокортин. Белок-предшественник α-MSH и β-MSH в кератиноците.</span></span> → <span class="term">α-MSH<span class="tip"><b>alpha-Melanocyte Stimulating Hormone</b> — альфа-меланоцитстимулирующий гормон. Связывается с MC1R меланоцита → активация меланогенеза.</span></span> → <span class="term">MC1R<span class="tip"><b>Melanocortin-1 Receptor</b> — рецептор меланокортина 1 на меланоците. Связывает α-MSH.</span></span> на меланоците → активация <b><span class="term">MITF<span class="tip"><b>Microphthalmia-Associated Transcription Factor</b> — главный транскрипционный фактор меланогенеза. Запускает синтез тирозиназы (TYR) и связанных ферментов (TYRP1, TYRP2). На него сходятся все сигнальные пути меланоцита.</span></span></b> → синтез меланина.</p></div>
+      <div class="card" style="border-left:5px solid var(--orange);"><h3>UV-A (320–400 нм)</h3><p>Проникает <b>глубже в дерму</b>. Активирует фибробласты, индуцирует <span class="term">SCF<span class="tip"><b>Stem Cell Factor</b> — фактор стволовых клеток. Активирует c-KIT на меланоците → меланогенез.</span></span> и <span class="term">c-KIT<span class="tip"><b>c-KIT receptor</b> — тирозинкиназный рецептор меланоцита для SCF.</span></span>, усиливает <b>пигментацию через <span class="term">ROS<span class="tip"><b>Reactive Oxygen Species</b> — активные формы кислорода. Окислительный стресс, повреждают ДНК и стимулируют меланогенез.</span></span>-механизм</b>.</p></div>
+    </div>
+    <p class="lead">Хроническое воздействие UV — главный триггер и поддерживающий фактор мелазмы. <b>Без фотозащиты любое лечение бессмысленно.</b></p>
+  </div>
+</section>
+
+<!-- 15. ВИДИМЫЙ СВЕТ -->
+<section class="slide amber">
+  <div class="slide-inner">
+    <div class="eyebrow">Механизм 1b · Видимый свет</div>
+    <h2 class="section">Видимый свет —<br>современное открытие</h2>
+    <p class="lead">Долгое время считали, что видимый свет «безопасен». Сегодня доказано: <b>видимый свет (особенно сине-фиолетовая часть, 415 нм) поддерживает и усиливает мелазму</b> через рецептор <b><span class="term">OPN3<span class="tip"><b>Opsin-3</b> — фоторецептор-опсин на меланоците. Активируется синим/фиолетовым видимым светом (415 нм) → запускает меланогенез. Поэтому при мелазме нужен SPF с блокировкой видимого света (Fe₂O₃).</span></span></b> на меланоците.</p>
+    <div class="grid-2">
+      <div class="card"><h3>OPN3 рецептор</h3><p>Опсин-3 — фоторецептор меланоцита. Активируется синим/фиолетовым светом → Ca²⁺ → <span class="term">CAMKII<span class="tip"><b>Ca²⁺/Calmodulin-dependent Protein Kinase II</b> — кальций-/кальмодулин-зависимая протеинкиназа II. Передаёт кальциевый сигнал на CREB.</span></span> → <span class="term">CREB<span class="tip"><b>cAMP Response Element-Binding protein</b> — транскрипционный фактор, фосфорилируется PKA/CAMKII и активирует промотор MITF.</span></span> → MITF.</p></div>
+      <div class="card"><h3>Что это меняет</h3><p>Обычный SPF блокирует только UV. <b>Нужны железооксидные фильтры</b> (Fe₂O₃) и физические блокаторы (ZnO, TiO₂), которые блокируют видимый свет.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 16. PATHWAY MELANOGENESIS -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Сигнальные пути меланогенеза</div>
+    <h2 class="section">Все дороги ведут к <span style="color:var(--purple)">MITF</span></h2>
+    <div class="illus">
+      <svg viewBox="0 0 1400 540" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrPath" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#3a3a3f"/></marker>
+        </defs>
+        <!-- Receptors row -->
+        <g font-family="-apple-system,sans-serif" font-size="22" font-weight="700" text-anchor="middle">
+          <g><circle cx="140" cy="80" r="46" fill="#ff9500" opacity="0.85"/><text x="140" y="86" fill="#fff">α-MSH</text></g>
+          <g><circle cx="320" cy="80" r="46" fill="#ff3b30" opacity="0.85"/><text x="320" y="86" fill="#fff">ET-1</text></g>
+          <g><circle cx="500" cy="80" r="46" fill="#0a84ff" opacity="0.85"/><text x="500" y="86" fill="#fff">SCF</text></g>
+          <g><circle cx="680" cy="80" r="46" fill="#30d158" opacity="0.85"/><text x="680" y="86" fill="#fff">FGF</text></g>
+          <g><circle cx="860" cy="80" r="46" fill="#5e5ce6" opacity="0.85"/><text x="860" y="86" fill="#fff">HGF</text></g>
+          <g><circle cx="1040" cy="80" r="46" fill="#ff2d55" opacity="0.85"/><text x="1040" y="86" fill="#fff">WNT</text></g>
+          <g><circle cx="1220" cy="80" r="46" fill="#8b5a2b" opacity="0.85"/><text x="1220" y="86" fill="#fff">OPN3</text></g>
+        </g>
+        <!-- Pathway boxes -->
+        <g font-family="-apple-system,sans-serif" font-size="20" font-weight="600" text-anchor="middle">
+          <rect x="80" y="180" width="280" height="60" rx="12" fill="#fef0e6" stroke="#ff9500" stroke-width="2"/>
+          <text x="220" y="217" fill="#5c3d00">PKA / cAMP signaling</text>
+          <rect x="420" y="180" width="280" height="60" rx="12" fill="#e6f3ff" stroke="#0a84ff" stroke-width="2"/>
+          <text x="560" y="217" fill="#003d8a">MAPK / ERK signaling</text>
+          <rect x="760" y="180" width="280" height="60" rx="12" fill="#f0eafe" stroke="#5e5ce6" stroke-width="2"/>
+          <text x="900" y="217" fill="#2c1a7c">PKC / Ca²⁺ signaling</text>
+          <rect x="1100" y="180" width="220" height="60" rx="12" fill="#fee6ec" stroke="#ff2d55" stroke-width="2"/>
+          <text x="1210" y="217" fill="#7a0c30">WNT / β-catenin</text>
+        </g>
+        <!-- Arrows from receptors to pathways -->
+        <g stroke="#3a3a3f" stroke-width="2" fill="none" marker-end="url(#arrPath)">
+          <path d="M 140 126 L 200 178"/>
+          <path d="M 320 126 L 250 178"/>
+          <path d="M 500 126 L 540 178"/>
+          <path d="M 680 126 L 580 178"/>
+          <path d="M 860 126 L 880 178"/>
+          <path d="M 1040 126 L 920 178"/>
+          <path d="M 1220 126 L 1200 178"/>
+        </g>
+        <!-- MITF central -->
+        <g>
+          <rect x="540" y="310" width="320" height="80" rx="20" fill="#5e5ce6"/>
+          <text x="700" y="362" font-family="-apple-system,sans-serif" font-size="42" font-weight="800" text-anchor="middle" fill="#fff">MITF</text>
+        </g>
+        <!-- arrows pathways → MITF -->
+        <g stroke="#5e5ce6" stroke-width="3" fill="none" marker-end="url(#arrPath)">
+          <path d="M 220 240 Q 460 290 580 310"/>
+          <path d="M 560 240 L 660 310"/>
+          <path d="M 900 240 Q 760 280 780 310"/>
+          <path d="M 1210 240 Q 1000 290 850 310"/>
+        </g>
+        <!-- MITF → enzymes -->
+        <g font-family="-apple-system,sans-serif" font-size="22" font-weight="700" text-anchor="middle">
+          <rect x="500" y="450" width="120" height="50" rx="10" fill="#fff" stroke="#5e5ce6" stroke-width="2"/>
+          <text x="560" y="482" fill="#2c1a7c">TYR</text>
+          <rect x="640" y="450" width="120" height="50" rx="10" fill="#fff" stroke="#5e5ce6" stroke-width="2"/>
+          <text x="700" y="482" fill="#2c1a7c">TYRP1</text>
+          <rect x="780" y="450" width="120" height="50" rx="10" fill="#fff" stroke="#5e5ce6" stroke-width="2"/>
+          <text x="840" y="482" fill="#2c1a7c">TYRP2</text>
+        </g>
+        <g stroke="#5e5ce6" stroke-width="2.5" fill="none" marker-end="url(#arrPath)">
+          <path d="M 640 390 L 580 448"/>
+          <path d="M 700 390 L 700 448"/>
+          <path d="M 760 390 L 820 448"/>
+        </g>
+      </svg>
+      <div class="illus-caption">Множество рецепторов и сигнальных путей сходятся на транскрипционном факторе <b><span class="term">MITF<span class="tip"><b>Microphthalmia-Associated Transcription Factor</b> — главный транскрипционный фактор меланогенеза. Запускает синтез тирозиназы (TYR) и связанных ферментов (TYRP1, TYRP2). На него сходятся все сигнальные пути меланоцита.</span></span></b>, который запускает синтез тирозиназы и меланогенез. <span class="src-chip">упрощено по Slominski et al, 2012</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 17. ГОРМОНЫ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Механизм 2 · Гормоны</div>
+    <h2 class="section">Гормональная теория</h2>
+    <div class="grid-3">
+      <div class="card"><h3>Беременность</h3><p>До <b>70% беременных</b> — гиперпигментация. У части — стойкая мелазма после родов.</p></div>
+      <div class="card"><h3><span class="term">КОК<span class="tip"><b>Комбинированные оральные контрацептивы</b> — содержат эстроген и прогестерон. Известный триггер мелазмы.</span></span> и <span class="term">ЗГТ<span class="tip"><b>Заместительная гормональная терапия</b> — приём эстрогенов в пери- и постменопаузе.</span></span></h3><p>Эстроген и прогестерон → активация эстрогеновых рецепторов в меланоцитах очага → усиление меланогенеза.</p></div>
+      <div class="card"><h3>Рецепторы в очаге</h3><p>В коже с мелазмой <b>повышена экспрессия ERα, ERβ и PR</b> по сравнению с прилежащей здоровой кожей.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 18. ЧТО ДОКАЗАНО / НЕ ДОКАЗАНО -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Гормоны · доказательная база</div>
+    <h2 class="section">Что доказано, что нет</h2>
+    <table class="cmp">
+      <thead><tr><th>Утверждение</th><th>Статус</th></tr></thead>
+      <tbody>
+        <tr><td>Беременность провоцирует мелазму</td><td><span class="pill hi">доказано</span></td></tr>
+        <tr><td><span class="term">КОК<span class="tip"><b>Комбинированные оральные контрацептивы</b> — содержат эстроген и прогестерон. Известный триггер мелазмы.</span></span> с высокими дозами эстрогена усугубляют</td><td><span class="pill hi">доказано</span></td></tr>
+        <tr><td>В очагах мелазмы повышены ER/PR</td><td><span class="pill hi">доказано</span></td></tr>
+        <tr><td>Отмена <span class="term">КОК<span class="tip"><b>Комбинированные оральные контрацептивы</b> — содержат эстроген и прогестерон. Известный триггер мелазмы.</span></span> всегда улучшает течение</td><td><span class="pill mid">противоречиво</span></td></tr>
+        <tr><td>Стресс-кортизол напрямую вызывает мелазму</td><td><span class="pill lo">не доказано</span></td></tr>
+        <tr><td>Щитовидная железа — самостоятельный триггер</td><td><span class="pill lo">не доказано</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 19. ВОСПАЛЕНИЕ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Механизм 4 · Воспаление</div>
+    <h2 class="section">Мелазма как<br><span style="color:var(--red)">воспалительное</span> заболевание</h2>
+    <p class="lead">В коже с мелазмой <b>хронически повышены</b>:</p>
+    <div class="grid-4">
+      <div class="stat-card red"><div class="stat-num">IL-1</div><div class="stat-label">провоспалительный цитокин — активирует меланоциты</div></div>
+      <div class="stat-card red"><div class="stat-num">TNF-α</div><div class="stat-label">усиливает экспрессию тирозиназы</div></div>
+      <div class="stat-card amber"><div class="stat-num">COX-2</div><div class="stat-label">→ простагландины E2, F2α — стимуляторы меланогенеза</div></div>
+      <div class="stat-card amber"><div class="stat-num">PGs</div><div class="stat-label">прямая активация меланоцита через EP-рецепторы</div></div>
+    </div>
+    <div class="card" style="border-left:5px solid var(--red);"><p><b>Современный взгляд:</b> мелазма частично является <b>воспалительным заболеванием кожи</b>, а не «просто пигментным феноменом».</p></div>
+  </div>
+</section>
+
+<!-- 20. СОСУДИСТАЯ ТЕОРИЯ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Механизм 5 · Сосуды</div>
+    <h2 class="section">Сосудистый компонент</h2>
+    <div class="grid-2">
+      <div class="card" style="border-left:5px solid var(--red);">
+        <h3>Что обнаружено</h3>
+        <ul>
+          <li><b>Повышенная сосудистая плотность</b> в очагах мелазмы</li>
+          <li>Высокий уровень <b><span class="term">VEGF<span class="tip"><b>Vascular Endothelial Growth Factor</b> — фактор роста эндотелия сосудов. Стимулирует ангиогенез. Повышен в очагах мелазмы — обоснование для транексамовой кислоты и сосудистых лазеров.</span></span></b> в эпидермисе очага</li>
+          <li>Усиление <b>ангиогенеза</b> в верхней дерме</li>
+          <li>Активация тучных клеток → гистамин, триптаза, VEGF, <span class="term">FGF-2<span class="tip"><b>Fibroblast Growth Factor 2</b> — фактор роста фибробластов 2 (basic FGF). Стимулирует пролиферацию меланоцитов и ангиогенез.</span></span></li>
+        </ul>
+      </div>
+      <div class="card" style="border-left:5px solid var(--purple);">
+        <h3>Почему это важно</h3>
+        <ul>
+          <li>Объясняет, почему мелазма «активная», а не статичная</li>
+          <li>Даёт логику для <b>транексамовой кислоты</b> (антифибринолитик + анти-VEGF)</li>
+          <li>Открывает путь к <b>сосудистым лазерам</b> как дополнению</li>
+          <li>Объясняет розоватый оттенок очага у части пациентов</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 21. БАЗАЛЬНАЯ МЕМБРАНА -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Механизм 6 · Базальная мембрана</div>
+    <h2 class="section">Разрушение барьера —<br><span style="color:var(--brown)">дермальная форма</span></h2>
+    <p class="lead">Хроническое воздействие UV + воспаление активируют <b><span class="term">MMP-2 и MMP-9<span class="tip"><b>Matrix Metalloproteinases</b> — матриксные металлопротеиназы. Разрушают коллаген IV базальной мембраны → меланоциты и меланин «спускаются» в дерму → формируется дермальный компонент и хронические рецидивы.</span></span></b> (матриксные металлопротеиназы), которые разрушают базальную мембрану.</p>
+    <div class="grid-3">
+      <div class="card"><h3>Меланоциты «спускаются» в дерму</h3><p>Через повреждённый барьер меланоциты и свободный меланин <b>мигрируют в верхнюю дерму</b>.</p></div>
+      <div class="card"><h3>Меланофаги в дерме</h3><p>Дермальные макрофаги поглощают меланин → формируется <b>дермальный компонент мелазмы</b>, плохо отвечающий на лечение.</p></div>
+      <div class="card" style="border-left:5px solid var(--red);"><h3>Хронические рецидивы</h3><p>Дермальная фракция — главная причина <b>устойчивости и рецидивов</b>. Эпидермис восстанавливается, дерма — нет.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 22. КАСКАД UV → МЕЛАЗМА -->
+<section class="slide blue">
+  <div class="slide-inner">
+    <div class="eyebrow">Синтез механизмов</div>
+    <h2 class="section">Каскад<br>«солнце → мелазма»</h2>
+    <div class="key-findings">
+      <div class="kf"><div class="kf-bullet">1</div><div><b>UV + видимый свет</b> → меланоциты (<span class="term">α-MSH<span class="tip"><b>alpha-Melanocyte Stimulating Hormone</b> — альфа-меланоцитстимулирующий гормон. Связывается с MC1R меланоцита → активация меланогенеза.</span></span>, <span class="term">DAG<span class="tip"><b>Diacylglycerol</b> — диацилглицерол. Вторичный мессенджер, активирует PKC.</span></span>, повреждение ДНК)</div></div>
+      <div class="kf"><div class="kf-bullet">2</div><div><b>Кератиноциты</b> → <span class="term">iNOS<span class="tip"><b>inducible Nitric Oxide Synthase</b> — индуцибельная NO-синтаза кератиноцита. Активируется при UV-воздействии, усиливает меланогенез.</span></span>, <span class="term">COX-2<span class="tip"><b>Cyclooxygenase-2</b> — циклооксигеназа-2. Фермент синтеза простагландинов, стимуляторов меланогенеза.</span></span>, <span class="term">PGs<span class="tip"><b>Prostaglandins</b> — простагландины (PGE2, PGF2α). Прямые стимуляторы меланогенеза через EP-рецепторы меланоцита.</span></span></div></div>
+      <div class="kf"><div class="kf-bullet amber">3</div><div><b>Дермальное воспаление</b> → активация фибробластов, <span class="term">SCF<span class="tip"><b>Stem Cell Factor</b> — фактор стволовых клеток. Активирует c-KIT на меланоците → меланогенез.</span></span>, <span class="term">c-KIT<span class="tip"><b>c-KIT receptor</b> — тирозинкиназный рецептор меланоцита для SCF.</span></span></div></div>
+      <div class="kf"><div class="kf-bullet red">4</div><div><b>Тучные клетки</b> → гистамин, <b><span class="term">VEGF<span class="tip"><b>Vascular Endothelial Growth Factor</b> — фактор роста эндотелия сосудов. Стимулирует ангиогенез. Повышен в очагах мелазмы — обоснование для транексамовой кислоты и сосудистых лазеров.</span></span></b>, <span class="term">FGF-2<span class="tip"><b>Fibroblast Growth Factor 2</b> — фактор роста фибробластов 2 (basic FGF). Стимулирует пролиферацию меланоцитов и ангиогенез.</span></span>, TGF-β2 → васкуляризация</div></div>
+      <div class="kf"><div class="kf-bullet red">5</div><div><b><span class="term">MMP-2 / MMP-9<span class="tip"><b>Matrix Metalloproteinases</b> — матриксные металлопротеиназы. Разрушают коллаген IV базальной мембраны → меланоциты и меланин «спускаются» в дерму → формируется дермальный компонент и хронические рецидивы.</span></span></b> → разрушение базальной мембраны → меланин в дерму</div></div>
+      <div class="kf"><div class="kf-bullet green">6</div><div><b>Меланогенез</b> + эпидермальная и дермальная пигментация → <b>МЕЛАЗМА</b></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 23. РЕЦИДИВЫ — ХРОНИЧЕСКАЯ БОЛЕЗНЬ -->
+<section class="slide red">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Концепция</div>
+    <h2 class="section">Мелазма — это<br><span style="color:#fff;text-decoration:underline;">хроническая болезнь</span></h2>
+    <p class="lead big" style="text-align:center;">По модели течения мелазма ближе к <b>розацеа</b> и <b>атопическому дерматиту</b>, чем к простому косметическому дефекту: лечится — но склонна к рецидивам.</p>
+    <div class="grid-3" style="margin-top:14px;">
+      <div class="card"><h3>Розацеа</h3><p>Хроническое сосудисто-воспалительное заболевание. Параллель: воспаление + сосуды.</p></div>
+      <div class="card"><h3>Атопический дерматит</h3><p>Хроническое иммунное воспаление с обострениями. Параллель: триггеры + ремиссии + поддержка.</p></div>
+      <div class="card"><h3>Мелазма</h3><p>Хроническое нарушение пигментной регуляции + сосуды + воспаление. <b>Тот же паттерн.</b></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 24. ПРИЧИНЫ РЕЦИДИВОВ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Триггеры обострений</div>
+    <h2 class="section">Что запускает <span style="color:var(--red)">рецидив</span></h2>
+    <div class="grid-4">
+      <div class="card" style="border-top:5px solid var(--amber);"><h3>☀ Солнце</h3><p>Главный триггер. Любое лето без фотозащиты — обострение.</p></div>
+      <div class="card" style="border-top:5px solid var(--orange);"><h3>💡 Видимый свет</h3><p>Сине-фиолетовый спектр от экранов и LED — поддерживает.</p></div>
+      <div class="card" style="border-top:5px solid var(--red);"><h3>🔥 Воспаление</h3><p>Любая травма кожи: пилинги, агрессивные процедуры, ожоги.</p></div>
+      <div class="card" style="border-top:5px solid var(--purple);"><h3>⚕ Гормоны</h3><p>Беременность, <span class="term">КОК<span class="tip"><b>Комбинированные оральные контрацептивы</b> — содержат эстроген и прогестерон. Известный триггер мелазмы.</span></span>, <span class="term">ЗГТ<span class="tip"><b>Заместительная гормональная терапия</b> — приём эстрогенов в пери- и постменопаузе.</span></span>. Часто провоцируют новые волны.</p></div>
+    </div>
+    <p class="lead" style="margin-top:6px;">Поэтому <b>«вылечить мелазму» нельзя — её можно вывести в ремиссию и удерживать</b>. Это базовая концепция, без которой невозможно правильно консультировать пациента.</p>
+  </div>
+</section>
+
+<!-- 25. SECTION IV — ДИАГНОСТИКА -->
+<section class="slide dark">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть IV</div>
+    <div class="section-num">04</div>
+    <h1 class="title">Диагностика</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">
+      Клиника, лампа Вуда, дерматоскопия, <span class="term">VISIA<span class="tip"><b>VISIA</b> — система фотофиксации кожи в кросс-поляризованном и UV-свете. Позволяет объективно оценивать динамику пигмента и сосудов.</span></span>.
+    </p>
+  </div>
+</section>
+
+<!-- 26. КЛИНИЧЕСКИЕ ТИПЫ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Клинические типы</div>
+    <h2 class="section">Три варианта по локализации</h2>
+    <div class="grid-2" style="align-items:stretch;">
+      <div style="display:flex;flex-direction:column;gap:clamp(12px,1vw,18px);">
+        <div class="card" style="border-left:5px solid var(--blue);"><h3>Центрофациальная</h3><p>Лоб, нос, верхняя губа, подбородок. <b>Самый частый тип</b> — около 65% случаев.</p></div>
+        <div class="card" style="border-left:5px solid var(--purple);"><h3>Малярная</h3><p>Только щёки. ≈ 20% случаев. Часто сочетается с фотостарением.</p></div>
+        <div class="card" style="border-left:5px solid var(--pink);"><h3>Мандибулярная</h3><p>Угол нижней челюсти. ≈ 15%. Часто сопутствует пери-/постменопаузе.</p></div>
+      </div>
+      <div class="illus" style="display:flex;align-items:center;justify-content:center;background:#fff;">
+        <img src="melasma_assets/melasma_cheek_clinical.png" alt="Клинические примеры мелазмы щёк — Fig 2 и Fig 3" style="max-height:62vh;width:auto;border-radius:10px;">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 27. ЛАМПА ВУДА -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Лампа Вуда</div>
+    <h2 class="section">Что показывает<br>и почему её часто переоценивают</h2>
+    <div class="grid-2">
+      <div class="card" style="border-left:5px solid var(--blue);">
+        <h3>Что видим</h3>
+        <ul>
+          <li><b>Эпидермальная форма</b> — пятна усиливаются под лампой</li>
+          <li><b>Дермальная форма</b> — пятна НЕ усиливаются или гасятся</li>
+          <li><b>Смешанная форма</b> — часть усиливается, часть нет</li>
+        </ul>
+      </div>
+      <div class="card" style="border-left:5px solid var(--red);">
+        <h3>Ограничения</h3>
+        <ul>
+          <li>У <b>тёмных фототипов</b> (V–VI) метод <b>малоинформативен</b></li>
+          <li>Не различает мелазму и другие гиперпигментации</li>
+          <li>Не предсказывает ответ на лазер так надёжно, как считалось ранее</li>
+          <li>Современные обзоры — снижают её диагностическую ценность</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 28. ДЕРМАТОСКОПИЯ + VISIA -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Дополнительные методы</div>
+    <h2 class="section">Дерматоскопия и <span class="term">VISIA<span class="tip"><b>VISIA</b> — система фотофиксации кожи в кросс-поляризованном и UV-свете. Позволяет объективно оценивать динамику пигмента и сосудов.</span></span></h2>
+    <div class="grid-2">
+      <div class="card"><h3>Дерматоскопия</h3><ul>
+        <li>Сетчатый коричневый рисунок (псевдо-сеть)</li>
+        <li>Гранулы серо-коричневого пигмента — глубокий компонент</li>
+        <li>Телангиэктазии — сосудистый компонент очага</li>
+        <li>Позволяет отличить от <b>лентиго, эфелид, поствоспалительной пигментации</b></li>
+      </ul></div>
+      <div class="card"><h3><span class="term">VISIA<span class="tip"><b>VISIA</b> — система фотофиксации кожи в кросс-поляризованном и UV-свете. Позволяет объективно оценивать динамику пигмента и сосудов.</span></span> / RBX</h3><ul>
+        <li>Фотофиксация в кросс-поляризованном свете</li>
+        <li>Слой <b>Brown spots</b> — эпидермальный пигмент</li>
+        <li>Слой <b>Red areas</b> — сосудистый компонент</li>
+        <li>Объективный контроль динамики «до / после» — критически важно для пациента и врача</li>
+      </ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- 29. SECTION V — ЛЕЧЕНИЕ -->
+<section class="slide dark">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть V</div>
+    <div class="section-num">05</div>
+    <h1 class="title">Современное лечение</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">
+      Фотозащита → наружная терапия → транексам → лазер.<br>Именно в таком порядке.
+    </p>
+  </div>
+</section>
+
+<!-- 30. ПЕРВАЯ ЛИНИЯ — НЕ ЛАЗЕР -->
+<section class="slide pink">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Главный практический тезис</div>
+    <blockquote class="q" style="border-left:none;text-align:center;font-size:clamp(34px,4vw,56px);max-width:1500px;line-height:1.28;">
+      №1 в лечении мелазмы —<br><b>фотозащита и отбеливающая терапия.</b><br><br>
+      <b>Не лазер.</b>
+      <span class="src" style="margin-top:26px;">Международные консенсусы 2014–2023</span>
+    </blockquote>
+  </div>
+</section>
+
+<!-- 31. ФОТОЗАЩИТА -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Фотозащита</div>
+    <h2 class="section">Без неё —<br>любое лечение бессмысленно</h2>
+    <div class="grid-3">
+      <div class="card"><h3>SPF широкого спектра</h3><p>Минимум <b>SPF 30 UVA/UVB</b>. Многие гайдлайны рекомендуют SPF 50+. Регулярное обновление каждые 2–3 часа.</p></div>
+      <div class="card" style="border-top:5px solid var(--blue);"><h3>Физические блокаторы</h3><p><b>Оксид цинка (ZnO)</b> и <b>диоксид титана (TiO₂)</b> — основа выбора при мелазме. Блокируют UV и часть видимого света.</p></div>
+      <div class="card" style="border-top:5px solid var(--orange);"><h3>Железооксидные фильтры</h3><p><b>Iron oxide (Fe₂O₃)</b> — единственная группа фильтров, эффективно блокирующая <b>видимый свет</b>. Современный стандарт.</p></div>
+    </div>
+    <div class="card" style="border-left:5px solid var(--red);"><p><b>Недавние исследования:</b> SPF с блокировкой видимого света (Fe₂O₃) даёт <b>значимо лучший терапевтический эффект</b> при мелазме, чем обычный UVA/UVB SPF.</p></div>
+  </div>
+</section>
+
+<!-- 32. ЗАЩИТА ОТ ВИДИМОГО СВЕТА -->
+<section class="slide amber">
+  <div class="slide-inner">
+    <div class="eyebrow">Видимый свет · современная защита</div>
+    <h2 class="section">Железооксидные фильтры —<br>стандарт при мелазме</h2>
+    <div class="grid-2">
+      <div class="card"><h3>Почему именно Fe₂O₃</h3><p>Поглощает синюю и фиолетовую часть видимого спектра (400–500 нм). Других подходящих фильтров для видимого света практически нет.</p></div>
+      <div class="card"><h3>Tone в фильтре</h3><p>Железооксидные фильтры дают <b>лёгкий тонирующий оттенок</b> — кремы с ними обычно тонированные. Это плюс: маскируют пятна по ходу лечения.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 33. ГИДРОХИНОН -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Наружная терапия · историч. эталон</div>
+    <h2 class="section">Гидрохинон</h2>
+    <div class="grid-2" style="align-items:stretch;">
+      <div style="display:flex;flex-direction:column;gap:clamp(12px,1vw,18px);">
+        <div class="card" style="border-left:5px solid var(--green);">
+          <h3>Механизм</h3>
+          <ul>
+            <li>Ингибитор <b>тирозиназы</b> — ключевого фермента меланогенеза</li>
+            <li>Цитотоксичен для меланоцитов в высоких концентрациях</li>
+            <li>Стандарт <b>2–4%</b>; в схеме Клигмана — 4%</li>
+            <li><b>Эталон сравнения</b> в международных обзорах</li>
+          </ul>
+        </div>
+        <div class="card" style="border-left:5px solid var(--red);">
+          <h3>Ограничения и риски</h3>
+          <ul>
+            <li>В РФ — <b>не разрешён в свободной косметике</b></li>
+            <li>Риск <b>экзогенного охроноза</b> при длительном применении</li>
+            <li>Раздражение, контактный дерматит</li>
+            <li>Курсы — не более 4–6 месяцев непрерывно</li>
+          </ul>
+        </div>
+      </div>
+      <div class="illus" style="display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fff;">
+        <img src="melasma_assets/drug_hydroquinone.jpg" alt="Obagi Nu-Derm Clear (гидрохинон 4%) — пример западного препарата" style="max-height:56vh;width:auto;object-fit:contain;border-radius:10px;">
+        <div class="illus-caption"><b>Obagi Nu-Derm Clear</b> — гидрохинон 4%. В РФ доступен только по рецепту через определённые каналы.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 34. ТРОЙНАЯ КЛИГМАНА -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Тройная комбинация Клигмана</div>
+    <h2 class="section">Исторический «золотой стандарт»</h2>
+    <div class="grid-2" style="align-items:stretch;">
+      <div style="display:flex;flex-direction:column;gap:clamp(12px,1vw,18px);">
+        <p style="font-size:clamp(22px,1.6vw,30px);">Описана в 1975 г. Albert Kligman. До сих пор — <b>наиболее эффективная схема в международных обзорах</b>.</p>
+        <div class="card" style="border-top:5px solid var(--green);padding:clamp(14px,1.2vw,22px);"><h3>Гидрохинон 4%</h3><p>Блок тирозиназы. Снижение меланогенеза.</p></div>
+        <div class="card" style="border-top:5px solid var(--blue);padding:clamp(14px,1.2vw,22px);"><h3>Третиноин 0,05%</h3><p>Ускоряет десквамацию, усиливает проникновение гидрохинона.</p></div>
+        <div class="card" style="border-top:5px solid var(--purple);padding:clamp(14px,1.2vw,22px);"><h3>Флуоцинолон 0,01%</h3><p>Подавляет воспаление от гидрохинона и третиноина.</p></div>
+        <div class="card" style="border-left:5px solid var(--orange);padding:clamp(14px,1.2vw,22px);"><p style="font-size:clamp(20px,1.45vw,26px);"><b>В РФ — практически недоступна готовым препаратом</b> (Tri-Luma не зарегистрирован).</p></div>
+      </div>
+      <div class="illus" style="display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fff;">
+        <img src="melasma_assets/drug_triluma.jpg" alt="Tri-Luma — готовая форма тройной комбинации Клигмана от Galderma" style="max-height:60vh;width:auto;object-fit:contain;border-radius:10px;">
+        <div class="illus-caption"><b>Tri-Luma (Galderma)</b> — готовая форма тройной комбинации: гидрохинон 4% + третиноин 0,05% + флуоцинолон 0,01%. Эталон для сравнений.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 35. ДОСТУПНЫЕ АЛЬТЕРНАТИВЫ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Альтернативы, доступные в РФ</div>
+    <h2 class="section">Что реально работает в кабинете</h2>
+    <table class="cmp">
+      <thead><tr><th>Активный</th><th>Механизм</th><th>Где применяется</th></tr></thead>
+      <tbody>
+        <tr><td><b>Азелаиновая 15–20%</b></td><td>Ингибитор тирозиназы, противовоспалительный, антимикробный</td><td>Скинорен, Азелик. Первая линия в РФ.</td></tr>
+        <tr><td><b>Койевая 1–4%</b></td><td>Хелатор меди в активном центре тирозиназы</td><td>Сыворотки, кремы, мезопрепараты</td></tr>
+        <tr><td><b>Арбутин 1–7%</b></td><td>Гликозилированный гидрохинон, мягкий ингибитор тирозиназы</td><td>Сыворотки. Часто в комбинациях.</td></tr>
+        <tr><td><b>Цистеамин 5%</b></td><td>Эндогенный антиоксидант. Блокирует тирозиназу и пероксидазу</td><td>Cysteamine cream (Cyspera). Сильный, но с запахом.</td></tr>
+        <tr><td><b>Транексамовая 3–5%</b></td><td>Антифибринолитик + анти-<span class="term">VEGF<span class="tip"><b>Vascular Endothelial Growth Factor</b> — фактор роста эндотелия сосудов.</span></span> + противовоспалительный</td><td>Сыворотки, мезо, оральные формы</td></tr>
+      </tbody>
+    </table>
+    <div class="grid-4" style="margin-top:clamp(10px,0.8vw,16px);">
+      <div class="illus" style="background:#fff;padding:clamp(10px,0.8vw,16px);text-align:center;"><img src="melasma_assets/drug_skinoren.jpg" alt="Скинорен — азелаиновая кислота 20%" style="height:clamp(110px,12vh,180px);width:auto;object-fit:contain;display:block;margin:0 auto;"><div class="illus-caption" style="font-size:clamp(15px,1vw,18px);margin-top:6px;"><b>Скинорен</b> · азелаиновая 20%</div></div>
+      <div class="illus" style="background:#fff;padding:clamp(10px,0.8vw,16px);text-align:center;"><img src="melasma_assets/drug_azelik.jpg" alt="Азелик — азелаиновая кислота 15%" style="height:clamp(110px,12vh,180px);width:auto;object-fit:contain;display:block;margin:0 auto;"><div class="illus-caption" style="font-size:clamp(15px,1vw,18px);margin-top:6px;"><b>Азелик</b> · азелаиновая 15%</div></div>
+      <div class="illus" style="background:#fff;padding:clamp(10px,0.8vw,16px);text-align:center;"><img src="melasma_assets/drug_cyspera.jpg" alt="Cyspera Intensive — цистеамин 5%" style="height:clamp(110px,12vh,180px);width:auto;object-fit:contain;display:block;margin:0 auto;"><div class="illus-caption" style="font-size:clamp(15px,1vw,18px);margin-top:6px;"><b>Cyspera</b> · цистеамин 5%</div></div>
+      <div class="illus" style="background:#fff;padding:clamp(10px,0.8vw,16px);text-align:center;"><img src="melasma_assets/drug_tranexamic.jpg" alt="SkinCeuticals Discoloration Defense — транексамовая кислота наружно" style="height:clamp(110px,12vh,180px);width:auto;object-fit:contain;display:block;margin:0 auto;"><div class="illus-caption" style="font-size:clamp(15px,1vw,18px);margin-top:6px;"><b>SkinCeuticals</b> · транексам. серум</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 36. ТРАНЕКСАМ — ВВЕДЕНИЕ -->
+<section class="slide blue">
+  <div class="slide-inner">
+    <div class="eyebrow">Транексамовая кислота</div>
+    <h2 class="section">Современный тренд<br>в лечении мелазмы</h2>
+    <p class="lead big">Транексамовая кислота вышла за рамки антифибринолитика и стала <b>одним из самых обсуждаемых методов</b> в дерматологии последних 10 лет.</p>
+    <div class="grid-3">
+      <div class="card"><h3>Не только антифибринолитик</h3><p>Блокирует <b>плазмин</b> → снижение <span class="term">PGE2<span class="tip"><b>Prostaglandin E2</b> — простагландин E2. Прямой стимулятор меланогенеза через EP-рецепторы меланоцита.</span></span>, AA → снижение меланогенеза.</p></div>
+      <div class="card"><h3>Действует на сосуды</h3><p>Снижает <b><span class="term">VEGF<span class="tip"><b>Vascular Endothelial Growth Factor</b> — фактор роста эндотелия сосудов. Стимулирует ангиогенез. Повышен в очагах мелазмы — обоснование для транексамовой кислоты и сосудистых лазеров.</span></span></b>, уменьшает ангиогенез — работает на «сосудистый компонент» мелазмы.</p></div>
+      <div class="card"><h3>Влияет на коммуникацию</h3><p>Уменьшает паракринную <b>стимуляцию меланоцитов кератиноцитами</b> через <span class="term">α-MSH<span class="tip"><b>alpha-Melanocyte Stimulating Hormone</b> — альфа-меланоцитстимулирующий гормон. Связывается с MC1R меланоцита → активация меланогенеза.</span></span>/<span class="term">ET-1<span class="tip"><b>Endothelin-1</b> — эндотелин-1. Сильный паракринный активатор меланоцитов; выделяется кератиноцитами после UV.</span></span>.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 37. ТРАНЕКСАМ — ФОРМЫ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Транексам · формы применения</div>
+    <h2 class="section">Наружно, мезо или внутрь</h2>
+    <div class="grid-3">
+      <div class="card"><h3>Наружно 3–5%</h3><p>Сыворотки. <b>Безопасный вариант</b> на длительном курсе. Эффект ниже системного, но без рисков.</p></div>
+      <div class="card"><h3>Мезотерапия</h3><p>Внутрикожные инъекции 4 мг/мл, курс 6–12 процедур. Хороший компромисс эффективности и безопасности.</p></div>
+      <div class="card"><h3>Внутрь 250 мг × 2/сут</h3><p>Системный приём 8–12 недель. <b>Самая высокая эффективность</b> — но требует исключения противопоказаний.</p></div>
+    </div>
+    <div class="card" style="border-left:5px solid var(--red);">
+      <h3 style="color:var(--red);">Риски системного приёма</h3>
+      <p><b>Главное противопоказание — тромбогенный риск</b>: тромбозы в анамнезе, <span class="term">КОК<span class="tip"><b>Комбинированные оральные контрацептивы</b> — содержат эстроген и прогестерон. Известный триггер мелазмы.</span></span> с риском, тромбофилии, активные сосудистые заболевания. Скрининг по анамнезу + при необходимости коагулограмма.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 38. ПИЛИНГИ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Химические пилинги</div>
+    <h2 class="section">Когда помогают,<br>когда <span style="color:var(--red)">ухудшают</span></h2>
+    <div class="grid-2">
+      <div class="card" style="border-left:5px solid var(--green);">
+        <h3>Работают</h3>
+        <ul>
+          <li><b>Гликолевый 20–35%</b> — поверхностные курсы</li>
+          <li><b>Молочный 15–30%</b> — мягче, для чувствительной кожи</li>
+          <li><b>Раствор Джесснера</b> — комбинированный поверхностный</li>
+          <li><b>Ретиноевый 5–10%</b> — отшелушивает, ускоряет обновление</li>
+        </ul>
+      </div>
+      <div class="card" style="border-left:5px solid var(--red);">
+        <h3>Когда ухудшают</h3>
+        <ul>
+          <li>Срединные/глубокие пилинги на тёмных фототипах (IV–VI) → <b><span class="term">PIH<span class="tip"><b>Post-Inflammatory Hyperpigmentation</b> — поствоспалительная гиперпигментация. Реакция кожи на любое воспаление.</span></span></b></li>
+          <li>Без фотозащиты после процедуры → обострение</li>
+          <li>Слишком частые курсы → хроническое воспаление → активация меланоцитов</li>
+          <li>На активной воспалённой коже → крайне высокий риск ухудшения</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 39. SECTION VI — ЛАЗЕРЫ -->
+<section class="slide dark">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть VI</div>
+    <div class="section-num">06</div>
+    <h1 class="title">Лазерное лечение</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">
+      Самый «соблазнительный» инструмент<br>и самая частая причина рецидивов.
+    </p>
+  </div>
+</section>
+
+<!-- 40. ГЛАВНЫЙ ТЕЗИС ПО ЛАЗЕРАМ -->
+<section class="slide red">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Главный практический тезис</div>
+    <blockquote class="q" style="border-left:none;text-align:center;font-size:clamp(32px,3.8vw,54px);max-width:1500px;line-height:1.28;">
+      Лазер при мелазме нацелен на <b>избыток пигмента</b>,<br>
+      но <b>не влияет на основные звенья патогенеза.</b><br><br>
+      Поэтому в монотерапии<br>часто возникают <b>рецидивы и обострения</b>.
+      <span class="src" style="margin-top:26px;">© В. Микрюков, 2026</span>
+    </blockquote>
+  </div>
+</section>
+
+<!-- 41. 532 нм — ГРАФИК ПОГЛОЩЕНИЯ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">532 нм <span class="term">Nd:YAG<span class="tip"><b>Neodymium-doped Yttrium Aluminum Garnet</b> — лазерная среда на основе кристалла иттрий-алюминиевого граната с примесью неодима. Длины волн 1064 нм и 532 нм.</span></span> <span class="term">Q-switch<span class="tip"><b>Q-switch</b> — режим модуляции добротности. Даёт сверхкороткий импульс (наносекунды) с высокой пиковой мощностью. Фотомеханическое разрушение пигмента без термического ожога.</span></span></div>
+    <h2 class="section">Почему 532 нм — <span style="color:var(--red)">опасный выбор</span> при мелазме</h2>
+    <div class="grid-2" style="align-items:stretch;">
+      <div style="display:flex;flex-direction:column;gap:clamp(12px,1vw,18px);">
+        <div class="card" style="border-left:5px solid var(--red);">
+          <h3>Что говорит физика</h3>
+          <ul>
+            <li>532 нм — <b>зелёный</b> свет, малая глубина проникновения</li>
+            <li>Высокое поглощение и в <b>меланине</b>, и в <b>оксигемоглобине</b></li>
+            <li>Справляется только с <b>эпидермальной</b> пигментацией</li>
+            <li>На загорелой коже — <b>повреждение эпидермиса и сосудов</b> с гематомами</li>
+          </ul>
+        </div>
+        <div class="card" style="border-left:5px solid var(--orange);">
+          <h3>Терапевтическое окно</h3>
+          <ul>
+            <li><b>Очень узкое</b> — отклонения дают и гипер-, и депигментацию</li>
+            <li>Депигментация после ожога — <b>от 2–3 месяцев до 2–3 лет</b></li>
+            <li>Чёткая форма пятен лазерного пучка</li>
+          </ul>
+        </div>
+      </div>
+      <div class="illus" style="display:flex;align-items:center;justify-content:center;background:#fff;">
+        <img src="melasma_assets/absorption_spectrum.png" alt="Спектр поглощения меланина и оксигемоглобина — 532 нм и 755 нм" style="max-height:60vh;width:auto;border-radius:10px;">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 42. 532 нм — ПРЕДУПРЕЖДЕНИЕ КОМПАКТНЫЕ ЛАЗЕРЫ -->
+<section class="slide red">
+  <div class="slide-inner">
+    <div class="eyebrow">Предупреждение для владельцев компактных лазеров</div>
+    <h2 class="section">Компактный + 532 нм = <span style="color:#fff;text-decoration:underline;">высокий риск</span></h2>
+    <div class="grid-2" style="align-items:stretch;">
+      <div style="display:flex;flex-direction:column;gap:clamp(12px,1vw,18px);">
+        <div class="card">
+          <p style="font-size:clamp(20px,1.5vw,26px);">Чтобы получить нужную плотность энергии на компактном лазере — <b>пятно сжимается до 1,5–2 мм</b>. Это даёт:</p>
+          <ul style="margin-top:10px;">
+            <li><b>Повреждение базальной мембраны</b> и дермы</li>
+            <li>Формирование <b>стойкой дермальной формы</b></li>
+            <li>Травма сосудов при <b>≥ 3 Дж/см²</b></li>
+          </ul>
+        </div>
+        <div class="card" style="border-left:5px solid var(--amber);"><p><b>Вывод:</b> 532 нм <span class="term">Nd:YAG<span class="tip"><b>Neodymium-doped Yttrium Aluminum Garnet</b> — лазерная среда на основе кристалла иттрий-алюминиевого граната с примесью неодима. Длины волн 1064 нм и 532 нм.</span></span> <span class="term">QS<span class="tip"><b>Q-switched</b> — режим модуляции добротности. Наносекундный импульс.</span></span> как монотерапия мелазмы — <b>не работает</b>. На компактных лазерах — практически всегда ухудшает ситуацию.</p></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(10px,0.8vw,16px);">
+        <div class="illus" style="display:flex;flex-direction:column;align-items:center;justify-content:flex-start;background:#fff;padding:clamp(10px,0.8vw,16px);">
+          <img src="melasma_assets/532nm_burn_crusts.jpeg" alt="Острая реакция после 532 нм — корки и струпы на щеке" style="max-height:64vh;width:auto;max-width:100%;object-fit:contain;border-radius:10px;flex:1;">
+          <div class="illus-caption" style="font-size:clamp(15px,1.05vw,20px);margin-top:8px;text-align:center;"><b>1. Острая фаза</b><br>корки сразу после 532 нм</div>
+        </div>
+        <div class="illus" style="display:flex;flex-direction:column;align-items:center;justify-content:flex-start;background:#fff;padding:clamp(10px,0.8vw,16px);">
+          <img src="melasma_assets/532nm_afterburn_results.jpeg" alt="Последствия после отпадения корок — стойкая депигментация и эритема" style="max-height:64vh;width:auto;max-width:100%;object-fit:contain;border-radius:10px;flex:1;">
+          <div class="illus-caption" style="font-size:clamp(15px,1.05vw,20px);margin-top:8px;text-align:center;"><b>2. После отпадения корок</b><br>стойкая гипо-/гиперпигментация</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 43. 1064 нм — LASER TONING — ИДЕЯ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">1064 нм <span class="term">Nd:YAG<span class="tip"><b>Neodymium-doped Yttrium Aluminum Garnet</b> — лазерная среда на основе кристалла иттрий-алюминиевого граната с примесью неодима. Длины волн 1064 нм и 532 нм.</span></span> <span class="term">Q-switch<span class="tip"><b>Q-switch</b> — режим модуляции добротности. Даёт сверхкороткий импульс (наносекунды) с высокой пиковой мощностью. Фотомеханическое разрушение пигмента без термического ожога.</span></span> · Laser Toning</div>
+    <h2 class="section">Идея — «субклеточный<br>селективный фототермолиз»</h2>
+    <p class="lead">Goldberg & Metzler (1999) — первыми предложили низкоинтенсивное воздействие <span class="term">Nd:YAG<span class="tip"><b>Neodymium-doped Yttrium Aluminum Garnet</b> — лазерная среда на основе кристалла иттрий-алюминиевого граната с примесью неодима. Длины волн 1064 нм и 532 нм.</span></span> для фотостарения. Kim et al — показали <b>выборочное разрушение меланосом без гибели клеток</b> на коже рыбок данио. Так родилась концепция <b>Laser Toning</b>.</p>
+    <div class="grid-3">
+      <div class="card"><h3>Дендрэктомия</h3><p>Отсечение длинных дендритных отростков гиперактивных меланоцитов — <b>функциональное подавление</b> без гибели клетки.</p></div>
+      <div class="card"><h3>Разрушение меланосом</h3><p>Меланосомы и гранулы меланина внутри меланоцита разрушаются, <b>клеточная мембрана и ядро остаются целы</b>.</p></div>
+      <div class="card"><h3>Минимальное воспаление</h3><p>Без гибели клеток — меньше выброса <span class="term">PGE2<span class="tip"><b>Prostaglandin E2</b> — простагландин E2. Прямой стимулятор меланогенеза через EP-рецепторы меланоцита.</span></span> и цитокинов — <b>меньше шансов обострения мелазмы</b>.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 44. LASER TONING — ПАРАМЕТРЫ -->
+<section class="slide blue">
+  <div class="slide-inner">
+    <div class="eyebrow">Параметры Laser Toning · по литературе</div>
+    <h2 class="section">Конкретные настройки</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Базовые параметры</h3>
+        <ul>
+          <li>Длина волны — <b>1064 нм</b> (только!)</li>
+          <li>Размер пятна — <b>8–10 мм</b> (самый большой доступный)</li>
+          <li>Плотность энергии — <b>0,8–1,4 Дж/см²</b></li>
+          <li>Частота — <b>5–10 Гц</b></li>
+          <li>Наконечник — <b>перпендикулярно</b> коже</li>
+          <li>Перекрытие — <b>не более 10–15%</b> между импульсами</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Курс и финал</h3>
+        <ul>
+          <li>Endpoint — <b>слабая эритема</b> (3–4 прохода, если нет эритемы)</li>
+          <li>Курс — <b>10–12 процедур</b></li>
+          <li>Интервал — <b>раз в 15 дней</b> (не еженедельно)</li>
+          <li>Чем темнее фототип — <b>тем меньше флюенс</b></li>
+          <li>После каждой процедуры — <b>SPF 30+</b></li>
+        </ul>
+      </div>
+    </div>
+    <div style="margin-top:6px;"><span class="src-chip">Shah SD, Aurangabadkar SJ. Laser toning in melasma. J Cutan Aesthet Surg 2019;12:76–84</span></div>
+  </div>
+</section>
+
+<!-- 45. LASER TONING — ТРЕБОВАНИЯ К ОБОРУДОВАНИЮ -->
+<section class="slide amber">
+  <div class="slide-inner">
+    <div class="eyebrow">Технические требования</div>
+    <h2 class="section">Что нужно от<br>лазера для toning</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Обязательно</h3>
+        <ul>
+          <li><b>Стационарный</b> <span class="term">Nd:YAG<span class="tip"><b>Neodymium-doped Yttrium Aluminum Garnet</b> — лазерная среда на основе кристалла иттрий-алюминиевого граната с примесью неодима. Длины волн 1064 нм и 532 нм.</span></span> <span class="term">Q-switch<span class="tip"><b>Q-switch</b> — режим модуляции добротности. Даёт сверхкороткий импульс (наносекунды) с высокой пиковой мощностью. Фотомеханическое разрушение пигмента без термического ожога.</span></span></li>
+          <li>Профиль луча — <b>Flat Top</b> (равномерное распределение)</li>
+          <li>Большое пятно <b>8–10 мм</b> с достаточной плотностью энергии</li>
+          <li>Точная дозировка плотности энергии</li>
+        </ul>
+      </div>
+      <div class="card" style="border-left:5px solid var(--red);">
+        <h3>Почему компактные не подходят</h3>
+        <ul>
+          <li>Гауссовый пучок → «горячие точки», неравномерность</li>
+          <li>Невозможно получить нужный флюенс при пятне 8–10 мм</li>
+          <li>Сжатие пятна для повышения плотности → <b>повреждение базальной мембраны</b> → дермальная пигментация</li>
+          <li>Эффективность падает вплоть до полного отсутствия</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 46. АВТОРСКАЯ ПОЗИЦИЯ -->
+<section class="slide pink">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <span class="author-badge">© Авторская позиция · В. Микрюков, 2026</span>
+    <blockquote class="q" style="border-left:none;text-align:center;font-size:clamp(30px,3.4vw,48px);max-width:1500px;line-height:1.3;margin-top:14px;">
+      На компактных одно-двухкристальных<br><span class="term">Nd:YAG<span class="tip"><b>Neodymium-doped Yttrium Aluminum Garnet</b> — лазерная среда на основе кристалла иттрий-алюминиевого граната с примесью неодима. Длины волн 1064 нм и 532 нм.</span></span> <span class="term">Q-switch<span class="tip"><b>Q-switch</b> — режим модуляции добротности. Даёт сверхкороткий импульс (наносекунды) с высокой пиковой мощностью. Фотомеханическое разрушение пигмента без термического ожога.</span></span> лазерах <b>качественно выполнить<br>Laser Toning при мелазме<br>практически невозможно</b>.<br><br>
+      Это <b>фактор риска</b>: обратный эффект,<br>усиление пигментации,<br>стойкая каплевидная депигментация.
+    </blockquote>
+  </div>
+</section>
+
+<!-- 47. LASER TONING — ОСЛОЖНЕНИЯ -->
+<section class="slide red">
+  <div class="slide-inner">
+    <div class="eyebrow">Осложнения Laser Toning</div>
+    <h2 class="section">Что описано в литературе</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Лёгкие, проходящие</h3>
+        <ul>
+          <li>Боль во время процедуры</li>
+          <li>Физическая крапивница</li>
+          <li>Угревая сыпь</li>
+          <li>Мелкие петехии</li>
+          <li>Отбеливание тонких волос на лице</li>
+          <li>Реактивация простого герпеса</li>
+        </ul>
+      </div>
+      <div class="card" style="border-left:5px solid var(--amber);">
+        <h3>Тяжёлые, плохо обратимые</h3>
+        <ul>
+          <li><b>Усиление меланодермии</b> — обратный эффект</li>
+          <li>Гиперпигментация после процедуры</li>
+          <li><b>Каплевидная (конфетти-) лейкодермия</b> по форме лазерных пятен</li>
+          <li>Гипопигментация, сохраняющаяся <b>годами</b></li>
+        </ul>
+      </div>
+    </div>
+    <div class="card"><p><b>Конфетти-гипопигментация / пунктированная лейкодермия</b> — самое тяжёлое осложнение Laser Toning'а. Может развиться <b>уже на втором сеансе</b>. На коже мелазмы практически не поддаётся лечению.</p></div>
+  </div>
+</section>
+
+<!-- 48. РЕЦИДИВЫ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Рецидивы после Laser Toning</div>
+    <h2 class="section">Почему «помогло»<br>не значит «вылечили»</h2>
+    <div class="grid-3">
+      <div class="stat-card red"><div class="stat-num">81%</div><div class="stat-label-big">пациентов — рецидив или ухудшение после прекращения тонинга</div></div>
+      <div class="stat-card amber"><div class="stat-num">↑↑</div><div class="stat-label-big">риск рецидива при большой суммарной энергии и малом пятне</div></div>
+      <div class="stat-card green"><div class="stat-num">Поддержка</div><div class="stat-label-big">арбутин и койевая кислота (ингибиторы тирозиназы) после toning — сохраняют ремиссию</div></div>
+    </div>
+    <p class="lead">Hoffbauer Parra et al.: значимое улучшение во время курса у всех 20 пациентов с латиноамериканскими фототипами. <b>У 81% — рецидив после прекращения</b>. Аналогичная картина в нескольких других исследованиях.</p>
+    <div style="margin-top:4px;"><span class="src-chip">Hoffbauer Parra et al. · цит. по Shah SD, Aurangabadkar SJ 2019</span></div>
+  </div>
+</section>
+
+<!-- 49. ПИКО + ФРАКЦИОННЫЕ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Другие лазерные технологии</div>
+    <h2 class="section">Пико и фракционные —<br>что говорит литература</h2>
+    <div class="grid-2">
+      <div class="card" style="border-left:5px solid var(--purple);">
+        <h3>Пикосекундные лазеры</h3>
+        <ul>
+          <li><b>Плюсы:</b> меньше тепла → меньше <span class="term">PIH<span class="tip"><b>Post-Inflammatory Hyperpigmentation</b> — поствоспалительная гиперпигментация. Реакция кожи на любое воспаление.</span></span>, фотомеханический эффект</li>
+          <li><b>Минусы:</b> данных по мелазме <b>пока меньше</b>, чем по <span class="term">Nd:YAG<span class="tip"><b>Neodymium-doped Yttrium Aluminum Garnet</b> — лазерная среда на основе кристалла иттрий-алюминиевого граната с примесью неодима. Длины волн 1064 нм и 532 нм.</span></span> <span class="term">QS<span class="tip"><b>Q-switched</b> — режим модуляции добротности. Наносекундный импульс.</span></span></li>
+          <li>На тёмных фототипах — <b>избегать 532 нм</b>, использовать 1064 нм</li>
+          <li>Те же риски rebound при агрессивных протоколах</li>
+        </ul>
+      </div>
+      <div class="card" style="border-left:5px solid var(--orange);">
+        <h3>Фракционные неаблятивные</h3>
+        <ul>
+          <li><b>Fraxel 1550 нм</b>, <b>Er:Glass 1927 нм</b> — наиболее изучены при мелазме</li>
+          <li>1927 нм — высокое поглощение в воде эпидермиса → таргетированный эффект на пигмент</li>
+          <li>Аблятивные (CO₂, Er:YAG) — <b>крайне осторожно при IV–VI фототипах</b></li>
+          <li>Риск <span class="term">PIH<span class="tip"><b>Post-Inflammatory Hyperpigmentation</b> — поствоспалительная гиперпигментация. Реакция кожи на любое воспаление.</span></span> у тёмной кожи — очень высокий</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 50. КОМБИНИРОВАННЫЙ ПОДХОД + ФИНАЛ -->
+<section class="slide dark">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Финал лекции</div>
+    <h2 class="section">Что работает —<br><span style="color:#a8d8ff">комбинация</span></h2>
+    <div class="key-findings" style="margin-top:14px;">
+      <div class="kf"><div class="kf-bullet green">1</div><div><b>Фотозащита</b> SPF 50+ с физическими блокаторами и Fe₂O₃ — <b>фундамент любой схемы</b></div></div>
+      <div class="kf"><div class="kf-bullet">2</div><div><b>Наружная терапия</b> — гидрохинон / Клигман или доступные в РФ альтернативы (азелаин, цистеамин, арбутин)</div></div>
+      <div class="kf"><div class="kf-bullet amber">3</div><div><b>Транексамовая кислота</b> — наружно / мезо / внутрь с учётом противопоказаний</div></div>
+      <div class="kf"><div class="kf-bullet red">4</div><div><b>Лазер</b> — только стационарный с Flat Top и точной дозировкой. Часть комплекса, не монотерапия.</div></div>
+    </div>
+    <blockquote class="q" style="border-left:none;text-align:center;font-size:clamp(28px,2.6vw,40px);margin-top:24px;max-width:1500px;line-height:1.32;">
+      <b>Мелазма — не поле для экспериментов.</b><br>
+      Понимайте патогенез — выбирайте тактику.<br>
+      Лазер — поддерживающий инструмент<br>в руках того, кто знает физику.
+      <span class="src" style="margin-top:22px;color:rgba(255,255,255,0.7);">© В. Микрюков, лекция для клуба ЛазерПРО, 2026</span>
+    </blockquote>
+  </div>
+</section>
+
+</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const progressFill = document.getElementById('progressFill');
+let idx = 0;
+const total = slides.length;
+
+function setSlide(i){
+  i = Math.max(0, Math.min(total-1, i));
+  slides[idx].classList.remove('active');
+  idx = i;
+  slides[idx].classList.add('active');
+  progressFill.style.width = ((idx+1)/total*100)+'%';
+  if(history.replaceState) history.replaceState(null, '', '#s'+(idx+1));
+}
+function next(){ setSlide(idx+1); }
+function prev(){ setSlide(idx-1); }
+
+document.addEventListener('keydown', e=>{
+  if(['ArrowRight','PageDown',' '].includes(e.key)){ e.preventDefault(); next(); }
+  else if(['ArrowLeft','PageUp'].includes(e.key)){ e.preventDefault(); prev(); }
+  else if(e.key==='Home'){ e.preventDefault(); setSlide(0); }
+  else if(e.key==='End'){ e.preventDefault(); setSlide(total-1); }
+});
+
+let touchY=null, touchX=null;
+document.addEventListener('touchstart', e=>{ touchX=e.touches[0].clientX; touchY=e.touches[0].clientY; }, {passive:true});
+document.addEventListener('touchend', e=>{
+  if(touchX===null) return;
+  const dx = e.changedTouches[0].clientX - touchX;
+  const dy = e.changedTouches[0].clientY - touchY;
+  if(Math.abs(dx)>50 && Math.abs(dx)>Math.abs(dy)){
+    if(dx<0) next(); else prev();
+  }
+  touchX=null; touchY=null;
+}, {passive:true});
+
+let wheelLock=false;
+document.addEventListener('wheel', e=>{
+  if(wheelLock) return;
+  if(Math.abs(e.deltaY)<10) return;
+  wheelLock=true;
+  if(e.deltaY>0) next(); else prev();
+  setTimeout(()=>{ wheelLock=false; }, 700);
+}, {passive:true});
+
+const m = location.hash.match(/^#s(\d+)$/);
+if(m){
+  const n = Math.max(1, Math.min(total, parseInt(m[1],10)));
+  setSlide(n-1);
+} else {
+  setSlide(0);
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,2288 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="googlebot" content="noindex,nofollow,noarchive">
+<title>Поствоспалительная гиперпигментация · Лекция для специалистов</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#fbfbfd; --ink:#1d1d1f; --ink-soft:#3a3a3f; --ink-light:#86868b;
+    --line:#d2d2d7;
+    --blue:#0a84ff; --pink:#ff2d55; --green:#30d158;
+    --orange:#ff9500; --red:#ff3b30; --purple:#5e5ce6;
+    --teal:#5ac8fa; --brown:#8b5a2b;
+    --card:#ffffff;
+    --card-edge: rgba(0,0,0,0.05);
+    --shadow: 0 2px 12px rgba(0,0,0,0.04), 0 12px 40px rgba(0,0,0,0.06);
+    --radius: 22px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;
+    background:var(--bg); color:var(--ink);
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+    letter-spacing:-0.011em;
+  }
+
+  /* Network canvas background */
+  #bgNet{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+  .deck{z-index:1;position:relative;}
+
+  .deck{position:fixed;inset:0;}
+  .slide{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding: clamp(40px, 5vh, 80px) clamp(28px, 2.6vw, 60px);
+    opacity:0; transform:translateY(24px) scale(0.985);
+    transition: opacity .55s cubic-bezier(.2,.7,.2,1), transform .55s cubic-bezier(.2,.7,.2,1);
+    pointer-events:none; overflow:auto;
+  }
+  .slide.active{opacity:1;transform:none;pointer-events:auto;}
+  .slide-inner{
+    width:100%;
+    max-width: clamp(1200px, 95vw, 1920px);
+    margin:0 auto;
+    display:flex;flex-direction:column;
+    gap: clamp(12px, 1.4vw, 22px);
+  }
+
+  /* TYPOGRAPHY */
+  .eyebrow{text-transform:uppercase;letter-spacing:.18em;font-size:clamp(18px,1.2vw,22px);font-weight:600;color:var(--blue);}
+  h1.hero{
+    font-size: clamp(72px, 8.4vw, 144px);
+    line-height:.98; letter-spacing:-0.04em; font-weight:700;
+    background: linear-gradient(180deg,#1d1d1f 0%, #2a2a2e 60%, #6e6e73 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  h1.title{font-size: clamp(52px, 6vw, 100px); line-height:1.04; letter-spacing:-0.025em; font-weight:700; color:var(--ink);}
+  h2.section{font-size: clamp(44px, 4.6vw, 80px); line-height:1.08; letter-spacing:-0.02em; font-weight:700; color:var(--ink);}
+  .lead{font-size: clamp(28px, 2.2vw, 42px); line-height:1.45; color:var(--ink-soft); font-weight:400; max-width:1200px;}
+  .lead.big{font-size: clamp(32px, 2.6vw, 48px); line-height:1.35;}
+  .small-meta{font-size:17px;color:var(--ink-light);}
+  p{font-size: clamp(22px, 1.5vw, 28px); line-height:1.55; color:var(--ink);}
+
+  /* TOOLTIP TERMS */
+  .term{
+    border-bottom:1.5px dotted var(--blue); cursor:help; position:relative;
+    font-weight:600; color:var(--blue); white-space:nowrap;
+  }
+  .term .tip{
+    position:absolute; bottom:calc(100% + 12px); left:50%;
+    transform:translateX(-50%) translateY(6px);
+    background:rgba(20,20,22,0.96); color:#fff;
+    padding:14px 18px; border-radius:14px;
+    font-size:16px; font-weight:400; line-height:1.5;
+    white-space:normal; width:360px; max-width:80vw;
+    text-align:left; letter-spacing:0;
+    opacity:0; pointer-events:none;
+    transition: opacity .18s ease, transform .18s ease;
+    z-index:100;
+    box-shadow:0 10px 30px rgba(0,0,0,0.25);
+  }
+  .term .tip::before{
+    content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%);
+    border:7px solid transparent; border-top-color: rgba(20,20,22,0.96);
+  }
+  .term .tip b{color:#a8d8ff;}
+  .term:hover .tip, .term:focus .tip{opacity:1; transform:translateX(-50%) translateY(0);}
+  .slide.dark .term, .slide.blue .term, .slide.pink .term, .slide.red .term{color:#a8d8ff; border-bottom-color:#a8d8ff;}
+
+  .cite{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:15px;font-weight:500;color:var(--blue);
+    background:rgba(10,132,255,0.08); padding:8px 14px; border-radius:999px;
+    text-decoration:none; transition:background .2s ease, transform .2s ease;
+    border:1px solid rgba(10,132,255,0.15);
+  }
+  .cite:hover{background:rgba(10,132,255,0.14); transform:translateY(-1px);}
+  .cite-row{display:flex;flex-wrap:wrap;gap:8px;}
+
+  /* Cards & grids */
+  .card{
+    background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow);
+    padding: clamp(22px, 1.9vw, 34px); border:1px solid var(--card-edge); position:relative;
+  }
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:clamp(18px,1.4vw,26px);}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,1.2vw,22px);}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(14px,1vw,18px);}
+  @media (max-width:900px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}}
+
+  .stat-card{
+    background:var(--card); border-radius:20px;
+    padding: clamp(20px,1.7vw,30px);
+    border:1px solid var(--card-edge);
+    display:flex;flex-direction:column;gap:8px;
+    transition: transform .25s ease, box-shadow .25s ease;
+  }
+  .stat-card:hover{transform:translateY(-3px); box-shadow:0 14px 36px rgba(0,0,0,0.08);}
+  .stat-num{
+    font-size:clamp(48px,5.2vw,84px);
+    font-weight:700; letter-spacing:-0.03em; line-height:1.05; color:var(--blue);
+  }
+  .stat-num.blue{color:var(--blue);}
+  .stat-num.purple{color:var(--purple);}
+  .stat-num.pink{color:var(--pink);}
+  .stat-num.green{color:var(--green);}
+  .stat-num.orange{color:var(--orange);}
+  .stat-num.red{color:var(--red);}
+  .stat-num.brown{color:var(--brown);}
+  .stat-label{font-size:clamp(20px,1.4vw,26px); color:var(--ink-soft); line-height:1.45;}
+  .stat-label-big{font-size:clamp(24px,1.7vw,32px); color:var(--ink); line-height:1.4; font-weight:500;}
+
+  .split{display:grid;grid-template-columns:1.05fr 0.95fr;gap:36px;align-items:center;}
+  @media (max-width:900px){.split{grid-template-columns:1fr;}}
+
+  .chart-wrap{
+    background:var(--card); border-radius:var(--radius); padding:24px;
+    box-shadow:var(--shadow); border:1px solid rgba(0,0,0,0.04);
+  }
+  .chart-wrap canvas{max-height:360px;}
+  .chart-title{font-size:15px;color:var(--ink-soft);text-align:center;margin-top:12px;line-height:1.45;}
+
+  /* Pills */
+  .pill-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;}
+  .info-pill{
+    background:#fff;border:1px solid var(--line);border-radius:999px;
+    padding:clamp(10px,0.8vw,14px) clamp(16px,1.2vw,22px);
+    font-size:clamp(17px,1.2vw,22px); font-weight:500; color:var(--ink);
+    box-shadow:0 1px 2px rgba(0,0,0,0.02);
+  }
+  .info-pill.blue{background:rgba(10,132,255,0.08);color:var(--blue);border-color:rgba(10,132,255,0.2);}
+  .info-pill.pink{background:rgba(255,45,85,0.08);color:var(--pink);border-color:rgba(255,45,85,0.2);}
+  .info-pill.red{background:rgba(255,59,48,0.08);color:var(--red);border-color:rgba(255,59,48,0.2);}
+  .info-pill.green{background:rgba(48,209,88,0.12);color:#0f8a3a;border-color:rgba(48,209,88,0.25);}
+  .info-pill.amber{background:rgba(255,149,0,0.12);color:#a55c00;border-color:rgba(255,149,0,0.25);}
+  .slide.dark .info-pill, .slide.blue .info-pill, .slide.pink .info-pill, .slide.red .info-pill, .slide.green .info-pill, .slide.amber .info-pill{
+    background:rgba(255,255,255,0.12);color:#fff;border-color:rgba(255,255,255,0.22);
+  }
+
+  /* Section dividers */
+  .section-title-block{display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;}
+  .section-num{
+    font-size:clamp(140px,17vw,260px);
+    font-weight:800;letter-spacing:-0.06em;line-height:.9;
+    background:linear-gradient(180deg, var(--blue) 0%, var(--purple) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .section-num.pink{background:linear-gradient(180deg, var(--pink) 0%, var(--orange) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .section-num.red{background:linear-gradient(180deg, var(--red) 0%, var(--pink) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .section-num.green{background:linear-gradient(180deg, var(--green) 0%, var(--teal) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .section-num.amber{background:linear-gradient(180deg, var(--orange) 0%, var(--pink) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .section-num.brown{background:linear-gradient(180deg, var(--brown) 0%, var(--red) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+
+  /* Slides with colored backgrounds */
+  .slide.dark{background: radial-gradient(ellipse at 30% 20%, #1e1e22 0%, #000 70%);color:#fff;}
+  .slide.blue{background: linear-gradient(135deg, #0a1f5e 0%, #0050b8 50%, #0a84ff 100%);color:#fff;}
+  .slide.pink{background: linear-gradient(135deg, #5a0029 0%, #b8004a 50%, #ff2d55 100%);color:#fff;}
+  .slide.red{background: linear-gradient(135deg, #4a0008 0%, #a8000f 50%, #ff3b30 100%);color:#fff;}
+  .slide.green{background: linear-gradient(135deg, #003d1a 0%, #1c8a3a 50%, #30d158 100%);color:#fff;}
+  .slide.amber{background: linear-gradient(135deg, #4a2200 0%, #c87000 50%, #ff9500 100%);color:#fff;}
+  .slide.brown{background: linear-gradient(135deg, #2a1a0a 0%, #5a3010 50%, #8b5a2b 100%);color:#fff;}
+
+  .slide.dark h1.hero,.slide.dark h1.title,.slide.dark h2.section,
+  .slide.blue h1.hero,.slide.blue h1.title,.slide.blue h2.section,
+  .slide.pink h1.hero,.slide.pink h1.title,.slide.pink h2.section,
+  .slide.red h1.hero,.slide.red h1.title,.slide.red h2.section,
+  .slide.green h1.hero,.slide.green h1.title,.slide.green h2.section,
+  .slide.amber h1.hero,.slide.amber h1.title,.slide.amber h2.section,
+  .slide.brown h1.hero,.slide.brown h1.title,.slide.brown h2.section{
+    color:#fff !important; background:none;-webkit-background-clip:initial;-webkit-text-fill-color:#fff;
+  }
+  .slide.dark .lead{color:#d6d6da;}
+  .slide.blue .lead, .slide.pink .lead, .slide.red .lead, .slide.green .lead, .slide.amber .lead, .slide.brown .lead{color:rgba(255,255,255,0.92);}
+  .slide.dark .eyebrow{color:var(--teal);}
+  .slide.blue .eyebrow{color:#a8d8ff;}
+  .slide.pink .eyebrow, .slide.red .eyebrow{color:#ffb3c4;}
+  .slide.green .eyebrow{color:#a8f0bd;}
+  .slide.amber .eyebrow{color:#ffd9a0;}
+  .slide.brown .eyebrow{color:#ffd5a0;}
+
+  .slide.dark .card, .slide.blue .card, .slide.pink .card, .slide.red .card, .slide.green .card, .slide.amber .card, .slide.brown .card,
+  .slide.dark .stat-card, .slide.blue .stat-card, .slide.pink .stat-card, .slide.red .stat-card, .slide.green .stat-card, .slide.amber .stat-card, .slide.brown .stat-card{
+    background:rgba(255,255,255,0.10); border-color:rgba(255,255,255,0.18); color:#fff;
+    box-shadow:0 6px 22px rgba(0,0,0,0.18);
+    backdrop-filter:blur(14px);
+  }
+  .slide.dark .stat-num, .slide.blue .stat-num, .slide.pink .stat-num, .slide.red .stat-num, .slide.green .stat-num, .slide.amber .stat-num, .slide.brown .stat-num{color:#fff !important;}
+  .slide.dark .stat-label, .slide.blue .stat-label, .slide.pink .stat-label, .slide.red .stat-label, .slide.green .stat-label, .slide.amber .stat-label, .slide.brown .stat-label{color:rgba(255,255,255,0.88);}
+  .slide.dark p, .slide.blue p, .slide.pink p, .slide.red p, .slide.green p, .slide.amber p, .slide.brown p{color:rgba(255,255,255,0.9);}
+
+  /* Tables */
+  table.cmp{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);border:1px solid rgba(0,0,0,0.04);}
+  .cmp th, .cmp td{padding:clamp(18px,1.4vw,26px) clamp(20px,1.6vw,28px);text-align:left;font-size:clamp(22px,1.65vw,30px);border-bottom:1px solid var(--line);line-height:1.4;}
+  .cmp th{background:#f5f5f7;font-weight:600;color:var(--ink);font-size:clamp(21px,1.5vw,28px);}
+  .cmp tr:last-child td{border-bottom:none;}
+  .pill{display:inline-block;padding:6px 14px;border-radius:999px;font-size:clamp(15px,1vw,18px);font-weight:600;}
+  .pill.hi{background:rgba(48,209,88,.16);color:#0f8a3a;}
+  .pill.mid{background:rgba(255,149,0,.16);color:#a55c00;}
+  .pill.lo{background:rgba(255,45,85,.14);color:#b8163d;}
+  .pill.danger{background:rgba(255,59,48,.16);color:#a30010;}
+
+  /* Key findings */
+  .key-findings{display:flex;flex-direction:column;gap:clamp(12px,1.1vw,20px);}
+  .kf{display:flex;align-items:flex-start;gap:20px;font-size:clamp(24px,1.85vw,34px);line-height:1.42;}
+  .kf-bullet{
+    flex-shrink:0;
+    width:clamp(34px,2.4vw,44px); height:clamp(34px,2.4vw,44px);
+    border-radius:50%;
+    background:linear-gradient(135deg, var(--blue), var(--purple));
+    color:#fff; display:flex; align-items:center; justify-content:center;
+    font-size:clamp(15px,1.1vw,19px); font-weight:700; margin-top:3px;
+  }
+  .kf-bullet.red{background:linear-gradient(135deg, var(--red), var(--pink));}
+  .kf-bullet.green{background:linear-gradient(135deg, var(--green), var(--teal));}
+  .kf-bullet.amber{background:linear-gradient(135deg, var(--orange), var(--pink));}
+
+  /* Illustration container */
+  .illus{
+    background:#fff; border-radius:var(--radius);
+    padding: clamp(24px,2vw,36px);
+    box-shadow:var(--shadow); border:1px solid rgba(0,0,0,0.04);
+    text-align:center;
+  }
+  .illus svg{max-width:100%;height:auto;display:block;margin:0 auto;}
+  .illus-caption{font-size:clamp(18px,1.3vw,24px);color:var(--ink-soft);margin-top:18px;line-height:1.5;}
+
+  /* Blockquote */
+  blockquote.q{
+    font-size:clamp(28px,2.6vw,44px); line-height:1.32; letter-spacing:-0.015em;
+    font-weight:500; color:var(--ink);
+    border-left:5px solid var(--blue);
+    padding:6px 0 6px 28px; max-width:1200px;
+  }
+  blockquote.q .src{display:block;font-size:clamp(18px,1.2vw,22px);font-weight:500;color:var(--ink-light);margin-top:18px;letter-spacing:0;}
+  .slide.dark blockquote.q, .slide.blue blockquote.q, .slide.pink blockquote.q, .slide.red blockquote.q, .slide.green blockquote.q, .slide.amber blockquote.q, .slide.brown blockquote.q{color:#fff;border-left-color:rgba(255,255,255,0.8);}
+  .slide.dark blockquote.q .src, .slide.blue blockquote.q .src, .slide.pink blockquote.q .src, .slide.red blockquote.q .src{color:rgba(255,255,255,0.75);}
+
+  /* Photo frame */
+  .photo-frame{
+    aspect-ratio:1/1; background:linear-gradient(160deg,#f5f5f7 0%,#e8e8ed 100%);
+    border-radius:22px; border:1px solid var(--card-edge); box-shadow:var(--shadow);
+    overflow:hidden; position:relative; max-height:62vh; max-width:100%; margin:0 auto;
+  }
+  .photo-frame img.photo-img{width:100%;height:100%;object-fit:cover;display:block;}
+
+  /* References */
+  .ref-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  @media (max-width:900px){.ref-grid{grid-template-columns:1fr;}}
+  .ref{
+    background:#fff;border:1px solid var(--line);border-radius:14px;
+    padding:14px 18px;font-size:16px;line-height:1.45;
+    display:flex;justify-content:space-between;align-items:center;gap:14px;
+  }
+  .ref a{color:var(--blue);text-decoration:none;font-weight:500;font-size:15px;flex-shrink:0;}
+  .ref a:hover{text-decoration:underline;}
+
+  /* Progress bar */
+  .progress{position:fixed;top:0;left:0;right:0;height:2px;background:rgba(0,0,0,0.04);z-index:60;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--purple),var(--pink));width:0%;transition:width .4s cubic-bezier(.2,.7,.2,1);opacity:0.55;}
+
+  /* Animations */
+  @keyframes magicalFadeIn{
+    0%{opacity:0;transform:translateY(24px);filter:blur(3px);}
+    60%{filter:blur(0);}
+    100%{opacity:1;transform:translateY(0);filter:blur(0);}
+  }
+  .slide.active .stat-card,
+  .slide.active .card,
+  .slide.active .illus,
+  .slide.active blockquote.q,
+  .slide.active table.cmp,
+  .slide.active .ref,
+  .slide.active .chart-wrap{
+    animation: magicalFadeIn .8s cubic-bezier(.2,.7,.2,1) backwards;
+  }
+  .slide.active .grid-2 > *:nth-child(1),
+  .slide.active .grid-3 > *:nth-child(1),
+  .slide.active .grid-4 > *:nth-child(1){animation-delay:.12s;}
+  .slide.active .grid-2 > *:nth-child(2),
+  .slide.active .grid-3 > *:nth-child(2),
+  .slide.active .grid-4 > *:nth-child(2){animation-delay:.26s;}
+  .slide.active .grid-3 > *:nth-child(3),
+  .slide.active .grid-4 > *:nth-child(3){animation-delay:.40s;}
+  .slide.active .grid-4 > *:nth-child(4){animation-delay:.54s;}
+  .slide.active .key-findings .kf:nth-child(1){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .12s;}
+  .slide.active .key-findings .kf:nth-child(2){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .24s;}
+  .slide.active .key-findings .kf:nth-child(3){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .36s;}
+  .slide.active .key-findings .kf:nth-child(4){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .48s;}
+  .slide.active .key-findings .kf:nth-child(5){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .60s;}
+  .slide.active .key-findings .kf:nth-child(6){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .72s;}
+
+  /* Inflammation pulse */
+  @keyframes pulseStrong { 0%,100%{transform:scale(1);opacity:1;} 50%{transform:scale(1.28);opacity:0.45;} }
+  @keyframes pulseMid    { 0%,100%{transform:scale(1);opacity:1;} 50%{transform:scale(1.18);opacity:0.65;} }
+  @keyframes pulseGentle { 0%,100%{transform:scale(1);opacity:1;} 50%{transform:scale(1.10);opacity:0.78;} }
+  .halo-pulse-red, .halo-pulse-amber, .halo-pulse-green{
+    transform-box: fill-box; transform-origin: center center;
+  }
+  .halo-pulse-red    { animation: pulseStrong  2.2s ease-in-out infinite; }
+  .halo-pulse-amber  { animation: pulseMid     3.0s ease-in-out infinite; }
+  .halo-pulse-green  { animation: pulseGentle  3.8s ease-in-out infinite; }
+  .halo-pulse-red:nth-of-type(2n){animation-delay:0.35s;}
+  .halo-pulse-red:nth-of-type(3n){animation-delay:0.70s;}
+
+  /* Melanocyte breathing */
+  @keyframes melaPulse {
+    0%,100% { transform: scale(1); }
+    50%     { transform: scale(1.08); filter: brightness(1.15); }
+  }
+  .melanocyte-active{
+    transform-box: fill-box; transform-origin: center center;
+    animation: melaPulse 2.6s ease-in-out infinite;
+  }
+
+  /* Cascade arrow flow */
+  @keyframes cascadeFlow {
+    0%   { opacity:0; transform:translateY(-8px); }
+    100% { opacity:1; transform:translateY(0); }
+  }
+  .cascade-step{ animation: cascadeFlow .6s ease-out backwards; }
+  .slide.active .cascade-step:nth-child(1){ animation-delay:.10s; }
+  .slide.active .cascade-step:nth-child(2){ animation-delay:.30s; }
+  .slide.active .cascade-step:nth-child(3){ animation-delay:.50s; }
+  .slide.active .cascade-step:nth-child(4){ animation-delay:.70s; }
+  .slide.active .cascade-step:nth-child(5){ animation-delay:.90s; }
+  .slide.active .cascade-step:nth-child(6){ animation-delay:1.10s; }
+  .slide.active .cascade-step:nth-child(7){ animation-delay:1.30s; }
+  .slide.active .cascade-step:nth-child(8){ animation-delay:1.50s; }
+
+  /* Risk gauge bar */
+  @keyframes barFill {
+    0% { width: 0%; }
+    100% { width: var(--bar-width, 100%); }
+  }
+  .risk-bar{
+    height: clamp(28px, 2vw, 38px);
+    border-radius: 999px; overflow:hidden;
+    background:rgba(0,0,0,0.05); position:relative;
+  }
+  .risk-bar-fill{
+    height: 100%; border-radius: 999px;
+    animation: barFill 1.6s cubic-bezier(.2,.7,.2,1) backwards;
+    animation-delay: 0.3s;
+  }
+
+  /* UV ray emoji animation */
+  @keyframes uvRay {
+    0%   { transform: translateY(-30px); opacity:0; }
+    30%  { opacity:1; }
+    100% { transform: translateY(60px); opacity:0; }
+  }
+
+  .slide::-webkit-scrollbar{width:0;}
+</style>
+</head>
+<body>
+
+<canvas id="bgNet" aria-hidden="true"></canvas>
+<div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="deck" id="deck">
+
+<!-- 1. COVER -->
+<section class="slide dark active">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Лекция для специалистов лазерных технологий</div>
+    <h1 class="hero">Поствоспалительная<br>гиперпигментация</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">
+      PIH после CO₂-фракционного лазера и удаления татуировок:<br>
+      комплексный разбор механизмов, профилактики и лечения.
+    </p>
+    <div class="pill-row" style="margin-top:22px;">
+      <span class="info-pill">10 источников PubMed/PMC</span>
+      <span class="info-pill">Биология меланоцита</span>
+      <span class="info-pill">Алгоритм профилактики</span>
+      <span class="info-pill">3 линии лечения</span>
+    </div>
+  </div>
+</section>
+
+<!-- 2. CORE THESIS -->
+<section class="slide red">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Главный тезис лекции</div>
+    <blockquote class="q" style="border-left:none;text-align:center;font-size:clamp(34px,4vw,56px);max-width:1500px;line-height:1.28;">
+      PIH — это не проблема меланина как такового.<br><br>
+      Это проблема <b>интенсивности воспаления</b>,<br>
+      <b>глубины термического повреждения</b><br>
+      и <b>активации меланоцитов</b> воспалительными медиаторами.
+      <span class="src" style="margin-top:26px;font-size:clamp(18px, 1.3vw, 24px);">© В. Микрюков, концепция лекции 2026</span>
+    </blockquote>
+  </div>
+</section>
+
+<!-- 4. DEFINITION -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Определение</div>
+    <h2 class="section">Что такое PIH.</h2>
+    <p class="lead">
+      <b>Поствоспалительная гиперпигментация (PIH)</b> — приобретённое
+      потемнение участков кожи, возникающее как ответ на любой воспалительный
+      или травматический процесс. От лат. <i>post inflammation</i> — «после воспаления».
+    </p>
+    <div class="grid-3" style="margin-top:14px;">
+      <div class="stat-card" style="border-top:5px solid var(--brown);">
+        <div style="font-size:clamp(28px,2.3vw,40px);font-weight:700;color:var(--brown);line-height:1.1;">Эпидермальная</div>
+        <div style="font-size:clamp(22px,1.7vw,30px);color:var(--ink-soft);margin-top:12px;line-height:1.45;">Меланин в кератиноцитах, тёмно-коричневый цвет. Разрешается быстрее (3–6 мес).</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--purple);">
+        <div style="font-size:clamp(28px,2.3vw,40px);font-weight:700;color:var(--purple);line-height:1.1;">Дермальная</div>
+        <div style="font-size:clamp(22px,1.7vw,30px);color:var(--ink-soft);margin-top:12px;line-height:1.45;">Меланин в макрофагах дермы (меланофагах), серо-синий оттенок. Может сохраняться годами.</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--pink);">
+        <div style="font-size:clamp(28px,2.3vw,40px);font-weight:700;color:var(--pink);line-height:1.1;">Смешанная</div>
+        <div style="font-size:clamp(22px,1.7vw,30px);color:var(--ink-soft);margin-top:12px;line-height:1.45;">Чаще всего после лазерного воздействия — комбинированная картина.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. EPIDEMIOLOGY -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Эпидемиология</div>
+    <h2 class="section">PIH чаще встречается, чем кажется.</h2>
+    <p class="lead">
+      Частота возрастает по мере увеличения фототипа.
+      У <b>III–VI</b> фототипов PIH — ведущее лазерное осложнение.
+    </p>
+    <div class="grid-4" style="margin-top:14px;">
+      <div class="stat-card">
+        <div style="font-size:clamp(40px,4.4vw,72px);font-weight:700;color:var(--green);letter-spacing:-0.02em;line-height:1.05;white-space:nowrap;">1–5%</div>
+        <div style="font-size:clamp(20px,1.45vw,28px);color:var(--ink-soft);margin-top:10px;line-height:1.4;">после CO₂<br>фототипы I–II</div>
+      </div>
+      <div class="stat-card">
+        <div style="font-size:clamp(40px,4.4vw,72px);font-weight:700;color:var(--orange);letter-spacing:-0.02em;line-height:1.05;white-space:nowrap;">5–20%</div>
+        <div style="font-size:clamp(20px,1.45vw,28px);color:var(--ink-soft);margin-top:10px;line-height:1.4;">после CO₂<br>фототипы III–IV</div>
+      </div>
+      <div class="stat-card">
+        <div style="font-size:clamp(40px,4.4vw,72px);font-weight:700;color:var(--red);letter-spacing:-0.02em;line-height:1.05;white-space:nowrap;">до 30%</div>
+        <div style="font-size:clamp(20px,1.45vw,28px);color:var(--ink-soft);margin-top:10px;line-height:1.4;">после CO₂<br>фототипы V–VI</div>
+      </div>
+      <div class="stat-card">
+        <div style="font-size:clamp(40px,4.4vw,72px);font-weight:700;color:var(--purple);letter-spacing:-0.02em;line-height:1.05;white-space:nowrap;">15–25%</div>
+        <div style="font-size:clamp(20px,1.45vw,28px);color:var(--ink-soft);margin-top:10px;line-height:1.4;">после Q-switched<br>при удалении тату</div>
+      </div>
+    </div>
+    <p class="lead" style="font-size:clamp(18px,1.3vw,22px);color:var(--ink-light);margin-top:6px;font-style:italic;">
+      Источник: PMC 2023, обзор PIH после CO₂; Wu &amp; Bae, 2025 — обзор по skin of color.
+    </p>
+  </div>
+</section>
+
+<!-- 6. WHY IT MATTERS -->
+<section class="slide pink">
+  <div class="slide-inner">
+    <div class="eyebrow">Почему это важно</div>
+    <h2 class="section">PIH — не косметика, это медицинская проблема.</h2>
+    <div class="key-findings" style="margin-top:14px;">
+      <div class="kf"><div class="kf-bullet red">1</div><div>Может сохраняться <b>месяцами и годами</b>, особенно дермальный компонент</div></div>
+      <div class="kf"><div class="kf-bullet red">2</div><div>Сильно <b>ухудшает результат</b> процедуры — пациент видит ухудшение, а не улучшение</div></div>
+      <div class="kf"><div class="kf-bullet red">3</div><div>Психологическая нагрузка: депрессия, социальная изоляция, отказ от лечения</div></div>
+      <div class="kf"><div class="kf-bullet red">4</div><div>Требует <b>длительной комплексной терапии</b> — иногда дороже исходной процедуры</div></div>
+      <div class="kf"><div class="kf-bullet red">5</div><div>Грубая ошибка — дать новые лазерные процедуры до полного разрешения PIH</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. SECTION DIVIDER — BIOLOGY -->
+<section class="slide dark">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть I</div>
+    <div class="section-num">01</div>
+    <h1 class="title">Биология и каскад</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">
+      От меланоцита и меланогенеза — до триггеров PIH.
+    </p>
+  </div>
+</section>
+
+<!-- 8. MELANOCYTE ANATOMY -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Биология</div>
+    <h2 class="section">Меланоцит — главный игрок.</h2>
+    <p class="lead">
+      Меланоцит находится в базальном слое эпидермиса. Каждый меланоцит «обслуживает»
+      ~30–40 кератиноцитов через дендриты, передавая им меланосомы.
+    </p>
+    <div class="split" style="grid-template-columns: 1.15fr 0.85fr; gap: clamp(24px,2vw,40px); align-items: stretch;">
+      <!-- LEFT: real medical illustration -->
+      <div class="illus" style="display:flex;flex-direction:column;justify-content:center;padding:clamp(14px,1.2vw,22px);overflow:hidden;border-radius:clamp(16px,1.4vw,24px);">
+        <img src="melanocyte_dendrites.png" alt="Меланоцит с дендритами в эпидермисе" style="width:100%;height:auto;display:block;border-radius:clamp(14px,1.2vw,22px);box-shadow:0 6px 24px rgba(58,37,21,0.18);">
+        <div style="display:none;"><svg viewBox="0 0 600 520" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+          <defs>
+            <linearGradient id="epidermBig" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#fce8d8"/>
+              <stop offset="100%" stop-color="#e6b896"/>
+            </linearGradient>
+            <linearGradient id="dermisBig" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#dbb085"/>
+              <stop offset="100%" stop-color="#b88858"/>
+            </linearGradient>
+            <radialGradient id="melaCoreBig" cx="0.5" cy="0.5" r="0.6">
+              <stop offset="0%" stop-color="#1a0a05"/>
+              <stop offset="100%" stop-color="#3a2515"/>
+            </radialGradient>
+          </defs>
+
+          <!-- Stratum corneum -->
+          <rect x="30" y="30" width="540" height="48" rx="6" fill="#fceddc"/>
+          <text x="50" y="60" font-size="16" font-weight="600" fill="#8b5a2b">Роговой слой</text>
+
+          <!-- Epidermis -->
+          <rect x="30" y="84" width="540" height="280" rx="6" fill="url(#epidermBig)"/>
+          <text x="50" y="108" font-size="16" font-weight="600" fill="#5a3010">Эпидермис</text>
+
+          <!-- Keratinocyte layer 1 (highest) -->
+          <g fill="#f5d4b8" stroke="#a87b3d" stroke-width="2">
+            <circle cx="120" cy="160" r="26"/>
+            <circle cx="200" cy="155" r="26"/>
+            <circle cx="280" cy="160" r="26"/>
+            <circle cx="360" cy="155" r="26"/>
+            <circle cx="440" cy="160" r="26"/>
+            <circle cx="520" cy="155" r="26"/>
+          </g>
+          <!-- Layer 2 -->
+          <g fill="#f0c896" stroke="#a87b3d" stroke-width="2">
+            <circle cx="80"  cy="220" r="28"/>
+            <circle cx="160" cy="225" r="28"/>
+            <circle cx="240" cy="220" r="28"/>
+            <circle cx="400" cy="220" r="28"/>
+            <circle cx="480" cy="225" r="28"/>
+            <circle cx="560" cy="220" r="28"/>
+          </g>
+          <!-- Layer 3 (basal) -->
+          <g fill="#e6b896" stroke="#8b5a2b" stroke-width="2">
+            <circle cx="120" cy="295" r="30"/>
+            <circle cx="200" cy="298" r="30"/>
+            <circle cx="440" cy="298" r="30"/>
+            <circle cx="520" cy="295" r="30"/>
+          </g>
+
+          <!-- Melanocyte centered, big -->
+          <g class="melanocyte-active">
+            <!-- Halo -->
+            <circle cx="320" cy="300" r="65" fill="#3a2515" fill-opacity="0.18"/>
+            <!-- Body -->
+            <circle cx="320" cy="300" r="42" fill="url(#melaCoreBig)"/>
+            <!-- Nucleus -->
+            <circle cx="316" cy="296" r="14" fill="#0a0303"/>
+            <!-- Dendrites -->
+            <g stroke="#1a0a05" stroke-width="5" fill="none" stroke-linecap="round">
+              <path d="M 290 270 Q 250 220 200 170"/>
+              <path d="M 320 260 Q 320 215 320 165"/>
+              <path d="M 350 270 Q 390 220 440 170"/>
+              <path d="M 365 295 Q 415 270 470 240"/>
+              <path d="M 275 295 Q 225 270 170 240"/>
+            </g>
+            <!-- Melanosomes -->
+            <g fill="#0a0303">
+              <circle cx="215" cy="195" r="5"/>
+              <circle cx="245" cy="220" r="5"/>
+              <circle cx="320" cy="195" r="5"/>
+              <circle cx="320" cy="225" r="5"/>
+              <circle cx="395" cy="220" r="5"/>
+              <circle cx="425" cy="195" r="5"/>
+              <circle cx="190" cy="250" r="5"/>
+              <circle cx="450" cy="250" r="5"/>
+            </g>
+          </g>
+
+          <!-- Basement membrane -->
+          <line x1="30" y1="370" x2="570" y2="370" stroke="#8b5a2b" stroke-width="3" stroke-dasharray="8 5"/>
+          <text x="50" y="395" font-size="16" font-weight="600" fill="#8b5a2b">Базальная мембрана</text>
+
+          <!-- Dermis -->
+          <rect x="30" y="404" width="540" height="86" rx="6" fill="url(#dermisBig)" opacity="0.55"/>
+          <text x="50" y="455" font-size="16" font-weight="600" fill="#5a3010">Дерма</text>
+        </svg></div>
+      </div>
+
+      <!-- RIGHT: clean labels card column -->
+      <div style="display:flex;flex-direction:column;gap:clamp(12px,1vw,18px);justify-content:center;">
+        <div class="card" style="border-left:5px solid #3a2515;padding:clamp(18px,1.5vw,26px);">
+          <div style="font-size:clamp(22px,1.8vw,30px);font-weight:700;color:#3a2515;line-height:1.15;">МЕЛАНОЦИТ</div>
+          <div style="font-size:clamp(19px,1.45vw,26px);color:var(--ink-soft);margin-top:6px;line-height:1.4;">Расположен в базальном слое эпидермиса. Производит и упаковывает меланин.</div>
+        </div>
+        <div class="card" style="border-left:5px solid #b88858;padding:clamp(18px,1.5vw,26px);">
+          <div style="font-size:clamp(22px,1.8vw,30px);font-weight:700;color:#b88858;line-height:1.15;">КЕРАТИНОЦИТЫ</div>
+          <div style="font-size:clamp(19px,1.45vw,26px);color:var(--ink-soft);margin-top:6px;line-height:1.4;">~30–40 кератиноцитов «обслуживается» одним меланоцитом.</div>
+        </div>
+        <div class="card" style="border-left:5px solid var(--ink);padding:clamp(18px,1.5vw,26px);">
+          <div style="font-size:clamp(22px,1.8vw,30px);font-weight:700;color:var(--ink);line-height:1.15;">ДЕНДРИТЫ</div>
+          <div style="font-size:clamp(19px,1.45vw,26px);color:var(--ink-soft);margin-top:6px;line-height:1.4;">Отростки меланоцита, по которым меланосомы транспортируются к кератиноцитам.</div>
+        </div>
+        <div class="card" style="border-left:5px solid var(--brown);padding:clamp(18px,1.5vw,26px);">
+          <div style="font-size:clamp(22px,1.8vw,30px);font-weight:700;color:var(--brown);line-height:1.15;">МЕЛАНОСОМЫ</div>
+          <div style="font-size:clamp(19px,1.45vw,26px);color:var(--ink-soft);margin-top:6px;line-height:1.4;">Упакованные «капсулы» меланина — передаются в кератиноциты, окрашивая кожу.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 9. MELANIN SYNTHESIS -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Биохимия меланогенеза</div>
+    <h2 class="section">Как синтезируется меланин.</h2>
+    <p class="lead">
+      Ключевой фермент — <span class="term" tabindex="0">тирозиназа<span class="tip"><b>Тирозиназа</b> — медь-содержащий фермент, скорость-лимитирующий шаг меланогенеза. Её активность регулируется UV-облучением и провоспалительными цитокинами. Главная мишень для отбеливающих препаратов (гидрохинон, азелаиновая кислота).</span></span>.
+      Её активность регулируется UV-облучением и цитокинами. Это основная мишень
+      отбеливающей терапии.
+    </p>
+    <div class="illus" style="padding:clamp(28px,2.4vw,44px);">
+      <svg viewBox="0 0 1280 500" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+        <defs>
+          <marker id="arrPath" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#8b5a2b"/>
+          </marker>
+        </defs>
+
+        <!-- Row 1: substrates linear -->
+        <g class="cascade-step">
+          <rect x="20" y="120" width="200" height="140" rx="18" fill="#fff8e8" stroke="#d4b483" stroke-width="3"/>
+          <text x="120" y="175" text-anchor="middle" font-size="28" font-weight="700" fill="#8b5a2b">Тирозин</text>
+          <text x="120" y="210" text-anchor="middle" font-size="18" fill="#525258">аминокислота</text>
+          <text x="120" y="232" text-anchor="middle" font-size="18" fill="#525258">из пищи</text>
+        </g>
+
+        <g class="cascade-step">
+          <text x="277" y="170" text-anchor="middle" font-size="18" font-weight="700" font-style="italic" fill="#0a84ff">ТИРОЗИНАЗА</text>
+          <line x1="226" y1="190" x2="328" y2="190" stroke="#8b5a2b" stroke-width="4" marker-end="url(#arrPath)"/>
+        </g>
+
+        <g class="cascade-step">
+          <rect x="340" y="120" width="200" height="140" rx="18" fill="#ffe8d0" stroke="#c89860" stroke-width="3"/>
+          <text x="440" y="175" text-anchor="middle" font-size="28" font-weight="700" fill="#8b5a2b">L-ДОФА</text>
+          <text x="440" y="210" text-anchor="middle" font-size="18" fill="#525258">диоксифенил-</text>
+          <text x="440" y="232" text-anchor="middle" font-size="18" fill="#525258">аланин</text>
+        </g>
+
+        <g class="cascade-step">
+          <text x="597" y="170" text-anchor="middle" font-size="18" font-weight="700" font-style="italic" fill="#0a84ff">ТИРОЗИНАЗА</text>
+          <line x1="546" y1="190" x2="648" y2="190" stroke="#8b5a2b" stroke-width="4" marker-end="url(#arrPath)"/>
+        </g>
+
+        <g class="cascade-step">
+          <rect x="660" y="120" width="200" height="140" rx="18" fill="#f5d4a8" stroke="#a87b3d" stroke-width="3"/>
+          <text x="760" y="175" text-anchor="middle" font-size="26" font-weight="700" fill="#5a3010">Допахинон</text>
+          <text x="760" y="210" text-anchor="middle" font-size="18" fill="#525258">промежуточный</text>
+          <text x="760" y="232" text-anchor="middle" font-size="18" fill="#525258">продукт</text>
+        </g>
+
+        <!-- Branching arrows from Допахинон to two melanins -->
+        <g class="cascade-step">
+          <!-- top branch to Эумеланин -->
+          <path d="M 866 175 Q 920 175 920 105 L 968 105" stroke="#8b5a2b" stroke-width="4" fill="none" marker-end="url(#arrPath)"/>
+          <!-- bottom branch to Феомеланин -->
+          <path d="M 866 205 Q 920 205 920 275 L 968 275" stroke="#8b5a2b" stroke-width="4" fill="none" marker-end="url(#arrPath)"/>
+        </g>
+
+        <!-- Two melanin types -->
+        <g class="cascade-step">
+          <rect x="980" y="60" width="260" height="92" rx="18" fill="#3a2515"/>
+          <circle cx="1010" cy="106" r="10" fill="#0a0303"/>
+          <text x="1030" y="98" font-size="24" font-weight="700" fill="#fff">Эумеланин</text>
+          <text x="1030" y="128" font-size="17" fill="#d4b483">тёмно-коричневый</text>
+        </g>
+        <g class="cascade-step">
+          <rect x="980" y="232" width="260" height="92" rx="18" fill="#d4a07a"/>
+          <circle cx="1010" cy="278" r="10" fill="#a86d3d"/>
+          <text x="1030" y="270" font-size="24" font-weight="700" fill="#3a2515">Феомеланин</text>
+          <text x="1030" y="300" font-size="17" fill="#5a3010">красновато-жёлтый</text>
+        </g>
+
+        <!-- Bottom highlight callout (now full-width, below boxes) -->
+        <g class="cascade-step">
+          <rect x="20" y="380" width="1220" height="90" rx="18" fill="#e0f0ff" stroke="#0a84ff" stroke-width="3"/>
+          <text x="630" y="418" text-anchor="middle" font-size="22" font-weight="700" fill="#0a84ff">
+            Тирозиназа — скорость-лимитирующий фермент пути.
+          </text>
+          <text x="630" y="450" text-anchor="middle" font-size="20" fill="#0a84ff">
+            Заблокируешь её активность — снизишь меланогенез. Это основа фармакотерапии PIH.
+          </text>
+        </g>
+      </svg>
+      <div class="illus-caption" style="margin-top:22px;font-size:clamp(20px,1.5vw,28px);">
+        Меланосомы упаковывают эу- и феомеланин внутри меланоцита, после чего <b>передаются в кератиноциты по дендритам</b> — и видимая пигментация появляется.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10. INFLAMMATION TRIGGERS MELANOGENESIS -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Связь воспаления и пигмента</div>
+    <h2 class="section">Воспаление — главный триггер меланогенеза.</h2>
+    <p class="lead">
+      Меланоциты «прислушиваются» к воспалительному фону кожи. Цитокины,
+      простагландины и активные формы кислорода (АФК) — все они <b>усиливают
+      синтез меланина</b> в ответ на повреждение.
+    </p>
+    <div class="grid-3" style="margin-top:14px;">
+      <div class="stat-card" style="border-top:5px solid var(--blue);">
+        <svg viewBox="0 0 64 64" style="width:clamp(48px,4vw,72px);height:clamp(48px,4vw,72px);margin-bottom:8px;" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="32" cy="32" r="28" fill="#0a84ff" opacity="0.10"/>
+          <path d="M 16 40 L 28 28 L 36 36 L 48 22" stroke="#ff3b30" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <line x1="14" y1="48" x2="50" y2="48" stroke="#0a84ff" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="28" cy="28" r="3" fill="#ff3b30"/>
+          <circle cx="36" cy="36" r="3" fill="#ff3b30"/>
+        </svg>
+        <div style="font-size:clamp(26px,2vw,36px);font-weight:700;color:var(--blue);line-height:1.15;">Любое повреждение</div>
+        <div style="font-size:clamp(22px,1.7vw,30px);color:var(--ink-soft);margin-top:12px;line-height:1.45;">Лазер, ожог, акне, царапина, химический пилинг — всё запускает один и тот же каскад.</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--orange);">
+        <svg viewBox="0 0 64 64" style="width:clamp(48px,4vw,72px);height:clamp(48px,4vw,72px);margin-bottom:8px;" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="32" cy="32" r="28" fill="#ff9500" opacity="0.12"/>
+          <circle cx="32" cy="32" r="6" fill="#ff9500"/>
+          <circle cx="18" cy="22" r="4" fill="#ff9500" opacity="0.75"/>
+          <circle cx="48" cy="20" r="4" fill="#ff9500" opacity="0.75"/>
+          <circle cx="48" cy="44" r="4" fill="#ff9500" opacity="0.55"/>
+          <circle cx="16" cy="44" r="4" fill="#ff9500" opacity="0.55"/>
+          <circle cx="32" cy="14" r="3" fill="#ff9500" opacity="0.65"/>
+          <circle cx="32" cy="52" r="3" fill="#ff9500" opacity="0.45"/>
+        </svg>
+        <div style="font-size:clamp(26px,2vw,36px);font-weight:700;color:#a55c00;line-height:1.15;">Выброс медиаторов</div>
+        <div style="font-size:clamp(22px,1.7vw,30px);color:var(--ink-soft);margin-top:12px;line-height:1.45;">IL-1α, TNF-α, простагландин E₂, лейкотриены, эндотелин-1 — все стимулируют тирозиназу.</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--brown);">
+        <svg viewBox="0 0 64 64" style="width:clamp(48px,4vw,72px);height:clamp(48px,4vw,72px);margin-bottom:8px;" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="32" cy="32" r="28" fill="#8b5a2b" opacity="0.10"/>
+          <circle cx="32" cy="34" r="12" fill="#3a2515"/>
+          <circle cx="30" cy="32" r="4" fill="#0a0303"/>
+          <path d="M 24 26 L 18 18 M 40 26 L 46 18 M 22 38 L 14 42 M 42 38 L 50 42 M 32 22 L 32 12" stroke="#3a2515" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+        <div style="font-size:clamp(26px,2vw,36px);font-weight:700;color:var(--brown);line-height:1.15;">Меланоциты ↑↑</div>
+        <div style="font-size:clamp(22px,1.7vw,30px);color:var(--ink-soft);margin-top:12px;line-height:1.45;">Усиление синтеза меланина и передачи в кератиноциты. Дермальный компонент — через макрофаги.</div>
+      </div>
+    </div>
+    <blockquote class="q" style="margin-top:14px;font-size:clamp(22px,1.7vw,30px);">
+      Чем сильнее воспаление — тем выше риск PIH.
+      <span class="src">— PMC 2023, обзор PIH после CO₂</span>
+    </blockquote>
+  </div>
+</section>
+
+<!-- 11. PIH CASCADE — BIG ANIMATED FLOW -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Полный каскад</div>
+    <h2 class="section">От лазера до PIH — 7 шагов.</h2>
+    <div class="illus" style="padding:clamp(24px,2vw,40px);">
+      <svg viewBox="0 0 1400 480" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+        <!-- 7 vertical narrow columns. Each: 170 wide, ~20 gap. Total = 7*170 + 6*20 = 1310. centered. -->
+        <!-- columns at x: 40, 230, 420, 610, 800, 990, 1180 -->
+
+        <!-- STEP 1 -->
+        <g class="cascade-step">
+          <rect x="40" y="20" width="170" height="280" rx="18" fill="#ffe9ec" stroke="#ff3b30" stroke-width="3"/>
+          <text x="125" y="58" text-anchor="middle" font-size="14" font-weight="700" fill="#d70015" letter-spacing="0.18em">ШАГ 1</text>
+          <!-- icon: laser handpiece + beam + skin contact -->
+          <rect x="108" y="78" width="34" height="20" rx="4" fill="#1d1d1f"/>
+          <rect x="116" y="68" width="18" height="14" rx="3" fill="#1d1d1f"/>
+          <rect x="121" y="98" width="8" height="38" fill="#ff3b30"/>
+          <ellipse cx="125" cy="145" rx="28" ry="6" fill="#ff3b30" opacity="0.35"/>
+          <line x1="100" y1="150" x2="150" y2="150" stroke="#b88858" stroke-width="3" stroke-linecap="round"/>
+          <text x="125" y="200" text-anchor="middle" font-size="22" font-weight="700" fill="#1d1d1f">ЛАЗЕР</text>
+          <text x="125" y="240" text-anchor="middle" font-size="14" fill="#525258">CO₂ ·</text>
+          <text x="125" y="260" text-anchor="middle" font-size="14" fill="#525258">Q-switched ·</text>
+          <text x="125" y="280" text-anchor="middle" font-size="14" fill="#525258">Pico</text>
+        </g>
+        <text x="218" y="170" font-size="22" font-weight="700" fill="#86868b" class="cascade-step">→</text>
+
+        <!-- STEP 2 -->
+        <g class="cascade-step">
+          <rect x="230" y="20" width="170" height="280" rx="18" fill="#fff4e0" stroke="#ff9500" stroke-width="3"/>
+          <text x="315" y="58" text-anchor="middle" font-size="14" font-weight="700" fill="#a55c00" letter-spacing="0.18em">ШАГ 2</text>
+          <!-- icon: cells damaged -->
+          <g fill="none" stroke="#ff9500" stroke-width="2.5">
+            <circle cx="100" cy="110" r="14"/>
+            <circle cx="130" cy="100" r="14"/>
+            <circle cx="160" cy="115" r="14"/>
+            <path d="M 90 120 L 170 100" stroke="#d70015" stroke-width="2"/>
+          </g>
+          <text x="315" y="200" text-anchor="middle" font-size="20" font-weight="700" fill="#1d1d1f">Повреждение</text>
+          <text x="315" y="226" text-anchor="middle" font-size="20" font-weight="700" fill="#1d1d1f">тканей</text>
+          <text x="315" y="260" text-anchor="middle" font-size="14" fill="#525258">клетки + ECM</text>
+          <text x="315" y="280" text-anchor="middle" font-size="14" fill="#525258">+ сосуды</text>
+        </g>
+        <text x="408" y="170" font-size="22" font-weight="700" fill="#86868b" class="cascade-step">→</text>
+
+        <!-- STEP 3 -->
+        <g class="cascade-step">
+          <rect x="420" y="20" width="170" height="280" rx="18" fill="#f0eaff" stroke="#5e5ce6" stroke-width="3"/>
+          <text x="505" y="58" text-anchor="middle" font-size="14" font-weight="700" fill="#5e5ce6" letter-spacing="0.18em">ШАГ 3</text>
+          <!-- icon: cytokines (dots radiating) -->
+          <circle cx="505" cy="110" r="8" fill="#5e5ce6"/>
+          <circle cx="480" cy="95" r="5" fill="#5e5ce6" opacity="0.7"/>
+          <circle cx="530" cy="95" r="5" fill="#5e5ce6" opacity="0.7"/>
+          <circle cx="475" cy="125" r="5" fill="#5e5ce6" opacity="0.5"/>
+          <circle cx="535" cy="125" r="5" fill="#5e5ce6" opacity="0.5"/>
+          <text x="505" y="200" text-anchor="middle" font-size="22" font-weight="700" fill="#1d1d1f">Цитокины</text>
+          <text x="505" y="240" text-anchor="middle" font-size="14" fill="#525258">IL-1, TNF-α,</text>
+          <text x="505" y="260" text-anchor="middle" font-size="14" fill="#525258">PGE₂, LT</text>
+        </g>
+        <text x="598" y="170" font-size="22" font-weight="700" fill="#86868b" class="cascade-step">→</text>
+
+        <!-- STEP 4 -->
+        <g class="cascade-step">
+          <rect x="610" y="20" width="170" height="280" rx="18" fill="#e0f0ff" stroke="#0a84ff" stroke-width="3"/>
+          <text x="695" y="58" text-anchor="middle" font-size="14" font-weight="700" fill="#0a84ff" letter-spacing="0.18em">ШАГ 4</text>
+          <!-- icon: enzyme up arrow -->
+          <polygon points="680,135 695,90 710,135" fill="#0a84ff"/>
+          <rect x="685" y="135" width="20" height="10" fill="#0a84ff"/>
+          <text x="695" y="200" text-anchor="middle" font-size="22" font-weight="700" fill="#1d1d1f">Тирозиназа</text>
+          <text x="695" y="240" text-anchor="middle" font-size="14" fill="#525258">фермент</text>
+          <text x="695" y="260" text-anchor="middle" font-size="14" fill="#525258">активирован</text>
+        </g>
+        <text x="788" y="170" font-size="22" font-weight="700" fill="#86868b" class="cascade-step">→</text>
+
+        <!-- STEP 5 -->
+        <g class="cascade-step">
+          <rect x="800" y="20" width="170" height="280" rx="18" fill="#fff0e0" stroke="#b88858" stroke-width="3"/>
+          <text x="885" y="58" text-anchor="middle" font-size="14" font-weight="700" fill="#8b5a2b" letter-spacing="0.18em">ШАГ 5</text>
+          <!-- icon: melanocyte -->
+          <circle cx="885" cy="110" r="22" fill="#3a2515"/>
+          <circle cx="882" cy="107" r="7" fill="#0a0303"/>
+          <path d="M 870 95 L 855 80 M 900 95 L 915 80 M 870 125 L 855 140 M 900 125 L 915 140" stroke="#3a2515" stroke-width="3" stroke-linecap="round"/>
+          <text x="885" y="200" text-anchor="middle" font-size="22" font-weight="700" fill="#1d1d1f">Меланоциты</text>
+          <text x="885" y="240" text-anchor="middle" font-size="14" fill="#525258">синтез</text>
+          <text x="885" y="260" text-anchor="middle" font-size="14" fill="#525258">меланина ↑↑</text>
+        </g>
+        <text x="978" y="170" font-size="22" font-weight="700" fill="#86868b" class="cascade-step">→</text>
+
+        <!-- STEP 6 -->
+        <g class="cascade-step">
+          <rect x="990" y="20" width="170" height="280" rx="18" fill="#f5d4a8" stroke="#8b5a2b" stroke-width="3"/>
+          <text x="1075" y="58" text-anchor="middle" font-size="14" font-weight="700" fill="#5a3010" letter-spacing="0.18em">ШАГ 6</text>
+          <!-- icon: dots transferring -->
+          <g fill="#3a2515">
+            <circle cx="1055" cy="100" r="5"/>
+            <circle cx="1075" cy="115" r="5"/>
+            <circle cx="1095" cy="100" r="5"/>
+            <circle cx="1063" cy="130" r="5"/>
+            <circle cx="1087" cy="130" r="5"/>
+          </g>
+          <text x="1075" y="200" text-anchor="middle" font-size="20" font-weight="700" fill="#3a2515">Меланосомы</text>
+          <text x="1075" y="240" text-anchor="middle" font-size="14" fill="#525258">передача в</text>
+          <text x="1075" y="260" text-anchor="middle" font-size="14" fill="#525258">кератиноциты</text>
+        </g>
+        <text x="1168" y="170" font-size="22" font-weight="700" fill="#86868b" class="cascade-step">→</text>
+
+        <!-- STEP 7 -->
+        <g class="cascade-step">
+          <rect x="1180" y="20" width="170" height="280" rx="18" fill="#3a2515"/>
+          <text x="1265" y="58" text-anchor="middle" font-size="14" font-weight="700" fill="#d4b483" letter-spacing="0.18em">ШАГ 7</text>
+          <!-- icon: dark spot -->
+          <ellipse cx="1265" cy="115" rx="40" ry="28" fill="#0a0303"/>
+          <text x="1265" y="200" text-anchor="middle" font-size="28" font-weight="800" fill="#fff">PIH</text>
+          <text x="1265" y="240" text-anchor="middle" font-size="14" fill="#d4b483">тёмное пятно</text>
+          <text x="1265" y="260" text-anchor="middle" font-size="14" fill="#d4b483">на коже</text>
+        </g>
+
+        <!-- Timeline -->
+        <line x1="125" y1="370" x2="1265" y2="370" stroke="#0a84ff" stroke-width="2"/>
+        <g font-size="13" fill="#86868b" text-anchor="middle">
+          <circle cx="125"  cy="370" r="6" fill="#0a84ff"/>
+          <text x="125"  y="400">0 (импульс)</text>
+          <circle cx="315"  cy="370" r="6" fill="#0a84ff"/>
+          <text x="315"  y="400">часы</text>
+          <circle cx="505"  cy="370" r="6" fill="#0a84ff"/>
+          <text x="505"  y="400">1–3 дня</text>
+          <circle cx="695"  cy="370" r="6" fill="#0a84ff"/>
+          <text x="695"  y="400">3–7 дней</text>
+          <circle cx="885"  cy="370" r="6" fill="#0a84ff"/>
+          <text x="885"  y="400">1–2 недели</text>
+          <circle cx="1075" cy="370" r="6" fill="#0a84ff"/>
+          <text x="1075" y="400">2–3 недели</text>
+          <circle cx="1265" cy="370" r="8" fill="#ff3b30"/>
+          <text x="1265" y="400" font-weight="700" fill="#d70015">2–4 нед: PIH</text>
+        </g>
+
+        <text x="695" y="450" text-anchor="middle" font-size="18" font-weight="700" fill="#525258">
+          От секунд до недель — но каскад уже запущен с первой секунды импульса
+        </text>
+      </svg>
+      <div class="illus-caption">
+        Цель профилактики — <b>оборвать каскад как можно раньше</b>. Чем дальше шаг — тем сложнее остановить процесс.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 12. CYTOKINES IN DETAIL -->
+<section class="slide blue">
+  <div class="slide-inner">
+    <div class="eyebrow">Молекулярные триггеры</div>
+    <h2 class="section">Кто именно активирует меланоциты.</h2>
+    <div class="grid-4" style="margin-top:14px;">
+      <div class="card" style="display:flex;flex-direction:column;gap:10px;">
+        <div style="font-size:clamp(13px,0.95vw,17px);font-weight:700;color:#a8d8ff;letter-spacing:.16em;text-transform:uppercase;">Цитокин 1</div>
+        <div style="font-size:clamp(22px,1.8vw,30px);font-weight:700;color:#fff;line-height:1.15;">IL-1α</div>
+        <div style="font-size:clamp(20px,1.5vw,28px);color:rgba(255,255,255,0.92);line-height:1.45;">Ранний сигнал тревоги. Первые часы после повреждения. Активирует меланоциты и стимулирует <span class="term" tabindex="0">α-MSH<span class="tip"><b>α-MSH</b> — Melanocyte-Stimulating Hormone, главный гормональный регулятор меланогенеза. Связывается с MC1R рецептором на меланоците и запускает синтез меланина.</span></span>.</div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;gap:10px;">
+        <div style="font-size:clamp(13px,0.95vw,17px);font-weight:700;color:#a8d8ff;letter-spacing:.16em;text-transform:uppercase;">Цитокин 2</div>
+        <div style="font-size:clamp(22px,1.8vw,30px);font-weight:700;color:#fff;line-height:1.15;">TNF-α</div>
+        <div style="font-size:clamp(20px,1.5vw,28px);color:rgba(255,255,255,0.92);line-height:1.45;">Фактор некроза опухоли — усиливает воспаление и напрямую повышает активность тирозиназы.</div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;gap:10px;">
+        <div style="font-size:clamp(13px,0.95vw,17px);font-weight:700;color:#a8d8ff;letter-spacing:.16em;text-transform:uppercase;">Медиатор 3</div>
+        <div style="font-size:clamp(22px,1.8vw,30px);font-weight:700;color:#fff;line-height:1.15;">PGE₂</div>
+        <div style="font-size:clamp(20px,1.5vw,28px);color:rgba(255,255,255,0.92);line-height:1.45;">Простагландин E₂ — мощный стимулятор меланогенеза. Образуется через путь циклооксигеназы (COX-2).</div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;gap:10px;">
+        <div style="font-size:clamp(13px,0.95vw,17px);font-weight:700;color:#a8d8ff;letter-spacing:.16em;text-transform:uppercase;">Медиатор 4</div>
+        <div style="font-size:clamp(22px,1.8vw,30px);font-weight:700;color:#fff;line-height:1.15;">LTC₄ / ET-1</div>
+        <div style="font-size:clamp(20px,1.5vw,28px);color:rgba(255,255,255,0.92);line-height:1.45;">Лейкотриен C₄ + эндотелин-1 — пролонгируют ответ и усиливают дендритогенез меланоцитов.</div>
+      </div>
+    </div>
+    <p class="lead" style="margin-top:8px;font-size:clamp(20px,1.5vw,28px);">
+      <b>Практически важно:</b> на каждый из этих медиаторов есть свой фармакологический «блокатор»
+      (стероиды, ингибиторы COX-2, антагонисты лейкотриенов и т.п.) — отсюда и логика
+      профилактической терапии.
+    </p>
+  </div>
+</section>
+
+<!-- 13. TYROSINASE BLOCK -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Главная мишень фармакотерапии</div>
+    <h2 class="section">Тирозиназа — на чём играет вся лечебная стратегия.</h2>
+    <p class="lead">
+      Большинство «отбеливающих» препаратов действуют именно на тирозиназу.
+      Понимая её механизм — понимаешь, что и зачем назначаешь.
+    </p>
+    <table class="cmp">
+      <thead>
+        <tr>
+          <th>Препарат</th>
+          <th>Механизм</th>
+          <th>Сила</th>
+          <th>Линия</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>Гидрохинон 2–4%</b></td>
+          <td>Прямое ингибирование тирозиназы + цитотоксичность для меланоцитов</td>
+          <td><span class="pill hi">+++</span></td>
+          <td><span class="pill mid">1-я</span></td>
+        </tr>
+        <tr>
+          <td><b>Азелаиновая кислота</b></td>
+          <td>Конкурентный ингибитор тирозиназы, действует только на гиперактивные меланоциты</td>
+          <td><span class="pill mid">++</span></td>
+          <td><span class="pill mid">1-я</span></td>
+        </tr>
+        <tr>
+          <td><b>Ретиноиды</b></td>
+          <td>Усиливают эпидермальное обновление + блокируют передачу меланосом</td>
+          <td><span class="pill mid">++</span></td>
+          <td><span class="pill mid">1-я</span></td>
+        </tr>
+        <tr>
+          <td><b>Транексамовая кислота</b></td>
+          <td>Блокирует плазмин и PGE₂ → косвенно снижает тирозиназу</td>
+          <td><span class="pill mid">++</span></td>
+          <td><span class="pill lo">2-я</span></td>
+        </tr>
+        <tr>
+          <td><b>Койевая кислота / арбутин</b></td>
+          <td>Слабое ингибирование тирозиназы</td>
+          <td><span class="pill lo">+</span></td>
+          <td><span class="pill lo">Поддержка</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 14. SECTION DIVIDER — RISK FACTORS -->
+<section class="slide pink">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть II</div>
+    <div class="section-num pink">02</div>
+    <h1 class="title">Факторы риска</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">
+      Кто и почему страдает чаще. Как заранее распознать пациента «группы риска».
+    </p>
+  </div>
+</section>
+
+<!-- 15. FITZPATRICK -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Фототипы</div>
+    <h2 class="section">Шкала Фитцпатрика — основа оценки риска.</h2>
+    <p class="lead">
+      6 типов кожи по реакции на UV-облучение. Чем выше тип — тем больше меланина,
+      и тем активнее меланоциты при любом воспалении.
+    </p>
+    <div class="illus">
+      <svg viewBox="0 0 1280 240" xmlns="http://www.w3.org/2000/svg">
+        <!-- 6 skin samples -->
+        <g>
+          <rect x="40" y="40" width="180" height="120" rx="14" fill="#fce8d8" stroke="#e6b896" stroke-width="2"/>
+          <text x="130" y="180" text-anchor="middle" font-size="22" font-weight="700" fill="#1d1d1f">I</text>
+          <text x="130" y="205" text-anchor="middle" font-size="14" fill="#525258">очень светлая</text>
+          <text x="130" y="222" text-anchor="middle" font-size="13" fill="#0f8a3a" font-weight="700">риск низкий</text>
+        </g>
+        <g>
+          <rect x="240" y="40" width="180" height="120" rx="14" fill="#f5d4b8" stroke="#d4a87c" stroke-width="2"/>
+          <text x="330" y="180" text-anchor="middle" font-size="22" font-weight="700" fill="#1d1d1f">II</text>
+          <text x="330" y="205" text-anchor="middle" font-size="14" fill="#525258">светлая</text>
+          <text x="330" y="222" text-anchor="middle" font-size="13" fill="#0f8a3a" font-weight="700">риск низкий</text>
+        </g>
+        <g>
+          <rect x="440" y="40" width="180" height="120" rx="14" fill="#e6b896" stroke="#b8875c" stroke-width="2"/>
+          <text x="530" y="180" text-anchor="middle" font-size="22" font-weight="700" fill="#1d1d1f">III</text>
+          <text x="530" y="205" text-anchor="middle" font-size="14" fill="#525258">средняя</text>
+          <text x="530" y="222" text-anchor="middle" font-size="13" fill="#a55c00" font-weight="700">риск средний</text>
+        </g>
+        <g>
+          <rect x="640" y="40" width="180" height="120" rx="14" fill="#c89860" stroke="#8b6a3a" stroke-width="2"/>
+          <text x="730" y="180" text-anchor="middle" font-size="22" font-weight="700" fill="#1d1d1f">IV</text>
+          <text x="730" y="205" text-anchor="middle" font-size="14" fill="#525258">оливковая</text>
+          <text x="730" y="222" text-anchor="middle" font-size="13" fill="#a55c00" font-weight="700">риск средний</text>
+        </g>
+        <g>
+          <rect x="840" y="40" width="180" height="120" rx="14" fill="#8b5a2b" stroke="#5a3010" stroke-width="2"/>
+          <text x="930" y="180" text-anchor="middle" font-size="22" font-weight="700" fill="#1d1d1f">V</text>
+          <text x="930" y="205" text-anchor="middle" font-size="14" fill="#525258">тёмная</text>
+          <text x="930" y="222" text-anchor="middle" font-size="13" fill="#d70015" font-weight="700">РИСК ВЫСОКИЙ</text>
+        </g>
+        <g>
+          <rect x="1040" y="40" width="180" height="120" rx="14" fill="#3a2515" stroke="#1a0a05" stroke-width="2"/>
+          <text x="1130" y="180" text-anchor="middle" font-size="22" font-weight="700" fill="#1d1d1f">VI</text>
+          <text x="1130" y="205" text-anchor="middle" font-size="14" fill="#525258">очень тёмная</text>
+          <text x="1130" y="222" text-anchor="middle" font-size="13" fill="#d70015" font-weight="700">РИСК ВЫСОКИЙ</text>
+        </g>
+      </svg>
+      <div class="illus-caption">
+        У фототипов V–VI меланоциты «биохимически готовы» реагировать на любой стимул сильнее,
+        чем у светлокожих. Это эволюционная адаптация — но для лазерных процедур она работает против нас.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 16. RISK BY FITZPATRICK CHART -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Цифры в графике</div>
+    <h2 class="section">PIH-риск растёт с фототипом нелинейно.</h2>
+    <p class="lead">
+      Между III и V — резкий скачок. Именно поэтому стратегия для тёмной кожи
+      должна быть кардинально другой.
+    </p>
+    <div class="chart-wrap">
+      <canvas id="chartRiskFitzpatrick"></canvas>
+      <div class="chart-title">Частота PIH (%) после фракционного CO₂ по фототипам · сводно по обзорам 2023–2026</div>
+    </div>
+  </div>
+</section>
+
+<!-- 17. OTHER RISK FACTORS -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Помимо фототипа</div>
+    <h2 class="section">8 факторов риска, которые усиливают PIH.</h2>
+    <div class="grid-4" style="margin-top:14px;">
+      <div class="stat-card" style="border-top:5px solid var(--red);">
+        <div style="font-size:clamp(22px,1.7vw,30px);font-weight:700;color:var(--red);line-height:1.15;">Загар до процедуры</div>
+        <div style="font-size:clamp(20px,1.5vw,28px);color:var(--ink-soft);margin-top:10px;line-height:1.45;">Активные меланоциты + остаточное UV-воспаление = двойная нагрузка</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--red);">
+        <div style="font-size:clamp(22px,1.7vw,30px);font-weight:700;color:var(--red);line-height:1.15;">Анамнез PIH</div>
+        <div style="font-size:clamp(20px,1.5vw,28px);color:var(--ink-soft);margin-top:10px;line-height:1.45;">Если PIH уже была — её повторение почти гарантировано без специальных мер</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--orange);">
+        <div style="font-size:clamp(22px,1.7vw,30px);font-weight:700;color:#a55c00;line-height:1.15;">Высокая плотность</div>
+        <div style="font-size:clamp(20px,1.5vw,28px);color:var(--ink-soft);margin-top:10px;line-height:1.45;">Покрытия / точек / overlap — больше воспаления на единицу площади</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--orange);">
+        <div style="font-size:clamp(22px,1.7vw,30px);font-weight:700;color:#a55c00;line-height:1.15;">Высокая энергия</div>
+        <div style="font-size:clamp(20px,1.5vw,28px);color:var(--ink-soft);margin-top:10px;line-height:1.45;">Чем больше энергия — тем глубже зона термического повреждения</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--orange);">
+        <div style="font-size:clamp(22px,1.7vw,30px);font-weight:700;color:#a55c00;line-height:1.15;">Гормональный фон</div>
+        <div style="font-size:clamp(20px,1.5vw,28px);color:var(--ink-soft);margin-top:10px;line-height:1.45;">Беременность, КОК, эстрогены — повышают чувствительность меланоцитов</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--red);">
+        <div style="font-size:clamp(22px,1.7vw,30px);font-weight:700;color:var(--red);line-height:1.15;">Солнце после</div>
+        <div style="font-size:clamp(20px,1.5vw,28px);color:var(--ink-soft);margin-top:10px;line-height:1.45;">UV в первые 4–6 недель — гарантированный триггер усиления PIH</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--orange);">
+        <div style="font-size:clamp(22px,1.7vw,30px);font-weight:700;color:#a55c00;line-height:1.15;">Воспалительные заболевания</div>
+        <div style="font-size:clamp(20px,1.5vw,28px);color:var(--ink-soft);margin-top:10px;line-height:1.45;">Розацеа, акне, экзема, атопический дерматит — фоновое воспаление</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--orange);">
+        <div style="font-size:clamp(22px,1.7vw,30px);font-weight:700;color:#a55c00;line-height:1.15;">Этническая принадлежность</div>
+        <div style="font-size:clamp(20px,1.5vw,28px);color:var(--ink-soft);margin-top:10px;line-height:1.45;">Азиаты, латиноамериканцы, африканцы — более активные меланоциты от генетики</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 18. SECTION DIVIDER — CO2 -->
+<section class="slide red">
+  <div class="slide-inner">
+    <div class="split" style="grid-template-columns: 1.05fr 0.95fr; gap: clamp(28px,2.4vw,52px); align-items: center;">
+      <!-- LEFT: real medical illustration -->
+      <div style="border-radius:clamp(18px,1.6vw,28px);overflow:hidden;box-shadow:0 14px 44px rgba(0,0,0,0.35);">
+        <img src="co2_fractional_skin.png" alt="Фракционный CO₂-лазер проникает в кожу через MTZ-колонки" style="width:100%;height:auto;display:block;">
+      </div>
+      <!-- RIGHT: section title block -->
+      <div style="display:flex;flex-direction:column;gap:clamp(14px,1.2vw,22px);">
+        <div class="eyebrow">Часть III</div>
+        <div class="section-num red" style="line-height:1;">03</div>
+        <h1 class="title" style="font-size:clamp(48px,5.4vw,92px);line-height:1.05;">PIH после<br>CO₂-лазера</h1>
+        <p class="lead big" style="margin:0;text-align:left;">
+          Самая частая причина PIH в эстетической дерматологии у тёмных фототипов.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 19. CO2 MECHANISM -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Как работает CO₂</div>
+    <h2 class="section">10 600 нм · хромофор — вода · абляционный лазер.</h2>
+    <p class="lead">
+      CO₂-лазер испаряет ткань через вскипание внутриклеточной воды.
+      В <b>фракционном режиме</b> создаёт массив микро-колонок (MTZ —
+      Microscopic Treatment Zones) с интактной тканью между ними.
+    </p>
+    <div class="illus" style="padding:clamp(28px,2.4vw,44px);">
+      <svg viewBox="0 0 1280 460" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+        <defs>
+          <linearGradient id="skinCO2v2" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#fce8d8"/>
+            <stop offset="100%" stop-color="#e6b896"/>
+          </linearGradient>
+          <linearGradient id="laserBeamV2" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#ff3b30" stop-opacity="0.95"/>
+            <stop offset="100%" stop-color="#ff3b30" stop-opacity="0.55"/>
+          </linearGradient>
+          <radialGradient id="ablZoneV2" cx="0.5" cy="0.5" r="0.7">
+            <stop offset="0%" stop-color="#3a2515" stop-opacity="0.85"/>
+            <stop offset="55%" stop-color="#8b5a2b" stop-opacity="0.35"/>
+            <stop offset="100%" stop-color="#8b5a2b" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+
+        <!-- Title labels for layers -->
+        <rect x="60" y="100" width="1160" height="40" rx="6" fill="#fceddc"/>
+        <text x="78" y="126" font-size="18" font-weight="600" fill="#8b5a2b">Эпидермис</text>
+
+        <rect x="60" y="146" width="1160" height="220" fill="url(#skinCO2v2)" rx="6"/>
+        <text x="78" y="358" font-size="18" font-weight="600" fill="#5a3010">Дерма</text>
+
+        <!-- Laser beams from above -->
+        <g>
+          <rect x="170" y="20" width="22" height="80" fill="url(#laserBeamV2)" rx="2"/>
+          <rect x="370" y="20" width="22" height="80" fill="url(#laserBeamV2)" rx="2"/>
+          <rect x="570" y="20" width="22" height="80" fill="url(#laserBeamV2)" rx="2"/>
+          <rect x="770" y="20" width="22" height="80" fill="url(#laserBeamV2)" rx="2"/>
+          <rect x="970" y="20" width="22" height="80" fill="url(#laserBeamV2)" rx="2"/>
+          <rect x="1170" y="20" width="22" height="80" fill="url(#laserBeamV2)" rx="2"/>
+        </g>
+        <text x="640" y="60" text-anchor="middle" font-size="20" font-weight="700" fill="#d70015">Фракционный массив CO₂ → 10 600 нм</text>
+
+        <!-- MTZ columns through epidermis + dermis -->
+        <g>
+          <ellipse cx="181" cy="220" rx="26" ry="80" fill="url(#ablZoneV2)"/>
+          <ellipse cx="381" cy="220" rx="26" ry="80" fill="url(#ablZoneV2)"/>
+          <ellipse cx="581" cy="220" rx="26" ry="80" fill="url(#ablZoneV2)"/>
+          <ellipse cx="781" cy="220" rx="26" ry="80" fill="url(#ablZoneV2)"/>
+          <ellipse cx="981" cy="220" rx="26" ry="80" fill="url(#ablZoneV2)"/>
+          <ellipse cx="1181" cy="220" rx="26" ry="80" fill="url(#ablZoneV2)"/>
+        </g>
+
+        <!-- Bottom labels: two blocks under image -->
+        <g>
+          <rect x="60" y="384" width="560" height="62" rx="12" fill="#fff" stroke="#3a2515" stroke-width="2"/>
+          <text x="80" y="412" font-size="20" font-weight="700" fill="#3a2515">MTZ · Microscopic Treatment Zone</text>
+          <text x="80" y="436" font-size="16" fill="#525258">микро-колонка термического повреждения, глубина 100–500 мкм</text>
+        </g>
+        <g>
+          <rect x="660" y="384" width="560" height="62" rx="12" fill="#fff" stroke="#1ea24a" stroke-width="2"/>
+          <text x="680" y="412" font-size="20" font-weight="700" fill="#0f8a3a">Интактная ткань между MTZ</text>
+          <text x="680" y="436" font-size="16" fill="#525258">резерв для восстановления — основа безопасности фракционного режима</text>
+        </g>
+      </svg>
+      <div class="illus-caption" style="margin-top:18px;">
+        Фракционный CO₂ оставляет нетронутые «островки» между MTZ. Чем меньше плотность покрытия (% MTZ) — тем больше резерв, меньше воспаление и ниже риск PIH.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 20. WHY CO2 GIVES PIH -->
+<section class="slide red">
+  <div class="slide-inner">
+    <div class="eyebrow">Корень проблемы</div>
+    <h2 class="section">Почему CO₂ так часто даёт PIH.</h2>
+    <div class="key-findings" style="margin-top:14px;">
+      <div class="kf"><div class="kf-bullet red">1</div><div><b>Абляция = разрушение всей колонки ткани</b>. Глубокое и обширное повреждение.</div></div>
+      <div class="kf"><div class="kf-bullet red">2</div><div><b>Зона термического некроза</b> вокруг MTZ — ещё 50–150 мкм за пределами абляции.</div></div>
+      <div class="kf"><div class="kf-bullet red">3</div><div>Интенсивный <b>цитокиновый ответ</b> в течение 24–72 часов после процедуры.</div></div>
+      <div class="kf"><div class="kf-bullet red">4</div><div>Меланоциты <b>выживают в зоне коагуляции</b> и активируются медиаторами.</div></div>
+      <div class="kf"><div class="kf-bullet red">5</div><div>У тёмных фототипов меланоциты исходно «настроены на максимум» — реакция кратная.</div></div>
+    </div>
+    <div class="cite-row" style="margin-top:14px;">
+      <a class="cite" target="_blank" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10080999/" style="background:rgba(255,255,255,0.15);color:#fff;border-color:rgba(255,255,255,0.25);">↗ PMC 2023 · обзор PIH после CO₂</a>
+    </div>
+  </div>
+</section>
+
+<!-- 21. CO2 RISK MODULATORS -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Модуляторы риска · CO₂</div>
+    <h2 class="section">Что мы можем контролировать.</h2>
+    <p class="lead">
+      У оператора лазера есть <b>3 ключевые ручки</b>, которыми регулируется
+      воспалительная нагрузка и, как следствие, риск PIH.
+    </p>
+    <div class="grid-3" style="margin-top:14px;">
+      <div class="stat-card">
+        <div style="font-size:clamp(15px,1.05vw,19px);font-weight:700;color:var(--blue);letter-spacing:.16em;text-transform:uppercase;">Параметр 1</div>
+        <div style="font-size:clamp(26px,2vw,36px);font-weight:700;color:var(--blue);line-height:1.15;margin-top:6px;">Энергия импульса (мДж)</div>
+        <div style="font-size:clamp(21px,1.6vw,30px);color:var(--ink-soft);margin-top:12px;line-height:1.45;">Прямо определяет глубину MTZ. Каждое +10 мДж — это +50–100 мкм глубины повреждения.</div>
+      </div>
+      <div class="stat-card">
+        <div style="font-size:clamp(15px,1.05vw,19px);font-weight:700;color:var(--blue);letter-spacing:.16em;text-transform:uppercase;">Параметр 2</div>
+        <div style="font-size:clamp(26px,2vw,36px);font-weight:700;color:var(--blue);line-height:1.15;margin-top:6px;">Плотность покрытия (%)</div>
+        <div style="font-size:clamp(21px,1.6vw,30px);color:var(--ink-soft);margin-top:12px;line-height:1.45;">Доля площади, попадающая под лазер. У тёмной кожи — &lt;15%. У светлой можно &gt;30%.</div>
+      </div>
+      <div class="stat-card">
+        <div style="font-size:clamp(15px,1.05vw,19px);font-weight:700;color:var(--blue);letter-spacing:.16em;text-transform:uppercase;">Параметр 3</div>
+        <div style="font-size:clamp(26px,2vw,36px);font-weight:700;color:var(--blue);line-height:1.15;margin-top:6px;">Overlap (наложение)</div>
+        <div style="font-size:clamp(21px,1.6vw,30px);color:var(--ink-soft);margin-top:12px;line-height:1.45;">Повторный проход по одному месту — это умножение энергии. У тёмной кожи лучше избегать.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 22. TOPICAL STEROIDS — Acta study -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Ключевое исследование</div>
+    <h2 class="section">Топические кортикостероиды снижают PIH.</h2>
+    <div class="split">
+      <div>
+        <p class="lead" style="font-size:clamp(22px,1.7vw,30px);">
+          В работе Cheyasak et al. <b>(Acta Dermato-Venereologica)</b> на азиатских пациентах
+          (фототипы III–V) показано: короткий курс топических стероидов сразу после
+          CO₂-фракционного лазера <b>достоверно снижает</b> частоту PIH.
+        </p>
+        <div class="cite-row" style="margin-top:14px;">
+          <a class="cite" target="_blank" href="https://medicaljournalssweden.se/actadv/article/view/3919">↗ Acta Dermato-Venereologica · Cheyasak et al.</a>
+        </div>
+      </div>
+      <div class="card" style="border-top:5px solid var(--green);">
+        <div style="font-size:clamp(18px,1.3vw,22px);color:var(--ink-soft);margin-bottom:10px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;">Практическая схема</div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:12px;font-size:clamp(20px,1.5vw,26px);color:var(--ink);line-height:1.4;">
+          <li>✓ Метилпреднизолон 0,1% или гидрокортизон 1%</li>
+          <li>✓ 2 раза в день первые 3–5 дней</li>
+          <li>✓ Только до начала эпителизации</li>
+          <li>✓ Не применять при инфекции</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 23. CO2 BEST PRACTICES -->
+<section class="slide green">
+  <div class="slide-inner">
+    <div class="eyebrow">Best practices · CO₂</div>
+    <h2 class="section">Безопасный CO₂ у тёмной кожи возможен.</h2>
+    <div class="key-findings" style="margin-top:14px;">
+      <div class="kf"><div class="kf-bullet green">✓</div><div>Минимально достаточная энергия — не «максимум» из протокола, а минимум по клиническому эндпоинту</div></div>
+      <div class="kf"><div class="kf-bullet green">✓</div><div>Плотность покрытия &lt;15% для фототипов IV–VI; не больше 25% для III</div></div>
+      <div class="kf"><div class="kf-bullet green">✓</div><div>Без overlap. Один проход. Если нужно сильнее — несколько сеансов с интервалом 4–8 недель</div></div>
+      <div class="kf"><div class="kf-bullet green">✓</div><div>Подготовка кожи 4–6 недель до процедуры (гидрохинон 2–4%, ретиноид, SPF50+)</div></div>
+      <div class="kf"><div class="kf-bullet green">✓</div><div>Топические стероиды 3–5 дней после</div></div>
+      <div class="kf"><div class="kf-bullet green">✓</div><div>Раннее возобновление осветляющей терапии при первых признаках PIH</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 24. SECTION DIVIDER — TATTOO REMOVAL -->
+<section class="slide brown">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть IV</div>
+    <div class="section-num brown">04</div>
+    <h1 class="title">PIH после удаления татуировок</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">
+      Особенности механизма Q-switched и пикосекундных лазеров. Почему даже «безопасный» pico даёт PIH.
+    </p>
+  </div>
+</section>
+
+<!-- 25. TATTOO MECHANISM -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Механизм удаления татуировок</div>
+    <h2 class="section">Фотоакустика + термика + иммунный клиренс.</h2>
+    <div class="illus">
+      <svg viewBox="0 0 1280 280" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="cavBubble" cx="0.5" cy="0.5" r="0.6">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/>
+            <stop offset="40%" stop-color="#a8d8ff" stop-opacity="0.75"/>
+            <stop offset="100%" stop-color="#0a84ff" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="inflGrad" cx="0.5" cy="0.5" r="0.7">
+            <stop offset="0%" stop-color="#ff3b30" stop-opacity="0.55"/>
+            <stop offset="100%" stop-color="#ff3b30" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+
+        <!-- 3 panels: before / impact / after -->
+        <g transform="translate(20, 30)">
+          <rect x="0" y="0" width="380" height="220" rx="8" fill="#fce8d8" stroke="#e6b896" stroke-width="1.5"/>
+          <text x="190" y="32" text-anchor="middle" font-size="16" font-weight="700" fill="#525258">ДО ИМПУЛЬСА</text>
+          <!-- Pigment fragments -->
+          <g fill="#1d1d1f">
+            <polygon points="80,120 125,115 145,135 155,165 130,180 90,178 70,155"/>
+            <polygon points="190,150 230,148 250,170 230,195 195,193"/>
+            <polygon points="280,140 310,138 325,158 305,178 280,175"/>
+          </g>
+        </g>
+
+        <g transform="translate(420, 30)">
+          <rect x="0" y="0" width="380" height="220" rx="8" fill="#fce8d8" stroke="#e6b896" stroke-width="1.5"/>
+          <text x="190" y="32" text-anchor="middle" font-size="16" font-weight="700" fill="#525258">МОМЕНТ ИМПУЛЬСА</text>
+          <!-- Laser beam -->
+          <rect x="180" y="-20" width="22" height="115" fill="#ff3b30" opacity="0.85"/>
+          <!-- Plasma -->
+          <circle cx="190" cy="120" r="22" fill="url(#cavBubble)"/>
+          <!-- Shock waves -->
+          <circle cx="190" cy="120" r="42" fill="none" stroke="#0a84ff" stroke-width="2" stroke-opacity="0.7"/>
+          <circle cx="190" cy="120" r="62" fill="none" stroke="#0a84ff" stroke-width="1.5" stroke-opacity="0.4"/>
+          <circle cx="190" cy="120" r="82" fill="none" stroke="#0a84ff" stroke-width="1" stroke-opacity="0.25"/>
+          <!-- Fragments scattering -->
+          <g fill="#1d1d1f">
+            <circle cx="140" cy="100" r="3"/><circle cx="155" cy="135" r="3"/><circle cx="170" cy="105" r="3"/>
+            <circle cx="225" cy="100" r="3"/><circle cx="240" cy="135" r="3"/><circle cx="215" cy="155" r="3"/>
+          </g>
+        </g>
+
+        <g transform="translate(820, 30)">
+          <rect x="0" y="0" width="380" height="220" rx="8" fill="#fce8d8" stroke="#e6b896" stroke-width="1.5"/>
+          <text x="190" y="32" text-anchor="middle" font-size="16" font-weight="700" fill="#525258">ПОСЛЕ — ВОСПАЛЕНИЕ + PIH</text>
+
+          <!-- Basal membrane line -->
+          <line x1="20" y1="70" x2="360" y2="70" stroke="#8b5a2b" stroke-width="1.5" stroke-dasharray="5 3"/>
+          <text x="22" y="64" font-size="10" font-weight="600" fill="#8b5a2b">базальная мембрана</text>
+
+          <!-- Melanocytes ON the basal membrane (above pigment) -->
+          <g>
+            <circle cx="80" cy="70" r="8" fill="#3a2515"/>
+            <path d="M 73 64 L 65 56 M 87 64 L 95 56" stroke="#3a2515" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="180" cy="70" r="8" fill="#3a2515"/>
+            <path d="M 173 64 L 165 56 M 187 64 L 195 56" stroke="#3a2515" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="280" cy="70" r="8" fill="#3a2515"/>
+            <path d="M 273 64 L 265 56 M 287 64 L 295 56" stroke="#3a2515" stroke-width="2" stroke-linecap="round"/>
+          </g>
+
+          <!-- Inflammation halos around pigment in dermis -->
+          <g>
+            <circle class="halo-pulse-red" cx="100" cy="140" r="48" fill="url(#inflGrad)"/>
+            <circle class="halo-pulse-red" cx="200" cy="150" r="50" fill="url(#inflGrad)"/>
+            <circle class="halo-pulse-red" cx="290" cy="145" r="46" fill="url(#inflGrad)"/>
+          </g>
+
+          <!-- Pigment fragments in dermis (under basal membrane) -->
+          <g fill="#0a0303">
+            <circle cx="90" cy="135" r="3"/><circle cx="105" cy="148" r="3"/><circle cx="115" cy="130" r="3"/>
+            <circle cx="195" cy="142" r="3"/><circle cx="210" cy="156" r="3"/><circle cx="190" cy="158" r="3"/>
+            <circle cx="280" cy="138" r="3"/><circle cx="295" cy="152" r="3"/><circle cx="270" cy="155" r="3"/>
+          </g>
+
+          <!-- Legend mini -->
+          <g font-size="10" fill="#525258">
+            <circle cx="30" cy="195" r="6" fill="#3a2515"/>
+            <text x="42" y="199">меланоциты</text>
+            <circle cx="130" cy="195" r="3" fill="#0a0303"/>
+            <text x="140" y="199">частицы пигмента</text>
+            <circle cx="255" cy="195" r="7" fill="url(#inflGrad)"/>
+            <text x="268" y="199">зона воспаления</text>
+          </g>
+        </g>
+      </svg>
+      <div class="illus-caption">
+        В третьей панели — <b>пульсирующие красные зоны воспаления</b> вокруг частиц пигмента в дерме. Меланоциты — выше, на базальной мембране — активируются цитокинами и начинают синтезировать меланин.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 26. QSWITCHED VS PICO -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Сравнение</div>
+    <h2 class="section">Q-switched (нс) vs Picosecond (пс).</h2>
+    <table class="cmp">
+      <thead>
+        <tr>
+          <th>Параметр</th>
+          <th>Q-switched (нс)</th>
+          <th>Picosecond (пс)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>Длительность импульса</b></td>
+          <td>5–10 нс</td>
+          <td>350–750 пс</td>
+        </tr>
+        <tr>
+          <td><b>Доминирующий механизм</b></td>
+          <td><span class="pill mid">Фототермический + фотоакустический</span></td>
+          <td><span class="pill hi">Фотоакустический (LIOB)</span></td>
+        </tr>
+        <tr>
+          <td><b>Тепловое повреждение</b></td>
+          <td><span class="pill lo">Выше</span></td>
+          <td><span class="pill hi">Ниже</span></td>
+        </tr>
+        <tr>
+          <td><b>Воспалительный ответ</b></td>
+          <td><span class="pill lo">Выраженный</span></td>
+          <td><span class="pill mid">Умеренный</span></td>
+        </tr>
+        <tr>
+          <td><b>Риск PIH</b></td>
+          <td><span class="pill lo">Высокий, особенно у тёмной кожи</span></td>
+          <td><span class="pill mid">Ниже, но НЕ нулевой</span></td>
+        </tr>
+        <tr>
+          <td><b>Количество процедур</b></td>
+          <td>8–15</td>
+          <td>4–8</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="cite-row" style="margin-top:12px;">
+      <a class="cite" target="_blank" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11436156/">↗ Picosecond Laser Treatment for Tattoos · PMC Review</a>
+      <a class="cite" target="_blank" href="https://www.mdpi.com/2076-3417/15/8/4316">↗ Medical Applications of Picosecond Lasers · MDPI 2025</a>
+    </div>
+  </div>
+</section>
+
+<!-- 27. PICO ADVANTAGE -->
+<section class="slide blue">
+  <div class="slide-inner">
+    <div class="eyebrow">Почему pico лучше — но не идеален</div>
+    <h2 class="section">Главное преимущество — снижение thermal injury.</h2>
+    <p class="lead big">
+      Пикосекундный импульс быстрее термического времени релаксации пигмента —
+      энергия идёт в <b>механическое дробление</b>, а не в нагрев соседних тканей.
+    </p>
+    <div class="grid-3" style="margin-top:14px;">
+      <div class="card">
+        <div style="font-size:clamp(13px,0.95vw,17px);font-weight:700;color:#a8d8ff;letter-spacing:.16em;text-transform:uppercase;">+ Pico</div>
+        <div style="font-size:clamp(22px,1.8vw,30px);font-weight:700;color:#fff;line-height:1.15;">Меньше нагрева</div>
+        <div style="font-size:clamp(22px,1.7vw,30px);color:rgba(255,255,255,0.92);line-height:1.45;margin-top:8px;">
+          Меньше воспалительных медиаторов → меньше активации меланоцитов → ниже PIH-риск
+        </div>
+      </div>
+      <div class="card">
+        <div style="font-size:clamp(13px,0.95vw,17px);font-weight:700;color:#a8d8ff;letter-spacing:.16em;text-transform:uppercase;">+ Pico</div>
+        <div style="font-size:clamp(22px,1.8vw,30px);font-weight:700;color:#fff;line-height:1.15;">Лучшая фрагментация</div>
+        <div style="font-size:clamp(22px,1.7vw,30px);color:rgba(255,255,255,0.92);line-height:1.45;margin-top:8px;">
+          Более мелкие частицы → легче иммунный клиренс → меньше сеансов
+        </div>
+      </div>
+      <div class="card">
+        <div style="font-size:clamp(13px,0.95vw,17px);font-weight:700;color:#a8d8ff;letter-spacing:.16em;text-transform:uppercase;">+ Pico</div>
+        <div style="font-size:clamp(22px,1.8vw,30px);font-weight:700;color:#fff;line-height:1.15;">Безопаснее темной коже</div>
+        <div style="font-size:clamp(22px,1.7vw,30px);color:rgba(255,255,255,0.92);line-height:1.45;margin-top:8px;">
+          У фототипов IV–VI riск PIH значимо ниже, чем при QS — но не равен нулю
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 28. WHY PICO STILL CAUSES PIH -->
+<section class="slide red">
+  <div class="slide-inner">
+    <div class="eyebrow">Важно понимать</div>
+    <h2 class="section">Pico ≠ нулевой PIH-риск.</h2>
+    <p class="lead">
+      Маркетинг говорит «pico не вызывает PIH». Это <b>миф</b>. Пиковая мощность Pico
+      огромна — при высокой флюенсе термический компонент всё равно есть.
+      Воспаление возникает, меланоциты активируются.
+    </p>
+    <div class="key-findings" style="margin-top:14px;">
+      <div class="kf"><div class="kf-bullet red">!</div><div>При <b>высокой флюенсе</b> Pico вызывает термотравму, сопоставимую с QS</div></div>
+      <div class="kf"><div class="kf-bullet red">!</div><div>Фотоакустический эффект <b>тоже запускает цитокиновый каскад</b> через DAMPs</div></div>
+      <div class="kf"><div class="kf-bullet red">!</div><div>Повторные проходы / агрессивный overlap — катастрофическое воспаление вне зависимости от длительности импульса</div></div>
+      <div class="kf"><div class="kf-bullet red">!</div><div>У фототипов V–VI <b>любое</b> воздействие требует осторожности, даже Pico</div></div>
+    </div>
+    <blockquote class="q" style="margin-top:14px;font-size:clamp(22px,1.7vw,30px);">
+      Тип лазера снижает риск PIH, но не отменяет физиологию.
+      Воспаление и меланоциты работают одинаково — независимо от того, нс или пс.
+      <span class="src">© В. Микрюков, 2026</span>
+    </blockquote>
+  </div>
+</section>
+
+<!-- 29. TATTOO PIH SPECIFIC RISKS -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">5 специфических причин PIH при татуировках</div>
+    <h2 class="section">Где конкретно мы создаём риск.</h2>
+    <div class="grid-3" style="margin-top:14px;">
+      <div class="stat-card" style="border-top:5px solid var(--red);">
+        <div style="font-size:clamp(13px,0.95vw,17px);font-weight:700;color:var(--red);letter-spacing:.16em;text-transform:uppercase;">Причина 1</div>
+        <div style="font-size:clamp(22px,1.8vw,30px);font-weight:700;color:var(--red);line-height:1.15;">Воспаление после фрагментации</div>
+        <div style="font-size:clamp(20px,1.5vw,28px);color:var(--ink-soft);margin-top:10px;line-height:1.45;">Разрушение пигмента → выброс DAMPs → активация меланоцитов</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--red);">
+        <div style="font-size:clamp(13px,0.95vw,17px);font-weight:700;color:var(--red);letter-spacing:.16em;text-transform:uppercase;">Причина 2</div>
+        <div style="font-size:clamp(22px,1.8vw,30px);font-weight:700;color:var(--red);line-height:1.15;">Высокие флюенсы</div>
+        <div style="font-size:clamp(20px,1.5vw,28px);color:var(--ink-soft);margin-top:10px;line-height:1.45;">Желание «выжечь за один раз» — основная клиническая ошибка</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--red);">
+        <div style="font-size:clamp(13px,0.95vw,17px);font-weight:700;color:var(--red);letter-spacing:.16em;text-transform:uppercase;">Причина 3</div>
+        <div style="font-size:clamp(22px,1.8vw,30px);font-weight:700;color:var(--red);line-height:1.15;">Повторные проходы</div>
+        <div style="font-size:clamp(20px,1.5vw,28px);color:var(--ink-soft);margin-top:10px;line-height:1.45;">«Пройдусь ещё раз» — суммируется термическая нагрузка</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--orange);">
+        <div style="font-size:clamp(13px,0.95vw,17px);font-weight:700;color:#a55c00;letter-spacing:.16em;text-transform:uppercase;">Причина 4</div>
+        <div style="font-size:clamp(22px,1.8vw,30px);font-weight:700;color:#a55c00;line-height:1.15;">Загар до процедуры</div>
+        <div style="font-size:clamp(20px,1.5vw,28px);color:var(--ink-soft);margin-top:10px;line-height:1.45;">Активированные меланоциты + лазер = двойная нагрузка на один и тот же участок</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--orange);">
+        <div style="font-size:clamp(13px,0.95vw,17px);font-weight:700;color:#a55c00;letter-spacing:.16em;text-transform:uppercase;">Причина 5</div>
+        <div style="font-size:clamp(22px,1.8vw,30px);font-weight:700;color:#a55c00;line-height:1.15;">Слишком частые сеансы</div>
+        <div style="font-size:clamp(20px,1.5vw,28px);color:var(--ink-soft);margin-top:10px;line-height:1.45;">Воспаление не успевает разрешиться — нужны интервалы 6–8 недель минимум</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--purple);">
+        <div style="font-size:clamp(13px,0.95vw,17px);font-weight:700;color:var(--purple);letter-spacing:.16em;text-transform:uppercase;">Бонус</div>
+        <div style="font-size:clamp(22px,1.8vw,30px);font-weight:700;color:var(--purple);line-height:1.15;">Плотный black packing</div>
+        <div style="font-size:clamp(20px,1.5vw,28px);color:var(--ink-soft);margin-top:10px;line-height:1.45;">Концентрированное чёрное поглощение = максимум воспаления на единицу площади</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 30. CONNECTION TO MIKRYUKOV METHOD -->
+<section class="slide blue">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Связь с авторской концепцией</div>
+    <blockquote class="q" style="border-left:none;text-align:center;font-size:clamp(30px,3.4vw,50px);max-width:1500px;line-height:1.3;">
+      PIH — это <b>финальная клиническая манифестация</b><br>
+      теории воспалительной нагрузки.<br><br>
+      Чем больший объём дермы вовлечён в воспаление<br>
+      и чем меньше резерв тканей —<br>
+      тем выше риск стойкой гиперпигментации.
+      <span class="src" style="margin-top:26px;font-size:clamp(18px,1.3vw,24px);">© В. Микрюков, Теория воспалительной нагрузки, 2026</span>
+    </blockquote>
+  </div>
+</section>
+
+<!-- 31. SECTION DIVIDER — PREVENTION -->
+<section class="slide green">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть V</div>
+    <div class="section-num green">05</div>
+    <h1 class="title">Профилактика</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">
+      До · во время · после процедуры. Что реально работает по данным современной литературы.
+    </p>
+  </div>
+</section>
+
+<!-- 32. PREVENTION ALGORITHM -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Алгоритм профилактики</div>
+    <h2 class="section">3 фазы — каждая критична.</h2>
+    <div class="grid-3" style="margin-top:14px;">
+      <div class="card" style="border-top:6px solid var(--blue);">
+        <div style="font-size:clamp(14px,1vw,18px);font-weight:700;color:var(--blue);letter-spacing:.16em;text-transform:uppercase;">Фаза 1</div>
+        <h3 style="font-size:clamp(28px,2.2vw,40px);font-weight:700;margin:12px 0 14px;color:var(--ink);">До процедуры</h3>
+        <div style="font-size:clamp(22px,1.7vw,30px);color:var(--ink-soft);line-height:1.5;">4–6 недель подготовки кожи. Снизить меланоциты до старта, исключить триггеры.</div>
+      </div>
+      <div class="card" style="border-top:6px solid var(--orange);">
+        <div style="font-size:clamp(14px,1vw,18px);font-weight:700;color:#a55c00;letter-spacing:.16em;text-transform:uppercase;">Фаза 2</div>
+        <h3 style="font-size:clamp(28px,2.2vw,40px);font-weight:700;margin:12px 0 14px;color:var(--ink);">Во время</h3>
+        <div style="font-size:clamp(22px,1.7vw,30px);color:var(--ink-soft);line-height:1.5;">Корректные параметры. Минимальная эффективная доза. Без overlap. Контроль эндпоинта.</div>
+      </div>
+      <div class="card" style="border-top:6px solid var(--green);">
+        <div style="font-size:clamp(14px,1vw,18px);font-weight:700;color:#0f8a3a;letter-spacing:.16em;text-transform:uppercase;">Фаза 3</div>
+        <h3 style="font-size:clamp(28px,2.2vw,40px);font-weight:700;margin:12px 0 14px;color:var(--ink);">После</h3>
+        <div style="font-size:clamp(22px,1.7vw,30px);color:var(--ink-soft);line-height:1.5;">Контроль воспаления первые недели. Фотозащита. Раннее начало терапии при первых признаках.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 33. PHASE 1 — PRE -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow" style="color:var(--blue);">Фаза 1 · до процедуры</div>
+    <h2 class="section">Подготовка кожи за 4–6 недель.</h2>
+    <p class="lead">
+      Цель — снизить активность меланоцитов и минимизировать воспалительный фон
+      <b>до того, как лазер коснётся кожи</b>.
+    </p>
+    <div class="key-findings" style="margin-top:14px;">
+      <div class="kf"><div class="kf-bullet">1</div><div><b>Нет загара</b> минимум 4–6 недель — никакого солнца, никаких соляриев</div></div>
+      <div class="kf"><div class="kf-bullet">2</div><div><b>SPF 50+ ежедневно</b>, в том числе через окна, в любую погоду</div></div>
+      <div class="kf"><div class="kf-bullet">3</div><div><b>Гидрохинон 2–4%</b> на ночь — для группы риска (фототипы III–VI, анамнез PIH). Курс 4–6 недель.</div></div>
+      <div class="kf"><div class="kf-bullet red">!</div><div><b>Отмена ретиноидов</b> (третиноин, адапален, тазаротен, <b>изотретиноин</b>) и локальных кортикостероидов — <b>за 14 дней до процедуры</b>. Это противопоказание для лазера.</div></div>
+      <div class="kf"><div class="kf-bullet">4</div><div><b>Тестовый участок</b> — за 4–6 недель в незаметной зоне, оценка реакции</div></div>
+      <div class="kf"><div class="kf-bullet">5</div><div><b>Документация Fitzpatrick</b>, фото исходного состояния, информированное согласие</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 34. PHASE 2 — DURING -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow" style="color:#a55c00;">Фаза 2 · во время процедуры</div>
+    <h2 class="section">Параметры под пациента, а не «по протоколу».</h2>
+    <div class="grid-2" style="margin-top:14px;">
+      <div class="card" style="border-top:5px solid var(--red);">
+        <div style="font-size:clamp(18px,1.3vw,22px);color:var(--red);font-weight:700;text-transform:uppercase;letter-spacing:.12em;margin-bottom:14px;">CO₂-лазер</div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:14px;font-size:clamp(22px,1.7vw,30px);color:var(--ink-soft);line-height:1.45;">
+          <li>✓ Минимально достаточная энергия — по клиническому эндпоинту</li>
+          <li>✓ Плотность покрытия &lt;15% для III–VI фототипов</li>
+          <li>✓ <b>Без overlap</b> — один проход</li>
+          <li>✓ Интервал между процедурами 6–8 недель</li>
+          <li>✓ Охлаждение в зоне обработки (контактное или воздушное)</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:5px solid var(--purple);">
+        <div style="font-size:clamp(18px,1.3vw,22px);color:var(--purple);font-weight:700;text-transform:uppercase;letter-spacing:.12em;margin-bottom:14px;">Удаление татуировок</div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:14px;font-size:clamp(22px,1.7vw,30px);color:var(--ink-soft);line-height:1.45;">
+          <li>✓ Не гнаться за максимальным осветлением за один сеанс</li>
+          <li>✓ Больше сеансов · меньше энергии на каждом</li>
+          <li>✓ Интервал между сеансами 6–8 недель (не 4)</li>
+          <li>✓ Endpoint — «слабое побеление», не выраженное</li>
+          <li>✓ Pico предпочтительнее QS для тёмной кожи</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 35. PHASE 3 — POST -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow" style="color:#0f8a3a;">Фаза 3 · после процедуры</div>
+    <h2 class="section">Контроль воспаления — первые 4 недели критичны.</h2>
+    <div class="key-findings" style="margin-top:14px;">
+      <div class="kf"><div class="kf-bullet green">1</div><div><b>Охлаждение</b> в первые часы — снижает воспалительный пик (см. Теорию воспалительной нагрузки)</div></div>
+      <div class="kf"><div class="kf-bullet green">2</div><div><b>Топические стероиды</b> 3–5 дней (для CO₂) — гидрокортизон 1% или метилпреднизолон 0,1%</div></div>
+      <div class="kf"><div class="kf-bullet green">3</div><div><b>SPF 50+</b> каждые 2 часа, физический блокер (оксид цинка, диоксид титана)</div></div>
+      <div class="kf"><div class="kf-bullet green">4</div><div><b>Возврат к гидрохинону / ретиноиду</b> через 5–10 дней (после эпителизации)</div></div>
+      <div class="kf"><div class="kf-bullet green">5</div><div><b>Раннее начало терапии</b> при первых признаках потемнения — не ждать «само пройдёт»</div></div>
+      <div class="kf"><div class="kf-bullet green">6</div><div><b>Контрольный визит</b> через 2 и 4 недели — чтобы вовремя поймать начало PIH</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 36. SUN PROTECTION IS KEY -->
+<section class="slide amber">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Самое важное в профилактике</div>
+    <h1 class="title" style="font-size:clamp(56px,5.8vw,92px);">SPF 50+ ежедневно.<br>Без исключений.</h1>
+    <p class="lead big" style="margin:24px auto 0;text-align:center;max-width:1400px;">
+      UV-облучение — <b>главный триггер</b> усиления и хронизации PIH.
+      Без строгой фотозащиты вся остальная терапия теряет смысл.
+    </p>
+    <div class="grid-3" style="margin-top:24px;width:100%;max-width:1400px;">
+      <div class="card" style="text-align:center;">
+        <div style="font-size:clamp(50px,4vw,72px);line-height:1;color:#fff;font-weight:700;">SPF 50+</div>
+        <div style="font-size:clamp(22px,1.7vw,30px);color:rgba(255,255,255,0.92);margin-top:12px;line-height:1.45;">Минимальный фактор защиты в течение 4–6 месяцев после процедуры</div>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:clamp(50px,4vw,72px);line-height:1;color:#fff;font-weight:700;">ZnO · TiO₂</div>
+        <div style="font-size:clamp(22px,1.7vw,30px);color:rgba(255,255,255,0.92);margin-top:12px;line-height:1.45;">Физический блокер предпочтительнее химических фильтров на свежей коже</div>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:clamp(50px,4vw,72px);line-height:1;color:#fff;font-weight:700;">2 ч</div>
+        <div style="font-size:clamp(22px,1.7vw,30px);color:rgba(255,255,255,0.92);margin-top:12px;line-height:1.45;">Повторное нанесение каждые 2 часа при пребывании на улице</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 37. SECTION DIVIDER — TREATMENT -->
+<section class="slide blue">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть VI</div>
+    <div class="section-num">06</div>
+    <h1 class="title">Лечение PIH</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">
+      Когда профилактика не сработала. Алгоритм 3 линий терапии — современные рекомендации 2024–2026.
+    </p>
+  </div>
+</section>
+
+<!-- 38. TREATMENT ALGORITHM -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Алгоритм лечения</div>
+    <h2 class="section">3 линии — от безопасных к агрессивным.</h2>
+    <p class="lead">
+      Начинаем с первой линии — самая безопасная. Только если 8–12 недель без эффекта —
+      переходим ко второй. Лазеры — третья линия, и то с осторожностью.
+    </p>
+    <div class="grid-3" style="margin-top:14px;">
+      <div class="card" style="border-top:6px solid var(--green);">
+        <div style="font-size:clamp(14px,1vw,18px);font-weight:700;color:#0f8a3a;letter-spacing:.16em;text-transform:uppercase;">1-я линия</div>
+        <h3 style="font-size:clamp(26px,2vw,36px);font-weight:700;margin:12px 0 14px;color:var(--ink);">Топическая терапия</h3>
+        <div style="font-size:clamp(22px,1.7vw,30px);color:var(--ink-soft);line-height:1.5;">Гидрохинон · азелаиновая кислота · ретиноиды · SPF50+. <b>Эффект через 8–12 недель.</b></div>
+      </div>
+      <div class="card" style="border-top:6px solid var(--orange);">
+        <div style="font-size:clamp(14px,1vw,18px);font-weight:700;color:#a55c00;letter-spacing:.16em;text-transform:uppercase;">2-я линия</div>
+        <h3 style="font-size:clamp(26px,2vw,36px);font-weight:700;margin:12px 0 14px;color:var(--ink);">Системы и пилинги</h3>
+        <div style="font-size:clamp(22px,1.7vw,30px);color:var(--ink-soft);line-height:1.5;">Транексамовая кислота перорально · TCA-пилинги · поверхностные пилинги.</div>
+      </div>
+      <div class="card" style="border-top:6px solid var(--red);">
+        <div style="font-size:clamp(14px,1vw,18px);font-weight:700;color:var(--red);letter-spacing:.16em;text-transform:uppercase;">3-я линия</div>
+        <h3 style="font-size:clamp(26px,2vw,36px);font-weight:700;margin:12px 0 14px;color:var(--ink);">Лазеры</h3>
+        <div style="font-size:clamp(22px,1.7vw,30px);color:var(--ink-soft);line-height:1.5;">Низкоэнергетический Q-switched · Pico · фракционный неабляционный. <b>Только опытным руководителем.</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 39. FIRST LINE DETAIL -->
+<section class="slide green">
+  <div class="slide-inner">
+    <div class="eyebrow">1-я линия</div>
+    <h2 class="section">Топическая терапия — обязательная база.</h2>
+    <div class="grid-2" style="margin-top:14px;">
+      <div class="card">
+        <div style="font-size:clamp(18px,1.3vw,22px);color:#fff;font-weight:700;text-transform:uppercase;letter-spacing:.12em;margin-bottom:14px;">Стандартная схема</div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:12px;font-size:clamp(19px,1.4vw,25px);color:#fff;line-height:1.4;">
+          <li><b>Утро:</b> SPF 50+ (физический блокер)</li>
+          <li><b>Утро:</b> Азелаиновая кислота 15–20% или Витамин C</li>
+          <li><b>Вечер:</b> Гидрохинон 4% (3–6 мес максимум)</li>
+          <li><b>Вечер (через ночь):</b> Третиноин 0,025–0,05%</li>
+          <li><b>2× в неделю:</b> мягкое отшелушивание (AHA)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div style="font-size:clamp(18px,1.3vw,22px);color:#fff;font-weight:700;text-transform:uppercase;letter-spacing:.12em;margin-bottom:14px;">Тройная комбинация (Kligman)</div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:12px;font-size:clamp(19px,1.4vw,25px);color:#fff;line-height:1.4;">
+          <li>✓ Гидрохинон 4%</li>
+          <li>✓ Третиноин 0,05%</li>
+          <li>✓ Фторированный кортикостероид</li>
+          <li>Применять на ночь, 4–8 недель</li>
+          <li><b>Курс ограничен!</b> Только под контролем врача</li>
+        </ul>
+        <div style="margin-top:14px;font-size:clamp(15px,1.1vw,20px);color:rgba(255,255,255,0.75);font-style:italic;">
+          Эффект ускоренный по сравнению с монотерапией
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 40. SECOND LINE -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow" style="color:#a55c00;">2-я линия</div>
+    <h2 class="section">Если 8–12 недель монотерапии без эффекта.</h2>
+    <div class="grid-2" style="margin-top:14px;">
+      <div class="card" style="border-top:5px solid var(--orange);">
+        <h3 style="font-size:clamp(26px,2vw,36px);font-weight:700;margin-bottom:14px;color:#a55c00;">Транексамовая кислота</h3>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;font-size:clamp(19px,1.4vw,24px);color:var(--ink-soft);line-height:1.45;">
+          <li>• Перорально: 250–500 мг 2 раза в день, курс 8–16 недель</li>
+          <li>• Топически: 3–5% в кремовой основе</li>
+          <li>• Механизм: ингибирование плазмина → ↓ PGE₂ → ↓ тирозиназы</li>
+          <li>• <b>Противопоказания:</b> анамнез ТЭЛА, тромбозов, КОК</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:5px solid var(--orange);">
+        <h3 style="font-size:clamp(26px,2vw,36px);font-weight:700;margin-bottom:14px;color:#a55c00;">Химические пилинги</h3>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;font-size:clamp(19px,1.4vw,24px);color:var(--ink-soft);line-height:1.45;">
+          <li>• Поверхностные: гликолевая 20–70%, салициловая 20–30%</li>
+          <li>• Срединные: TCA 15–25% (только опытным врачом)</li>
+          <li>• Pyruvic acid, mandelic acid — мягче для тёмной кожи</li>
+          <li>• <b>Осторожно:</b> сами пилинги могут вызвать новую PIH</li>
+        </ul>
+      </div>
+    </div>
+    <p class="lead" style="margin-top:8px;font-size:clamp(20px,1.5vw,28px);color:var(--ink-light);font-style:italic;">
+      Все 2-линейные методы — только параллельно с продолжением SPF и осветляющей топической терапии.
+    </p>
+  </div>
+</section>
+
+<!-- 41. THIRD LINE -->
+<section class="slide red">
+  <div class="slide-inner">
+    <div class="eyebrow">3-я линия</div>
+    <h2 class="section">Лазеры — только при стойкой PIH и опыте оператора.</h2>
+    <p class="lead">
+      <b>Парадокс:</b> лазер вызвал PIH — и им же мы пытаемся её лечить. Поэтому только
+      <b>минимальные параметры</b> и контроль реакции после каждого сеанса.
+    </p>
+    <div class="grid-3" style="margin-top:14px;">
+      <div class="card" style="border-top:5px solid var(--red);">
+        <div style="font-size:clamp(18px,1.3vw,22px);color:#fff;font-weight:700;text-transform:uppercase;letter-spacing:.12em;">Q-switched</div>
+        <h3 style="font-size:clamp(24px,1.9vw,32px);font-weight:700;margin:10px 0;color:#fff;">1064 нм, низкая флюенс</h3>
+        <div style="font-size:clamp(22px,1.7vw,30px);color:rgba(255,255,255,0.92);line-height:1.45;">«Toning» — слабые проходы по всей зоне, без эндпоинта побеления. Pico предпочтительнее.</div>
+      </div>
+      <div class="card" style="border-top:5px solid var(--red);">
+        <div style="font-size:clamp(18px,1.3vw,22px);color:#fff;font-weight:700;text-transform:uppercase;letter-spacing:.12em;">Picosecond</div>
+        <h3 style="font-size:clamp(24px,1.9vw,32px);font-weight:700;margin:10px 0;color:#fff;">1064 нм</h3>
+        <div style="font-size:clamp(22px,1.7vw,30px);color:rgba(255,255,255,0.92);line-height:1.45;">Меньшая термотравма. Безопаснее для тёмной кожи. С DLA / Focus Lens Array — также для коррекции текстуры. <b>532 нм у тёмной кожи избегаем</b> — провоцирует пигментацию.</div>
+      </div>
+      <div class="card" style="border-top:5px solid var(--red);">
+        <div style="font-size:clamp(18px,1.3vw,22px);color:#fff;font-weight:700;text-transform:uppercase;letter-spacing:.12em;">Fractional non-ablative</div>
+        <h3 style="font-size:clamp(24px,1.9vw,32px);font-weight:700;margin:10px 0;color:#fff;">1550 / 1927 нм</h3>
+        <div style="font-size:clamp(22px,1.7vw,30px);color:rgba(255,255,255,0.92);line-height:1.45;">Эрбий-glass / тулий. Безопаснее CO₂. Подходит для зрелой PIH и дермальной фракции.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 42. TREATMENT TIMELINE -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Ожидания пациента</div>
+    <h2 class="section">Сколько времени занимает разрешение PIH.</h2>
+    <p class="lead">
+      <b>Ключевое — управление ожиданиями.</b> Пациент должен понимать, что PIH не разрешается
+      за неделю. Без чётких сроков — конфликты неизбежны.
+    </p>
+    <div class="chart-wrap">
+      <canvas id="chartTimeline"></canvas>
+      <div class="chart-title">Динамика выраженности PIH (балл MASI) при адекватной терапии · сводно</div>
+    </div>
+  </div>
+</section>
+
+<!-- 43. KEY MISTAKES -->
+<section class="slide red">
+  <div class="slide-inner">
+    <div class="eyebrow">Что делать НЕЛЬЗЯ</div>
+    <h2 class="section">7 типичных ошибок врача при PIH.</h2>
+    <div class="key-findings" style="margin-top:14px;">
+      <div class="kf"><div class="kf-bullet red">✗</div><div>«Сейчас уйдёт само» — упустить раннее окно лечения</div></div>
+      <div class="kf"><div class="kf-bullet red">✗</div><div>Назначить лазер при свежей PIH (до 6 месяцев) — спровоцирует усиление</div></div>
+      <div class="kf"><div class="kf-bullet red">✗</div><div>Слишком высокая концентрация гидрохинона — &gt;4% или приём &gt;6 месяцев → <span class="term" tabindex="0">охроноз<span class="tip"><b>Экзогенный охроноз</b> — парадоксальное осложнение длительного применения гидрохинона. Серо-синяя или сине-чёрная пигментация в местах нанесения. Возникает из-за отложения охронотических полимеров в сосочковой дерме. Чаще у фототипов V–VI. Лечится очень тяжело: пилинги, низкоэнергетические лазеры — годами. Профилактика: не назначать гидрохинон &gt;6 месяцев непрерывно, концентрация ≤4%, перерывы.</span></span></div></div>
+      <div class="kf"><div class="kf-bullet red">✗</div><div>Отсутствие SPF — все остальные меры бессмысленны без фотозащиты</div></div>
+      <div class="kf"><div class="kf-bullet red">✗</div><div>Не оценить Fitzpatrick до процедуры — основа всех проблем</div></div>
+      <div class="kf"><div class="kf-bullet red">✗</div><div>«Один протокол на всех» — параметры лазера должны быть индивидуальны</div></div>
+      <div class="kf"><div class="kf-bullet red">✗</div><div>Не предупредить пациента о возможности PIH в информированном согласии</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 44. DECISION ALGORITHM SVG -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Финальный алгоритм</div>
+    <h2 class="section">Алгоритм принятия решений у пациента группы риска.</h2>
+    <div class="illus" style="padding:clamp(24px,2vw,40px);">
+      <svg viewBox="0 0 1280 700" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+        <defs>
+          <marker id="arrAlgo" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#86868b"/>
+          </marker>
+        </defs>
+
+        <!-- START -->
+        <g class="cascade-step">
+          <rect x="440" y="20" width="400" height="64" rx="32" fill="#0a84ff"/>
+          <text x="640" y="60" text-anchor="middle" font-size="22" font-weight="700" fill="#fff">Пациент на лазерную процедуру</text>
+        </g>
+        <line x1="640" y1="84" x2="640" y2="116" stroke="#86868b" stroke-width="2.5" marker-end="url(#arrAlgo)"/>
+
+        <!-- DECISION diamond -->
+        <g class="cascade-step">
+          <polygon points="640,124 920,210 640,296 360,210" fill="#fff4e0" stroke="#ff9500" stroke-width="3"/>
+          <text x="640" y="200" text-anchor="middle" font-size="20" font-weight="700" fill="#1d1d1f">Fitzpatrick III–VI</text>
+          <text x="640" y="226" text-anchor="middle" font-size="20" font-weight="700" fill="#1d1d1f">или анамнез PIH?</text>
+        </g>
+
+        <!-- NO arrow left -->
+        <line x1="360" y1="210" x2="220" y2="210" stroke="#86868b" stroke-width="2.5" marker-end="url(#arrAlgo)"/>
+        <text x="290" y="200" text-anchor="middle" font-size="18" font-weight="700" fill="#0f8a3a">НЕТ</text>
+
+        <!-- YES arrow right -->
+        <line x1="920" y1="210" x2="1060" y2="210" stroke="#86868b" stroke-width="2.5" marker-end="url(#arrAlgo)"/>
+        <text x="990" y="200" text-anchor="middle" font-size="18" font-weight="700" fill="#d70015">ДА</text>
+
+        <!-- LEFT branch: STANDARD protocol -->
+        <g class="cascade-step">
+          <rect x="40" y="240" width="360" height="240" rx="16" fill="#e0f7ec" stroke="#1ea24a" stroke-width="3"/>
+          <text x="220" y="276" text-anchor="middle" font-size="20" font-weight="700" fill="#0f8a3a" letter-spacing="0.08em">СТАНДАРТНЫЙ ПРОТОКОЛ</text>
+          <line x1="80" y1="290" x2="360" y2="290" stroke="#1ea24a" stroke-width="1.5" opacity="0.4"/>
+          <text x="60" y="320" font-size="17" fill="#1d1d1f">• SPF 50+ ежедневно</text>
+          <text x="60" y="350" font-size="17" fill="#1d1d1f">• Стандартные параметры лазера</text>
+          <text x="60" y="380" font-size="17" fill="#1d1d1f">• Тестовый участок (опционально)</text>
+          <text x="60" y="410" font-size="17" fill="#1d1d1f">• Контроль на 7 и 30 день</text>
+          <text x="60" y="448" font-size="16" font-style="italic" fill="#0f8a3a">Риск PIH: 1–5%</text>
+        </g>
+
+        <!-- RIGHT branch: ENHANCED protocol -->
+        <g class="cascade-step">
+          <rect x="880" y="240" width="360" height="240" rx="16" fill="#ffe9ec" stroke="#ff3b30" stroke-width="3"/>
+          <text x="1060" y="276" text-anchor="middle" font-size="20" font-weight="700" fill="#d70015" letter-spacing="0.08em">РАСШИРЕННЫЙ ПРОТОКОЛ</text>
+          <line x1="920" y1="290" x2="1200" y2="290" stroke="#ff3b30" stroke-width="1.5" opacity="0.4"/>
+          <text x="900" y="320" font-size="17" fill="#1d1d1f">• ДО: гидрохинон 4% за 4–6 нед</text>
+          <text x="900" y="350" font-size="17" fill="#1d1d1f">• Отмена ретиноидов за 14 дней</text>
+          <text x="900" y="380" font-size="17" fill="#1d1d1f">• Энергия min, плотность &lt;15%</text>
+          <text x="900" y="410" font-size="17" fill="#1d1d1f">• Без overlap, охлаждение</text>
+          <text x="900" y="440" font-size="17" fill="#1d1d1f">• ПОСЛЕ: стероид 3–5 дн, SPF50+</text>
+          <text x="900" y="468" font-size="16" font-style="italic" fill="#d70015">Без мер риск PIH: 20–30%</text>
+        </g>
+
+        <!-- Bottom: merge to follow-up -->
+        <line x1="220" y1="480" x2="220" y2="540" stroke="#86868b" stroke-width="2.5"/>
+        <line x1="1060" y1="480" x2="1060" y2="540" stroke="#86868b" stroke-width="2.5"/>
+        <line x1="220" y1="540" x2="1060" y2="540" stroke="#86868b" stroke-width="2.5"/>
+        <line x1="640" y1="540" x2="640" y2="576" stroke="#86868b" stroke-width="2.5" marker-end="url(#arrAlgo)"/>
+
+        <!-- Final follow-up -->
+        <g class="cascade-step">
+          <rect x="380" y="584" width="520" height="96" rx="16" fill="#f0eaff" stroke="#5e5ce6" stroke-width="3"/>
+          <text x="640" y="618" text-anchor="middle" font-size="20" font-weight="700" fill="#5e5ce6" letter-spacing="0.08em">КОНТРОЛЬ И КОРРЕКЦИЯ</text>
+          <text x="640" y="648" text-anchor="middle" font-size="17" fill="#1d1d1f">2 и 4 недели · фото в динамике · оценка пигментации</text>
+          <text x="640" y="672" text-anchor="middle" font-size="17" fill="#1d1d1f">При первых признаках PIH → топическая терапия 1-й линии</text>
+        </g>
+      </svg>
+      <div class="illus-caption" style="margin-top:18px;">
+        Главный <b>момент выбора</b> — оценка фототипа и анамнеза. Дальше — два разных протокола с разной интенсивностью профилактики. Бессмысленно расходовать ресурсы на «расширенный» у пациента I–II типа.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 45. SECTION DIVIDER — KEY TAKEAWAYS -->
+<section class="slide dark">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Финал</div>
+    <div class="section-num">∎</div>
+    <h1 class="title">Ключевые выводы</h1>
+  </div>
+</section>
+
+<!-- 46. 5 SCIENTIFIC TENETS -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">5 тезисов лекции</div>
+    <h2 class="section">Что нужно запомнить.</h2>
+    <div class="key-findings" style="margin-top:18px;gap:clamp(16px,1.4vw,24px);">
+      <div class="kf" style="font-size:clamp(26px,2vw,36px);line-height:1.35;">
+        <div class="kf-bullet" style="width:clamp(42px,3vw,54px);height:clamp(42px,3vw,54px);font-size:clamp(20px,1.5vw,26px);">1</div>
+        <div>PIH — это <b>проблема воспаления и активации меланоцитов</b>, а не «избытка меланина».</div>
+      </div>
+      <div class="kf" style="font-size:clamp(26px,2vw,36px);line-height:1.35;">
+        <div class="kf-bullet" style="width:clamp(42px,3vw,54px);height:clamp(42px,3vw,54px);font-size:clamp(20px,1.5vw,26px);">2</div>
+        <div>Главный фактор риска — <b>фототип III–VI</b>. На втором месте — параметры лазера и загар.</div>
+      </div>
+      <div class="kf" style="font-size:clamp(26px,2vw,36px);line-height:1.35;">
+        <div class="kf-bullet" style="width:clamp(42px,3vw,54px);height:clamp(42px,3vw,54px);font-size:clamp(20px,1.5vw,26px);">3</div>
+        <div>Pico снижает риск PIH по сравнению с QS, но <b>не отменяет физиологию воспаления</b>.</div>
+      </div>
+      <div class="kf" style="font-size:clamp(26px,2vw,36px);line-height:1.35;">
+        <div class="kf-bullet" style="width:clamp(42px,3vw,54px);height:clamp(42px,3vw,54px);font-size:clamp(20px,1.5vw,26px);">4</div>
+        <div>Профилактика <b>работает</b>: подготовка кожи + грамотные параметры + контроль воспаления после.</div>
+      </div>
+      <div class="kf" style="font-size:clamp(26px,2vw,36px);line-height:1.35;">
+        <div class="kf-bullet" style="width:clamp(42px,3vw,54px);height:clamp(42px,3vw,54px);font-size:clamp(20px,1.5vw,26px);">5</div>
+        <div>Лечение PIH — <b>длительное</b> (6–18 мес). Раннее начало улучшает прогноз. SPF50+ — обязательная база.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 47. FINAL -->
+<section class="slide dark">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Спасибо за внимание</div>
+    <h1 class="hero" style="font-size:clamp(48px,5.4vw,80px);">
+      PIH — это <b style="color:#a8d8ff;">прогнозируемая проблема</b>.<br>
+      И <b style="color:#a8f0bd;">управляемая</b>.
+    </h1>
+    <p class="lead big" style="margin:24px auto 0;text-align:center;max-width:1400px;">
+      Понимание физиологии воспаления + грамотный выбор параметров +
+      строгая фотозащита — этого достаточно, чтобы PIH стала редкостью
+      даже у тёмной кожи.
+    </p>
+    <div class="pill-row" style="margin-top:32px;">
+      <span class="info-pill">10 источников · 2023–2026</span>
+      <span class="info-pill">Алгоритм 3 фаз</span>
+      <span class="info-pill">3 линии терапии</span>
+      <span class="info-pill">© Микрюков, 2026</span>
+    </div>
+  </div>
+</section>
+
+<!-- 48. REFERENCES 1 -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Источники · блок 1</div>
+    <h2 class="section">CO₂-лазер и профилактика PIH.</h2>
+    <div class="ref-grid">
+      <div class="ref"><div><b>PMC 2023</b> · Post-inflammatory Hyperpigmentation After Carbon Dioxide Laser: Review of Prevention and Risk Factors</div><a target="_blank" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10080999/">↗ PMC</a></div>
+      <div class="ref"><div><b>Wu &amp; Bae, 2025</b> · Prevention of PIH in Skin of Colour — systematic review</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=prevention+postinflammatory+hyperpigmentation+skin+colour+2025">↗ PubMed</a></div>
+      <div class="ref"><div><b>Interventions to Prevent PIH Following Laser Procedures, 2026</b></div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=interventions+prevent+postinflammatory+hyperpigmentation+laser">↗ PubMed</a></div>
+      <div class="ref"><div><b>Cheyasak et al.</b> · Topical Corticosteroids Minimise PIH After Ablative CO₂ in Asians · Acta Dermato-Venereologica</div><a target="_blank" href="https://medicaljournalssweden.se/actadv/article/view/3919">↗ ADV</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- 49. REFERENCES 2 -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Источники · блок 2</div>
+    <h2 class="section">Лечение PIH и биология меланоцита.</h2>
+    <div class="ref-grid">
+      <div class="ref"><div><b>Treatment of PIH in Skin of Colour, 2024</b> · современный обзор</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=treatment+postinflammatory+hyperpigmentation+skin+colour+2024">↗ PubMed</a></div>
+      <div class="ref"><div><b>JCAD Review</b> · PIH: Epidemiology, Clinical Features, Treatment Options in Skin of Color</div><a target="_blank" href="https://jcadonline.com/?s=postinflammatory+hyperpigmentation">↗ JCAD</a></div>
+      <div class="ref"><div><b>PMC 2024</b> · Advancements in Laser Therapies for Dermal Pigmentation Disorders</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=advancements+laser+therapies+dermal+pigmentation+2024">↗ PubMed</a></div>
+      <div class="ref"><div><b>PMC 2024</b> · Picosecond Laser Treatment for Tattoos and Benign Pigmented Lesions</div><a target="_blank" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11436156/">↗ PMC</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- 50. REFERENCES 3 -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Источники · блок 3</div>
+    <h2 class="section">Пикосекундные лазеры и консенсусы.</h2>
+    <div class="ref-grid">
+      <div class="ref"><div><b>MDPI 2025</b> · Medical Applications of Picosecond Lasers for Removal of Pigmentation</div><a target="_blank" href="https://www.mdpi.com/2076-3417/15/8/4316">↗ MDPI</a></div>
+      <div class="ref"><div><b>PMC Consensus Review</b> · Lasers in Melasma: Consensus Recommendations</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=lasers+melasma+consensus+recommendations">↗ PubMed</a></div>
+      <div class="ref"><div><b>Микрюков В., 2026</b> · Inflammatory Load Theory · авторская концепция</div><a target="_blank" href="https://dredd-npc.github.io/presentations/mikryukov_method_safe_tattoo_removal.html">↗ Лекция</a></div>
+      <div class="ref"><div><b>Микрюков В., 2026</b> · Пикосекундные лазеры в омоложении кожи · научный обзор</div><a target="_blank" href="https://dredd-npc.github.io/presentations/picosecond_lasers_rejuvenation.html">↗ Лекция</a></div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const progressFill = document.getElementById('progressFill');
+let idx = 0;
+const total = slides.length;
+
+function setSlide(i){
+  i = Math.max(0, Math.min(total-1, i));
+  slides[idx].classList.remove('active');
+  slides[i].classList.add('active');
+  idx = i;
+  progressFill.style.width = ((i+1)/total*100) + '%';
+  if(i === 0) location.hash = '';
+  else location.hash = '#s' + (i+1);
+}
+
+document.addEventListener('keydown', (e)=>{
+  if(e.target.classList && e.target.classList.contains('term')) return;
+  if(e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown'){ e.preventDefault(); setSlide(idx+1); }
+  else if(e.key === 'ArrowLeft' || e.key === 'PageUp'){ e.preventDefault(); setSlide(idx-1); }
+  else if(e.key === 'Home'){ e.preventDefault(); setSlide(0); }
+  else if(e.key === 'End'){ e.preventDefault(); setSlide(total-1); }
+});
+
+let lastWheel = 0;
+window.addEventListener('wheel', (e)=>{
+  const now = Date.now();
+  if(now - lastWheel < 700) return;
+  if(Math.abs(e.deltaY) < 30) return;
+  lastWheel = now;
+  if(e.deltaY > 0) setSlide(idx+1); else setSlide(idx-1);
+}, {passive:true});
+
+let touchY = null;
+window.addEventListener('touchstart', e=>{touchY = e.touches[0].clientY;}, {passive:true});
+window.addEventListener('touchend', e=>{
+  if(touchY === null) return;
+  const dy = e.changedTouches[0].clientY - touchY;
+  if(Math.abs(dy) > 50){ if(dy < 0) setSlide(idx+1); else setSlide(idx-1); }
+  touchY = null;
+}, {passive:true});
+
+if(location.hash && location.hash.startsWith('#s')){
+  const n = parseInt(location.hash.slice(2),10);
+  if(!isNaN(n)) setSlide(n-1);
+}
+
+// CHARTS
+Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif";
+Chart.defaults.font.size = 15;
+Chart.defaults.color = '#1d1d1f';
+
+const cFitz = document.getElementById('chartRiskFitzpatrick');
+if(cFitz){
+  new Chart(cFitz, {
+    type:'bar',
+    data:{
+      labels:['I','II','III','IV','V','VI'],
+      datasets:[{
+        label:'Частота PIH после CO₂, %',
+        data:[2, 5, 12, 22, 28, 30],
+        backgroundColor:['#30d158','#30d158','#ff9500','#ff9500','#ff3b30','#d70015'],
+        borderRadius:8, maxBarThickness:60
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:{callbacks:{label:(c)=>c.parsed.y+'%'}} },
+      scales:{
+        y:{ beginAtZero:true, max:35, ticks:{callback:v=>v+'%', font:{size:15}}, grid:{color:'#eee'}, title:{display:true,text:'Частота PIH (%)',font:{size:15}}},
+        x:{ ticks:{font:{size:18, weight:'700'}}, grid:{display:false}, title:{display:true,text:'Фототип по Фитцпатрику',font:{size:15}}}
+      }
+    }
+  });
+}
+
+const cTime = document.getElementById('chartTimeline');
+if(cTime){
+  new Chart(cTime, {
+    type:'line',
+    data:{
+      labels:['0','1 мес','2 мес','3 мес','6 мес','9 мес','12 мес','18 мес'],
+      datasets:[{
+        label:'Выраженность PIH (балл MASI)',
+        data:[10, 9.5, 8.5, 7, 4.5, 3, 1.8, 1],
+        borderColor:'#ff3b30',
+        backgroundColor:'rgba(255,59,48,0.15)',
+        fill:true, tension:0.35, borderWidth:3, pointRadius:5,
+        pointBackgroundColor:'#ff3b30'
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{position:'bottom', labels:{font:{size:15}}} },
+      scales:{
+        y:{ beginAtZero:true, max:11, grid:{color:'#eee'}, title:{display:true,text:'Балл MASI (выраженность)',font:{size:15}}},
+        x:{ grid:{display:false}, title:{display:true,text:'Время от начала терапии',font:{size:15}}}
+      }
+    }
+  });
+}
+
+// ANIMATED NETWORK BACKGROUND
+(function(){
+  const canvas = document.getElementById('bgNet');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const DPR = Math.max(1, window.devicePixelRatio || 1);
+  let W = 0, H = 0, nodes = [], t = 0;
+
+  const BAND_PCT = 0.18;
+  const MAX_DIST = 200;
+  const NODE_COLOR = '60, 130, 220';
+  const FREE_RATIO = 0.12;
+
+  function resize(){
+    W = window.innerWidth; H = window.innerHeight;
+    canvas.width = W*DPR; canvas.height = H*DPR;
+    canvas.style.width = W+'px'; canvas.style.height = H+'px';
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    initNodes();
+  }
+  function initNodes(){
+    const bandH = H*BAND_PCT;
+    const bandArea = W*bandH;
+    let perBand = Math.round(bandArea/4500);
+    perBand = Math.max(75, Math.min(170, perBand));
+    nodes = [];
+    const zones = [{yMin:0,yMax:bandH},{yMin:H-bandH,yMax:H}];
+    for(const z of zones){
+      for(let i=0;i<perBand;i++){
+        const isFree = Math.random()<FREE_RATIO;
+        const ampX = isFree?(4+Math.random()*6):(8+Math.random()*10);
+        const ampY = isFree?(3+Math.random()*5):(5+Math.random()*7);
+        nodes.push({
+          ax:Math.random()*W,
+          ay:z.yMin+Math.random()*(z.yMax-z.yMin),
+          x:0, y:0,
+          phaseX:Math.random()*Math.PI*2,
+          phaseY:Math.random()*Math.PI*2,
+          freq:0.006+Math.random()*0.010,
+          ampX, ampY,
+          r:1.6+Math.random()*1.9,
+          isFree,
+          vax: isFree?(Math.random()-0.5)*0.45:0,
+          vay: isFree?(Math.random()-0.5)*0.08:0,
+          zone:z
+        });
+      }
+    }
+  }
+  function bandAlpha(n){
+    const distFromOuter = (n.zone.yMin===0)?n.y/n.zone.yMax:(H-n.y)/(H-n.zone.yMin);
+    return Math.max(0.05, 1-distFromOuter);
+  }
+  function tick(){
+    t++;
+    ctx.clearRect(0,0,W,H);
+    for(const n of nodes){
+      if(n.isFree){
+        n.ax += n.vax; n.ay += n.vay;
+        if(n.ax<-20) n.ax = W+20; else if(n.ax>W+20) n.ax = -20;
+        if(n.ay<n.zone.yMin){n.ay=n.zone.yMin; n.vay=Math.abs(n.vay);}
+        if(n.ay>n.zone.yMax){n.ay=n.zone.yMax; n.vay=-Math.abs(n.vay);}
+      }
+      n.x = n.ax + Math.sin(t*n.freq+n.phaseX)*n.ampX;
+      n.y = n.ay + Math.cos(t*n.freq+n.phaseY)*n.ampY;
+    }
+    ctx.lineWidth = 0.8;
+    for(let i=0;i<nodes.length;i++){
+      const a = nodes[i];
+      const fadeA = bandAlpha(a);
+      for(let j=i+1;j<nodes.length;j++){
+        const b = nodes[j];
+        if(a.zone!==b.zone) continue;
+        const dx = a.x-b.x, dy = a.y-b.y;
+        const d2 = dx*dx+dy*dy;
+        if(d2 < MAX_DIST*MAX_DIST){
+          const d = Math.sqrt(d2);
+          const proximity = 1 - d/MAX_DIST;
+          const alpha = proximity*0.45*Math.min(fadeA, bandAlpha(b));
+          ctx.strokeStyle = 'rgba('+NODE_COLOR+','+alpha.toFixed(3)+')';
+          ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+        }
+      }
+    }
+    for(const n of nodes){
+      const fade = bandAlpha(n);
+      ctx.fillStyle = 'rgba('+NODE_COLOR+','+(0.88*fade).toFixed(3)+')';
+      ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = 'rgba('+NODE_COLOR+','+(0.22*fade).toFixed(3)+')';
+      ctx.beginPath(); ctx.arc(n.x, n.y, n.r*2.6, 0, Math.PI*2); ctx.fill();
+    }
+    requestAnimationFrame(tick);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  requestAnimationFrame(tick);
+})();
+</script>
+
+</body>
+</html>
