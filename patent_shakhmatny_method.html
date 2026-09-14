@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="googlebot" content="noindex,nofollow,noarchive">
+<title>Патентный метод удаления татуировок · В. Микрюков · LaserConf 2026</title>
+<style>
+  :root{
+    --bg:#fbfbfd; --ink:#1d1d1f; --ink-soft:#3a3a3f; --ink-light:#86868b;
+    --line:#d2d2d7;
+    --blue:#0a84ff; --pink:#ff2d55; --green:#30d158;
+    --orange:#ff9500; --red:#ff3b30; --purple:#5e5ce6;
+    --teal:#5ac8fa; --brown:#8b5a2b; --amber:#ffcc00;
+    --card:#ffffff; --card-edge: rgba(0,0,0,0.05);
+    --shadow: 0 2px 12px rgba(0,0,0,0.04), 0 12px 40px rgba(0,0,0,0.06);
+    --radius: 22px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;
+    background:var(--bg); color:var(--ink);
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+    letter-spacing:-0.011em;
+  }
+  .deck{position:fixed;inset:0;}
+  .slide{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding: clamp(40px, 5vh, 80px) clamp(28px, 2.6vw, 60px);
+    opacity:0; transform:translateY(24px) scale(0.985);
+    transition: opacity .55s cubic-bezier(.2,.7,.2,1), transform .55s cubic-bezier(.2,.7,.2,1);
+    pointer-events:none; overflow:auto;
+  }
+  .slide.active{opacity:1;transform:none;pointer-events:auto;}
+  .slide-inner{
+    width:100%;
+    max-width: clamp(1200px, 95vw, 1920px);
+    margin:0 auto;
+    display:flex;flex-direction:column;
+    gap: clamp(12px, 1.4vw, 22px);
+  }
+
+  .eyebrow{text-transform:uppercase;letter-spacing:.18em;font-size:clamp(18px,1.2vw,22px);font-weight:600;color:var(--blue);}
+  h1.hero{
+    font-size: clamp(72px, 8.4vw, 144px);
+    line-height:.98; letter-spacing:-0.04em; font-weight:700;
+    background: linear-gradient(180deg,#1d1d1f 0%, #2a2a2e 60%, #6e6e73 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  h1.title{font-size: clamp(52px, 6vw, 100px); line-height:1.04; letter-spacing:-0.025em; font-weight:700; color:var(--ink);}
+  h2.section{font-size: clamp(44px, 4.6vw, 80px); line-height:1.08; letter-spacing:-0.02em; font-weight:700; color:var(--ink);}
+  .lead{font-size: clamp(28px, 2.2vw, 42px); line-height:1.45; color:var(--ink-soft); font-weight:400; max-width:1400px;}
+  .lead.big{font-size: clamp(32px, 2.6vw, 48px); line-height:1.35;}
+  p{font-size: clamp(22px, 1.5vw, 28px); line-height:1.55; color:var(--ink);}
+
+  .card{
+    background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow);
+    padding: clamp(22px, 1.9vw, 34px); border:1px solid var(--card-edge); position:relative;
+  }
+  .card h3{font-size:clamp(26px,1.9vw,34px);font-weight:700;color:var(--ink);margin-bottom:10px;line-height:1.25;}
+  .card p, .card li{font-size:clamp(20px,1.5vw,26px);line-height:1.5;color:var(--ink-soft);}
+  .card ul{padding-left:22px;display:flex;flex-direction:column;gap:8px;}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:clamp(18px,1.4vw,26px);}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,1.2vw,22px);}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(14px,1vw,18px);}
+  @media (max-width:900px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}}
+
+  .stat-card{
+    background:var(--card); border-radius:20px;
+    padding: clamp(20px,1.7vw,30px);
+    border:1px solid var(--card-edge);
+    display:flex;flex-direction:column;gap:8px;
+    box-shadow:var(--shadow);
+  }
+  .stat-num{font-size:clamp(48px,5.2vw,84px);font-weight:700;line-height:.95;letter-spacing:-0.03em;
+    background:linear-gradient(135deg,var(--blue),var(--purple));
+    -webkit-background-clip:text;background-clip:text;color:transparent;}
+  .stat-card.red .stat-num{background:linear-gradient(135deg,var(--red),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .stat-card.amber .stat-num{background:linear-gradient(135deg,var(--orange),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .stat-card.green .stat-num{background:linear-gradient(135deg,var(--green),var(--teal));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .stat-label{font-size:clamp(20px,1.4vw,26px);font-weight:500;color:var(--ink-soft);line-height:1.4;}
+  .stat-label-big{font-size:clamp(24px,1.7vw,32px);font-weight:600;color:var(--ink);line-height:1.35;}
+
+  /* Coloured slides */
+  .slide.dark{background:linear-gradient(160deg,#0f0f12 0%, #1d1d1f 100%);color:#fff;}
+  .slide.dark h1.hero{background:linear-gradient(180deg,#fff 0%, #ddd 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .slide.dark h1.title{color:#fff;}
+  .slide.dark h2.section{color:#fff;}
+  .slide.dark .lead{color:rgba(255,255,255,0.86);}
+  .slide.dark .eyebrow{color:#a8d8ff;}
+  .slide.dark .card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.10);}
+  .slide.dark .card h3{color:#fff;}
+  .slide.dark .card p, .slide.dark .card li{color:rgba(255,255,255,0.84);}
+
+  .slide.blue{background:linear-gradient(160deg,#003d8a 0%, #0a84ff 100%);color:#fff;}
+  .slide.pink{background:linear-gradient(160deg,#7a0c30 0%, #ff2d55 100%);color:#fff;}
+  .slide.red{background:linear-gradient(160deg,#a30010 0%, #ff3b30 100%);color:#fff;}
+  .slide.amber{background:linear-gradient(160deg,#5c3d00 0%, #ff9500 100%);color:#fff;}
+  .slide.green{background:linear-gradient(160deg,#0f6e2f 0%, #30d158 100%);color:#fff;}
+  .slide.purple{background:linear-gradient(160deg,#2c1a7c 0%, #5e5ce6 100%);color:#fff;}
+  .slide.blue h1, .slide.blue h2.section, .slide.blue h1.title,
+  .slide.pink h1, .slide.pink h2.section, .slide.pink h1.title,
+  .slide.red h1, .slide.red h2.section, .slide.red h1.title,
+  .slide.amber h1, .slide.amber h2.section, .slide.amber h1.title,
+  .slide.green h1, .slide.green h2.section, .slide.green h1.title,
+  .slide.purple h1, .slide.purple h2.section, .slide.purple h1.title{color:#fff;}
+  .slide.blue .lead, .slide.pink .lead, .slide.red .lead, .slide.amber .lead, .slide.green .lead, .slide.purple .lead{color:rgba(255,255,255,0.92);}
+  .slide.blue .eyebrow, .slide.pink .eyebrow, .slide.red .eyebrow, .slide.amber .eyebrow, .slide.green .eyebrow, .slide.purple .eyebrow{color:rgba(255,255,255,0.85);}
+  .slide.blue .card, .slide.pink .card, .slide.red .card, .slide.amber .card, .slide.green .card, .slide.purple .card{background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.15);backdrop-filter:blur(8px);}
+  .slide.blue .card h3, .slide.pink .card h3, .slide.red .card h3, .slide.amber .card h3, .slide.green .card h3, .slide.purple .card h3{color:#fff;}
+  .slide.blue .card p, .slide.blue .card li, .slide.pink .card p, .slide.pink .card li, .slide.red .card p, .slide.red .card li, .slide.amber .card p, .slide.amber .card li, .slide.green .card p, .slide.green .card li, .slide.purple .card p, .slide.purple .card li{color:rgba(255,255,255,0.92);}
+  .slide.blue .stat-card, .slide.pink .stat-card, .slide.red .stat-card, .slide.amber .stat-card, .slide.green .stat-card, .slide.purple .stat-card{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.18);}
+  .slide.blue .stat-num, .slide.pink .stat-num, .slide.red .stat-num, .slide.amber .stat-num, .slide.green .stat-num, .slide.purple .stat-num{background:linear-gradient(135deg,#fff,#fff);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .slide.blue .stat-label, .slide.pink .stat-label, .slide.red .stat-label, .slide.amber .stat-label, .slide.green .stat-label, .slide.purple .stat-label,
+  .slide.blue .stat-label-big, .slide.pink .stat-label-big, .slide.red .stat-label-big, .slide.amber .stat-label-big, .slide.green .stat-label-big, .slide.purple .stat-label-big{color:rgba(255,255,255,0.95);}
+
+  .section-num{
+    font-size:clamp(140px,17vw,260px);
+    font-weight:700;line-height:.85;letter-spacing:-0.05em;
+    background:linear-gradient(180deg, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0.06) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    margin-bottom:12px;
+  }
+  .section-title-block{text-align:center;align-items:center;}
+
+  blockquote.q{
+    font-size:clamp(28px,2.6vw,44px); line-height:1.32; letter-spacing:-0.015em;
+    font-weight:500; color:var(--ink);
+    border-left:5px solid var(--blue);
+    padding:6px 0 6px 28px; max-width:1400px;
+  }
+  blockquote.q .src{display:block;font-size:clamp(18px,1.2vw,22px);font-weight:500;color:var(--ink-light);margin-top:18px;letter-spacing:0;}
+  .slide.dark blockquote.q, .slide.blue blockquote.q, .slide.pink blockquote.q, .slide.red blockquote.q, .slide.amber blockquote.q, .slide.green blockquote.q, .slide.purple blockquote.q{color:#fff;border-left-color:rgba(255,255,255,0.8);}
+  .slide.dark blockquote.q .src, .slide.blue blockquote.q .src, .slide.pink blockquote.q .src, .slide.red blockquote.q .src, .slide.amber blockquote.q .src, .slide.green blockquote.q .src, .slide.purple blockquote.q .src{color:rgba(255,255,255,0.75);}
+
+  .pill{display:inline-block;padding:6px 14px;border-radius:999px;font-size:clamp(15px,1vw,18px);font-weight:600;}
+  .pill.hi{background:rgba(48,209,88,.16);color:#0f8a3a;}
+  .pill.mid{background:rgba(255,149,0,.16);color:#a55c00;}
+  .pill.lo{background:rgba(255,45,85,.14);color:#b8163d;}
+  .pill.danger{background:rgba(255,59,48,.16);color:#a30010;}
+  .pill-row{display:flex;gap:10px;flex-wrap:wrap;}
+  .info-pill{display:inline-flex;padding:10px 22px;border-radius:999px;font-size:clamp(20px,1.4vw,26px);font-weight:600;background:rgba(10,132,255,0.10);color:var(--blue);}
+  .slide.dark .info-pill{background:rgba(168,216,255,0.18);color:#a8d8ff;}
+
+  .key-findings{display:flex;flex-direction:column;gap:clamp(12px,1.1vw,20px);}
+  .kf{display:flex;align-items:flex-start;gap:20px;font-size:clamp(24px,1.85vw,34px);line-height:1.42;color:var(--ink);}
+  .slide.dark .kf, .slide.blue .kf, .slide.pink .kf, .slide.red .kf, .slide.amber .kf, .slide.green .kf, .slide.purple .kf{color:#fff;}
+  .kf-bullet{
+    flex-shrink:0;
+    width:clamp(34px,2.4vw,44px); height:clamp(34px,2.4vw,44px);
+    border-radius:50%;
+    background:linear-gradient(135deg, var(--blue), var(--purple));
+    color:#fff; display:flex; align-items:center; justify-content:center;
+    font-size:clamp(15px,1.1vw,19px); font-weight:700; margin-top:3px;
+  }
+  .kf-bullet.red{background:linear-gradient(135deg, var(--red), var(--pink));}
+  .kf-bullet.green{background:linear-gradient(135deg, var(--green), var(--teal));}
+  .kf-bullet.amber{background:linear-gradient(135deg, var(--orange), var(--pink));}
+
+  table.cmp{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
+  .cmp th, .cmp td{padding:clamp(14px,1.1vw,22px) clamp(16px,1.3vw,24px);text-align:left;font-size:clamp(20px,1.5vw,26px);border-bottom:1px solid var(--line);line-height:1.4;}
+  .cmp th{background:#f5f5f7;font-weight:600;color:var(--ink);font-size:clamp(19px,1.35vw,24px);}
+  .cmp tr:last-child td{border-bottom:none;}
+
+  .illus{
+    background:#fff; border-radius:var(--radius);
+    padding: clamp(20px,1.7vw,30px);
+    box-shadow:var(--shadow); border:1px solid rgba(0,0,0,0.04);
+    text-align:center;
+  }
+  .illus svg{max-width:100%;height:auto;display:block;margin:0 auto;}
+  .illus-caption{font-size:clamp(18px,1.3vw,24px);color:var(--ink-soft);margin-top:14px;line-height:1.5;}
+
+  .src-chip{display:inline-block;padding:8px 16px;border-radius:999px;background:rgba(10,132,255,0.08);color:var(--blue);font-size:clamp(16px,1.1vw,20px);font-weight:500;}
+  .slide.dark .src-chip, .slide.blue .src-chip, .slide.pink .src-chip, .slide.red .src-chip, .slide.amber .src-chip, .slide.green .src-chip, .slide.purple .src-chip{background:rgba(255,255,255,0.18);color:#fff;}
+
+  .author-badge{display:inline-block;padding:8px 18px;border-radius:999px;background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;font-size:clamp(16px,1.1vw,20px);font-weight:600;letter-spacing:0.02em;}
+
+  .progress{position:fixed;top:0;left:0;right:0;height:2px;background:rgba(0,0,0,0.04);z-index:60;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--purple),var(--pink));width:0%;transition:width .4s cubic-bezier(.2,.7,.2,1);opacity:0.55;}
+
+  /* Placeholder for photos */
+  .photo-placeholder{
+    background:linear-gradient(135deg,#eef1f7,#e0e6f0);
+    border:2px dashed #a0a8b8;
+    border-radius:var(--radius);
+    display:flex;align-items:center;justify-content:center;
+    min-height:clamp(220px,32vh,420px);
+    color:#6b7280;font-size:clamp(18px,1.3vw,24px);font-weight:500;
+    text-align:center;padding:24px;
+  }
+  .photo-placeholder small{display:block;margin-top:6px;font-size:clamp(14px,1vw,18px);color:#8a94a3;font-weight:400;}
+
+  /* Tooltip terms */
+  .term{
+    border-bottom:1.5px dotted var(--blue); cursor:help; position:relative;
+    font-weight:600; color:var(--blue);
+  }
+  .term .tip{
+    position:absolute; bottom:calc(100% + 12px); left:50%;
+    transform:translateX(-50%) translateY(6px);
+    background:rgba(20,20,22,0.96); color:#fff;
+    padding:14px 18px; border-radius:14px;
+    font-size:16px; font-weight:400; line-height:1.5;
+    white-space:normal; width:340px; max-width:80vw;
+    text-align:left; letter-spacing:0;
+    opacity:0; pointer-events:none;
+    transition: opacity .18s ease, transform .18s ease;
+    z-index:100;
+    box-shadow:0 10px 30px rgba(0,0,0,0.25);
+  }
+  .term .tip::before{
+    content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%);
+    border:7px solid transparent; border-top-color: rgba(20,20,22,0.96);
+  }
+  .term .tip b{color:#a8d8ff;}
+  .term:hover .tip, .term:focus .tip{opacity:1; transform:translateX(-50%) translateY(0);}
+  .slide.dark .term, .slide.blue .term, .slide.pink .term, .slide.red .term, .slide.amber .term, .slide.green .term, .slide.purple .term{
+    color:#a8d8ff; border-bottom-color:#a8d8ff;
+  }
+  .card h3 .term, .card li .term, .card p .term{color:inherit;border-bottom-color:rgba(10,132,255,0.45);}
+  .slide.dark .card h3 .term, .slide.dark .card li .term, .slide.dark .card p .term,
+  .slide.blue .card h3 .term, .slide.blue .card li .term, .slide.blue .card p .term,
+  .slide.pink .card h3 .term, .slide.pink .card li .term, .slide.pink .card p .term,
+  .slide.red .card h3 .term, .slide.red .card li .term, .slide.red .card p .term,
+  .slide.amber .card h3 .term, .slide.amber .card li .term, .slide.amber .card p .term,
+  .slide.green .card h3 .term, .slide.green .card li .term, .slide.green .card p .term,
+  .slide.purple .card h3 .term, .slide.purple .card li .term, .slide.purple .card p .term{
+    color:inherit;border-bottom-color:rgba(168,216,255,0.65);
+  }
+
+  @keyframes magicalFadeIn{
+    0%{opacity:0;transform:translateY(24px);filter:blur(3px);}
+    60%{filter:blur(0);}
+    100%{opacity:1;transform:translateY(0);filter:blur(0);}
+  }
+  .slide.active .stat-card, .slide.active .card, .slide.active .illus,
+  .slide.active blockquote.q, .slide.active table.cmp{
+    animation: magicalFadeIn .8s cubic-bezier(.2,.7,.2,1) backwards;
+  }
+  .slide.active .grid-2 > *:nth-child(1), .slide.active .grid-3 > *:nth-child(1), .slide.active .grid-4 > *:nth-child(1){animation-delay:.12s;}
+  .slide.active .grid-2 > *:nth-child(2), .slide.active .grid-3 > *:nth-child(2), .slide.active .grid-4 > *:nth-child(2){animation-delay:.26s;}
+  .slide.active .grid-3 > *:nth-child(3), .slide.active .grid-4 > *:nth-child(3){animation-delay:.40s;}
+  .slide.active .grid-4 > *:nth-child(4){animation-delay:.54s;}
+  .slide.active .key-findings .kf:nth-child(1){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .12s;}
+  .slide.active .key-findings .kf:nth-child(2){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .24s;}
+  .slide.active .key-findings .kf:nth-child(3){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .36s;}
+  .slide.active .key-findings .kf:nth-child(4){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .48s;}
+  .slide.active .key-findings .kf:nth-child(5){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .60s;}
+  .slide.active .key-findings .kf:nth-child(6){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .72s;}
+
+  .slide::-webkit-scrollbar{width:0;}
+</style>
+</head>
+<body>
+
+<div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="deck" id="deck">
+
+<!-- 01. COVER -->
+<section class="slide dark active">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">LaserConf 2026 · доклад</div>
+    <h1 class="hero">Патентный метод<br>удаления<br>татуировок</h1>
+    <div style="font-size:clamp(32px,3vw,56px);font-weight:700;color:#a8d8ff;letter-spacing:-0.02em;margin-top:6px;">«Метод Микрюкова»</div>
+    <p class="lead big" style="margin:0 auto;text-align:center;">
+      Возгонка углерода вместо раздробления пигмента.<br>
+      Как побочный эксперимент стал патентом <b>RU 2 692 936 C1</b>.
+    </p>
+    <div class="pill-row" style="margin-top:22px;justify-content:center;">
+      <span class="info-pill">© В. Микрюков, к.м.н.</span>
+      <span class="info-pill">18+ лет с лазерами</span>
+      <span class="info-pill">Патент 2019</span>
+    </div>
+  </div>
+</section>
+
+<!-- 02. ГЛАВНЫЙ ТЕЗИС -->
+<section class="slide pink">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Главный тезис доклада</div>
+    <blockquote class="q" style="border-left:none;text-align:center;font-size:clamp(34px,4vw,56px);max-width:1500px;line-height:1.28;">
+      Не раздробление пигмента.<br>
+      <b>Возгонка углерода.</b><br><br>
+      И — <b>обработка не всей площади сразу</b>,<br>а в два этапа с промежутками.
+      <span class="src" style="margin-top:26px;">© В. Микрюков, Патент RU 2 692 936 C1 · 2019</span>
+    </blockquote>
+  </div>
+</section>
+
+<!-- 03. AGENDA -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Что вы увидите за 30 минут</div>
+    <h2 class="section">Как построен<br>этот доклад</h2>
+    <div class="grid-3">
+      <div class="card" style="border-top:5px solid var(--blue);"><h3>I · История</h3><p>Как я набил себе тату для эксперимента — и вместо пузырей получил чистые «пятачки».</p></div>
+      <div class="card" style="border-top:5px solid var(--purple);"><h3>II · Физика</h3><p>Открытие: Carbon Black возгоняется в CO₂ при пороге плотности энергии.</p></div>
+      <div class="card" style="border-top:5px solid var(--orange);"><h3>III · Патент</h3><p>Параметры и алгоритм метода. Шахматная сетка. Два этапа.</p></div>
+      <div class="card" style="border-top:5px solid var(--green);"><h3>IV · Преимущества</h3><p>5 причин, почему это работает лучше сплошной обработки.</p></div>
+      <div class="card" style="border-top:5px solid var(--pink);"><h3>V · Результаты</h3><p>Свежие клинические кейсы из практики.</p></div>
+      <div class="card" style="border-top:5px solid var(--red);"><h3>VI · Что обновилось</h3><p>Что я изменил в протоколе с 2019 года и почему.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 04. SECTION I — ИСТОРИЯ -->
+<section class="slide dark">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть I</div>
+    <div class="section-num">01</div>
+    <h1 class="title">Как это началось</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">
+      История эксперимента, который<br>пошёл совсем не по плану.
+    </p>
+  </div>
+</section>
+
+<!-- 05. КОНТЕКСТ 2017-2018 -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Контекст 2017–2018</div>
+    <h2 class="section">Что я <span style="color:var(--blue)">не понимал</span><br>про плотность энергии</h2>
+    <p class="lead">К 2017 году я уже 9 лет работал с <span class="term">Nd:YAG<span class="tip"><b>Neodymium-doped Yttrium Aluminum Garnet</b> — лазерная среда на основе неодима. Длины волн 1064 нм и 532 нм.</span></span> <span class="term">Q-switch<span class="tip"><b>Q-switched</b> — режим модуляции добротности. Наносекундный импульс с высокой пиковой мощностью.</span></span> лазерами. Стандартная методика — сплошная обработка с перекрытием 15–30% — давала стабильный результат, но <b>без «вау»-эффекта</b>.</p>
+    <div class="card" style="border-left:5px solid var(--orange);">
+      <p style="font-size:clamp(22px,1.7vw,30px);">Меня беспокоило одно: <b>границы безопасности</b>. Где начинаются ожоги? Какова верхняя граница плотности энергии, при которой мы разрушаем пигмент, но не травмируем ткани?</p>
+    </div>
+  </div>
+</section>
+
+<!-- 06. Я НАБИЛ СЕБЕ ТАТУ -->
+<section class="slide amber">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Личный эксперимент</div>
+    <blockquote class="q" style="border-left:none;text-align:center;font-size:clamp(32px,3.6vw,52px);max-width:1500px;line-height:1.32;">
+      В 2018 году я набил себе тату <b>специально</b> —<br>чтобы её удалять.<br><br>
+      <b>Цель эксперимента:</b> найти пороги, где мы получаем <b>пузыри и осложнения</b>.
+      <span class="src" style="margin-top:22px;">Из личного разбора для клуба ЛазерПРО</span>
+    </blockquote>
+  </div>
+</section>
+
+<!-- 07. НО СЛУЧИЛОСЬ ДРУГОЕ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Ожидание vs реальность</div>
+    <h2 class="section">Я искал <span style="color:var(--red)">пузыри</span>.<br>А получил <span style="color:var(--green)">чистую кожу</span>.</h2>
+    <div class="grid-2">
+      <div class="card" style="border-left:5px solid var(--red);">
+        <h3>Что должно было быть</h3>
+        <ul>
+          <li>Пузыри при 5+ Дж/см²</li>
+          <li>Ожоги в центре пятна</li>
+          <li>Точки перегрева тканей</li>
+          <li>Ясная граница «безопасно / опасно»</li>
+        </ul>
+      </div>
+      <div class="card" style="border-left:5px solid var(--green);">
+        <h3>Что произошло</h3>
+        <ul>
+          <li><b>Чистые «пятачки» кожи</b> сразу после вспышки</li>
+          <li>Пигмент исчез в моменте, а не через месяцы</li>
+          <li>Ни пузырей, ни ожогов</li>
+          <li>Восстановление быстрее обычного</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card" style="border-left:5px solid var(--orange);"><p style="font-size:clamp(22px,1.7vw,30px);"><b>Я три дня не спал</b> — ломал голову, куда делся пигмент. По классической модели макрофаги должны прийти через 2–3 месяца. А тут — <b>чистая кожа в моменте</b>.</p></div>
+  </div>
+</section>
+
+<!-- 08. НАЙДЕННОЕ ОБЪЯСНЕНИЕ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Что я нашёл в литературе</div>
+    <h2 class="section">Ответ был<br>в <span style="color:var(--purple)">химии углерода</span></h2>
+    <p class="lead">Я перерыл источники по фотофизике лазеров и наткнулся на описание процесса, который объясняет то, что я видел собственными глазами:</p>
+    <div class="card" style="border-left:5px solid var(--purple);">
+      <p style="font-size:clamp(24px,1.85vw,32px);"><b>Пароуглеродная реакция</b> — при достаточной пиковой мощности твёрдые частицы углерода <b>возгоняются</b> напрямую в газ, минуя жидкую фазу. Carbon Black → CO₂ за наносекунды.</p>
+    </div>
+    <p class="lead">Дальше — с супругой Ольгой и косметологом Натальей мы <b>оформили метод как патент</b>. Приоритет — 21 августа 2018 года.</p>
+  </div>
+</section>
+
+<!-- 09. SECTION II — ФИЗИКА -->
+<section class="slide dark">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть II</div>
+    <div class="section-num">02</div>
+    <h1 class="title">Физика открытия</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">
+      Почему при высокой плотности энергии<br>Carbon Black переходит в газ.
+    </p>
+  </div>
+</section>
+
+<!-- 10. КЛАССИКА Nd:YAG -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Что все знают</div>
+    <h2 class="section">Nd:YAG Q-switch —<br>«рабочая лошадка»</h2>
+    <div class="grid-3">
+      <div class="stat-card"><div class="stat-num">1064&nbsp;нм</div><div class="stat-label">длина волны · твёрдотельный неодимовый лазер</div></div>
+      <div class="stat-card amber"><div class="stat-num">3–5&nbsp;нс</div><div class="stat-label">ультракороткий импульс благодаря <span class="term">Q-switch<span class="tip"><b>Q-switched (1992)</b> — модулятор добротности, генерирующий ультракороткие импульсы длительностью 3–5 нс.</span></span></div></div>
+      <div class="stat-card green"><div class="stat-num">Гига-<br>ватты</div><div class="stat-label-big">пиковая мощность за счёт короткого импульса</div></div>
+    </div>
+    <p class="lead" style="margin-top:8px;">Если 1 наносекунду принять за 1 секунду — тогда <b>1 обычная секунда превратится в 32 года</b>. Вот насколько короткий этот импульс.</p>
+  </div>
+</section>
+
+<!-- 11. СЕЛЕКТИВНЫЙ ФОТОТЕРМОЛИЗ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Первый принцип · 1983</div>
+    <h2 class="section">Селективный <span style="color:var(--blue)">фототермолиз</span></h2>
+    <p class="lead">Anderson & Parrish, <b>Science 1983</b>. Концепция, на которой построена вся современная эстетическая лазерная медицина.</p>
+    <div class="card" style="border-left:5px solid var(--blue);">
+      <p style="font-size:clamp(22px,1.7vw,30px);">Эффект действия лазера будет только на те <b>хромофоры</b>, которые поглощают конкретную длину волны. Для каждого хромофора (гранулы пигмента, эритроциты, фолликулы) существует своя оптимальная волна.</p>
+    </div>
+    <p class="lead">Nd:YAG 1064 нм идеально поглощается тёмными пигментами и <b>частицами Carbon Black</b> — основой большинства тату-красок.</p>
+  </div>
+</section>
+
+<!-- 12. ВТОРОЙ ПРИНЦИП — TRT -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Второй принцип · 1990-е</div>
+    <h2 class="section">Время термической<br><span style="color:var(--orange)">релаксации (TRT)</span></h2>
+    <div class="card" style="border-left:5px solid var(--orange);"><p><b><span class="term">TRT<span class="tip"><b>Thermal Relaxation Time</b> — время, за которое частица отдаёт половину поглощённой энергии окружающим тканям.</span></span></b> — время, за которое частица отдаёт половину поглощённой энергии в виде тепла окружающим тканям. TRT пропорционально квадрату размера частицы.</p></div>
+    <div class="grid-2">
+      <div class="card"><h3>Если импульс длиннее TRT</h3><p>Частица успевает <b>отдать тепло тканям</b> — перегрев кожи, ожог, а пигмент не достигает температуры разрушения.</p></div>
+      <div class="card" style="border-top:5px solid var(--green);"><h3>Если импульс короче TRT</h3><p>Вся энергия остаётся <b>внутри частицы пигмента</b> — она достигает нескольких тысяч градусов за наносекунды.</p></div>
+    </div>
+    <p class="lead">Именно поэтому <b>наносекундные лазеры</b> (Q-switch) — необходимое условие для безопасного удаления пигмента.</p>
+  </div>
+</section>
+
+<!-- 13. КЛЕТОЧНЫЙ УРОВЕНЬ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Что происходит в моменте вспышки</div>
+    <h2 class="section">Клеточный уровень —<br>ударная <span style="color:var(--red)">волна</span></h2>
+    <div class="key-findings">
+      <div class="kf"><div class="kf-bullet">1</div><div>Гранула пигмента поглощает импульс за <b>3–5 нс</b></div></div>
+      <div class="kf"><div class="kf-bullet">2</div><div>Температура гранулы взлетает до <b>нескольких тысяч градусов</b></div></div>
+      <div class="kf"><div class="kf-bullet red">3</div><div>Формируется <b>ударная взрывная волна</b> — фотоакустический эффект</div></div>
+      <div class="kf"><div class="kf-bullet red">4</div><div><b>Разрыв мембран</b> клеток, содержащих пигмент</div></div>
+      <div class="kf"><div class="kf-bullet amber">5</div><div>Межклеточная жидкость <b>вскипает в пар</b> → интрацитоплазматические вакуоли</div></div>
+      <div class="kf"><div class="kf-bullet green">6</div><div>Побеление кожи — <b>«фрост»</b> — газо-коллагеновый щит</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 14. КЛЮЧЕВОЕ ОТКРЫТИЕ -->
+<section class="slide purple">
+  <div class="slide-inner" style="align-items:center;">
+    <div class="eyebrow">Ключ ко всему методу</div>
+    <blockquote class="q" style="border-left:none;text-align:center;font-size:clamp(28px,3.2vw,46px);max-width:1500px;line-height:1.28;margin:0 auto;">
+      При достаточной <b>энергии импульса</b><br>и <b>пиковой мощности</b><br>
+      твёрдый углерод переходит<br>напрямую в <b>газ CO₂</b>, минуя жидкую фазу.
+      <span class="src" style="margin-top:18px;">Пароуглеродная реакция · возгонка Carbon Black</span>
+    </blockquote>
+
+    <div style="margin-top:clamp(14px,1.6vw,26px);width:100%;max-width:1600px;">
+      <div class="eyebrow" style="text-align:center;margin-bottom:14px;color:rgba(255,255,255,0.85);">Что подтверждает литература на PubMed</div>
+      <div class="grid-2">
+        <div class="card"><h3>Ferguson 1997</h3><p><i>Br J Dermatol 137(3):405–10</i></p><p style="margin-top:8px;">Гистология 35 тату после Nd:YAG: полное исчезновение частиц с вакуолизацией. Гипотеза о переходе пигмента в <b>«атомарные виды и газообразные продукты»</b>.</p><p style="margin-top:8px;"><span class="src-chip">PMID 9349338</span></p></div>
+        <div class="card"><h3>Engel 2010</h3><p><i>Exp Dermatol 19(1):54–60</i></p><p style="margin-top:8px;">In vivo (мышь): лазер сокращает <b>массу пигмента на ≈51%</b>. Прямое количественное подтверждение — пигмент не только рассеивается, а <b>исчезает</b>.</p><p style="margin-top:8px;"><span class="src-chip">PMID 19703227</span></p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 15. ПОРОГ ПАРОУГЛЕРОДНОЙ РЕАКЦИИ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Условие реакции</div>
+    <h2 class="section">Три ключевых<br>параметра</h2>
+    <p class="lead">Возгонка Carbon Black — не про «джоули вообще». Это <b>комбинация трёх взаимосвязанных величин</b>, каждая из которых должна перейти свой порог одновременно.</p>
+    <div class="grid-3">
+      <div class="stat-card amber">
+        <div class="stat-num">Дж/см²</div>
+        <div class="stat-label-big">Плотность энергии</div>
+        <div class="stat-label">Энергия импульса, приходящаяся на площадь пятна. В патенте — <b>5,5 Дж/см²</b>.</div>
+      </div>
+      <div class="stat-card red">
+        <div class="stat-num">ГВт</div>
+        <div class="stat-label-big">Пиковая мощность</div>
+        <div class="stat-label">Энергия, поделённая на длительность импульса. Q-switch 3–5 нс даёт <b>гигаватты</b> в моменте.</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-num">мДж</div>
+        <div class="stat-label-big">Достаточная энергия импульса</div>
+        <div class="stat-label">Абсолютная энергия, которую лазер выдаёт за одну вспышку. На 5 мм пятне при 5,5 Дж/см² — это <b>~1080 мДж</b>.</div>
+      </div>
+    </div>
+    <div class="card" style="border-left:5px solid var(--red);"><p><b>Ниже порога — пароуглеродной реакции не будет.</b> Если хоть один из трёх параметров не дотягивает — пигмент дробится на фрагменты (стандартный эффект), но не возгоняется.</p></div>
+  </div>
+</section>
+
+<!-- 16. SECTION III — ПАТЕНТ -->
+<section class="slide dark">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть III</div>
+    <div class="section-num">03</div>
+    <h1 class="title">Патентный метод</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">
+      RU 2 692 936 C1 · заявка от 21.08.2018<br>Регистрация 28.06.2019.
+    </p>
+  </div>
+</section>
+
+<!-- 17. ПАРАМЕТРЫ МЕТОДА -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Формула изобретения</div>
+    <h2 class="section">Параметры<br>рабочего режима</h2>
+    <table class="cmp">
+      <thead><tr><th>Параметр</th><th>Значение</th><th>Почему именно так</th></tr></thead>
+      <tbody>
+        <tr><td>Длина волны</td><td><b>1064 нм</b></td><td>Максимум поглощения тёмного пигмента и Carbon Black</td></tr>
+        <tr><td>Режим</td><td><b>Q-switch</b>, наносекундный</td><td>Импульс короче TRT — вся энергия остаётся в частице</td></tr>
+        <tr><td>Плотность энергии</td><td><b>5,5 Дж/см²</b></td><td>Порог пароуглеродной реакции для Carbon Black</td></tr>
+        <tr><td>Диаметр пятна</td><td><b>4–5 мм</b></td><td>Достаточная концентрация мощности в центре пятна</td></tr>
+        <tr><td>Частота</td><td><b>1 Гц</b></td><td>Точный контроль каждой отдельной вспышки</td></tr>
+        <tr><td>Порядок</td><td><b>Шахматный</b></td><td>Промежутки между пятнами = радиус пятна</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 18a. ШАХМАТНЫЙ ПОРЯДОК — 50/50 в 2 прохода -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Вариант A · стандартная схема</div>
+    <h2 class="section">50/50%<br>в <span style="color:var(--orange)">2 прохода</span></h2>
+    <div class="grid-2" style="align-items:center;">
+      <div>
+        <div class="card" style="border-left:5px solid var(--orange);"><p style="font-size:clamp(22px,1.7vw,30px);">Классическая схема патента. Пятна первого прохода занимают <b>«светлые» клетки</b> шахматной доски, второго прохода — <b>«тёмные»</b>. Каждое пятно касается соседей — покрытие ≈ 100% за два захода.</p></div>
+        <ul style="margin-top:14px;font-size:clamp(20px,1.5vw,26px);line-height:1.55;color:var(--ink-soft);padding-left:22px;">
+          <li>Первый этап: <b>50% площади</b></li>
+          <li>Интервал <b>10–14 дней</b> (в патенте 48 часов)</li>
+          <li>Второй этап: <b>оставшиеся 50%</b> — в точки между пятнами первого этапа</li>
+          <li>Показания: <b>тонкая, средней плотности</b> работа; здоровая кожа</li>
+        </ul>
+      </div>
+      <div class="illus">
+        <svg viewBox="0 0 260 210" xmlns="http://www.w3.org/2000/svg">
+          <!-- 5 x 4 grid, checkerboard 2-color -->
+          <g stroke-width="1.5">
+            <!-- Row 0: O B O B O -->
+            <circle cx="25" cy="25" r="24" fill="#ff9500" stroke="#a55c00"/>
+            <circle cx="75" cy="25" r="24" fill="#0a84ff" stroke="#003d8a"/>
+            <circle cx="125" cy="25" r="24" fill="#ff9500" stroke="#a55c00"/>
+            <circle cx="175" cy="25" r="24" fill="#0a84ff" stroke="#003d8a"/>
+            <circle cx="225" cy="25" r="24" fill="#ff9500" stroke="#a55c00"/>
+            <!-- Row 1: B O B O B -->
+            <circle cx="25" cy="75" r="24" fill="#0a84ff" stroke="#003d8a"/>
+            <circle cx="75" cy="75" r="24" fill="#ff9500" stroke="#a55c00"/>
+            <circle cx="125" cy="75" r="24" fill="#0a84ff" stroke="#003d8a"/>
+            <circle cx="175" cy="75" r="24" fill="#ff9500" stroke="#a55c00"/>
+            <circle cx="225" cy="75" r="24" fill="#0a84ff" stroke="#003d8a"/>
+            <!-- Row 2: O B O B O -->
+            <circle cx="25" cy="125" r="24" fill="#ff9500" stroke="#a55c00"/>
+            <circle cx="75" cy="125" r="24" fill="#0a84ff" stroke="#003d8a"/>
+            <circle cx="125" cy="125" r="24" fill="#ff9500" stroke="#a55c00"/>
+            <circle cx="175" cy="125" r="24" fill="#0a84ff" stroke="#003d8a"/>
+            <circle cx="225" cy="125" r="24" fill="#ff9500" stroke="#a55c00"/>
+            <!-- Row 3: B O B O B -->
+            <circle cx="25" cy="175" r="24" fill="#0a84ff" stroke="#003d8a"/>
+            <circle cx="75" cy="175" r="24" fill="#ff9500" stroke="#a55c00"/>
+            <circle cx="125" cy="175" r="24" fill="#0a84ff" stroke="#003d8a"/>
+            <circle cx="175" cy="175" r="24" fill="#ff9500" stroke="#a55c00"/>
+            <circle cx="225" cy="175" r="24" fill="#0a84ff" stroke="#003d8a"/>
+          </g>
+        </svg>
+        <div class="illus-caption"><span style="color:#a55c00;font-weight:700;">■ Оранжевый</span> — этап 1. <span style="color:#003d8a;font-weight:700;">■ Синий</span> — этап 2. Каждый квадратный миллиметр кожи проходит <b>только одну вспышку за цикл</b>.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 18b. ШАХМАТНЫЙ ПОРЯДОК — 33/33/33 в 3 прохода -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Вариант B · щадящая схема</div>
+    <h2 class="section">33/33/33%<br>в <span style="color:var(--purple)">3 прохода</span></h2>
+    <div class="grid-2" style="align-items:center;">
+      <div>
+        <div class="card" style="border-left:5px solid var(--purple);"><p style="font-size:clamp(22px,1.7vw,30px);">Обновление к патенту. При <b>плотном пигменте, старых работах или рискованных зонах</b> уменьшаем нагрузку — за каждый заход обрабатываем только <b>треть</b> точек. Три группы, три захода, полное покрытие.</p></div>
+        <ul style="margin-top:14px;font-size:clamp(20px,1.5vw,26px);line-height:1.55;color:var(--ink-soft);padding-left:22px;">
+          <li>Первый этап: <b>33% площади</b> (группа A)</li>
+          <li>Второй этап через 10–14 дней: <b>ещё 33%</b> (группа B)</li>
+          <li>Третий этап ещё через 10–14 дней: <b>последние 33%</b> (группа C)</li>
+          <li>Показания: <b>плотный старый пигмент</b>, кустарные красители, предплечье, шея</li>
+        </ul>
+      </div>
+      <div class="illus">
+        <svg viewBox="0 0 310 160" xmlns="http://www.w3.org/2000/svg">
+          <!-- 6 x 3 grid, 3-color rotation by (row+col)%3 -->
+          <g stroke-width="1.5">
+            <!-- Row 0: A B C A B C -->
+            <circle cx="25" cy="25" r="24" fill="#ff9500" stroke="#a55c00"/>
+            <circle cx="75" cy="25" r="24" fill="#0a84ff" stroke="#003d8a"/>
+            <circle cx="125" cy="25" r="24" fill="#30a14e" stroke="#1f7a39"/>
+            <circle cx="175" cy="25" r="24" fill="#ff9500" stroke="#a55c00"/>
+            <circle cx="225" cy="25" r="24" fill="#0a84ff" stroke="#003d8a"/>
+            <circle cx="275" cy="25" r="24" fill="#30a14e" stroke="#1f7a39"/>
+            <!-- Row 1: B C A B C A -->
+            <circle cx="25" cy="75" r="24" fill="#0a84ff" stroke="#003d8a"/>
+            <circle cx="75" cy="75" r="24" fill="#30a14e" stroke="#1f7a39"/>
+            <circle cx="125" cy="75" r="24" fill="#ff9500" stroke="#a55c00"/>
+            <circle cx="175" cy="75" r="24" fill="#0a84ff" stroke="#003d8a"/>
+            <circle cx="225" cy="75" r="24" fill="#30a14e" stroke="#1f7a39"/>
+            <circle cx="275" cy="75" r="24" fill="#ff9500" stroke="#a55c00"/>
+            <!-- Row 2: C A B C A B -->
+            <circle cx="25" cy="125" r="24" fill="#30a14e" stroke="#1f7a39"/>
+            <circle cx="75" cy="125" r="24" fill="#ff9500" stroke="#a55c00"/>
+            <circle cx="125" cy="125" r="24" fill="#0a84ff" stroke="#003d8a"/>
+            <circle cx="175" cy="125" r="24" fill="#30a14e" stroke="#1f7a39"/>
+            <circle cx="225" cy="125" r="24" fill="#ff9500" stroke="#a55c00"/>
+            <circle cx="275" cy="125" r="24" fill="#0a84ff" stroke="#003d8a"/>
+          </g>
+        </svg>
+        <div class="illus-caption"><span style="color:#a55c00;font-weight:700;">■ A</span> — этап 1. <span style="color:#003d8a;font-weight:700;">■ B</span> — этап 2. <span style="color:#1f7a39;font-weight:700;">■ C</span> — этап 3. У каждого пятна <b>ни один сосед не той же группы</b>.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 19. ЭТАП 1 -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Этап 1 · день 0</div>
+    <h2 class="section">Обработка <span style="color:var(--orange)">«пятачков»</span><br>с отступами</h2>
+    <div class="grid-2">
+      <div class="card"><h3>Что делаем</h3><ul>
+        <li>Пятно 4–5 мм, плотность <b>5,5 Дж/см²</b>, частота 1 Гц</li>
+        <li>Расстояние между центрами вспышек = <b>диаметру пятна</b></li>
+        <li>Обрабатываем <b>~50% площади</b> тату</li>
+        <li>Криоохлаждение Zimmer Crio 6, воздух −20 °C, 1000 л/мин</li>
+      </ul></div>
+      <div class="card" style="border-top:5px solid var(--green);"><h3>Что видим в моменте</h3><ul>
+        <li>Побеление кожи — <b>«фрост»</b> — на каждом пятачке</li>
+        <li>Прямо во время вспышки — <b>пигмент исчезает</b></li>
+        <li>Кожа между пятнами — <b>интактная</b>, без нагрузки</li>
+        <li>Мгновенная реакция вакуолизации — газо-коллагеновый щит</li>
+      </ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- 20. ПАУЗА -->
+<section class="slide amber">
+  <div class="slide-inner">
+    <div class="eyebrow">Между этапами</div>
+    <h2 class="section">Что происходит<br>в <span style="color:#fff;text-decoration:underline;">интервал</span></h2>
+    <div class="grid-2">
+      <div class="card"><h3>По патенту 2019</h3><p><b>48 часов</b> — минимальный интервал. Тогда я был молод и хотел показать быструю схему.</p></div>
+      <div class="card"><h3>Обновление 2024–2026</h3><p><b>10–14 дней</b> — сегодня я даю ткани стихнуть от воспаления. За 48 часов не всё успевает.</p></div>
+    </div>
+    <p class="lead" style="margin-top:6px;">В интервале обработанные «пятачки» проходят цикл восстановления: макрофаги начинают выводить остатки фрагментов, воспалительный ответ угасает, кожа готова к следующему воздействию — уже <b>в пропущенные точки</b>.</p>
+  </div>
+</section>
+
+<!-- 21. ЭТАП 2 -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Этап 2 · через 10–14 дней</div>
+    <h2 class="section">Приходим в <span style="color:var(--purple)">пустоты</span></h2>
+    <div class="grid-2">
+      <div class="illus" style="display:flex;flex-direction:column;justify-content:flex-start;padding:clamp(12px,1vw,18px);">
+        <img src="case_7-1.JPG" alt="Через 2 недели после первого сеанса: пятачки без пигмента, между ними пигмент сохранён"
+             style="width:100%;height:auto;max-height:62vh;object-fit:contain;display:block;border-radius:clamp(12px,1vw,18px);">
+        <div class="illus-caption" style="margin-top:10px;"><b style="color:#a55c00;">Через 2 недели после первого сеанса.</b></div>
+      </div>
+      <div class="illus" style="display:flex;flex-direction:column;justify-content:flex-start;padding:clamp(12px,1vw,18px);">
+        <img src="case_7-2.JPG" alt="Этап 2: фрост ложится в промежутки между пятачками первого этапа"
+             style="width:100%;height:auto;max-height:62vh;object-fit:contain;display:block;border-radius:clamp(12px,1vw,18px);">
+        <div class="illus-caption" style="margin-top:10px;"><b style="color:#5e5ce6;">Обработка остаточных промежутков.</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 22. КРИООХЛАЖДЕНИЕ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Обязательный компонент</div>
+    <h2 class="section">Криоохлаждение —<br>не опция</h2>
+    <div class="grid-3">
+      <div class="stat-card"><div class="stat-num">−20&nbsp;°C</div><div class="stat-label">температура воздушного потока Zimmer Crio 6</div></div>
+      <div class="stat-card amber"><div class="stat-num">1000&nbsp;<span style="font-size:0.5em">л/мин</span></div><div class="stat-label">объёмный поток охлаждения</div></div>
+      <div class="stat-card green"><div class="stat-num">0</div><div class="stat-label-big">случаев ожогов при правильном охлаждении в моей серии</div></div>
+    </div>
+    <p class="lead">Криоохлаждение до и во время воздействия <b>сбрасывает побочное тепло</b>, распространяющееся от точки вспышки. Без охлаждения работать на плотности 5,5 Дж/см² <b>небезопасно</b>.</p>
+    <div class="card" style="border-left:5px solid var(--red);"><p><b>Клинический пример:</b> одна пациентка нарушила режим охлаждения на предплечье — получила один маленький пузырёк. Всё остальное поле — без осложнений.</p></div>
+  </div>
+</section>
+
+<!-- 23. ПОЛНЫЙ ЦИКЛ -->
+<section class="slide blue">
+  <div class="slide-inner">
+    <div class="eyebrow">Полный цикл лечения</div>
+    <h2 class="section">Как это выглядит<br>по календарю</h2>
+    <div class="key-findings">
+      <div class="kf"><div class="kf-bullet">1</div><div><b>День 0</b> — этап 1, обработка ~50% площади в шахматном порядке</div></div>
+      <div class="kf"><div class="kf-bullet">2</div><div><b>День 10–14</b> — этап 2, обработка оставшихся пустот</div></div>
+      <div class="kf"><div class="kf-bullet amber">3</div><div><b>2–3 месяца</b> перерыв — макрофаги выводят фрагменты, кожа полностью восстанавливается</div></div>
+      <div class="kf"><div class="kf-bullet">4</div><div><b>Новый цикл</b> — этап 1 → 10–14 дней → этап 2 → снова 2–3 месяца</div></div>
+      <div class="kf"><div class="kf-bullet green">5</div><div>Обычно <b>2–4 полных цикла</b> для полного удаления Carbon-Black тату</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 24. СОАВТОРЫ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Кто оформлял патент</div>
+    <h2 class="section">Соавторы<br>изобретения</h2>
+    <div class="grid-3">
+      <div class="card" style="border-top:5px solid var(--blue);"><h3>Микрюков В.А.</h3><p>к.м.н., врач-хирург · клинические наблюдения, физическая интерпретация, оформление метода. <b>Патентообладатель.</b></p></div>
+      <div class="card" style="border-top:5px solid var(--pink);"><h3>Микрюкова О.В.</h3><p>Супруга и соавтор. Совместный анализ клинических случаев в 2018.</p></div>
+      <div class="card" style="border-top:5px solid var(--purple);"><h3>Кононенко Н.С.</h3><p>Практикующий косметолог. Верификация метода на серии пациентов клиники.</p></div>
+    </div>
+    <div class="card" style="border-left:5px solid var(--blue);"><p><b>Адрес патентообладателя:</b> Ростов-на-Дону, ул. Красноармейская, 224/92, медицинский центр. Приоритет — 21.08.2018. Регистрация — 28.06.2019, бюллетень № 19.</p></div>
+  </div>
+</section>
+
+<!-- 25. ФОРМУЛА ИЗОБРЕТЕНИЯ -->
+<section class="slide dark">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Юридическая точка</div>
+    <blockquote class="q" style="border-left:none;text-align:center;font-size:clamp(24px,2.2vw,36px);max-width:1500px;line-height:1.42;">
+      «Способ удаления татуировок на коже, включающий фракционное воздействие на поверхность кожи <b>Nd:YAG Q-switch лазером плотностью 5,5 Дж/см²</b>, частотой 1 Гц с диаметром пятна 4–5 мм, при этом воздействие лазером проводят <b>в шахматном порядке в два этапа</b>: на первом этапе с обязательным соблюдением расстояния между областями воздействия, затем на втором этапе через 48 часов — на участки, не обработанные ранее.»
+      <span class="src" style="margin-top:20px;color:rgba(255,255,255,0.7);">RU 2 692 936 C1 · п. 57 формула изобретения</span>
+    </blockquote>
+  </div>
+</section>
+
+<!-- 26. SECTION IV — ПРЕИМУЩЕСТВА -->
+<section class="slide dark">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть IV</div>
+    <div class="section-num">04</div>
+    <h1 class="title">Почему это работает</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">
+      5 преимуществ шахматной схемы<br>перед сплошной обработкой.
+    </p>
+  </div>
+</section>
+
+<!-- 27. МЕХАНИКА -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Преимущество 1 · механика</div>
+    <h2 class="section">1–3 небольших повреждения<br>вместо <span style="color:var(--red)">всей площади</span></h2>
+    <div class="grid-2">
+      <div class="card" style="border-left:5px solid var(--red);"><h3>Сплошная обработка</h3><p>При случайной механической травме после процедуры повреждается <b>вся сплошная зона обработки</b> — одним массивом, целиком.</p></div>
+      <div class="card" style="border-left:5px solid var(--green);"><h3>Шахматная схема</h3><p>При такой же травме затрагиваются <b>1–3 небольших повреждения</b> из сотен обработанных точек. Остальная зона — интактная кожа, которая держит структуру.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 28. ЭЛАСТИЧНОСТЬ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Преимущество 2 · биомеханика</div>
+    <h2 class="section">Необработанные участки<br>держат <span style="color:var(--blue)">структуру</span></h2>
+    <div class="card" style="border-left:5px solid var(--blue);"><p style="font-size:clamp(22px,1.7vw,30px);">При обработке татуировки <b>большими сплошными площадями</b> формируется единый массив воспалённой ткани. Отёк и клеточная инфильтрация делают его <b>ригидным</b>: при движении подкожных мышц он натягивается — ощущение стягивания, ограничение подвижности.</p></div>
+    <div class="card" style="border-left:5px solid var(--green);"><p style="font-size:clamp(22px,1.7vw,30px);">При шахматной схеме между «пятачками» остаётся <b>интактная кожа с нормальным тургором</b>. Она принимает на себя механическое натяжение, поэтому воспалённые участки не растягиваются — подвижность сохраняется.</p></div>
+  </div>
+</section>
+
+<!-- 29. ВОСПАЛИТЕЛЬНАЯ НАГРУЗКА -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Преимущество 3 · воспалительная нагрузка</div>
+    <h2 class="section">Воспаление остаётся<br>в рамках <span style="color:var(--green)">компенсации</span></h2>
+    <p class="lead">Дело не в скорости закрытия раны — <b>раны здесь нет</b>. Дело в объёме воспаления: чем меньше площадь, вовлечённая единовременно, тем легче ткани <b>удерживают воспалительный ответ в пределах компенсации</b> — и тем реже он переходит в осложнение.</p>
+    <div class="grid-3">
+      <div class="stat-card green"><div class="stat-num">↓</div><div class="stat-label-big">объём ткани, вовлечённой в воспаление за один этап</div></div>
+      <div class="stat-card"><div class="stat-num">↓</div><div class="stat-label-big">риск гипертрофии рубцовой ткани</div></div>
+      <div class="stat-card amber"><div class="stat-num">↑</div><div class="stat-label-big">переносимость курса пациентом</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 30. ТЕПЛОВОЙ СБРОС -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Преимущество 4 · термодинамика</div>
+    <h2 class="section">Тепловой сброс<br>через <span style="color:var(--orange)">здоровые зоны</span></h2>
+    <div class="card" style="border-left:5px solid var(--orange);"><p style="font-size:clamp(22px,1.7vw,30px);">Выделяемое в тканях <b>побочное тепло</b>, сопровождающее разрушение пигмента, успешно распределяется по <b>необработанным участкам</b>. Плюс контактное охлаждение (криопакеты, Zimmer Crio 6) — и мы полностью избегаем ожоговых осложнений.</p></div>
+    <p class="lead">При сплошной обработке всё тепло остаётся в одной зоне и суммируется. При шахматной — сбрасывается в холодные, необработанные соседние точки.</p>
+  </div>
+</section>
+
+<!-- 31. БОЛЬШЕ ПИГМЕНТА -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Преимущество 5 · эффективность</div>
+    <h2 class="section">Больше пигмента<br>за одно <span style="color:var(--purple)">воздействие</span></h2>
+    <p class="lead">Использование <b>более высоких плотностей энергии</b>, чем в стандартной методике (5,5 Дж/см² vs типичные 3 Дж/см²), позволяет за одно локальное воздействие <b>разрушить больший объём</b> частиц пигмента.</p>
+    <div class="card" style="border-left:5px solid var(--purple);"><p><b>Ключевой момент:</b> высокая плотность работает только в паре с малым пятном (4–5 мм) и наличием необработанных зон вокруг. Иначе — ожоги. Именно шахматная схема даёт возможность безопасно использовать высокую плотность.</p></div>
+  </div>
+</section>
+
+<!-- 32. СОКРАЩЕНИЕ ВРЕМЕНИ -->
+<section class="slide pink">
+  <div class="slide-inner">
+    <div class="eyebrow">Суммарный эффект 5 преимуществ</div>
+    <h2 class="section">Сокращение курса<br>на <span style="color:#fff;text-decoration:underline;">30–50%</span></h2>
+    <div class="grid-3">
+      <div class="stat-card"><div class="stat-num">−50%</div><div class="stat-label-big">времени лечения на простых татуировках</div></div>
+      <div class="stat-card"><div class="stat-num">−30%</div><div class="stat-label-big">на плотных и старых работах</div></div>
+      <div class="stat-card"><div class="stat-num">2×</div><div class="stat-label-big">безопасность за счёт снижения термической нагрузки</div></div>
+    </div>
+    <p class="lead" style="margin-top:6px;">Меньше процедур, отсутствие «застывших» татуировок и рубцовой деформации — итоговый выигрыш и по времени, и по безопасности.</p>
+    <p style="margin-top:8px;"><span class="src-chip">Клиническая оценка автора · © В. Микрюков, 2026</span></p>
+  </div>
+</section>
+
+<!-- 34. SECTION V — РЕЗУЛЬТАТЫ -->
+<section class="slide dark">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть V</div>
+    <div class="section-num">05</div>
+    <h1 class="title">Клинические результаты</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">
+      Свежие кейсы из практики<br>2022–2026.
+    </p>
+  </div>
+</section>
+
+<!-- 34. КЕЙС 1 — ЗМЕЯ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Кейс выпускника · метод в чужих руках</div>
+    <h2 class="section">Змея на руке —<br><span style="color:var(--green)">одна процедура</span></h2>
+    <div class="illus" style="display:flex;flex-direction:column;justify-content:center;">
+      <img src="case_snake_kraev.jpg" alt="Татуировка «змея с пионами» на предплечье: до и после одной процедуры"
+           style="width:100%;height:auto;max-height:62vh;object-fit:contain;display:block;border-radius:clamp(14px,1.2vw,22px);">
+      <div class="illus-caption" style="display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:14px;">
+        <span><b>Слева — до, справа — после одной процедуры.</b></span>
+        <span class="src-chip">Работа выпускника · Дмитрий Краев · @mr_kraev</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 35. КЕЙС 2 — РОЗА, ДИНАМИКА ЗА МЕСЯЦ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Кейс выпускницы · динамика за месяц</div>
+    <h2 class="section">Пигмент уходит <span style="color:var(--green)">точками</span> —<br>и точки остаются</h2>
+    <div class="grid-2">
+      <div class="illus" style="display:flex;flex-direction:column;justify-content:flex-start;">
+        <img src="case_2_1.jpg" alt="Татуировка сразу после воздействия: пятачки в шахматном порядке"
+             style="width:100%;height:auto;max-height:60vh;object-fit:contain;display:block;border-radius:clamp(14px,1.2vw,22px);">
+        <div class="illus-caption" style="margin-top:10px;"><b style="color:#a55c00;">Сразу после воздействия.</b></div>
+      </div>
+      <div class="illus" style="display:flex;flex-direction:column;justify-content:flex-start;">
+        <img src="case_2_2.jpg" alt="Та же татуировка через месяц: на местах пятачков — кожа без пигмента"
+             style="width:100%;height:auto;max-height:60vh;object-fit:contain;display:block;border-radius:clamp(14px,1.2vw,22px);">
+        <div class="illus-caption" style="margin-top:10px;"><b style="color:#0f8a3a;">Через 1 месяц.</b></div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:center;margin-top:4px;">
+      <span class="src-chip">Работа выпускницы · Сюзанна Лазовская · @delete_me</span>
+    </div>
+  </div>
+</section>
+
+<!-- 36. КЕЙС 3 — ПЛОТНЫЙ БЛЭКВОРК -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Кейс выпускника · плотная работа</div>
+    <h2 class="section">Сетка на <span style="color:var(--purple)">плотном блэкворке</span></h2>
+    <div class="grid-2">
+      <div class="illus" style="display:flex;flex-direction:column;justify-content:flex-start;">
+        <img src="case_3_1.JPG" alt="Плотная чёрная татуировка на плече: пятачки в шахматном порядке сразу после воздействия"
+             style="width:100%;height:auto;max-height:60vh;object-fit:contain;display:block;border-radius:clamp(14px,1.2vw,22px);">
+        <div class="illus-caption" style="margin-top:10px;"><b style="color:#a55c00;">Сразу после воздействия.</b></div>
+      </div>
+      <div class="illus" style="display:flex;flex-direction:column;justify-content:flex-start;">
+        <img src="case_3_2.JPG" alt="Та же зона после схода фроста: чистые кругляшки без пигмента"
+             style="width:100%;height:auto;max-height:60vh;object-fit:contain;display:block;border-radius:clamp(14px,1.2vw,22px);">
+        <div class="illus-caption" style="margin-top:10px;"><b style="color:#0f8a3a;">Фрост сошёл.</b></div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:center;margin-top:4px;">
+      <span class="src-chip">Работа выпускника · Дмитрий Краев · @mr_kraev</span>
+    </div>
+  </div>
+</section>
+
+<!-- 37. КЕЙС 4 — ЛИЧНАЯ РАБОТА, ДИНАМИКА ЗА 2 МЕСЯЦА -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Личная работа · эффект в моменте</div>
+    <h2 class="section">Фрост сошёл —<br>под ним <span style="color:var(--green)">чистая кожа</span></h2>
+    <div class="grid-2">
+      <div class="illus" style="display:flex;flex-direction:column;justify-content:flex-start;">
+        <img src="case_5-1.JPG" alt="Татуировка сразу после воздействия: фрост на каждом пятачке"
+             style="width:100%;height:auto;max-height:60vh;object-fit:contain;display:block;border-radius:clamp(14px,1.2vw,22px);">
+        <div class="illus-caption" style="margin-top:10px;"><b style="color:#a55c00;">Сразу после воздействия.</b></div>
+      </div>
+      <div class="illus" style="display:flex;flex-direction:column;justify-content:flex-start;">
+        <img src="case_5-2.JPG" alt="Та же татуировка через 20–30 минут: на местах пятачков — кожа без пигмента"
+             style="width:100%;height:auto;max-height:60vh;object-fit:contain;display:block;border-radius:clamp(14px,1.2vw,22px);">
+        <div class="illus-caption" style="margin-top:10px;"><b style="color:#0f8a3a;">Через 20–30 минут.</b></div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:center;margin-top:4px;">
+      <span class="author-badge">Личная работа · © В. Микрюков</span>
+    </div>
+  </div>
+</section>
+
+<!-- 38. КЕЙС 5 — ПЛОТНАЯ ТАТУ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Свежий кейс · плотная работа</div>
+    <h2 class="section">Тройное перекрытие —<br><span style="color:var(--purple)">«провалы»</span> в моменте</h2>
+    <div class="grid-2">
+      <div class="illus" style="display:flex;flex-direction:column;justify-content:flex-start;padding:clamp(12px,1vw,18px);">
+        <img src="case6_1.jpg" alt="Плотная татуировка сразу после обработки: сетка пятачков с фростом"
+             style="width:100%;height:auto;max-height:62vh;object-fit:contain;display:block;border-radius:clamp(12px,1vw,18px);">
+        <div class="illus-caption" style="margin-top:10px;"><b style="color:#a55c00;">Сразу после обработки.</b></div>
+      </div>
+      <div class="illus" style="display:flex;flex-direction:column;justify-content:flex-start;padding:clamp(12px,1vw,18px);">
+        <img src="case6_2.jpg" alt="Та же зона после исчезновения фроста: «провалы» на местах пятачков"
+             style="width:100%;height:auto;max-height:62vh;object-fit:contain;display:block;border-radius:clamp(12px,1vw,18px);">
+        <div class="illus-caption" style="margin-top:10px;"><b style="color:#5e5ce6;">После исчезновения фроста.</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 39. ДЕРМАТОСКОПИЯ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Дерматоскопия · верификация метода</div>
+    <h2 class="section">Линия тату —<br>почти <span style="color:var(--blue)">штрих-пунктир</span></h2>
+    <div class="grid-2">
+      <div class="card"><h3>Что видно под дерматоскопом</h3><ul>
+        <li>Линия татуировки идёт <b>с перерывами</b> — пигмент исчез ровно там, где прошли вспышки</li>
+        <li>Получается <b>почти штрих-пунктир</b>: чередование обработанных и нетронутых отрезков</li>
+        <li>На участках между вспышками пигмент <b>сохранён полностью</b></li>
+        <li>Это не «отсроченный эффект» — это результат <b>прямо сегодня</b></li>
+      </ul></div>
+      <div class="illus" style="display:flex;flex-direction:column;justify-content:center;">
+        <img src="dermatoscopy.JPG" alt="Дерматоскопия обработанной зоны: кожа без пигмента и остаточные фрагменты пигмента, рядом измерительная шкала"
+             style="width:100%;height:auto;max-height:52vh;object-fit:contain;display:block;border-radius:clamp(14px,1.2vw,22px);">
+        <div class="illus-caption">Дерматоскопия обработанной зоны. В кадре — <b>измерительная шкала 0–10 мм</b> для оценки размеров.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 41. ДЕРМАТОСКОПИЯ · ПЛОТНАЯ ТАТУ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Дерматоскопия · плотная работа</div>
+    <h2 class="section">Та же картина<br>на <span style="color:var(--purple)">плотной заливке</span></h2>
+    <div class="grid-2" style="align-items:center;">
+      <div class="illus" style="display:flex;flex-direction:column;justify-content:center;">
+        <img src="dermatoscopy-1.JPG" alt="Дерматоскопия плотной татуировки: круглые зоны без пигмента среди сплошной заливки"
+             style="width:100%;height:auto;max-height:56vh;object-fit:contain;display:block;border-radius:clamp(14px,1.2vw,22px);">
+      </div>
+      <div class="card" style="border-left:5px solid var(--purple);">
+        <h3>Что видно под дерматоскопом</h3>
+        <ul>
+          <li>Плотная <b>диффузная заливка</b> — пигмент лежит сплошным полем, без просветов</li>
+          <li>Среди неё — <b>круглые зоны, свободные от пигмента</b>: следы отдельных вспышек</li>
+          <li>Между ними пигмент <b>сохранён полностью</b> — сетка читается даже на плотной работе</li>
+          <li>Границы зон чёткие: воздействие <b>не расползлось</b> за пределы пятна</li>
+          <li><b>Точечные гематомы</b> по полю — нормальная реакция на фотоакустическое воздействие, не осложнение</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 42. SECTION VI — ОБНОВЛЕНИЯ -->
+<section class="slide dark">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть VI</div>
+    <div class="section-num">06</div>
+    <h1 class="title">Что я обновил с 2019</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">
+      Патент — фиксация первичного наблюдения.<br>Клиника с тех пор ушла дальше.
+    </p>
+  </div>
+</section>
+
+<!-- 42. ИНТЕРВАЛ 48ч → 10-14д -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Обновление 1 · интервал этапов</div>
+    <h2 class="section">48 часов → <span style="color:var(--blue)">10–14 дней</span></h2>
+    <div class="grid-2">
+      <div class="card"><h3>Что было в патенте</h3><p><b>48 часов</b> — минимальный интервал между этапами.</p><p style="margin-top:8px;">В 2018 я хотел показать <b>максимально быструю схему</b> — и это работало. Но не идеально.</p></div>
+      <div class="card" style="border-top:5px solid var(--blue);"><h3>Что делаю сегодня</h3><p><b>10–14 дней</b> между этапами.</p><p style="margin-top:8px;">За это время воспалительный ответ полностью стихает, поверхностные корочки отваливаются, кожа готова принять новую вспышку без суммирующегося стресса.</p></div>
+    </div>
+    <div class="card" style="border-left:5px solid var(--orange);"><p><b>Клинический эффект:</b> меньше эритемы во время второго этапа, лучшая переносимость пациентами, реже возникает гиперпигментация в «мостиках» между пятачками.</p></div>
+  </div>
+</section>
+
+<!-- 43. 50% → 30% -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Обновление 2 · площадь этапа</div>
+    <h2 class="section">50% → часто <span style="color:var(--orange)">30%</span></h2>
+    <p class="lead">В патенте — <b>50% площади</b> обрабатывается на первом этапе (шахматная сетка с шагом = диаметру пятна). Сегодня я часто снижаю до <b>30%</b> — особенно на сложных случаях.</p>
+    <div class="grid-2">
+      <div class="card"><h3>Когда 50% — как в патенте</h3><ul>
+        <li>Тонкая, поверхностная работа</li>
+        <li>Средняя плотность пигмента</li>
+        <li>Здоровая, нетронутая кожа</li>
+        <li>Молодой пациент, быстрая регенерация</li>
+      </ul></div>
+      <div class="card" style="border-top:5px solid var(--orange);"><h3>Когда снижаю до 30%</h3><ul>
+        <li>Плотная, старая работа</li>
+        <li>Кустарные красители с примесями</li>
+        <li>Рискованные зоны (предплечье, шея)</li>
+        <li>При необходимости — <b>3 этапа</b> вместо 2</li>
+      </ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- 44. ПЛОТНОСТЬ ДО 7 -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Обновление 3 · плотность энергии</div>
+    <h2 class="section">5,5 → до <span style="color:var(--red)">7</span> Дж/см²</h2>
+    <p class="lead">В патенте — фиксированное значение <b>5,5 Дж/см²</b>. Сегодня диапазон шире: <b>5–7 Дж/см²</b> в зависимости от типа пигмента и глубины залегания.</p>
+    <div class="grid-3">
+      <div class="stat-card"><div class="stat-num">5&nbsp;<span style="font-size:0.5em">Дж/см²</span></div><div class="stat-label-big">поверхностный тонкий пигмент, лицо, шея</div></div>
+      <div class="stat-card amber"><div class="stat-num">5,5–6&nbsp;<span style="font-size:0.4em">Дж/см²</span></div><div class="stat-label-big">стандартная плотность — точка патента</div></div>
+      <div class="stat-card red"><div class="stat-num">6–7&nbsp;<span style="font-size:0.4em">Дж/см²</span></div><div class="stat-label-big">плотный старый пигмент, только на безопасных зонах</div></div>
+    </div>
+    <p class="lead">Ниже 5 Дж/см² — <b>пароуглеродной реакции не будет</b>, метод «сдувается» до обычного дробления. Выше 7 — риск ожогов даже при криоохлаждении.</p>
+  </div>
+</section>
+
+<!-- 45. ТОЛЬКО CARBON BLACK -->
+<section class="slide red">
+  <div class="slide-inner">
+    <div class="eyebrow">Ограничение 1 · тип пигмента</div>
+    <h2 class="section">Метод работает<br>только по <span style="color:#fff;text-decoration:underline;">Carbon Black</span></h2>
+    <p class="lead big">Пароуглеродная реакция — свойство <b>чистого углерода</b>. Другие пигменты по-другому взаимодействуют с лазерным излучением, и «эффект в моменте» не получить.</p>
+    <div class="grid-3">
+      <div class="card"><h3>✓ Работает</h3><p><b>Carbon Black</b> — сажа, основа большинства чёрных красок для тату и татуажа.</p></div>
+      <div class="card" style="border-top:5px solid #fff;"><h3>✕ Не работает</h3><p><b>TiO₂</b> (диоксид титана) — телесные тона татуажа. Требует другого подхода.</p></div>
+      <div class="card" style="border-top:5px solid #fff;"><h3>✕ Не работает</h3><p><b>Оксиды железа, органика</b> — красные, коричневые, охра. Реагируют на 532 нм, а не 1064.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 46. ТОЛЬКО СТАЦИОНАР + НЕТРОНУТАЯ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Ограничение 2 · оборудование и исходник</div>
+    <h2 class="section">Только стационар<br>+ нетронутая тату</h2>
+    <div class="grid-2">
+      <div class="card" style="border-left:5px solid var(--red);">
+        <h3>Ограничение по оборудованию</h3>
+        <p><b>Компактный однокристальный <span class="term">Nd:YAG<span class="tip"><b>Neodymium-doped Yttrium Aluminum Garnet</b> — лазерная среда.</span></span></b> на пятне 4–5 мм не выдаст плотность 5,5 Дж/см². Предел — 2,5–3 Дж/см² и только на мелком пятне. Метод <b>работает только на стационарных лазерах</b> с достаточной пиковой мощностью и Flat Top профилем луча.</p>
+      </div>
+      <div class="card" style="border-left:5px solid var(--red);">
+        <h3>Ограничение по татуировке</h3>
+        <p>Если татуировку <b>уже пытались удалять</b> — особенно компактным лазером — пигмент раздроблён на более мелкие и более устойчивые фрагменты. Пароуглеродной реакции не будет. Метод работает <b>только на нетронутых</b> тату.</p>
+      </div>
+    </div>
+    <div class="card" style="border-left:5px solid var(--orange);"><p><b>Отдельное предупреждение новичкам:</b> метод требует опыта. Порог плотности энергии узок — с одной стороны нет реакции, с другой пузыри. Начинающим специалистам я его не рекомендую.</p></div>
+  </div>
+</section>
+
+<!-- 47. КЛЮЧЕВЫЕ ВЫВОДЫ -->
+<section class="slide dark">
+  <div class="slide-inner">
+    <div class="eyebrow">Итог доклада</div>
+    <h2 class="section">Ключевые выводы<br>для аудитории <span style="color:#a8d8ff">LaserConf</span></h2>
+    <div class="key-findings">
+      <div class="kf"><div class="kf-bullet">1</div><div><b>Патент — не догма</b>, а точка фиксации первичного наблюдения. С 2019 клиника ушла дальше.</div></div>
+      <div class="kf"><div class="kf-bullet">2</div><div>Ключ метода — <b>пароуглеродная реакция</b>, а не сам шахматный порядок. Порядок обеспечивает безопасность высокой плотности.</div></div>
+      <div class="kf"><div class="kf-bullet amber">3</div><div><b>5–7 Дж/см² на 4–5 мм</b> с криоохлаждением — рабочее окно метода.</div></div>
+      <div class="kf"><div class="kf-bullet green">4</div><div><b>Смотрите на реакцию кожи</b>, а не на цифры протокола. Каждый пациент требует адаптации.</div></div>
+      <div class="kf"><div class="kf-bullet red">5</div><div>Только <b>стационарные Nd:YAG</b> и только <b>нетронутая Carbon Black</b> татуировка. Все остальные случаи — другие подходы.</div></div>
+      <div class="kf"><div class="kf-bullet">6</div><div>Пригласите клиента на <b>одну тестовую вспышку</b> — увидит эффект «в моменте» и придёт удалять.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 48. Q&A + КОНТАКТЫ -->
+<section class="slide pink">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Q&A · контакты</div>
+    <h1 class="title">Спасибо за внимание</h1>
+    <p class="lead big" style="margin-top:8px;text-align:center;">
+      Патент <b>RU 2 692 936 C1</b> · опубликован 28.06.2019<br>
+      В свободном доступе на ФИПС.
+    </p>
+    <div class="pill-row" style="margin-top:22px;justify-content:center;">
+      <span class="info-pill" style="background:rgba(255,255,255,0.18);color:#fff;">© В. Микрюков, к.м.н.</span>
+      <span class="info-pill" style="background:rgba(255,255,255,0.18);color:#fff;">@doctormikrukov</span>
+      <span class="info-pill" style="background:rgba(255,255,255,0.18);color:#fff;">doctormikrukov.ru</span>
+    </div>
+    <p class="lead" style="margin-top:24px;text-align:center;">Готов ответить на любые вопросы — <b>от физики метода до конкретных клинических случаев</b>.</p>
+  </div>
+</section>
+
+</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const progressFill = document.getElementById('progressFill');
+let idx = 0;
+const total = slides.length;
+
+function setSlide(i){
+  i = Math.max(0, Math.min(total-1, i));
+  slides[idx].classList.remove('active');
+  idx = i;
+  slides[idx].classList.add('active');
+  progressFill.style.width = ((idx+1)/total*100)+'%';
+  if(history.replaceState) history.replaceState(null, '', '#s'+(idx+1));
+}
+function next(){ setSlide(idx+1); }
+function prev(){ setSlide(idx-1); }
+
+document.addEventListener('keydown', e=>{
+  if(['ArrowRight','PageDown',' '].includes(e.key)){ e.preventDefault(); next(); }
+  else if(['ArrowLeft','PageUp'].includes(e.key)){ e.preventDefault(); prev(); }
+  else if(e.key==='Home'){ e.preventDefault(); setSlide(0); }
+  else if(e.key==='End'){ e.preventDefault(); setSlide(total-1); }
+});
+
+let touchY=null, touchX=null;
+document.addEventListener('touchstart', e=>{ touchX=e.touches[0].clientX; touchY=e.touches[0].clientY; }, {passive:true});
+document.addEventListener('touchend', e=>{
+  if(touchX===null) return;
+  const dx = e.changedTouches[0].clientX - touchX;
+  const dy = e.changedTouches[0].clientY - touchY;
+  if(Math.abs(dx)>50 && Math.abs(dx)>Math.abs(dy)){
+    if(dx<0) next(); else prev();
+  }
+  touchX=null; touchY=null;
+}, {passive:true});
+
+let wheelLock=false;
+document.addEventListener('wheel', e=>{
+  if(wheelLock) return;
+  if(Math.abs(e.deltaY)<10) return;
+  wheelLock=true;
+  if(e.deltaY>0) next(); else prev();
+  setTimeout(()=>{ wheelLock=false; }, 700);
+}, {passive:true});
+
+const m = location.hash.match(/^#s(\d+)$/);
+if(m){
+  const n = Math.max(1, Math.min(total, parseInt(m[1],10)));
+  setSlide(n-1);
+} else {
+  setSlide(0);
+}
+</script>
+
+</body>
+</html>

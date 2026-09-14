@@ -1,0 +1,2467 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="googlebot" content="noindex,nofollow,noarchive">
+<title>Перфтордекалин (PFD) и PFD-патчи в лазерном удалении татуировок · Лекция для клуба «ЛазерПРО»</title>
+<style>
+  :root{
+    --bg:#fbfbfd; --ink:#1d1d1f; --ink-soft:#3a3a3f; --ink-light:#86868b;
+    --line:#d2d2d7;
+    --blue:#0a84ff; --pink:#ff2d55; --green:#30d158;
+    --orange:#ff9500; --red:#ff3b30; --purple:#5e5ce6;
+    --teal:#5ac8fa; --brown:#8b5a2b;
+    --card:#ffffff;
+    --card-edge: rgba(0,0,0,0.05);
+    --shadow: 0 2px 12px rgba(0,0,0,0.04), 0 12px 40px rgba(0,0,0,0.06);
+    --radius: 22px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;
+    background:var(--bg); color:var(--ink);
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+    letter-spacing:-0.011em;
+  }
+
+  /* Network canvas background */
+  #bgNet{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+  .deck{z-index:1;position:relative;}
+
+  .deck{position:fixed;inset:0;}
+  .slide{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding: clamp(22px, 3.2vh, 52px) clamp(28px, 2.6vw, 60px);
+    opacity:0; transform:translateY(24px) scale(0.985);
+    transition: opacity .55s cubic-bezier(.2,.7,.2,1), transform .55s cubic-bezier(.2,.7,.2,1);
+    pointer-events:none; overflow:auto;
+  }
+  .slide.active{opacity:1;transform:none;pointer-events:auto;}
+  .slide-inner{
+    width:100%;
+    max-width: clamp(1200px, 95vw, 1920px);
+    margin:0 auto;
+    display:flex;flex-direction:column;
+    gap: clamp(10px, 1.1vw, 18px);
+  }
+
+  /* TYPOGRAPHY */
+  .eyebrow{text-transform:uppercase;letter-spacing:.18em;font-size:clamp(18px,1.2vw,22px);font-weight:600;color:var(--blue);}
+  h1.hero{
+    font-size: clamp(72px, 8.4vw, 144px);
+    line-height:.98; letter-spacing:-0.04em; font-weight:700;
+    background: linear-gradient(180deg,#1d1d1f 0%, #2a2a2e 60%, #6e6e73 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  h1.title{font-size: clamp(52px, 6vw, 100px); line-height:1.04; letter-spacing:-0.025em; font-weight:700; color:var(--ink);}
+  h2.section{font-size: clamp(44px, 4.6vw, 80px); line-height:1.08; letter-spacing:-0.02em; font-weight:700; color:var(--ink);}
+  .lead{font-size: clamp(28px, 2.2vw, 42px); line-height:1.45; color:var(--ink-soft); font-weight:400; max-width:1280px;}
+  .lead.big{font-size: clamp(32px, 2.6vw, 48px); line-height:1.35;}
+  .small-meta{font-size:17px;color:var(--ink-light);}
+  p{font-size: clamp(22px, 1.5vw, 28px); line-height:1.55; color:var(--ink);}
+
+  /* TOOLTIP TERMS */
+  .term{
+    border-bottom:1.5px dotted var(--blue); cursor:help; position:relative;
+    font-weight:600; color:var(--blue); white-space:nowrap;
+  }
+  .term .tip{
+    position:absolute; bottom:calc(100% + 12px); left:50%;
+    transform:translateX(-50%) translateY(6px);
+    background:rgba(20,20,22,0.96); color:#fff;
+    padding:14px 18px; border-radius:14px;
+    font-size:16px; font-weight:400; line-height:1.5;
+    white-space:normal; width:360px; max-width:80vw;
+    text-align:left; letter-spacing:0;
+    opacity:0; pointer-events:none;
+    transition: opacity .18s ease, transform .18s ease;
+    z-index:100;
+    box-shadow:0 10px 30px rgba(0,0,0,0.25);
+  }
+  .term .tip::before{
+    content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%);
+    border:7px solid transparent; border-top-color: rgba(20,20,22,0.96);
+  }
+  .term .tip b{color:#a8d8ff;}
+  .term:hover .tip, .term:focus .tip{opacity:1; transform:translateX(-50%) translateY(0);}
+  .slide.dark .term, .slide.blue .term, .slide.pink .term, .slide.red .term, .slide.green .term, .slide.amber .term, .slide.brown .term, .slide.purple .term, .slide.teal .term{color:#cfe8ff; border-bottom-color:#cfe8ff;}
+
+  .cite{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:15px;font-weight:500;color:var(--blue);
+    background:rgba(10,132,255,0.08); padding:8px 14px; border-radius:999px;
+    text-decoration:none; transition:background .2s ease, transform .2s ease;
+    border:1px solid rgba(10,132,255,0.15);
+  }
+  .cite:hover{background:rgba(10,132,255,0.14); transform:translateY(-1px);}
+  .cite-row{display:flex;flex-wrap:wrap;gap:8px;}
+
+  /* Cards & grids */
+  .card{
+    background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow);
+    padding: clamp(22px, 1.9vw, 34px); border:1px solid var(--card-edge); position:relative;
+  }
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:clamp(18px,1.4vw,26px);}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,1.2vw,22px);}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(14px,1vw,18px);}
+  @media (max-width:900px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}}
+
+  .stat-card{
+    background:var(--card); border-radius:20px;
+    padding: clamp(20px,1.7vw,30px);
+    border:1px solid var(--card-edge);
+    display:flex;flex-direction:column;gap:8px;
+    transition: transform .25s ease, box-shadow .25s ease;
+    font-size:clamp(24px,1.9vw,33px); font-weight:700; color:var(--ink); line-height:1.2;
+  }
+  .stat-card:hover{transform:translateY(-3px); box-shadow:0 14px 36px rgba(0,0,0,0.08);}
+  .stat-card .sub{display:block;font-size:0.72em;font-weight:400;color:var(--ink-soft);line-height:1.35;margin-top:6px;}
+  .stat-card p{font-weight:400;}
+  .slide.dark .stat-card, .slide.blue .stat-card, .slide.pink .stat-card, .slide.red .stat-card, .slide.green .stat-card, .slide.amber .stat-card, .slide.brown .stat-card, .slide.purple .stat-card, .slide.teal .stat-card{color:#fff;}
+  .slide.dark .stat-card .sub, .slide.blue .stat-card .sub, .slide.pink .stat-card .sub, .slide.red .stat-card .sub, .slide.green .stat-card .sub, .slide.amber .stat-card .sub, .slide.brown .stat-card .sub, .slide.purple .stat-card .sub, .slide.teal .stat-card .sub{color:rgba(255,255,255,0.8);}
+  .stat-num{
+    font-size:clamp(48px,5.2vw,84px);
+    font-weight:700; letter-spacing:-0.03em; line-height:1.05; color:var(--blue);
+  }
+  .stat-num.blue{color:var(--blue);}
+  .stat-num.purple{color:var(--purple);}
+  .stat-num.pink{color:var(--pink);}
+  .stat-num.green{color:var(--green);}
+  .stat-num.orange{color:var(--orange);}
+  .stat-num.red{color:var(--red);}
+  .stat-num.brown{color:var(--brown);}
+  .stat-label{font-size:clamp(20px,1.4vw,26px); color:var(--ink-soft); line-height:1.45; font-weight:400;}
+  .stat-label-big{font-size:clamp(24px,1.7vw,32px); color:var(--ink); line-height:1.4; font-weight:500;}
+
+  .split{display:grid;grid-template-columns:1.05fr 0.95fr;gap:36px;align-items:center;}
+  @media (max-width:900px){.split{grid-template-columns:1fr;}}
+
+  .chart-wrap{
+    background:var(--card); border-radius:var(--radius); padding:24px;
+    box-shadow:var(--shadow); border:1px solid rgba(0,0,0,0.04);
+  }
+  .chart-wrap canvas{max-height:360px;}
+  .chart-title{font-size:15px;color:var(--ink-soft);text-align:center;margin-top:12px;line-height:1.45;}
+
+  /* Pills */
+  .pill-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;}
+  .info-pill{
+    background:#fff;border:1px solid var(--line);border-radius:999px;
+    padding:clamp(10px,0.8vw,14px) clamp(16px,1.2vw,22px);
+    font-size:clamp(17px,1.2vw,22px); font-weight:500; color:var(--ink);
+    box-shadow:0 1px 2px rgba(0,0,0,0.02);
+  }
+  .info-pill.blue{background:rgba(10,132,255,0.08);color:var(--blue);border-color:rgba(10,132,255,0.2);}
+  .info-pill.pink{background:rgba(255,45,85,0.08);color:var(--pink);border-color:rgba(255,45,85,0.2);}
+  .info-pill.red{background:rgba(255,59,48,0.08);color:var(--red);border-color:rgba(255,59,48,0.2);}
+  .info-pill.green{background:rgba(48,209,88,0.12);color:#0f8a3a;border-color:rgba(48,209,88,0.25);}
+  .info-pill.amber{background:rgba(255,149,0,0.12);color:#a55c00;border-color:rgba(255,149,0,0.25);}
+  .slide.dark .info-pill, .slide.blue .info-pill, .slide.pink .info-pill, .slide.red .info-pill, .slide.green .info-pill, .slide.amber .info-pill, .slide.brown .info-pill, .slide.purple .info-pill{
+    background:rgba(255,255,255,0.12);color:#fff;border-color:rgba(255,255,255,0.22);
+  }
+
+  /* Section dividers */
+  .section-title-block{display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;}
+  .section-num{
+    font-size:clamp(140px,17vw,260px);
+    font-weight:800;letter-spacing:-0.06em;line-height:.9;
+    background:linear-gradient(180deg, var(--blue) 0%, var(--purple) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .section-num.pink{background:linear-gradient(180deg, var(--pink) 0%, var(--orange) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .section-num.red{background:linear-gradient(180deg, var(--red) 0%, var(--pink) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .section-num.green{background:linear-gradient(180deg, var(--green) 0%, var(--teal) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .section-num.amber{background:linear-gradient(180deg, var(--orange) 0%, var(--pink) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .section-num.brown{background:linear-gradient(180deg, var(--brown) 0%, var(--red) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .section-num.teal{background:linear-gradient(180deg, var(--teal) 0%, var(--blue) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+
+  /* Slides with colored backgrounds */
+  .slide.dark{background: radial-gradient(ellipse at 30% 20%, #1e1e22 0%, #000 70%);color:#fff;}
+  .slide.blue{background: linear-gradient(135deg, #0a1f5e 0%, #0050b8 50%, #0a84ff 100%);color:#fff;}
+  .slide.pink{background: linear-gradient(135deg, #5a0029 0%, #b8004a 50%, #ff2d55 100%);color:#fff;}
+  .slide.red{background: linear-gradient(135deg, #4a0008 0%, #a8000f 50%, #ff3b30 100%);color:#fff;}
+  .slide.green{background: linear-gradient(135deg, #003d1a 0%, #1c8a3a 50%, #30d158 100%);color:#fff;}
+  .slide.amber{background: linear-gradient(135deg, #4a2200 0%, #c87000 50%, #ff9500 100%);color:#fff;}
+  .slide.brown{background: linear-gradient(135deg, #2a1a0a 0%, #5a3010 50%, #8b5a2b 100%);color:#fff;}
+  .slide.purple{background: linear-gradient(135deg, #241a5e 0%, #4340a8 50%, #5e5ce6 100%);color:#fff;}
+  .slide.teal{background: linear-gradient(135deg, #06364a 0%, #0a7aa8 50%, #5ac8fa 100%);color:#fff;}
+
+  .slide.dark h1.hero,.slide.dark h1.title,.slide.dark h2.section,
+  .slide.blue h1.hero,.slide.blue h1.title,.slide.blue h2.section,
+  .slide.pink h1.hero,.slide.pink h1.title,.slide.pink h2.section,
+  .slide.red h1.hero,.slide.red h1.title,.slide.red h2.section,
+  .slide.green h1.hero,.slide.green h1.title,.slide.green h2.section,
+  .slide.amber h1.hero,.slide.amber h1.title,.slide.amber h2.section,
+  .slide.brown h1.hero,.slide.brown h1.title,.slide.brown h2.section,
+  .slide.purple h1.hero,.slide.purple h1.title,.slide.purple h2.section,
+  .slide.teal h1.hero,.slide.teal h1.title,.slide.teal h2.section{
+    color:#fff !important; background:none;-webkit-background-clip:initial;-webkit-text-fill-color:#fff;
+  }
+  .slide.dark .lead{color:#d6d6da;}
+  .slide.blue .lead, .slide.pink .lead, .slide.red .lead, .slide.green .lead, .slide.amber .lead, .slide.brown .lead, .slide.purple .lead, .slide.teal .lead{color:rgba(255,255,255,0.92);}
+  .slide.dark .eyebrow{color:var(--teal);}
+  .slide.blue .eyebrow{color:#a8d8ff;}
+  .slide.pink .eyebrow, .slide.red .eyebrow{color:#ffb3c4;}
+  .slide.green .eyebrow{color:#a8f0bd;}
+  .slide.amber .eyebrow{color:#ffd9a0;}
+  .slide.brown .eyebrow{color:#ffd5a0;}
+  .slide.purple .eyebrow{color:#c9c7ff;}
+  .slide.teal .eyebrow{color:#bde8ff;}
+
+  .slide.dark .card, .slide.blue .card, .slide.pink .card, .slide.red .card, .slide.green .card, .slide.amber .card, .slide.brown .card, .slide.purple .card, .slide.teal .card,
+  .slide.dark .stat-card, .slide.blue .stat-card, .slide.pink .stat-card, .slide.red .stat-card, .slide.green .stat-card, .slide.amber .stat-card, .slide.brown .stat-card, .slide.purple .stat-card, .slide.teal .stat-card{
+    background:rgba(255,255,255,0.10); border-color:rgba(255,255,255,0.18); color:#fff;
+    box-shadow:0 6px 22px rgba(0,0,0,0.18);
+    backdrop-filter:blur(14px);
+  }
+  .slide.dark .stat-num, .slide.blue .stat-num, .slide.pink .stat-num, .slide.red .stat-num, .slide.green .stat-num, .slide.amber .stat-num, .slide.brown .stat-num, .slide.purple .stat-num, .slide.teal .stat-num{color:#fff !important;}
+  .slide.dark .stat-label, .slide.blue .stat-label, .slide.pink .stat-label, .slide.red .stat-label, .slide.green .stat-label, .slide.amber .stat-label, .slide.brown .stat-label, .slide.purple .stat-label, .slide.teal .stat-label{color:rgba(255,255,255,0.88);}
+  .slide.dark p, .slide.blue p, .slide.pink p, .slide.red p, .slide.green p, .slide.amber p, .slide.brown p, .slide.purple p, .slide.teal p{color:rgba(255,255,255,0.9);}
+
+  /* Tables */
+  table.cmp{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);border:1px solid rgba(0,0,0,0.04);}
+  .cmp th, .cmp td{padding:clamp(18px,1.4vw,26px) clamp(20px,1.6vw,28px);text-align:left;font-size:clamp(22px,1.65vw,30px);border-bottom:1px solid var(--line);line-height:1.4;color:var(--ink);}
+  .cmp th{background:#f5f5f7;font-weight:600;color:var(--ink);font-size:clamp(21px,1.5vw,28px);}
+  .cmp tr:last-child td{border-bottom:none;}
+  .pill{display:inline-block;padding:6px 14px;border-radius:999px;font-size:clamp(15px,1vw,18px);font-weight:600;}
+  .pill.hi{background:rgba(48,209,88,.16);color:#0f8a3a;}
+  .pill.mid{background:rgba(255,149,0,.16);color:#a55c00;}
+  .pill.lo{background:rgba(255,45,85,.14);color:#b8163d;}
+  .pill.danger{background:rgba(255,59,48,.16);color:#a30010;}
+
+  /* Key findings */
+  .key-findings{display:flex;flex-direction:column;gap:clamp(12px,1.1vw,20px);}
+  .kf{display:flex;align-items:flex-start;gap:20px;font-size:clamp(24px,1.85vw,34px);line-height:1.42;}
+  .kf-bullet{
+    flex-shrink:0;
+    width:clamp(34px,2.4vw,44px); height:clamp(34px,2.4vw,44px);
+    border-radius:50%;
+    background:linear-gradient(135deg, var(--blue), var(--purple));
+    color:#fff; display:flex; align-items:center; justify-content:center;
+    font-size:clamp(15px,1.1vw,19px); font-weight:700; margin-top:3px;
+  }
+  .kf-bullet.red{background:linear-gradient(135deg, var(--red), var(--pink));}
+  .kf-bullet.green{background:linear-gradient(135deg, var(--green), var(--teal));}
+  .kf-bullet.amber{background:linear-gradient(135deg, var(--orange), var(--pink));}
+  .kf-bullet.purple{background:linear-gradient(135deg, var(--purple), var(--blue));}
+  .key-findings.compact{gap:clamp(10px,0.9vw,16px);}
+  .key-findings.compact .kf{font-size:clamp(20px,1.55vw,30px);line-height:1.36;gap:16px;}
+  .key-findings.compact .kf-bullet{width:clamp(30px,2.1vw,40px);height:clamp(30px,2.1vw,40px);font-size:clamp(14px,1vw,18px);margin-top:2px;}
+  .slide.dark .kf, .slide.blue .kf, .slide.red .kf, .slide.pink .kf, .slide.green .kf, .slide.amber .kf, .slide.brown .kf, .slide.purple .kf, .slide.teal .kf{color:rgba(255,255,255,0.94);}
+
+  /* Illustration container */
+  .illus{
+    background:#fff; border-radius:var(--radius);
+    padding: clamp(24px,2vw,36px);
+    box-shadow:var(--shadow); border:1px solid rgba(0,0,0,0.04);
+    text-align:center;
+  }
+  .illus svg{max-width:100%;height:auto;max-height:56vh;display:block;margin:0 auto;}
+  .illus-caption{font-size:clamp(18px,1.3vw,24px);color:var(--ink-soft);margin-top:18px;line-height:1.5;}
+
+  /* Blockquote */
+  blockquote.q{
+    font-size:clamp(28px,2.6vw,44px); line-height:1.32; letter-spacing:-0.015em;
+    font-weight:500; color:var(--ink);
+    border-left:5px solid var(--blue);
+    padding:6px 0 6px 28px; max-width:1280px;
+  }
+  blockquote.q .src{display:block;font-size:clamp(18px,1.2vw,22px);font-weight:500;color:var(--ink-light);margin-top:18px;letter-spacing:0;}
+  .slide.dark blockquote.q, .slide.blue blockquote.q, .slide.pink blockquote.q, .slide.red blockquote.q, .slide.green blockquote.q, .slide.amber blockquote.q, .slide.brown blockquote.q, .slide.purple blockquote.q, .slide.teal blockquote.q{color:#fff;border-left-color:rgba(255,255,255,0.8);}
+  .slide.dark blockquote.q .src, .slide.blue blockquote.q .src, .slide.pink blockquote.q .src, .slide.red blockquote.q .src, .slide.purple blockquote.q .src, .slide.teal blockquote.q .src{color:rgba(255,255,255,0.75);}
+
+  /* Photo frame */
+  .photo-frame{
+    aspect-ratio:1/1; background:linear-gradient(160deg,#f5f5f7 0%,#e8e8ed 100%);
+    border-radius:22px; border:1px solid var(--card-edge); box-shadow:var(--shadow);
+    overflow:hidden; position:relative; max-height:62vh; max-width:100%; margin:0 auto;
+  }
+  .photo-frame img.photo-img{width:100%;height:100%;object-fit:cover;display:block;}
+
+  /* Photo placeholder (пока Виталий не прислал фото) */
+  .photo-ph{
+    border:2px dashed var(--line); border-radius:var(--radius);
+    background:repeating-linear-gradient(45deg,#f7f7f9,#f7f7f9 14px,#f1f1f4 14px,#f1f1f4 28px);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+    min-height:clamp(220px,30vh,420px); text-align:center; padding:24px; color:var(--ink-light);
+  }
+  .photo-ph .ph-ic{font-size:clamp(34px,3vw,52px);opacity:0.5;}
+  .photo-ph .ph-t{font-size:clamp(18px,1.3vw,24px);font-weight:600;color:var(--ink-soft);}
+  .photo-ph .ph-s{font-size:clamp(15px,1.05vw,19px);color:var(--ink-light);line-height:1.4;}
+  .slide.dark .photo-ph, .slide.red .photo-ph, .slide.blue .photo-ph, .slide.pink .photo-ph, .slide.brown .photo-ph, .slide.purple .photo-ph, .slide.teal .photo-ph, .slide.green .photo-ph, .slide.amber .photo-ph{
+    background:repeating-linear-gradient(45deg,rgba(255,255,255,0.06),rgba(255,255,255,0.06) 14px,rgba(255,255,255,0.02) 14px,rgba(255,255,255,0.02) 28px);
+    border-color:rgba(255,255,255,0.3);
+  }
+  .slide.dark .photo-ph .ph-t, .slide.red .photo-ph .ph-t, .slide.blue .photo-ph .ph-t, .slide.pink .photo-ph .ph-t, .slide.brown .photo-ph .ph-t, .slide.purple .photo-ph .ph-t, .slide.teal .photo-ph .ph-t{color:rgba(255,255,255,0.92);}
+
+  /* Photo grids for clinical examples */
+  .pgrid{display:grid;gap:clamp(14px,1.4vw,24px);width:100%;}
+  .pgrid.c2{grid-template-columns:1fr 1fr;}
+  .pgrid.c3{grid-template-columns:1fr 1fr 1fr;}
+  @media (max-width:900px){.pgrid.c2,.pgrid.c3{grid-template-columns:1fr;}}
+  .pcard{display:flex;flex-direction:column;gap:clamp(8px,0.7vw,12px);}
+  .pimg{width:100%;border-radius:16px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--card-edge);background:#eef0f2;}
+  .pimg img{width:100%;height:clamp(280px,40vh,500px);object-fit:cover;object-position:center 38%;display:block;}
+  .pimg.tall img{height:clamp(320px,52vh,620px);}
+  .pcap{font-size:clamp(15px,1.1vw,21px);color:var(--ink-soft);line-height:1.35;text-align:center;}
+  .pcap b{color:var(--ink);font-weight:700;}
+  .pcap .st{display:inline-block;font-size:0.82em;font-weight:800;letter-spacing:0.07em;text-transform:uppercase;color:var(--blue);}
+  .slide.dark .pcap,.slide.blue .pcap,.slide.red .pcap,.slide.green .pcap,.slide.amber .pcap,.slide.brown .pcap,.slide.purple .pcap,.slide.teal .pcap,.slide.pink .pcap{color:rgba(255,255,255,0.85);}
+  .slide.dark .pcap b,.slide.blue .pcap b,.slide.red .pcap b,.slide.green .pcap b,.slide.amber .pcap b,.slide.brown .pcap b,.slide.purple .pcap b,.slide.teal .pcap b,.slide.pink .pcap b{color:#fff;}
+  .slide.dark .pcap .st,.slide.blue .pcap .st,.slide.red .pcap .st,.slide.green .pcap .st,.slide.amber .pcap .st,.slide.brown .pcap .st,.slide.purple .pcap .st,.slide.teal .pcap .st{color:#bcdcff;}
+
+  /* ============ FORMULA / EQUATION COMPONENTS ============ */
+  .eqn{
+    background:var(--card); border-radius:18px; border:1px solid var(--card-edge);
+    box-shadow:var(--shadow);
+    padding: clamp(18px,1.6vw,30px) clamp(20px,1.8vw,34px);
+    display:flex; flex-direction:column; gap:12px; align-items:center;
+  }
+  .eqn.boxed{ border:2px solid rgba(10,132,255,.35); border-left:6px solid var(--blue); }
+  .eqn.amberbox{ border:2px solid rgba(255,149,0,.35); border-left:6px solid var(--orange); }
+  .eqn .expr{
+    font-family:Georgia,'Times New Roman',serif;
+    font-size:clamp(26px,2.4vw,44px); font-style:italic; color:var(--ink);
+    line-height:1.25; text-align:center; letter-spacing:-0.005em;
+    display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:.12em .3em;
+  }
+  .eqn .expr b{ font-style:normal; font-weight:700; }
+  .eqn .expr sub{ font-size:.62em; font-style:normal; }
+  .eqn .op{ font-style:normal; color:var(--ink-light); font-weight:400; padding:0 .1em;}
+  .eqn .cap{
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",sans-serif;
+    font-style:normal; font-size:clamp(16px,1.15vw,22px); color:var(--ink-light);
+    text-align:center; line-height:1.45; max-width:1100px;
+  }
+  /* inline fraction */
+  .frac{ display:inline-flex; flex-direction:column; text-align:center; vertical-align:middle; margin:0 .18em; line-height:1.05;}
+  .frac .num{ border-bottom:2px solid currentColor; padding:0 .5em .08em; }
+  .frac .den{ padding:.08em .5em 0; }
+  /* colored terms inside formulas */
+  .t-blue{color:var(--blue);} .t-green{color:#1c9e46;} .t-orange{color:#c8770a;}
+  .t-red{color:var(--red);} .t-purple{color:var(--purple);} .t-brown{color:var(--brown);}
+  .t-teal{color:#0a8aa8;} .t-amber{color:#c8770a;}
+  /* dark-slide overrides for eqn */
+  .slide.dark .eqn, .slide.blue .eqn, .slide.pink .eqn, .slide.red .eqn, .slide.green .eqn, .slide.amber .eqn, .slide.brown .eqn, .slide.purple .eqn, .slide.teal .eqn{
+    background:rgba(255,255,255,0.10); border-color:rgba(255,255,255,0.20); backdrop-filter:blur(14px);
+  }
+  .slide.dark .eqn .expr, .slide.blue .eqn .expr, .slide.pink .eqn .expr, .slide.red .eqn .expr, .slide.green .eqn .expr, .slide.amber .eqn .expr, .slide.brown .eqn .expr, .slide.purple .eqn .expr, .slide.teal .eqn .expr{color:#fff;}
+  .slide.dark .eqn .cap, .slide.blue .eqn .cap, .slide.pink .eqn .cap, .slide.red .eqn .cap, .slide.green .eqn .cap, .slide.amber .eqn .cap, .slide.brown .eqn .cap, .slide.purple .eqn .cap, .slide.teal .eqn .cap{color:rgba(255,255,255,0.82);}
+  .slide.dark .eqn.boxed, .slide.blue .eqn.boxed, .slide.pink .eqn.boxed, .slide.red .eqn.boxed, .slide.green .eqn.boxed, .slide.amber .eqn.boxed, .slide.brown .eqn.boxed, .slide.purple .eqn.boxed, .slide.teal .eqn.boxed{border-left-color:rgba(255,255,255,0.85);}
+  .slide.dark .eqn.amberbox, .slide.blue .eqn.amberbox, .slide.pink .eqn.amberbox, .slide.red .eqn.amberbox, .slide.green .eqn.amberbox, .slide.amber .eqn.amberbox, .slide.brown .eqn.amberbox, .slide.purple .eqn.amberbox, .slide.teal .eqn.amberbox{border-left-color:rgba(255,255,255,0.85);}
+  /* Цветные термы формул — светлые варианты на ЛЮБОМ цветном фоне (контраст) */
+  .slide.dark .t-blue,.slide.blue .t-blue,.slide.pink .t-blue,.slide.red .t-blue,.slide.green .t-blue,.slide.amber .t-blue,.slide.brown .t-blue,.slide.purple .t-blue,.slide.teal .t-blue{color:#bcdcff;}
+  .slide.dark .t-green,.slide.blue .t-green,.slide.pink .t-green,.slide.red .t-green,.slide.green .t-green,.slide.amber .t-green,.slide.brown .t-green,.slide.purple .t-green,.slide.teal .t-green{color:#9df0ba;}
+  .slide.dark .t-orange,.slide.blue .t-orange,.slide.pink .t-orange,.slide.red .t-orange,.slide.green .t-orange,.slide.amber .t-orange,.slide.brown .t-orange,.slide.purple .t-orange,.slide.teal .t-orange,
+  .slide.dark .t-amber,.slide.blue .t-amber,.slide.pink .t-amber,.slide.red .t-amber,.slide.green .t-amber,.slide.amber .t-amber,.slide.brown .t-amber,.slide.purple .t-amber,.slide.teal .t-amber{color:#ffd69a;}
+  .slide.dark .t-red,.slide.blue .t-red,.slide.pink .t-red,.slide.red .t-red,.slide.green .t-red,.slide.amber .t-red,.slide.brown .t-red,.slide.purple .t-red,.slide.teal .t-red{color:#ffb3ab;}
+  .slide.dark .t-purple,.slide.blue .t-purple,.slide.pink .t-purple,.slide.red .t-purple,.slide.green .t-purple,.slide.amber .t-purple,.slide.brown .t-purple,.slide.purple .t-purple,.slide.teal .t-purple{color:#cfcdff;}
+  .slide.dark .t-teal,.slide.blue .t-teal,.slide.pink .t-teal,.slide.red .t-teal,.slide.green .t-teal,.slide.amber .t-teal,.slide.brown .t-teal,.slide.purple .t-teal,.slide.teal .t-teal{color:#bfe9ff;}
+  /* Оператор формулы — светло-серый на цветном фоне */
+  .slide.dark .eqn .op,.slide.blue .eqn .op,.slide.pink .eqn .op,.slide.red .eqn .op,.slide.green .eqn .op,.slide.amber .eqn .op,.slide.brown .eqn .op,.slide.purple .eqn .op,.slide.teal .eqn .op{color:rgba(255,255,255,0.72);}
+  /* Section-num на цветном фоне — светлый (а не в тон фону) */
+  .slide.blue .section-num,.slide.pink .section-num,.slide.red .section-num,.slide.green .section-num,.slide.amber .section-num,.slide.brown .section-num,.slide.purple .section-num,.slide.teal .section-num{background:linear-gradient(180deg,#ffffff 0%, rgba(255,255,255,0.55) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  /* kf-bullet на цветном фоне — белый кружок с тёмной цифрой (контраст) */
+  .slide.dark .kf-bullet,.slide.blue .kf-bullet,.slide.pink .kf-bullet,.slide.red .kf-bullet,.slide.green .kf-bullet,.slide.amber .kf-bullet,.slide.brown .kf-bullet,.slide.purple .kf-bullet,.slide.teal .kf-bullet{background:rgba(255,255,255,0.92)!important;color:#1d1d1f!important;}
+
+  /* ============ FLOW / PATHWAY (vertical text chain) ============ */
+  .flow{ display:flex; flex-direction:column; align-items:center; gap:0; }
+  .flow.horiz{ flex-direction:row; flex-wrap:wrap; justify-content:center; align-items:center; gap:0; }
+  .flow .node{
+    background:#fff; border:1px solid var(--card-edge); border-radius:14px;
+    padding:clamp(10px,0.9vw,16px) clamp(18px,1.5vw,28px);
+    font-size:clamp(21px,1.6vw,30px); font-weight:600; color:var(--ink);
+    box-shadow:var(--shadow); text-align:center; max-width:900px;
+  }
+  .flow .node .sub{display:block;font-size:.72em;font-weight:400;color:var(--ink-light);margin-top:2px;}
+  .flow .node.accent{border-color:rgba(10,132,255,.4);border-left:5px solid var(--blue);}
+  .flow .node.warn{border-color:rgba(255,149,0,.4);border-left:5px solid var(--orange);}
+  .flow .node.bad{border-color:rgba(255,59,48,.4);border-left:5px solid var(--red);}
+  .flow.tight .node{padding:clamp(6px,0.6vw,11px) clamp(16px,1.3vw,24px);font-size:clamp(17px,1.3vw,25px);}
+  .flow.tight .arrow{height:clamp(11px,1vw,17px);}
+  .flow .arrow{ width:2.5px; height:clamp(16px,1.5vw,26px); background:var(--blue); position:relative; flex:none;}
+  .flow .arrow::after{ content:''; position:absolute; bottom:-1px; left:50%; transform:translateX(-50%); border:6px solid transparent; border-top-color:var(--blue); }
+  .flow.horiz .arrow{ width:clamp(20px,1.8vw,34px); height:2.5px; }
+  .flow.horiz .arrow::after{ bottom:auto; top:50%; left:auto; right:-1px; transform:translateY(-50%); border-top-color:transparent; border-left-color:var(--blue); }
+  .flow .arrow.lbl{overflow:visible;}
+  .flow .arrow.lbl span{position:absolute;left:calc(100% + 8px);top:50%;transform:translateY(-50%);white-space:nowrap;font-size:clamp(14px,1vw,18px);font-weight:600;color:var(--ink-light);}
+  .slide.dark .flow .node, .slide.blue .flow .node, .slide.pink .flow .node, .slide.red .flow .node, .slide.green .flow .node, .slide.amber .flow .node, .slide.brown .flow .node, .slide.purple .flow .node, .slide.teal .flow .node{
+    background:rgba(255,255,255,0.12); color:#fff; border-color:rgba(255,255,255,0.22); backdrop-filter:blur(10px);
+  }
+  .slide.dark .flow .node .sub, .slide.blue .flow .node .sub, .slide.red .flow .node .sub, .slide.purple .flow .node .sub, .slide.teal .flow .node .sub{color:rgba(255,255,255,0.7);}
+
+  /* ============ PROGNOSIS BADGE ============ */
+  .prog{ display:inline-flex; align-items:center; gap:10px; padding:10px 20px; border-radius:999px; font-weight:700; font-size:clamp(17px,1.25vw,23px); }
+  .prog::before{content:'';width:12px;height:12px;border-radius:50%;background:currentColor;}
+  .prog.good{background:rgba(48,209,88,.14); color:#0f8a3a;}
+  .prog.mid{background:rgba(255,149,0,.16); color:#a55c00;}
+  .prog.bad{background:rgba(255,59,48,.14); color:#b8163d;}
+
+  /* ============ NUMBERED STEP LIST (do / dont) ============ */
+  .steps{display:flex;flex-direction:column;gap:clamp(10px,0.9vw,16px);}
+  .step{display:flex;align-items:flex-start;gap:18px;background:#fff;border:1px solid var(--card-edge);border-radius:16px;padding:clamp(14px,1.15vw,22px) clamp(18px,1.4vw,26px);box-shadow:var(--shadow);font-size:clamp(20px,1.5vw,28px);line-height:1.4;color:var(--ink);}
+  .step .n{flex:none;width:clamp(34px,2.4vw,44px);height:clamp(34px,2.4vw,44px);border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:clamp(16px,1.2vw,22px);}
+  .step.no .n{background:linear-gradient(135deg,var(--red),var(--pink));}
+  .step.no{border-color:rgba(255,59,48,0.2);}
+  .step .ic{flex:none;width:clamp(34px,2.4vw,44px);height:clamp(34px,2.4vw,44px);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:clamp(18px,1.4vw,24px);}
+  .step.no .ic{background:rgba(255,59,48,0.14);color:var(--red);}
+  .step.yes .ic{background:rgba(48,209,88,0.16);color:#0f8a3a;}
+  .slide.dark .step, .slide.blue .step, .slide.red .step, .slide.purple .step, .slide.teal .step, .slide.brown .step{background:rgba(255,255,255,0.10);color:#fff;border-color:rgba(255,255,255,0.18);backdrop-filter:blur(10px);}
+  .steps.compact{gap:clamp(8px,0.7vw,13px);}
+  .steps.compact .step{padding:clamp(10px,0.85vw,16px) clamp(16px,1.2vw,22px);font-size:clamp(18px,1.3vw,25px);}
+  .steps.compact .step .n,.steps.compact .step .ic{width:clamp(30px,2vw,38px);height:clamp(30px,2vw,38px);font-size:clamp(15px,1.05vw,19px);}
+
+  /* patient-speech card */
+  .speech{background:linear-gradient(135deg,#eef4ff 0%,#f5f0ff 100%);border:1px solid rgba(94,92,230,0.25);border-left:6px solid var(--purple);border-radius:20px;padding:clamp(24px,2.2vw,40px);font-size:clamp(24px,1.9vw,34px);line-height:1.5;color:var(--ink);font-style:italic;}
+  .speech b{color:var(--purple);font-style:normal;}
+
+  /* References */
+  .ref-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  @media (max-width:900px){.ref-grid{grid-template-columns:1fr;}}
+  .ref{
+    background:#fff;border:1px solid var(--line);border-radius:14px;
+    padding:14px 18px;font-size:16px;line-height:1.45;
+    display:flex;justify-content:space-between;align-items:center;gap:14px;
+  }
+  .ref a{color:var(--blue);text-decoration:none;font-weight:500;font-size:15px;flex-shrink:0;}
+  .ref a:hover{text-decoration:underline;}
+  .ref .lbl{color:var(--ink-light);font-size:13px;font-weight:600;flex-shrink:0;}
+
+  /* Progress bar */
+  .progress{position:fixed;top:0;left:0;right:0;height:2px;background:rgba(0,0,0,0.04);z-index:60;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--purple),var(--pink));width:0%;transition:width .4s cubic-bezier(.2,.7,.2,1);opacity:0.55;}
+
+  /* Animations */
+  @keyframes magicalFadeIn{
+    0%{opacity:0;transform:translateY(24px);filter:blur(3px);}
+    60%{filter:blur(0);}
+    100%{opacity:1;transform:translateY(0);filter:blur(0);}
+  }
+  .slide.active .stat-card,
+  .slide.active .card,
+  .slide.active .illus,
+  .slide.active blockquote.q,
+  .slide.active table.cmp,
+  .slide.active .ref,
+  .slide.active .eqn,
+  .slide.active .step,
+  .slide.active .speech,
+  .slide.active .chart-wrap{
+    animation: magicalFadeIn .8s cubic-bezier(.2,.7,.2,1) backwards;
+  }
+  .slide.active .grid-2 > *:nth-child(1),
+  .slide.active .grid-3 > *:nth-child(1),
+  .slide.active .grid-4 > *:nth-child(1){animation-delay:.12s;}
+  .slide.active .grid-2 > *:nth-child(2),
+  .slide.active .grid-3 > *:nth-child(2),
+  .slide.active .grid-4 > *:nth-child(2){animation-delay:.26s;}
+  .slide.active .grid-3 > *:nth-child(3),
+  .slide.active .grid-4 > *:nth-child(3){animation-delay:.40s;}
+  .slide.active .grid-4 > *:nth-child(4){animation-delay:.54s;}
+  .slide.active .steps .step:nth-child(1){animation-delay:.10s;}
+  .slide.active .steps .step:nth-child(2){animation-delay:.20s;}
+  .slide.active .steps .step:nth-child(3){animation-delay:.30s;}
+  .slide.active .steps .step:nth-child(4){animation-delay:.40s;}
+  .slide.active .steps .step:nth-child(5){animation-delay:.50s;}
+  .slide.active .steps .step:nth-child(6){animation-delay:.60s;}
+  .slide.active .steps .step:nth-child(7){animation-delay:.70s;}
+  .slide.active .steps .step:nth-child(8){animation-delay:.80s;}
+  .slide.active .key-findings .kf:nth-child(1){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .12s;}
+  .slide.active .key-findings .kf:nth-child(2){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .24s;}
+  .slide.active .key-findings .kf:nth-child(3){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .36s;}
+  .slide.active .key-findings .kf:nth-child(4){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .48s;}
+  .slide.active .key-findings .kf:nth-child(5){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .60s;}
+  .slide.active .key-findings .kf:nth-child(6){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .72s;}
+  .slide.active .key-findings .kf:nth-child(7){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .84s;}
+  .slide.active .key-findings .kf:nth-child(8){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .96s;}
+
+  /* Inflammation pulse */
+  @keyframes pulseStrong { 0%,100%{transform:scale(1);opacity:1;} 50%{transform:scale(1.28);opacity:0.45;} }
+  @keyframes pulseMid    { 0%,100%{transform:scale(1);opacity:1;} 50%{transform:scale(1.18);opacity:0.65;} }
+  @keyframes pulseGentle { 0%,100%{transform:scale(1);opacity:1;} 50%{transform:scale(1.10);opacity:0.78;} }
+  .halo-pulse-red, .halo-pulse-amber, .halo-pulse-green, .halo-pulse-blue{
+    transform-box: fill-box; transform-origin: center center;
+  }
+  .halo-pulse-red    { animation: pulseStrong  2.2s ease-in-out infinite; }
+  .halo-pulse-amber  { animation: pulseMid     3.0s ease-in-out infinite; }
+  .halo-pulse-green  { animation: pulseGentle  3.8s ease-in-out infinite; }
+  .halo-pulse-blue   { animation: pulseMid     3.2s ease-in-out infinite; }
+  .halo-pulse-red:nth-of-type(2n){animation-delay:0.35s;}
+  .halo-pulse-red:nth-of-type(3n){animation-delay:0.70s;}
+
+  /* Melanocyte breathing */
+  @keyframes melaPulse {
+    0%,100% { transform: scale(1); }
+    50%     { transform: scale(1.08); filter: brightness(1.15); }
+  }
+  .melanocyte-active{
+    transform-box: fill-box; transform-origin: center center;
+    animation: melaPulse 2.6s ease-in-out infinite;
+  }
+
+  /* snowflake / cooling drift */
+  @keyframes coolDrift {
+    0%   { transform: translateY(-6px); opacity:0.35; }
+    50%  { transform: translateY(4px);  opacity:0.9; }
+    100% { transform: translateY(-6px); opacity:0.35; }
+  }
+  .cool-pulse{ transform-box: fill-box; transform-origin:center; animation: coolDrift 3s ease-in-out infinite; }
+  .cool-pulse:nth-of-type(2n){animation-delay:0.5s;}
+  .cool-pulse:nth-of-type(3n){animation-delay:1.0s;}
+
+  /* Cascade arrow flow */
+  @keyframes cascadeFlow {
+    0%   { opacity:0; transform:translateY(-8px); }
+    100% { opacity:1; transform:translateY(0); }
+  }
+  .cascade-step{ animation: cascadeFlow .6s ease-out backwards; }
+  .slide.active .cascade-step:nth-child(1){ animation-delay:.10s; }
+  .slide.active .cascade-step:nth-child(2){ animation-delay:.30s; }
+  .slide.active .cascade-step:nth-child(3){ animation-delay:.50s; }
+  .slide.active .cascade-step:nth-child(4){ animation-delay:.70s; }
+  .slide.active .cascade-step:nth-child(5){ animation-delay:.90s; }
+  .slide.active .cascade-step:nth-child(6){ animation-delay:1.10s; }
+  .slide.active .cascade-step:nth-child(7){ animation-delay:1.30s; }
+  .slide.active .cascade-step:nth-child(8){ animation-delay:1.50s; }
+
+  /* flow node stagger */
+  .slide.active .flow > *{animation:cascadeFlow .5s ease-out backwards;}
+  .slide.active .flow > *:nth-child(2){animation-delay:.10s;}
+  .slide.active .flow > *:nth-child(3){animation-delay:.20s;}
+  .slide.active .flow > *:nth-child(4){animation-delay:.30s;}
+  .slide.active .flow > *:nth-child(5){animation-delay:.40s;}
+  .slide.active .flow > *:nth-child(6){animation-delay:.50s;}
+  .slide.active .flow > *:nth-child(7){animation-delay:.60s;}
+  .slide.active .flow > *:nth-child(8){animation-delay:.70s;}
+  .slide.active .flow > *:nth-child(9){animation-delay:.80s;}
+  .slide.active .flow > *:nth-child(10){animation-delay:.90s;}
+  .slide.active .flow > *:nth-child(11){animation-delay:1.0s;}
+  .slide.active .flow > *:nth-child(12){animation-delay:1.1s;}
+  .slide.active .flow > *:nth-child(13){animation-delay:1.2s;}
+
+  /* Risk gauge bar */
+  @keyframes barFill {
+    0% { width: 0%; }
+    100% { width: var(--bar-width, 100%); }
+  }
+  .risk-bar{
+    height: clamp(28px, 2vw, 38px);
+    border-radius: 999px; overflow:hidden;
+    background:rgba(0,0,0,0.05); position:relative;
+  }
+  .risk-bar-fill{
+    height: 100%; border-radius: 999px;
+    animation: barFill 1.6s cubic-bezier(.2,.7,.2,1) backwards;
+    animation-delay: 0.3s;
+  }
+
+  .slide::-webkit-scrollbar{width:0;}
+</style>
+</head>
+<body>
+
+<canvas id="bgNet" aria-hidden="true"></canvas>
+<div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="deck" id="deck">
+
+<!-- ============ 1. COVER ============ -->
+<section class="slide dark active">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Клуб «ЛазерПРО» · повышение квалификации</div>
+    <h1 class="hero">Перфтордекалин<br>и <em>PFD-патч</em></h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;max-width:1500px;">
+      Почему после лазера татуировка внезапно белеет, почему это мешает следующему импульсу — и как жидкость, почти инертная химически, физически меняет всю процедуру.
+    </p>
+    <div class="pill-row" style="margin-top:22px;">
+      <span class="info-pill">Физика, а не фармакология</span>
+      <span class="info-pill">R20 → R0</span>
+      <span class="info-pill">7 источников PubMed</span>
+      <span class="info-pill">Управление нагрузкой</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2. HOOK — вопрос студентам ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">С чего начнём</div>
+    <h2 class="section">Вопрос к аудитории</h2>
+    <blockquote class="q" style="max-width:1500px;">Что происходит сразу после первого лазерного прохода — и почему мы не можем просто мгновенно сделать второй?</blockquote>
+    <p class="lead">Посмотрите обычное удаление татуировки. После первого импульса зона мгновенно меняется:</p>
+    <div class="key-findings" style="margin-top:6px;">
+      <div class="kf"><span class="kf-bullet">1</span><div>Появляется <b>белесоватая реакция</b> (whitening / frosting).</div></div>
+      <div class="kf"><span class="kf-bullet">2</span><div>Ткань становится <b>оптически непрозрачной</b>.</div></div>
+      <div class="kf"><span class="kf-bullet">3</span><div>Возникают <b>газовые микрополости</b> и сильное рассеяние света.</div></div>
+      <div class="kf"><span class="kf-bullet red">4</span><div>Следующий импульс <b>хуже достигает</b> глубжележащего пигмента.</div></div>
+    </div>
+    <p style="margin-top:6px;">PFD-патч появился <b>не</b> как «новое средство для удаления тату» — технология пришла из совсем другой области физики и медицины.</p>
+  </div>
+</section>
+
+<!-- ============ 3. MAIN IDEA ============ -->
+<section class="slide blue">
+  <div class="slide-inner">
+    <div class="eyebrow">Главная идея лекции</div>
+    <h2 class="section">PFD не удаляет пигмент — он <em>управляет физикой</em> процедуры</h2>
+    <p class="lead big">Его роль — временно изменить физическую среду между лазером и тканью:</p>
+    <div class="grid-3" style="margin-top:8px;">
+      <div class="stat-card">Уменьшить оптическое экранирование<span class="sub">после лазерного импульса</span></div>
+      <div class="stat-card">Снять эффект whitening / frosting<span class="sub">быстро, за секунды</span></div>
+      <div class="stat-card">Позволить несколько проходов<span class="sub">за короткое время</span></div>
+      <div class="stat-card">Изменить тепловую нагрузку<span class="sub">на поверхность</span></div>
+      <div class="stat-card">Улучшить оптическое сопряжение<span class="sub">лазер ↔ кожа</span></div>
+      <div class="stat-card">Частично уменьшить выброс частиц<span class="sub">и аэрозоля</span></div>
+    </div>
+    <p class="lead" style="margin-top:8px;">Поэтому PFD интересен: это <b>не фармакология удаления</b>, а <b>управление физикой</b> процедуры.</p>
+  </div>
+</section>
+<!-- ===================== РАЗДЕЛ 01 · Что такое перфтордекалин ===================== -->
+
+<!-- Слайд 1 — ДИВАЙДЕР Часть I -->
+<section class="slide blue">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть I</div>
+    <div class="section-num">01</div>
+    <h1 class="title">Что такое перфтордекалин</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">Химия, свойства и неожиданное происхождение технологии.</p>
+  </div>
+</section>
+
+<!-- Слайд 2 — Химическая принадлежность -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Химическая принадлежность</div>
+    <h2 class="section">Что это за молекула</h2>
+    <p class="lead">Перфтордекалин — по-английски <b>Perfluorodecalin</b>, сокращённо <span class="term">PFD<span class="tip"><b>PFD</b> — perfluorodecalin, перфтордекалин. Жидкий перфторуглерод, химически почти инертный.</span></span>. Это представитель класса <span class="term">PFC<span class="tip"><b>PFC</b> — perfluorocarbons, перфторуглероды. Соединения, в которых водород полностью замещён фтором.</span></span> — перфторуглеродов.</p>
+    <div class="eqn boxed" style="margin-top:6px;">
+      <div class="expr"><b>C<sub>10</sub>F<sub>18</sub></b></div>
+      <div class="cap">Десять атомов углерода и восемнадцать атомов фтора — ни одного водорода.</div>
+    </div>
+    <div class="card" style="margin-top:6px;">
+      <p style="margin:0;">Принцип простой. В обычном углеводороде часть атомов водорода связана с углеродом. В <b>перфторуглероде</b> весь этот водород замещён <b class="t-teal">фтором</b> — и именно это замещение формирует весь необычный набор свойств, о котором дальше.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 3 — Свойства PFC -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Физико-химические свойства</div>
+    <h2 class="section">Чем PFC так необычны</h2>
+    <p class="lead">Замена водорода на фтор даёт молекуле сразу несколько ярких свойств — они и объясняют, почему PFD ведёт себя не как обычная жидкость.</p>
+    <div class="key-findings compact" style="margin-top:4px;">
+      <div class="kf"><span class="kf-bullet">1</span><div><b>Высокая химическая инертность.</b> Молекула почти не вступает в реакции.</div></div>
+      <div class="kf"><span class="kf-bullet">2</span><div><b>Гидрофобность</b> — не смешивается с водой и образует отдельную фазу.</div></div>
+      <div class="kf"><span class="kf-bullet">3</span><div><b>Высокая плотность</b> — заметно тяжелее воды.</div></div>
+      <div class="kf"><span class="kf-bullet">4</span><div><b>Высокая прозрачность</b> и <b>низкая вязкость</b> — легко течёт и хорошо пропускает свет.</div></div>
+      <div class="kf"><span class="kf-bullet green">5</span><div><b>Высокая газорастворимость</b> — растворяет O<sub>2</sub>, CO<sub>2</sub> и другие газы значительно лучше воды.</div></div>
+    </div>
+    <p class="lead" style="margin-top:6px;font-size:clamp(20px,1.5vw,28px);color:var(--ink-light);">Физику PFC подробно разбирает современный физиологический обзор перфторуглеродов (обзор PFC, PubMed).</p>
+  </div>
+</section>
+
+<!-- Слайд 4 — Мид-заголовок: происхождение технологии -->
+<section class="slide dark">
+  <div class="slide-inner" style="align-items:center;text-align:center;">
+    <div class="eyebrow">Откуда пришла технология</div>
+    <blockquote class="q" style="border-left:none;text-align:center;font-size:clamp(32px,3.6vw,56px);max-width:1500px;line-height:1.3;">
+      PFD-патч родился <b>не в дерматологии</b>. Он пришёл из совсем другой области физики и медицины — где перфторуглероды изучали как <b>переносчики газов</b>.
+    </blockquote>
+    <p class="lead" style="margin:clamp(14px,1.8vw,26px) auto 0;max-width:1300px;">Чтобы понять, зачем он нужен под лазером, полезно увидеть, откуда вообще взялась эта жидкость.</p>
+  </div>
+</section>
+
+<!-- Слайд 5 — 1960-е: жидкость, которой можно дышать -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">1960-е · исток идеи</div>
+    <h2 class="section">Жидкость, которой можно дышать</h2>
+    <p class="lead">Классические эксперименты <b>Clark и Gollan, 1966</b>: перфторуглеродные жидкости, насыщенные кислородом, обеспечивали газообмен у животных, погружённых в них.</p>
+    <div class="grid-2" style="margin-top:4px;">
+      <div class="stat-card" style="border-top:5px solid var(--blue);">
+        <div class="stat-label-big">Жидкость несёт кислород</div>
+        <p>PFC растворяли столько O<sub>2</sub>, что могли доставлять его тканям прямо из жидкой фазы.</p>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--teal);">
+        <div class="stat-label-big">Фундамент концепции</div>
+        <p>Так родилась идея «жидкость как переносчик кислорода» — основа целого направления.</p>
+      </div>
+    </div>
+    <p class="lead" style="margin-top:6px;font-size:clamp(20px,1.5vw,28px);color:var(--ink-light);">Именно газорастворимость PFC, а не химическая активность, сделала эти опыты возможными.</p>
+  </div>
+</section>
+
+<!-- Слайд 6 — Что выросло из этого -->
+<section class="slide blue">
+  <div class="slide-inner">
+    <div class="eyebrow">Наследие 1966 года</div>
+    <h2 class="section">Что выросло из этой идеи</h2>
+    <p class="lead">За десятилетия из простого наблюдения выросло несколько серьёзных медицинских направлений.</p>
+    <div class="grid-4" style="margin-top:4px;">
+      <div class="stat-card" style="border-top:5px solid var(--blue);">
+        <div class="stat-label-big">Искусственные переносчики кислорода</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--teal);">
+        <div class="stat-label-big">Жидкостная вентиляция лёгких</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--purple);">
+        <div class="stat-label-big">Перфторуглеродные эмульсии</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--green);">
+        <div class="stat-label-big">Исследования заменителей крови</div>
+      </div>
+    </div>
+    <p class="lead" style="margin-top:8px;">Современный обзор прослеживает эту линию — от опытов 1966 года к клиническим разработкам (обзор PFC, PubMed).</p>
+  </div>
+</section>
+
+<!-- Слайд 7 — ВАЖНАЯ ОГОВОРКА -->
+<section class="slide amber">
+  <div class="slide-inner">
+    <div class="eyebrow">Важная оговорка</div>
+    <h2 class="section">Осторожно с «переносом кислорода»</h2>
+    <p class="lead big">Заманчиво сказать: «PFD переносит кислород → значит, улучшает заживление татуировки». Для PFD-патча это <b>упрощение</b> и <b>не</b> доказанный главный механизм.</p>
+    <div class="card" style="border-left:6px solid var(--orange);margin-top:4px;">
+      <p style="margin:0;">Газорастворимость PFD важна прежде всего <b>по другой причине</b>: жидкость быстро взаимодействует с <b class="t-orange">газовой фазой</b>, которая возникает после лазерного разрушения пигмента. Речь о физике пузырьков, а не о питании кожи кислородом.</p>
+    </div>
+    <p class="lead" style="margin-top:6px;">Эта мысль — мост к следующему разделу: разбору физики того, что именно происходит в коже сразу после импульса.</p>
+  </div>
+</section>
+<!-- ===================== РАЗДЕЛ 02 · Физика PFD ===================== -->
+
+<!-- Слайд 1 — ДИВАЙДЕР Часть II -->
+<section class="slide purple">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть II</div>
+    <div class="section-num purple">02</div>
+    <h1 class="title">Физика PFD</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">Газы, границы раздела и оптическая доступность ткани.</p>
+  </div>
+</section>
+
+<!-- Слайд 2 — Газорастворимость: растворение, а не связывание -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Газорастворимость</div>
+    <h2 class="section">Растворение, а не химическая связь</h2>
+    <p class="lead">Когда говорят, что PFC «несёт кислород», важно понять физику. Газ в PFD <b>физически растворяется</b> в жидкости — молекулы газа просто занимают место между молекулами жидкости. Это принципиально не то же самое, что делает кровь.</p>
+    <div class="grid-2" style="margin-top:6px;">
+      <div class="stat-card" style="border-top:5px solid var(--red);">
+        <div class="stat-label-big">Гемоглобин — химическое связывание</div>
+        <p>O<sub>2</sub> <b>присоединяется</b> к железу гема. Есть насыщение и <span class="term">кооперативность<span class="tip"><b>Кооперативность</b> — связывание одной молекулы O<sub>2</sub> облегчает связывание следующих. Даёт S-образную кривую.</span></span>: кривая насыщения <b>сигмоидальная</b> (S-образная). При высоком давлении гемоглобин «полон» — больше взять почти не может.</p>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--blue);">
+        <div class="stat-label-big">PFC — физическое растворение</div>
+        <p>O<sub>2</sub> <b>ничего не связывает</b>, а просто растворяется. Количество прямо пропорционально <b>парциальному давлению</b> газа — поведение по <span class="term">закону Генри<span class="tip"><b>Закон Генри</b> — количество растворённого газа пропорционально его парциальному давлению над жидкостью. Даёт прямую линию.</span></span>. Насыщения нет: выше давление — больше газа, линейно.</p>
+      </div>
+    </div>
+    <div class="eqn boxed" style="margin-top:8px;">
+      <div class="expr"><b>C</b> <span class="op">=</span> <b class="t-blue">k</b> <span class="op">·</span> <b class="t-orange">p</b></div>
+      <div class="cap">Закон Генри: концентрация растворённого газа <b>C</b> линейно растёт с его парциальным давлением <b class="t-orange">p</b>. Именно так ведёт себя PFD — без плато насыщения.</div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 3 — SVG-график: насыщение O2 vs парциальное давление -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Две кривые</div>
+    <h2 class="section">Гемоглобин против закона Генри</h2>
+    <div class="illus" style="padding:clamp(24px,2vw,40px);">
+      <svg viewBox="0 0 1180 560" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+        <defs>
+          <marker id="axArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#86868b"/>
+          </marker>
+        </defs>
+
+        <!-- Оси -->
+        <g class="cascade-step">
+          <!-- ось Y -->
+          <line x1="150" y1="60" x2="150" y2="470" stroke="#86868b" stroke-width="3" marker-end="url(#axArrow)"/>
+          <!-- ось X -->
+          <line x1="150" y1="470" x2="1120" y2="470" stroke="#86868b" stroke-width="3" marker-end="url(#axArrow)"/>
+          <!-- сетка Y -->
+          <line x1="150" y1="265" x2="1090" y2="265" stroke="#e6e6ea" stroke-width="2"/>
+          <line x1="150" y1="162" x2="1090" y2="162" stroke="#e6e6ea" stroke-width="2"/>
+          <line x1="150" y1="368" x2="1090" y2="368" stroke="#e6e6ea" stroke-width="2"/>
+          <!-- подписи осей -->
+          <text x="95" y="72" text-anchor="middle" font-size="24" font-weight="700" fill="#1d1d1f">Кол-во</text>
+          <text x="95" y="100" text-anchor="middle" font-size="24" font-weight="700" fill="#1d1d1f">O₂</text>
+          <text x="635" y="530" text-anchor="middle" font-size="26" font-weight="700" fill="#1d1d1f">Парциальное давление O₂  →</text>
+          <text x="150" y="500" text-anchor="middle" font-size="18" fill="#86868b">0</text>
+        </g>
+
+        <!-- Кривая Генри (PFC) — почти прямая -->
+        <g class="cascade-step">
+          <line x1="150" y1="470" x2="1060" y2="120" stroke="#0a84ff" stroke-width="6" stroke-linecap="round"/>
+          <circle cx="1060" cy="120" r="9" fill="#0a84ff"/>
+          <text x="1000" y="98" text-anchor="end" font-size="26" font-weight="700" fill="#0a84ff">PFC · закон Генри</text>
+          <text x="1000" y="126" text-anchor="end" font-size="19" fill="#0a84ff">прямая, без насыщения</text>
+        </g>
+
+        <!-- Кривая гемоглобина — сигмоида -->
+        <g class="cascade-step">
+          <path d="M 150 462 C 300 458 360 440 430 360 C 500 280 560 200 660 178 C 780 152 920 148 1090 146"
+                stroke="#ff3b30" stroke-width="6" fill="none" stroke-linecap="round"/>
+          <circle cx="1090" cy="146" r="9" fill="#ff3b30"/>
+          <text x="470" y="330" font-size="26" font-weight="700" fill="#ff3b30">Гемоглобин</text>
+          <text x="470" y="358" font-size="19" fill="#ff3b30">сигмоида, выходит на плато</text>
+          <!-- маркер плато -->
+          <line x1="700" y1="150" x2="1080" y2="150" stroke="#ff3b30" stroke-width="2" stroke-dasharray="6 6" opacity="0.5"/>
+          <text x="890" y="140" text-anchor="middle" font-size="17" fill="#ff3b30" opacity="0.85">насыщение ≈ предел</text>
+        </g>
+      </svg>
+      <div class="illus-caption" style="margin-top:20px;font-size:clamp(20px,1.5vw,28px);">
+        В PFC кислорода растворяется <b>значительно больше, чем в воде</b>, и количество растёт прямо с давлением — линия не выходит на плато. Для <b>CO₂</b> растворимость в PFC ещё выше, чем для O₂.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 4 — Гидрофобность -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Поведение с водой</div>
+    <h2 class="section">Гидрофобность: отдельная фаза</h2>
+    <p class="lead">PFD <b>не смешивается с водой</b> и плохо взаимодействует с любой водной средой. Он не растворяется в тканевой жидкости и не растворяет её — вместо этого образует <b>отдельную жидкую фазу</b> с собственной чёткой границей.</p>
+    <div class="key-findings compact" style="margin-top:4px;">
+      <div class="kf"><span class="kf-bullet">1</span><div><b>Не смешивается</b> с водой и водными жидкостями кожи — держится отдельным слоем.</div></div>
+      <div class="kf"><span class="kf-bullet">2</span><div>Образует <b>собственную жидкую фазу</b> с ясной границей раздела.</div></div>
+      <div class="kf"><span class="kf-bullet green">3</span><div>Это определяет его <b>поведение на коже</b>: как он ложится на поверхность и как контактирует с воздухом и газовыми полостями.</div></div>
+    </div>
+    <p class="lead" style="margin-top:6px;font-size:clamp(20px,1.5vw,28px);color:var(--ink-light);">Именно потому, что PFD — отдельная фаза, он может сесть поверх ткани и работать с газом, а не смешиваться с ней.</p>
+  </div>
+</section>
+
+<!-- Слайд 5 — Оптическая прозрачность -->
+<section class="slide blue">
+  <div class="slide-inner">
+    <div class="eyebrow">Свет и энергия</div>
+    <h2 class="section">Оптическая прозрачность</h2>
+    <p class="lead big">Для лазерной медицины прозрачность среды критична. Любая <b>непрозрачная</b> среда в оптическом пути <b>крадёт энергию</b> импульса: поглощает и рассеивает свет ещё до того, как он дошёл до мишени.</p>
+    <div class="grid-2" style="margin-top:6px;">
+      <div class="stat-card" style="border-top:5px solid #ff3b30;">
+        <div class="stat-label-big">Мутная среда в пути</div>
+        <p>Энергия теряется на поверхности — до пигмента доходит меньше, чем задумано.</p>
+      </div>
+      <div class="stat-card" style="border-top:5px solid #a8f0bd;">
+        <div class="stat-label-big">PFD прозрачен</div>
+        <p>Свет проходит сквозь него почти без потерь. Поэтому PFD можно поставить <b>прямо в оптический путь</b> лазера — между излучателем и кожей.</p>
+      </div>
+    </div>
+    <p class="lead" style="margin-top:8px;">Прозрачная жидкость в пути — не помеха, а инструмент: она может улучшить доставку энергии, если правильно управляет границами раздела.</p>
+  </div>
+</section>
+
+<!-- Слайд 6 — Показатель преломления и optical coupling -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Границы раздела</div>
+    <h2 class="section">Показатель преломления и <span style="color:var(--blue)">optical coupling</span></h2>
+    <p class="lead">Сразу после импульса в зоне возникает <b>множество границ раздела</b>. На каждой границе свет ведёт себя по-своему — часть <b>отражается</b>, часть <b>преломляется</b>, часть <b>рассеивается</b> в стороны.</p>
+    <div class="grid-4" style="margin-top:4px;">
+      <div class="stat-card" style="border-top:5px solid var(--blue);"><div class="stat-label-big">Кожа ↔ воздух</div></div>
+      <div class="stat-card" style="border-top:5px solid var(--teal);"><div class="stat-label-big">Ткань ↔ газ</div></div>
+      <div class="stat-card" style="border-top:5px solid var(--purple);"><div class="stat-label-big">Газ ↔ жидкость</div></div>
+      <div class="stat-card" style="border-top:5px solid var(--orange);"><div class="stat-label-big">Микрополости внутри ткани</div></div>
+    </div>
+    <div class="card" style="margin-top:8px;border-left:6px solid var(--blue);">
+      <p style="margin:0;">У каждой среды свой <span class="term">показатель преломления<span class="tip"><b>Показатель преломления</b> — насколько среда замедляет и «преломляет» свет. Резкий скачок на границе двух сред усиливает отражение и рассеяние.</span></span>. Чем резче скачок на границе — тем сильнее отражение и рассеяние. Много <b class="t-orange">микропузырьков</b> = много границ газ–ткань → среда становится <b>оптически мутной</b>, и свет «вязнет» у поверхности.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 7 — SVG-схема рассеяния: БЕЗ PFD vs С PFD -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Ключевая схема</div>
+    <h2 class="section">Куда уходит свет: с PFD и без него</h2>
+    <div class="illus" style="padding:clamp(22px,1.8vw,36px);">
+      <svg viewBox="0 0 1200 620" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+        <defs>
+          <linearGradient id="tissueG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#f7e3d0"/>
+            <stop offset="100%" stop-color="#ecc7a8"/>
+          </linearGradient>
+          <linearGradient id="pfdG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#d9ecff"/>
+            <stop offset="100%" stop-color="#bcdcff"/>
+          </linearGradient>
+        </defs>
+
+        <!-- ===== ЛЕВО: БЕЗ PFD ===== -->
+        <g class="cascade-step">
+          <text x="290" y="46" text-anchor="middle" font-size="30" font-weight="700" fill="#ff3b30">БЕЗ PFD</text>
+          <!-- ткань -->
+          <rect x="60" y="150" width="460" height="420" rx="20" fill="url(#tissueG)" stroke="#d4a373" stroke-width="3"/>
+          <text x="290" y="130" text-anchor="middle" font-size="20" fill="#86868b">воздух над кожей</text>
+          <!-- глубокий пигмент -->
+          <rect x="150" y="500" width="280" height="40" rx="10" fill="#2a2320"/>
+          <text x="290" y="527" text-anchor="middle" font-size="19" font-weight="700" fill="#fff">глубокий пигмент</text>
+        </g>
+
+        <!-- пузырьки в ткани (много) -->
+        <g class="cascade-step">
+          <circle cx="180" cy="250" r="22" fill="#fff" opacity="0.85" stroke="#c9a06a" stroke-width="2"/>
+          <circle cx="260" cy="300" r="28" fill="#fff" opacity="0.85" stroke="#c9a06a" stroke-width="2"/>
+          <circle cx="360" cy="255" r="20" fill="#fff" opacity="0.85" stroke="#c9a06a" stroke-width="2"/>
+          <circle cx="420" cy="320" r="26" fill="#fff" opacity="0.85" stroke="#c9a06a" stroke-width="2"/>
+          <circle cx="210" cy="360" r="18" fill="#fff" opacity="0.85" stroke="#c9a06a" stroke-width="2"/>
+          <circle cx="320" cy="360" r="24" fill="#fff" opacity="0.85" stroke="#c9a06a" stroke-width="2"/>
+          <circle cx="150" cy="420" r="16" fill="#fff" opacity="0.85" stroke="#c9a06a" stroke-width="2"/>
+          <circle cx="290" cy="430" r="20" fill="#fff" opacity="0.85" stroke="#c9a06a" stroke-width="2"/>
+          <circle cx="400" cy="415" r="18" fill="#fff" opacity="0.85" stroke="#c9a06a" stroke-width="2"/>
+        </g>
+
+        <!-- лучи, рассеиваются (ломаные, не доходят) -->
+        <g class="cascade-step">
+          <!-- луч 1 -->
+          <path d="M 180 150 L 180 228 L 140 300 L 175 350" stroke="#ff3b30" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <!-- луч 2 -->
+          <path d="M 260 150 L 260 272 L 320 340 L 280 410" stroke="#ff3b30" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <!-- луч 3 -->
+          <path d="M 360 150 L 360 235 L 420 294 L 450 360" stroke="#ff3b30" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <!-- луч 4 -->
+          <path d="M 420 150 L 420 294 L 380 350" stroke="#ff3b30" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <text x="290" y="595" text-anchor="middle" font-size="20" font-weight="700" fill="#ff3b30">свет рассеивается на пузырьках — до пигмента доходит мало</text>
+        </g>
+
+        <!-- разделитель -->
+        <line x1="600" y1="70" x2="600" y2="560" stroke="#e6e6ea" stroke-width="3"/>
+
+        <!-- ===== ПРАВО: С PFD ===== -->
+        <g class="cascade-step">
+          <text x="900" y="46" text-anchor="middle" font-size="30" font-weight="700" fill="#0a84ff">С PFD</text>
+          <!-- прозрачный слой PFD -->
+          <rect x="670" y="110" width="460" height="60" rx="12" fill="url(#pfdG)" stroke="#0a84ff" stroke-width="3"/>
+          <text x="900" y="148" text-anchor="middle" font-size="20" font-weight="700" fill="#0a6bd0">прозрачный слой PFD</text>
+          <!-- ткань -->
+          <rect x="670" y="170" width="460" height="400" rx="20" fill="url(#tissueG)" stroke="#d4a373" stroke-width="3"/>
+          <!-- глубокий пигмент -->
+          <rect x="760" y="500" width="280" height="40" rx="10" fill="#2a2320"/>
+          <text x="900" y="527" text-anchor="middle" font-size="19" font-weight="700" fill="#fff">глубокий пигмент</text>
+        </g>
+
+        <!-- почти нет пузырьков (пара маленьких) -->
+        <g class="cascade-step">
+          <circle cx="820" cy="300" r="10" fill="#fff" opacity="0.6" stroke="#c9a06a" stroke-width="2"/>
+          <circle cx="980" cy="360" r="9" fill="#fff" opacity="0.6" stroke="#c9a06a" stroke-width="2"/>
+        </g>
+
+        <!-- лучи проходят прямо к пигменту -->
+        <g class="cascade-step">
+          <line x1="820" y1="90" x2="820" y2="500" stroke="#0a84ff" stroke-width="4" stroke-linecap="round"/>
+          <line x1="900" y1="90" x2="900" y2="500" stroke="#0a84ff" stroke-width="4" stroke-linecap="round"/>
+          <line x1="980" y1="90" x2="980" y2="500" stroke="#0a84ff" stroke-width="4" stroke-linecap="round"/>
+          <text x="900" y="595" text-anchor="middle" font-size="20" font-weight="700" fill="#0a84ff">свет проходит прямо — энергия доходит до пигмента</text>
+        </g>
+      </svg>
+      <div class="illus-caption" style="margin-top:20px;font-size:clamp(20px,1.5vw,28px);">
+        Слева пузырьки газа рассеивают импульс у поверхности. Справа прозрачный слой PFD убирает мутность — свет доходит до глубжележащего пигмента.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 8 — Как PFD уменьшает мутность -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Механизм действия</div>
+    <h2 class="section">Как PFD уменьшает мутность</h2>
+    <p class="lead">Собирая всё вместе: прозрачность, гидрофобность и высокая газорастворимость работают на одну задачу — вернуть среде оптическую ясность.</p>
+    <div class="steps compact" style="margin-top:6px;">
+      <div class="step yes"><span class="ic">✓</span><div><b>Растворяет газовую фазу.</b> Высокая газорастворимость PFD «съедает» микропузырьки, возникшие после импульса.</div></div>
+      <div class="step yes"><span class="ic">✓</span><div><b>Заполняет поверхность прозрачной средой.</b> Отдельная жидкая фаза PFD ложится поверх ткани и вытесняет воздух.</div></div>
+      <div class="step yes"><span class="ic">✓</span><div><b>Улучшает оптическое сопряжение.</b> Сглаживает резкие скачки показателя преломления на границах.</div></div>
+      <div class="step yes"><span class="ic">✓</span><div><b>Уменьшает рассеяние на границах «ткань–газ».</b> Меньше границ газ–ткань → меньше отражений и рассеяния.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 9 — ВЫВОД -->
+<section class="slide blue">
+  <div class="slide-inner" style="align-items:center;text-align:center;">
+    <div class="eyebrow">Вывод раздела</div>
+    <blockquote class="q" style="border-left:none;text-align:center;font-size:clamp(34px,3.8vw,58px);max-width:1500px;line-height:1.28;">
+      PFD временно <b>восстанавливает оптическую доступность</b> ткани для следующего лазерного прохода.
+      <span class="src" style="text-align:center;">Это физика границ раздела и газовой фазы — не фармакология.</span>
+    </blockquote>
+  </div>
+</section>
+<!-- ============================================================ -->
+<!-- ============ РАЗДЕЛ 03 · WHITENING И ПУТЬ К R0 ============ -->
+<!-- ============================================================ -->
+
+<!-- ---------- Слайд 1 · ДИВАЙДЕР ---------- -->
+<section class="slide red">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть III</div>
+    <div class="section-num red">03</div>
+    <h1 class="title">Immediate whitening reaction</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;max-width:1400px;">
+      Почему татуировка белеет — и почему это мешает следующему импульсу.
+    </p>
+  </div>
+</section>
+
+<!-- ---------- Слайд 2 · Что видит врач ---------- -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Наблюдение у аппарата</div>
+    <h2 class="section">Что видит врач сразу после импульса</h2>
+    <p class="lead">После <span class="term">Q-switched<span class="tip"><b>Q-switched</b> — режим лазера с наносекундными импульсами очень высокой пиковой мощности.</span></span> или пикосекундного импульса зона татуировки меняется мгновенно — ещё до того, как мы успеваем оценить результат.</p>
+    <div class="split" style="align-items:stretch;">
+      <div>
+        <div class="key-findings" style="margin-top:6px;">
+          <div class="kf"><span class="kf-bullet">1</span><div>Татуировка <b>белеет</b> — возникает whitening / frosting.</div></div>
+          <div class="kf"><span class="kf-bullet">2</span><div>Поверхность становится <b>непрозрачной</b> — сквозь неё не видно рисунок.</div></div>
+          <div class="kf"><span class="kf-bullet">3</span><div>Дальнейшая обработка <b>визуально</b> менее предсказуема.</div></div>
+          <div class="kf"><span class="kf-bullet red">4</span><div>И <b>физически</b> — следующий импульс идёт сквозь изменённую среду.</div></div>
+        </div>
+        <p style="margin-top:8px;">Whitening — не «ожог» и не «результат». Это <b>физический сигнал</b>: в ткани появилось оптическое препятствие.</p>
+      </div>
+      <div class="pcard" style="align-self:center;">
+        <div class="pimg"><img src="pfd_assets/frosting_split.png" alt="Whitening / frosting после импульса" style="width:100%;height:auto;max-height:54vh;object-fit:contain;background:#f0f0f2;display:block;"></div>
+        <div class="pcap"><b>Слева</b> — татуировка до, <b>справа</b> — whitening / frosting сразу после импульса</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ---------- Слайд 3 · Каскад внутри ткани (SVG) ---------- -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Физика процесса</div>
+    <h2 class="section">Что происходит внутри — за микросекунды</h2>
+    <div class="illus">
+      <svg viewBox="0 0 1200 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;" role="img" aria-label="Каскад из шести шагов образования газовой фазы">
+        <!-- статические соединительные стрелки (под узлами) -->
+        <g stroke="#c7c7cf" stroke-width="4" fill="none" stroke-linecap="round">
+          <path d="M 150 118 L 250 118"/>
+          <path d="M 350 118 L 450 118"/>
+          <path d="M 550 118 L 650 118"/>
+          <path d="M 750 118 L 850 118"/>
+          <path d="M 950 118 L 1050 118"/>
+        </g>
+        <g fill="#c7c7cf">
+          <path d="M 250 118 l -12 -7 v 14 z"/>
+          <path d="M 450 118 l -12 -7 v 14 z"/>
+          <path d="M 650 118 l -12 -7 v 14 z"/>
+          <path d="M 850 118 l -12 -7 v 14 z"/>
+          <path d="M 1050 118 l -12 -7 v 14 z"/>
+        </g>
+        <!-- узлы каскада -->
+        <g>
+          <g class="cascade-step">
+            <circle cx="100" cy="118" r="46" fill="#0a84ff"/>
+            <text x="100" y="130" font-size="34" font-weight="800" fill="#fff" text-anchor="middle">1</text>
+            <text x="100" y="205" font-size="21" font-weight="600" fill="#1d1d1f" text-anchor="middle"><tspan x="100">Пигмент</tspan><tspan x="100" dy="26">поглощает</tspan><tspan x="100" dy="26">энергию</tspan></text>
+          </g>
+          <g class="cascade-step">
+            <circle cx="300" cy="118" r="46" fill="#0aa8c8"/>
+            <text x="300" y="130" font-size="34" font-weight="800" fill="#fff" text-anchor="middle">2</text>
+            <text x="300" y="205" font-size="21" font-weight="600" fill="#1d1d1f" text-anchor="middle"><tspan x="300">Сверхбыстрое</tspan><tspan x="300" dy="26">расширение</tspan></text>
+          </g>
+          <g class="cascade-step">
+            <circle cx="500" cy="118" r="46" fill="#5e5ce6"/>
+            <text x="500" y="130" font-size="34" font-weight="800" fill="#fff" text-anchor="middle">3</text>
+            <text x="500" y="205" font-size="21" font-weight="600" fill="#1d1d1f" text-anchor="middle"><tspan x="500">Фотоакустические</tspan><tspan x="500" dy="26">волны</tspan></text>
+          </g>
+          <g class="cascade-step">
+            <circle cx="700" cy="118" r="46" fill="#ff9500"/>
+            <text x="700" y="130" font-size="34" font-weight="800" fill="#fff" text-anchor="middle">4</text>
+            <text x="700" y="205" font-size="21" font-weight="600" fill="#1d1d1f" text-anchor="middle"><tspan x="700">Механическая</tspan><tspan x="700" dy="26">фрагментация</tspan><tspan x="700" dy="26">пигмента</tspan></text>
+          </g>
+          <g class="cascade-step">
+            <circle cx="900" cy="118" r="46" fill="#ff2d55"/>
+            <text x="900" y="130" font-size="34" font-weight="800" fill="#fff" text-anchor="middle">5</text>
+            <text x="900" y="205" font-size="21" font-weight="600" fill="#1d1d1f" text-anchor="middle"><tspan x="900">Микрополости</tspan></text>
+          </g>
+          <g class="cascade-step">
+            <circle cx="1100" cy="118" r="46" fill="#ff3b30"/>
+            <text x="1100" y="130" font-size="34" font-weight="800" fill="#fff" text-anchor="middle">6</text>
+            <text x="1100" y="205" font-size="21" font-weight="600" fill="#1d1d1f" text-anchor="middle"><tspan x="1100">Газовая</tspan><tspan x="1100" dy="26">фаза</tspan></text>
+          </g>
+        </g>
+      </svg>
+      <div class="illus-caption">Эти микрополости и газовая фаза меняют рассеяние света, повышают <b>оптическую неоднородность</b> ткани — и именно поэтому мешают следующему импульсу дойти до глубжележащего пигмента.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ---------- Слайд 4 · OCT-наблюдение (SVG) ---------- -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Объективизация</div>
+    <h2 class="section">Whitening видно на OCT</h2>
+    <div class="illus">
+      <svg viewBox="0 0 1200 460" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;" role="img" aria-label="Схема OCT-среза кожи с гиперрефлективными пузырьками">
+        <defs>
+          <linearGradient id="pfdEpi" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#fce8d8"/>
+            <stop offset="100%" stop-color="#e9c09c"/>
+          </linearGradient>
+          <linearGradient id="pfdDerm" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#dbb085"/>
+            <stop offset="100%" stop-color="#b88858"/>
+          </linearGradient>
+          <radialGradient id="pfdBubble" cx="0.5" cy="0.4" r="0.6">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="55%" stop-color="#d8f4ff"/>
+            <stop offset="100%" stop-color="#5ac8fa"/>
+          </radialGradient>
+        </defs>
+        <!-- слои ткани -->
+        <rect x="40" y="40" width="1120" height="70" rx="8" fill="#fceddc"/>
+        <text x="60" y="82" font-size="22" font-weight="600" fill="#8b5a2b">Роговой слой</text>
+        <rect x="40" y="112" width="1120" height="150" fill="url(#pfdEpi)"/>
+        <text x="60" y="142" font-size="22" font-weight="600" fill="#5a3010">Эпидермис</text>
+        <rect x="40" y="264" width="1120" height="156" rx="8" fill="url(#pfdDerm)"/>
+        <text x="60" y="296" font-size="22" font-weight="600" fill="#4a2c10">Дерма · слой пигмента</text>
+        <!-- ось глубины -->
+        <g stroke="#9a9aa0" stroke-width="2">
+          <line x1="40" y1="40" x2="40" y2="420"/>
+        </g>
+        <text x="18" y="235" font-size="18" fill="#86868b" text-anchor="middle" transform="rotate(-90 18 235)">глубина</text>
+        <!-- гиперрефлективные пузырьки -->
+        <g>
+          <circle class="halo-pulse-blue" cx="230" cy="200" r="17" fill="url(#pfdBubble)"/>
+          <circle class="halo-pulse-blue" cx="360" cy="230" r="13" fill="url(#pfdBubble)"/>
+          <circle class="halo-pulse-blue" cx="470" cy="185" r="20" fill="url(#pfdBubble)"/>
+          <circle class="halo-pulse-blue" cx="600" cy="245" r="15" fill="url(#pfdBubble)"/>
+          <circle class="halo-pulse-blue" cx="720" cy="200" r="18" fill="url(#pfdBubble)"/>
+          <circle class="halo-pulse-blue" cx="835" cy="235" r="12" fill="url(#pfdBubble)"/>
+          <circle class="halo-pulse-blue" cx="940" cy="190" r="16" fill="url(#pfdBubble)"/>
+          <circle class="halo-pulse-blue" cx="1050" cy="230" r="14" fill="url(#pfdBubble)"/>
+          <circle class="halo-pulse-blue" cx="300" cy="300" r="11" fill="url(#pfdBubble)"/>
+          <circle class="halo-pulse-blue" cx="660" cy="315" r="13" fill="url(#pfdBubble)"/>
+          <circle class="halo-pulse-blue" cx="900" cy="305" r="12" fill="url(#pfdBubble)"/>
+        </g>
+        <!-- выноска -->
+        <g>
+          <line x1="470" y1="185" x2="560" y2="70" stroke="#0a84ff" stroke-width="2.5" stroke-dasharray="5 5"/>
+          <rect x="560" y="42" width="330" height="52" rx="12" fill="#0a84ff"/>
+          <text x="725" y="75" font-size="22" font-weight="700" fill="#fff" text-anchor="middle">гиперрефлективные пузырьки</text>
+        </g>
+      </svg>
+      <div class="illus-caption">В клиническом исследовании <span class="term">OCT<span class="tip"><b>OCT</b> — оптическая когерентная томография: неинвазивный «оптический срез» кожи.</span></span> визуализировал яркие гиперрефлективные структуры, соответствующие whitening-associated bubbles — газовым микрополостям в ткани.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ---------- Слайд 5 · Мостик · как обходили проблему ---------- -->
+<section class="slide dark">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Историческое решение</div>
+    <h1 class="title">Как обходили проблему</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;max-width:1300px;">
+      Ещё до PFD физику whitening научились «пережидать». Эта концепция называлась <span class="term">R20<span class="tip"><b>R20</b> — четыре прохода за один визит с интервалом ~20 минут между ними.</span></span>.
+    </p>
+  </div>
+</section>
+
+<!-- ---------- Слайд 6 · R20 · как работает (flow) ---------- -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Метод R20 · механика</div>
+    <h2 class="section">Пройти — подождать — пройти снова</h2>
+    <div class="flow horiz tight" style="margin-top:8px;">
+      <div class="node accent">1-й проход</div>
+      <div class="arrow"></div>
+      <div class="node warn">Ждём ~20 мин</div>
+      <div class="arrow"></div>
+      <div class="node">Whitening исчез</div>
+      <div class="arrow"></div>
+      <div class="node accent">2-й проход</div>
+      <div class="arrow"></div>
+      <div class="node warn">Снова ~20 мин</div>
+      <div class="arrow"></div>
+      <div class="node">…повтор</div>
+      <div class="arrow"></div>
+      <div class="node accent">Обычно 4 прохода</div>
+    </div>
+    <p class="lead" style="margin-top:20px;">Логика проста и честна с точки зрения физики: газовые структуры за 20 минут <b>рассасываются естественным образом</b> — ткань снова становится прозрачной, и импульс опять эффективно проникает вглубь.</p>
+  </div>
+</section>
+
+<!-- ---------- Слайд 7 · R20 · принцип и проблема ---------- -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Метод R20 · плюс и минус</div>
+    <h2 class="section">Выигрыш в результате — ценой времени</h2>
+    <div class="grid-2" style="margin-top:6px;">
+      <div class="card" style="border-top:5px solid var(--green);">
+        <div class="stat-num green" style="font-size:clamp(30px,2.6vw,46px);">Плюс</div>
+        <p style="margin-top:8px;">Несколько проходов за визит дают <b>более выраженное осветление</b>, чем один-единственный проход. Пациент за одно посещение продвигается заметно дальше.</p>
+      </div>
+      <div class="card" style="border-top:5px solid var(--red);">
+        <div class="stat-num red" style="font-size:clamp(30px,2.6vw,46px);">Минус</div>
+        <p style="margin-top:8px;">Практическая цена — <b>время</b>. Четыре прохода с 20-минутными паузами превращают сеанс в почти <b>часовую</b> процедуру.</p>
+      </div>
+    </div>
+    <div class="grid-3" style="margin-top:14px;">
+      <div class="stat-card" style="border-top:5px solid var(--orange);">
+        <div class="stat-num orange">4</div>
+        <div class="stat-label-big">прохода за визит</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--orange);">
+        <div class="stat-num orange">~20 мин</div>
+        <div class="stat-label-big">интервал между проходами</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--red);">
+        <div class="stat-num red">≈ 1 час</div>
+        <div class="stat-label-big">весь сеанс — почти целиком ожидание</div>
+      </div>
+    </div>
+    <p class="lead" style="margin-top:12px;font-size:clamp(20px,1.5vw,28px);color:var(--ink-light);">Обзор описывает R20 как метод четырёх проходов с 20-минутными интервалами для естественного разрешения whitening.</p>
+  </div>
+</section>
+
+<!-- ---------- Слайд 8 · Появление R0 ---------- -->
+<section class="slide green">
+  <div class="slide-inner">
+    <div class="eyebrow">Элегантная идея</div>
+    <h2 class="section">А что если не ждать?</h2>
+    <p class="lead big">Вместо того чтобы 20 минут ждать естественного исчезновения газовой фазы, можно <b>убрать оптическое препятствие почти сразу</b> — нанеся <span class="term">PFD<span class="tip"><b>PFD</b> — перфтордекалин: инертная жидкость, ускоряющая рассасывание газовых микрополостей.</span></span> между проходами.</p>
+    <div class="flow horiz tight" style="margin-top:14px;">
+      <div class="node">Проход</div>
+      <div class="arrow"></div>
+      <div class="node accent">PFD между проходами</div>
+      <div class="arrow"></div>
+      <div class="node">Whitening ушёл за секунды</div>
+      <div class="arrow"></div>
+      <div class="node accent">Следующий проход</div>
+    </div>
+    <p class="lead" style="margin-top:16px;">Так родился подход <span class="term">R0<span class="tip"><b>R0</b> — «нулевое ожидание»: проходы идут подряд, whitening снимается PFD за секунды.</span></span> — «нулевое ожидание». Та же физика, но без часовой паузы.</p>
+  </div>
+</section>
+
+<!-- ---------- Слайд 9 · R0 · данные Reddy ---------- -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Метод R0 · данные Reddy et al.</div>
+    <h2 class="section">Секунды вместо минут</h2>
+    <div class="grid-4" style="margin-top:4px;">
+      <div class="stat-card" style="border-top:5px solid var(--green);">
+        <div class="stat-num green">~5 сек</div>
+        <div class="stat-label-big">whitening клинически исчезает</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--teal);">
+        <div class="stat-num" style="color:var(--teal);">3–10 сек</div>
+        <div class="stat-label-big">типичный диапазон</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--blue);">
+        <div class="stat-num blue">~5 мин</div>
+        <div class="stat-label-big">общее время на несколько проходов</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--purple);">
+        <div class="stat-num purple">≈ R20</div>
+        <div class="stat-label-big">сопоставимая эффективность</div>
+      </div>
+    </div>
+    <div class="key-findings" style="margin-top:16px;">
+      <div class="kf"><span class="kf-bullet green">✓</span><div>Проходы идут <b>подряд</b>, без 20-минутных пауз — весь цикл укладывается примерно в <b>5 минут</b>.</div></div>
+      <div class="kf"><span class="kf-bullet green">✓</span><div>Осветление за визит <b>лучше</b>, чем при одном проходе — и сопоставимо с R20.</div></div>
+      <div class="kf"><span class="kf-bullet">OCT</span><div>Полное исчезновение визуализируемых структур наступает <b>значительно быстрее с PFD</b>, чем при естественном ожидании.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ---------- Слайд 10 · Таймлайн R20 vs R0 (SVG) ---------- -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Сравнение во времени</div>
+    <h2 class="section">R20 против R0 — одна и та же работа</h2>
+    <div class="illus">
+      <svg viewBox="0 0 1200 420" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;" role="img" aria-label="Таймлайн сравнения R20 и R0">
+        <!-- ==== R20 ==== -->
+        <text x="40" y="70" font-size="26" font-weight="700" fill="#ff3b30">R20 · ≈ 60 минут</text>
+        <line x1="60" y1="120" x2="1140" y2="120" stroke="#e0e0e6" stroke-width="8" stroke-linecap="round"/>
+        <!-- сегменты ожидания R20 (длинные) -->
+        <g>
+          <rect class="cascade-step" x="120" y="116" width="320" height="8" rx="4" fill="#ffb0ab"/>
+          <rect class="cascade-step" x="440" y="116" width="320" height="8" rx="4" fill="#ffb0ab"/>
+          <rect class="cascade-step" x="760" y="116" width="320" height="8" rx="4" fill="#ffb0ab"/>
+        </g>
+        <!-- проходы R20 -->
+        <g>
+          <g class="cascade-step"><circle cx="120" cy="120" r="20" fill="#ff3b30"/><text x="120" y="128" font-size="20" font-weight="800" fill="#fff" text-anchor="middle">1</text></g>
+          <g class="cascade-step"><circle cx="440" cy="120" r="20" fill="#ff3b30"/><text x="440" y="128" font-size="20" font-weight="800" fill="#fff" text-anchor="middle">2</text></g>
+          <g class="cascade-step"><circle cx="760" cy="120" r="20" fill="#ff3b30"/><text x="760" y="128" font-size="20" font-weight="800" fill="#fff" text-anchor="middle">3</text></g>
+          <g class="cascade-step"><circle cx="1080" cy="120" r="20" fill="#ff3b30"/><text x="1080" y="128" font-size="20" font-weight="800" fill="#fff" text-anchor="middle">4</text></g>
+        </g>
+        <text x="280" y="165" font-size="18" fill="#b8163d" text-anchor="middle">~20 мин</text>
+        <text x="600" y="165" font-size="18" fill="#b8163d" text-anchor="middle">~20 мин</text>
+        <text x="920" y="165" font-size="18" fill="#b8163d" text-anchor="middle">~20 мин</text>
+
+        <!-- ==== R0 ==== -->
+        <text x="40" y="270" font-size="26" font-weight="700" fill="#0f8a3a">R0 · ≈ 5 минут</text>
+        <line x1="60" y1="320" x2="1140" y2="320" stroke="#e0e0e6" stroke-width="8" stroke-linecap="round"/>
+        <!-- сегменты R0 (секунды, короткие, слева) -->
+        <g>
+          <rect class="cascade-step" x="120" y="316" width="50" height="8" rx="4" fill="#9ee7b4"/>
+          <rect class="cascade-step" x="170" y="316" width="50" height="8" rx="4" fill="#9ee7b4"/>
+          <rect class="cascade-step" x="220" y="316" width="50" height="8" rx="4" fill="#9ee7b4"/>
+        </g>
+        <!-- проходы R0 -->
+        <g>
+          <g class="cascade-step"><circle cx="120" cy="320" r="20" fill="#30d158"/><text x="120" y="328" font-size="20" font-weight="800" fill="#fff" text-anchor="middle">1</text></g>
+          <g class="cascade-step"><circle cx="170" cy="320" r="20" fill="#30d158"/><text x="170" y="328" font-size="20" font-weight="800" fill="#fff" text-anchor="middle">2</text></g>
+          <g class="cascade-step"><circle cx="220" cy="320" r="20" fill="#30d158"/><text x="220" y="328" font-size="20" font-weight="800" fill="#fff" text-anchor="middle">3</text></g>
+          <g class="cascade-step"><circle cx="270" cy="320" r="20" fill="#30d158"/><text x="270" y="328" font-size="20" font-weight="800" fill="#fff" text-anchor="middle">4</text></g>
+        </g>
+        <text x="195" y="365" font-size="18" fill="#0f8a3a" text-anchor="middle">секунды между проходами (PFD)</text>
+        <!-- пустое пространство справа — визуальный контраст -->
+        <text x="700" y="325" font-size="20" fill="#86868b" font-style="italic" text-anchor="middle">…всё остальное время визита свободно</text>
+      </svg>
+      <div class="illus-caption">Одинаковое число проходов. Разница — только в <b>длине пауз</b>: у R20 её задаёт естественное рассасывание газа, у R0 её сокращает PFD до секунд.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ---------- Слайд · График эффективности single/R20/R0 ---------- -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Эффективность за визит</div>
+    <h2 class="section">Несколько проходов осветляют сильнее одного</h2>
+    <div class="illus">
+      <img src="pfd_assets/chart_clearing.png" alt="Осветление: одиночный проход vs R20 vs R0" style="width:100%;height:auto;max-height:52vh;object-fit:contain;display:block;margin:0 auto;">
+      <div class="illus-caption">Один проход даёт меньшее осветление за визит; R20 и R0 (multiple-pass) — сопоставимо выше. Ключевой выигрыш R0 — та же эффективность, что у R20, но за минуты, а не за час.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ---------- Слайд 11 · Мостик-вывод ---------- -->
+<section class="slide blue">
+  <div class="slide-inner">
+    <div class="eyebrow">Главное из раздела</div>
+    <blockquote class="q" style="max-width:1500px;">
+      R0 не отменяет физику — он <b>ускоряет исчезновение той же газовой фазы</b>, которую R20 просто ждал двадцать минут.
+      <span class="src">Whitening — это управляемое физическое состояние ткани, а не приговор процедуре.</span>
+    </blockquote>
+  </div>
+</section>
+<!-- ===================== РАЗДЕЛ 04 · Что делает PFD. Патч vs жидкость ===================== -->
+
+<!-- Слайд 1 — ДИВАЙДЕР Часть IV -->
+<section class="slide amber">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть IV</div>
+    <div class="section-num amber">04</div>
+    <h1 class="title">Что именно делает PFD</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">И чем PFD-патч отличается от жидкого PFD.</p>
+  </div>
+</section>
+
+<!-- Слайд 2 — PFD НЕ делает (красные маркеры) -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Границы метода · 1 из 2</div>
+    <h2 class="section">Чего PFD <em>не</em> делает</h2>
+    <p class="lead">Сначала уберём частые ожидания. Важно честно очертить, что PFD физически не способен сделать — тогда его реальная роль станет понятнее.</p>
+    <div class="key-findings" style="margin-top:6px;">
+      <div class="kf"><span class="kf-bullet red">✕</span><div><b>Не растворяет</b> татуировочный пигмент.</div></div>
+      <div class="kf"><span class="kf-bullet red">✕</span><div><b>Не разрушает</b> краситель химически.</div></div>
+      <div class="kf"><span class="kf-bullet red">✕</span><div>Не превращает лазер в <b>другой лазер</b> — длина волны и импульс те же.</div></div>
+      <div class="kf"><span class="kf-bullet red">✕</span><div>Не делает <b>каждый отдельный импульс мощнее</b>.</div></div>
+      <div class="kf"><span class="kf-bullet red">✕</span><div>Не заменяет <b>правильный подбор параметров</b> процедуры.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 3 — PFD ДА делает (5 механизмов) -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Границы метода · 2 из 2</div>
+    <h2 class="section">Что PFD <em>делает</em></h2>
+    <p class="lead" style="margin-bottom:4px;">Его вклад — физический и происходит между импульсами. Два пункта здесь ключевые: механизм и клинический эффект.</p>
+    <div class="key-findings">
+      <div class="kf"><span class="kf-bullet green">1</span><div>Быстро уменьшает <b>оптическое экранирование</b> — это <b>главный механизм</b>.</div></div>
+      <div class="kf"><span class="kf-bullet">2</span><div>Растворяет и уменьшает <b>газовую фазу</b>: микропузырьки, которые мешают следующему проходу.</div></div>
+      <div class="kf"><span class="kf-bullet">3</span><div>Восстанавливает прозрачность — следующий импульс идёт через <b>менее мутную среду</b>.</div></div>
+      <div class="kf"><span class="kf-bullet green">4</span><div>Позволяет <b>multiple-pass</b> — это <b>главный клинический эффект</b>.</div></div>
+      <div class="kf"><span class="kf-bullet amber">5</span><div>Может уменьшать <b>поверхностную тепловую нагрузку</b> — этот пункт интерпретируем осторожно.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 4 — ДИВАЙДЕР-мостик: патч ≠ жидкость -->
+<section class="slide dark">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Форма имеет значение</div>
+    <h1 class="title" style="max-width:1500px;">PFD-патч и просто жидкий PFD — не одно и то же</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">Действующее вещество одно, но способ его нанести на кожу — разный. А от этого зависит стабильность процедуры.</p>
+    <div class="pcard" style="max-width:620px;margin:clamp(14px,1.6vw,26px) auto 0;">
+      <div class="pimg"><img src="pfd_assets/pfd_patch.png" alt="Прозрачный PFD-патч" style="width:100%;height:auto;max-height:42vh;object-fit:contain;background:#ffffff;display:block;"></div>
+      <div class="pcap" style="color:rgba(255,255,255,0.85);">Прозрачный PFD-infused patch — фиксированная стабильная оптическая среда</div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 5 — Патч vs жидкость (grid-2) -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Сравнение форм</div>
+    <h2 class="section">Жидкость и <span style="color:var(--blue);">PFD-infused patch</span></h2>
+    <div class="grid-2" style="margin-top:6px;">
+      <div class="card" style="border-top:5px solid var(--orange);">
+        <div class="stat-label-big" style="font-weight:700;margin-bottom:12px;">Жидкий PFD</div>
+        <div class="key-findings compact">
+          <div class="kf"><span class="kf-bullet amber">›</span><div>Исторически наносился <b>прямо на кожу</b>.</div></div>
+          <div class="kf"><span class="kf-bullet amber">›</span><div><b>Растекается</b> по поверхности.</div></div>
+          <div class="kf"><span class="kf-bullet amber">›</span><div>Трудно удержать <b>равномерный слой</b>.</div></div>
+          <div class="kf"><span class="kf-bullet amber">›</span><div>Возможны <b>неоднородности</b> среды.</div></div>
+          <div class="kf"><span class="kf-bullet amber">›</span><div>Оператор <b>постоянно контролирует</b> жидкость.</div></div>
+        </div>
+      </div>
+      <div class="card" style="border-top:5px solid var(--blue);">
+        <div class="stat-label-big" style="font-weight:700;margin-bottom:12px;">PFD-infused patch</div>
+        <div class="key-findings compact">
+          <div class="kf"><span class="kf-bullet green">✓</span><div>Прозрачная <b>полимерная / силиконовая</b> структура с PFD.</div></div>
+          <div class="kf"><span class="kf-bullet green">✓</span><div><b>Фиксированная</b> зона контакта.</div></div>
+          <div class="kf"><span class="kf-bullet green">✓</span><div><b>Стабильная оптическая среда</b>.</div></div>
+          <div class="kf"><span class="kf-bullet green">✓</span><div><b>Механическая защита</b> поверхности.</div></div>
+          <div class="kf"><span class="kf-bullet green">✓</span><div>Нет свободного растекания — <b>лазер работает через патч</b>.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 6 — Вывод раздела -->
+<section class="slide teal">
+  <div class="slide-inner">
+    <div class="eyebrow">Вывод раздела</div>
+    <blockquote class="q" style="border-left:none;font-size:clamp(30px,3.4vw,52px);max-width:1600px;line-height:1.32;">
+      Именно <b>патч</b> стал более удобной и стабильной клинической формой технологии.
+      <span class="src" style="margin-top:26px;font-size:clamp(24px,2vw,36px);color:rgba(255,255,255,0.92);">Но суть та же: <b>управление оптической средой</b> между лазером и кожей.</span>
+    </blockquote>
+  </div>
+</section>
+<!-- ==================================================================== -->
+<!-- ============ РАЗДЕЛ 05 · ДОКАЗАТЕЛЬНАЯ БАЗА (начало) ============ -->
+<!-- ==================================================================== -->
+
+<!-- ============ 05.1 — ДИВАЙДЕР ============ -->
+<section class="slide blue">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть V</div>
+    <div class="section-num">05</div>
+    <h1 class="title">Доказательная база</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;max-width:1400px;">
+      От первой работы R0 до pivotal-исследования: что именно проверяли и что получили.
+    </p>
+  </div>
+</section>
+
+<!-- ============ 05.2 — Reddy et al., 2013 ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Фундаментальная работа · R0</div>
+    <h2 class="section">Reddy et al., 2013</h2>
+    <blockquote class="q" style="font-size:clamp(22px,1.9vw,32px);line-height:1.34;">
+      «Topical perfluorodecalin resolves immediate whitening reactions and allows rapid effective multiple pass treatment of tattoos»
+      <span class="src">Reddy et al., 2013, PubMed</span>
+    </blockquote>
+    <p class="lead" style="margin-top:4px;">Именно здесь впервые описан подход R0 — нанесение PFD прямо во время процедуры.</p>
+    <div class="key-findings compact" style="margin-top:6px;">
+      <div class="kf"><span class="kf-bullet green">✓</span><div>R0 позволял <b>быстро выполнять повторные проходы</b> без ожидания.</div></div>
+      <div class="kf"><span class="kf-bullet green">✓</span><div>Whitening клинически исчезал в среднем <b>примерно за 5 секунд</b>.</div></div>
+      <div class="kf"><span class="kf-bullet green">✓</span><div>Эффективность <b>сопоставима с R20</b> — при значительно меньших затратах времени.</div></div>
+      <div class="kf"><span class="kf-bullet green">✓</span><div><b>Multiple-pass</b> оказался эффективнее, чем <b>single-pass</b>.</div></div>
+      <div class="kf"><span class="kf-bullet">Σ</span><div>Общее время обработки — <b>около 5 минут</b>.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05.3 — Biesman et al., 2015 · дизайн ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Pilot study · дизайн</div>
+    <h2 class="section">Biesman et al., 2015</h2>
+    <p class="lead">Первое сравнительное исследование PFD-патча по внутрипациентной схеме — каждая татуировка была сама себе контролем.</p>
+    <div class="grid-4" style="margin-top:6px;">
+      <div class="stat-card" style="border-top:5px solid var(--blue);">
+        <div class="stat-num blue">17</div>
+        <div class="stat-label-big">пациентов включено в исследование</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--purple);">
+        <div class="stat-num purple">½ / ½</div>
+        <div class="stat-label-big">половина татуировки — стандартный подход, половина — PFD-патч</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--teal);">
+        <div class="stat-num" style="color:var(--teal);">755 нм</div>
+        <div class="stat-label-big">Q-switched Alexandrite</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--green);">
+        <div class="stat-num green">3–4</div>
+        <div class="stat-label-big">прохода за ~5 минут на стороне PFD</div>
+      </div>
+    </div>
+    <div class="cite-row" style="margin-top:14px;"><span class="cite">Biesman et al., 2015, PubMed</span></div>
+  </div>
+</section>
+
+<!-- ============ 05.4 — Biesman et al., 2015 · результат ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Pilot study · результат</div>
+    <h2 class="section">Сторона с PFD очищалась быстрее</h2>
+    <div class="split" style="margin-top:4px;">
+      <div class="key-findings compact">
+        <div class="kf"><span class="kf-bullet green">✓</span><div>У большинства — <b>11 из 17</b> — сторона с PFD-патчем очищалась быстрее и давала выше удовлетворённость.</div></div>
+        <div class="kf"><span class="kf-bullet">!</span><div>Авторы указывали не только на <b>multiple-pass</b>, но и на другие физические факторы работы патча.</div></div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--green);text-align:center;align-items:center;">
+        <div class="stat-num green">11 / 17</div>
+        <div class="stat-label-big">пациентов — сторона с PFD-патчем предпочтительнее</div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:10px;border-left:6px solid var(--purple);">
+      <p style="margin-bottom:10px;"><b>Эффект патча — потенциально многокомпонентный:</b></p>
+      <div class="pill-row" style="justify-content:flex-start;">
+        <span class="info-pill blue">multiple-pass</span>
+        <span class="info-pill blue">optical clearing</span>
+        <span class="info-pill blue">index matching</span>
+        <span class="info-pill blue">epidermal protection</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05.5 — ДИВАЙДЕР-мостик · Pivotal 2017 ============ -->
+<section class="slide purple">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Ключевое исследование</div>
+    <div class="section-num">2017</div>
+    <h1 class="title">Pivotal trial</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;max-width:1300px;">
+      Работа, на которую чаще всего ссылаются, говоря об эффективности PFD-патча.
+    </p>
+  </div>
+</section>
+
+<!-- ============ 05.6 — Biesman et al., 2017 · дизайн ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Pivotal trial · дизайн</div>
+    <h2 class="section">Biesman et al., 2017</h2>
+    <p class="lead">Сравнение по схеме split-tattoo: одна половина татуировки лечилась обычно, вторая — через PFD-патч.</p>
+    <div class="grid-3" style="margin-top:6px;">
+      <div class="stat-card" style="border-top:5px solid var(--blue);">
+        <div class="stat-num blue">30</div>
+        <div class="stat-label-big">пациентов включено</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--purple);">
+        <div class="stat-num purple">split-tattoo</div>
+        <div class="stat-label-big">половина — обычное лечение, половина — через PFD-патч</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--teal);">
+        <div class="stat-num" style="color:var(--teal);">755 nm</div>
+        <div class="stat-label-big">лазер Q-switched Alexandrite</div>
+      </div>
+    </div>
+    <div class="cite-row" style="margin-top:14px;"><span class="cite">Biesman et al., 2017, PubMed</span></div>
+  </div>
+</section>
+
+<!-- ============ 05.7 — ГРАФИК · среднее число проходов ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Pivotal trial · ключевой результат</div>
+    <h2 class="section">Среднее число проходов за 5 минут</h2>
+    <div class="illus" style="margin-top:4px;">
+      <style>
+        /* вертикальные столбики — заполнение снизу вверх, как .risk-bar-fill */
+        .pfd-bar{ transform-box: fill-box; transform-origin: bottom center; transform: scaleY(0); }
+        .slide.active .pfd-bar{ animation: barFill-v 1.5s cubic-bezier(.2,.7,.2,1) 0.35s forwards; }
+        @keyframes barFill-v{ from{ transform: scaleY(0);} to{ transform: scaleY(1);} }
+        .slide.active .pfd-val{ animation: magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards 1.1s; }
+      </style>
+      <svg viewBox="0 0 780 440" role="img" aria-label="Среднее число проходов за 5 минут: PFD-патч 3,7 против без патча 1,4">
+        <!-- ось -->
+        <line x1="90" y1="370" x2="720" y2="370" stroke="#d2d2d7" stroke-width="3"/>
+        <!-- сетка -->
+        <line x1="90" y1="278" x2="720" y2="278" stroke="#eeeef1" stroke-width="2"/>
+        <line x1="90" y1="186" x2="720" y2="186" stroke="#eeeef1" stroke-width="2"/>
+        <line x1="90" y1="94"  x2="720" y2="94"  stroke="#eeeef1" stroke-width="2"/>
+
+        <!-- Столбик 1 — PFD-патч (3,7) : полная высота 277px (3,7/4,0 · 300) -->
+        <rect class="pfd-bar" x="180" y="93" width="170" height="277" rx="14" fill="#0a84ff"/>
+        <text class="pfd-val" x="265" y="70" text-anchor="middle" font-size="58" font-weight="800" fill="#0a84ff" font-family="-apple-system,BlinkMacSystemFont,sans-serif">3,7</text>
+        <text x="265" y="405" text-anchor="middle" font-size="27" font-weight="600" fill="#1d1d1f" font-family="-apple-system,BlinkMacSystemFont,sans-serif">PFD-патч</text>
+
+        <!-- Столбик 2 — без патча (1,4) : высота 105px (1,4/4,0 · 300) -->
+        <rect class="pfd-bar" x="460" y="265" width="170" height="105" rx="14" fill="#ff9500" style="animation-delay:.55s;"/>
+        <text class="pfd-val" x="545" y="242" text-anchor="middle" font-size="58" font-weight="800" fill="#c8770a" font-family="-apple-system,BlinkMacSystemFont,sans-serif" style="animation-delay:1.3s;">1,4</text>
+        <text x="545" y="405" text-anchor="middle" font-size="27" font-weight="600" fill="#1d1d1f" font-family="-apple-system,BlinkMacSystemFont,sans-serif">без патча</text>
+
+        <!-- значимость -->
+        <text x="405" y="435" text-anchor="middle" font-size="24" font-weight="700" fill="#0f8a3a" font-family="-apple-system,BlinkMacSystemFont,sans-serif">P &lt; 0,001</text>
+      </svg>
+      <div class="illus-caption">Biesman et al., 2017, PubMed · среднее число проходов за 5 минут: со стороной PFD-патча — заметно больше.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05.8 — Pivotal 2017 · прочие результаты ============ -->
+<section class="slide green">
+  <div class="slide-inner">
+    <div class="eyebrow">Pivotal trial · переносимость и предпочтение</div>
+    <h2 class="section">Что ещё показало исследование</h2>
+    <div class="key-findings" style="margin-top:6px;">
+      <div class="kf"><span class="kf-bullet green">✓</span><div>Меньше <b>эритемы</b> на стороне с PFD-патчем.</div></div>
+      <div class="kf"><span class="kf-bullet green">✓</span><div>Меньше <b>отёка</b>.</div></div>
+      <div class="kf"><span class="kf-bullet green">✓</span><div>Нежелательные явления носили <b>временный характер</b>.</div></div>
+      <div class="kf"><span class="kf-bullet green">✓</span><div>Через месяц <b>дисхромии не было</b>.</div></div>
+      <div class="kf"><span class="kf-bullet green">✓</span><div><b>Все 30 из 30</b> пациентов предпочли продолжать лечение с PFD-патчем.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05.9 — МИНИ-ВЫВОД по блоку ============ -->
+<section class="slide dark">
+  <div class="slide-inner" style="align-items:center;text-align:center;">
+    <div class="eyebrow">Промежуточный итог</div>
+    <blockquote class="q" style="border-left:none;text-align:center;font-size:clamp(30px,3.2vw,52px);max-width:1500px;line-height:1.32;">
+      PFD действительно меняет <b>практическую динамику</b> процедуры — быстрее проходы, лучше переносимость, выше предпочтение пациентов.
+      <span class="src" style="margin-top:24px;">Но выборки пока небольшие — к ограничениям вернёмся отдельно.</span>
+    </blockquote>
+  </div>
+</section>
+<!-- ===================== РАЗДЕЛ 05 · Современные исследования PFD (продолжение) ===================== -->
+
+<!-- Слайд 1 — Заголовок: исследование 2020 -->
+<section class="slide blue">
+  <div class="slide-inner">
+    <div class="eyebrow">Раздел 05 · Доказательная база · 1 из 10</div>
+    <h2 class="section">Исследование 2020 — температура и частицы</h2>
+    <p class="lead big" style="max-width:1600px;">
+      Одна из ключевых экспериментальных работ по PFD-патчу измеряла не «эффективность удаления», а <b>физику процедуры</b>: что происходит с поверхностью кожи и с воздухом над ней.
+    </p>
+    <div class="card" style="border-left:6px solid #fff;margin-top:10px;max-width:1600px;">
+      <div class="stat-label-big" style="font-weight:700;">Danysz et&nbsp;al., 2020</div>
+      <p style="margin-top:8px;font-style:italic;">
+        «The effect of the perfluorodecalin patch on particle emission and skin temperature during laser-induced tattoo removal»
+      </p>
+      <p style="margin-top:12px;">
+        Изучали три вещи: <b>температуру кожи</b>, <b>выброс частиц</b> в воздух и то, как на оба параметра влияет <b>PFD-патч</b>.
+      </p>
+    </div>
+    <div class="pill-row" style="justify-content:flex-start;margin-top:6px;">
+      <span class="info-pill">Температура поверхности</span>
+      <span class="info-pill">Аэрозоль и частицы</span>
+      <span class="info-pill">Nd:YAG · лазерное удаление</span>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 2 — SVG/risk-bar столбики температуры -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Раздел 05 · Результат по теплу · 2 из 10</div>
+    <h2 class="section">Прирост температуры кожи</h2>
+    <p class="lead">
+      На участках <b>с татуировкой</b> прирост температуры поверхности при использовании PFD-патча оказался примерно <b>на 40% меньше</b>, чем без патча.
+    </p>
+    <div class="illus" style="text-align:left;max-width:1500px;">
+      <div style="display:flex;flex-direction:column;gap:clamp(20px,2vw,34px);">
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;">
+            <span style="font-size:clamp(22px,1.6vw,30px);font-weight:700;color:var(--ink);">Без патча</span>
+            <span style="font-size:clamp(22px,1.6vw,30px);font-weight:800;color:var(--red);">100% прироста</span>
+          </div>
+          <div class="risk-bar">
+            <div class="risk-bar-fill" style="width:var(--bar-width);--bar-width:100%;background:linear-gradient(90deg,var(--orange),var(--red));"></div>
+          </div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;">
+            <span style="font-size:clamp(22px,1.6vw,30px);font-weight:700;color:var(--ink);">С PFD-патчем</span>
+            <span style="font-size:clamp(22px,1.6vw,30px);font-weight:800;color:#0f8a3a;">≈60% прироста</span>
+          </div>
+          <div class="risk-bar">
+            <div class="risk-bar-fill" style="width:var(--bar-width);--bar-width:60%;background:linear-gradient(90deg,var(--teal),var(--green));animation-delay:.6s;"></div>
+          </div>
+        </div>
+      </div>
+      <div class="illus-caption" style="text-align:center;">
+        <b style="color:#0f8a3a;">−40%</b> прироста температуры на татуированных участках при работе через PFD-патч.
+      </div>
+    </div>
+    <p style="margin-top:2px;color:var(--ink-light);font-size:clamp(20px,1.4vw,26px);">
+      Столбики показывают относительный прирост температуры, а не абсолютные градусы.
+    </p>
+  </div>
+</section>
+
+<!-- Слайд 3 — Частицы с ЧЕСТНОЙ оговоркой -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Раздел 05 · Результат по частицам · 3 из 10</div>
+    <h2 class="section">Выброс частиц — и где кончается доказанное</h2>
+    <div class="grid-2" style="margin-top:6px;">
+      <div class="card" style="border-left:6px solid var(--green);">
+        <div class="stat-label-big" style="font-weight:700;color:#0f8a3a;margin-bottom:10px;">Кожа БЕЗ татуировки</div>
+        <p>На нетатуированной коже PFD-патч дал <b>достоверное снижение</b> выброса частиц — эффект статистически подтверждён.</p>
+        <span class="prog good" style="margin-top:14px;">Значимо</span>
+      </div>
+      <div class="card" style="border-left:6px solid var(--orange);">
+        <div class="stat-label-big" style="font-weight:700;color:#a55c00;margin-bottom:10px;">Кожа С татуировкой</div>
+        <p>Наблюдалась <b>тенденция к ~двукратному снижению</b>, но из-за высокой вариабельности <b>статистическая значимость не была достигнута</b>.</p>
+        <span class="prog mid" style="margin-top:14px;">Тенденция, без подтверждения</span>
+      </div>
+    </div>
+    <div class="card" style="border-left:6px solid var(--red);margin-top:4px;background:rgba(255,59,48,0.04);">
+      <p style="font-weight:600;">
+        Поэтому <b>нельзя</b> говорить «доказано, что частиц в 2 раза меньше» именно для татуировки.
+        Корректная формулировка: <b>тенденция к ~2×, но без статистического подтверждения на татуированных участках</b>.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 4 — Конфликт интересов -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Раздел 05 · Критическая оценка · 4 из 10</div>
+    <h2 class="section">Конфликт интересов</h2>
+    <p class="lead">Оценивая любую работу, врач обязан смотреть не только на результат, но и на то, <b>кто и как</b> её финансировал.</p>
+    <div class="card" style="border-left:6px solid var(--orange);max-width:1600px;">
+      <div class="key-findings">
+        <div class="kf"><span class="kf-bullet amber">!</span><div>Исследование 2020&nbsp;года <b>финансировалось компанией</b>, связанной с продуктом.</div></div>
+        <div class="kf"><span class="kf-bullet amber">!</span><div>Часть авторов имела <b>связь с производителем</b> PFD-патча.</div></div>
+        <div class="kf"><span class="kf-bullet green">✓</span><div>Это <b>не делает результаты недействительными</b> — данные измерены реальным прибором.</div></div>
+        <div class="kf"><span class="kf-bullet green">✓</span><div>Но это <b>обязательно учитывается</b> при взвешивании силы вывода.</div></div>
+      </div>
+    </div>
+    <blockquote class="q" style="margin-top:8px;font-size:clamp(24px,2vw,34px);">
+      Спонсорство — не приговор данным, а <b>повод к более строгой проверке</b>.
+    </blockquote>
+  </div>
+</section>
+
+<!-- Слайд 5 — Заголовок: 2023, пикосекундные -->
+<section class="slide purple">
+  <div class="slide-inner">
+    <div class="eyebrow">Раздел 05 · Современные данные · 5 из 10</div>
+    <h2 class="section">2023 — пикосекундные лазеры</h2>
+    <div class="card" style="border-left:6px solid #fff;margin-top:6px;max-width:1600px;">
+      <div class="stat-label-big" style="font-weight:700;">Lee&nbsp;et&nbsp;al., 2023 · Республика Корея</div>
+      <p style="margin-top:8px;">Ретроспективное исследование применения R0-подхода с современными пикосекундными системами.</p>
+    </div>
+    <div class="grid-4" style="margin-top:8px;">
+      <div class="stat-card">
+        <div class="stat-num">20</div>
+        <div class="stat-label">пациентов<span style="display:block;font-size:0.7em;opacity:0.85;">ретроспективно</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="font-size:clamp(30px,2.6vw,48px);">picosecond<br>Nd:YAG</div>
+        <div class="stat-label">пикосекундная система</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="font-size:clamp(26px,2.2vw,40px);">532 / 730<br>785 / 1064</div>
+        <div class="stat-label">длины волн, нм</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">4</div>
+        <div class="stat-label">процедуры<span style="display:block;font-size:0.7em;opacity:0.85;">интервал 4 недели</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 6 — Lee 2023 результаты -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Раздел 05 · Lee 2023 · результаты · 6 из 10</div>
+    <h2 class="section">Что получили</h2>
+    <div class="grid-2" style="margin-top:4px;">
+      <div class="stat-card" style="border-top:5px solid var(--green);">
+        <div class="stat-num green">6</div>
+        <div class="stat-label-big">пациентов — <b>&gt;90% clearance</b></div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--blue);">
+        <div class="stat-num blue">14</div>
+        <div class="stat-label-big">пациентов — <b>70–90% clearance</b></div>
+      </div>
+    </div>
+    <div class="key-findings compact" style="margin-top:10px;">
+      <div class="kf"><span class="kf-bullet amber">›</span><div>Побочные — <b>временные пузыри</b> и пигментные изменения.</div></div>
+      <div class="kf"><span class="kf-bullet green">✓</span><div><b>Долгосрочного рубцевания не наблюдали.</b></div></div>
+    </div>
+    <div class="card" style="border-left:6px solid var(--purple);margin-top:6px;">
+      <p style="font-weight:600;">
+        Значение: технология <b>R0</b> вышла за пределы наносекундных Q-switched систем — её исследуют и с <b>пикосекундными</b> лазерами.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 7 — Lee 2023 ограничения -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Раздел 05 · Lee 2023 · ограничения · 7 из 10</div>
+    <h2 class="section">Насколько сильны эти данные</h2>
+    <p class="lead">Результат обнадёживает, но дизайн исследования задаёт границы того, что из него можно выносить.</p>
+    <div class="card" style="border-left:6px solid var(--red);max-width:1600px;">
+      <div class="key-findings">
+        <div class="kf"><span class="kf-bullet red">✕</span><div><b>Маленькая выборка</b> — всего 20 пациентов.</div></div>
+        <div class="kf"><span class="kf-bullet red">✕</span><div><b>Ретроспективный</b> дизайн, а не проспективный RCT.</div></div>
+        <div class="kf"><span class="kf-bullet red">✕</span><div>Нет идеального прямого <b>split-tattoo контроля</b> (одна татуировка — половина с PFD, половина без).</div></div>
+        <div class="kf"><span class="kf-bullet amber">!</span><div>Результаты <b>нельзя автоматически переносить</b> на все пигменты и все лазеры.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 8 — Заголовок: самые свежие данные 2025 -->
+<section class="slide teal">
+  <div class="slide-inner">
+    <div class="eyebrow">Раздел 05 · Самые свежие данные · 8 из 10</div>
+    <h2 class="section">2025 — ускоренное многопроходное удаление</h2>
+    <p class="lead big" style="max-width:1600px;">
+      Современная работа рассматривала, как ускорить удаление за один визит — разные способы «уложить» несколько проходов.
+    </p>
+    <div class="grid-3" style="margin-top:6px;">
+      <div class="stat-card"><div class="stat-label-big" style="font-weight:700;">Single-pass</div><span class="sub">традиционный один проход</span></div>
+      <div class="stat-card"><div class="stat-label-big" style="font-weight:700;">Multiple-pass</div><span class="sub">последовательные проходы</span></div>
+      <div class="stat-card"><div class="stat-label-big" style="font-weight:700;">Диаскопия / компрессия</div><span class="sub">компрессионные подходы</span></div>
+    </div>
+    <div class="card" style="border-left:6px solid #fff;margin-top:6px;max-width:1600px;">
+      <p>
+        В обсуждении <b>R20</b> и <b>R0</b> рассматриваются уже как <b>сформировавшиеся методы</b>:
+        <b>R0 = topical PFD</b> для быстрого разрешения ash-white response между проходами.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 9 — Честный вывод по литературе -->
+<section class="slide amber">
+  <div class="slide-inner">
+    <div class="eyebrow">Раздел 05 · Честный вывод · 9 из 10</div>
+    <blockquote class="q" style="border-left:none;font-size:clamp(28px,3vw,46px);max-width:1650px;line-height:1.34;">
+      Последние годы <b>не принесли крупных новых RCT</b>, которые перевернули бы понимание PFD.
+      <span class="src" style="margin-top:24px;font-size:clamp(22px,1.8vw,32px);color:rgba(255,255,255,0.92);">
+        Скорее: <b>PFD / R0 стал устоявшимся техническим подходом</b>, а исследования продолжают искать <b>другие способы решить ту же физическую задачу</b> — временное оптическое экранирование после лазерного импульса.
+      </span>
+    </blockquote>
+    <p class="lead" style="margin-top:8px;max-width:1600px;">
+      Это важно сказать студентам честно: зрелость метода — не то же самое, что новая волна доказательств.
+    </p>
+  </div>
+</section>
+
+<!-- Слайд 10 — Мини-резюме блока -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Раздел 05 · Итог блока · 10 из 10</div>
+    <h2 class="section">Что доказано твёрдо, а что — на уровне тенденций</h2>
+    <div class="grid-2" style="margin-top:6px;">
+      <div class="card" style="border-left:6px solid var(--green);">
+        <div class="stat-label-big" style="font-weight:700;color:#0f8a3a;margin-bottom:12px;">Доказано твёрдо</div>
+        <div class="key-findings compact">
+          <div class="kf"><span class="kf-bullet green">✓</span><div><b>Быстрое исчезновение whitening</b> после нанесения PFD.</div></div>
+          <div class="kf"><span class="kf-bullet green">✓</span><div><b>Multiple-pass</b> за один визит становится реальным.</div></div>
+          <div class="kf"><span class="kf-bullet green">✓</span><div><b>Меньше проходов-ожидания</b> между импульсами.</div></div>
+        </div>
+      </div>
+      <div class="card" style="border-left:6px solid var(--orange);">
+        <div class="stat-label-big" style="font-weight:700;color:#a55c00;margin-bottom:12px;">Пока на уровне тенденций</div>
+        <div class="key-findings compact">
+          <div class="kf"><span class="kf-bullet amber">~</span><div><b>Снижение выброса частиц</b> на татуировке (не значимо).</div></div>
+          <div class="kf"><span class="kf-bullet amber">~</span><div><b>«Защита» эпидермиса</b> — правдоподобна, но не доказана строго.</div></div>
+          <div class="kf"><span class="kf-bullet amber">~</span><div><b>Сокращение числа сеансов</b> — данные ограничены.</div></div>
+        </div>
+      </div>
+    </div>
+    <blockquote class="q" style="margin-top:8px;font-size:clamp(24px,2vw,34px);">
+      Разделять эти две колонки — и есть <b>профессиональная честность</b> в разговоре о PFD.
+    </blockquote>
+  </div>
+</section>
+<!-- ===================== РАЗДЕЛ 06 · СИНТЕЗ (часть 1) ===================== -->
+
+<!-- Слайд 1 — ДИВАЙДЕР Часть VI -->
+<section class="slide green">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть VI</div>
+    <div class="section-num green">06</div>
+    <h1 class="title">Синтез и методология</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">Что мы знаем, чего не знаем — и как встроить PFD в свою практику.</p>
+  </div>
+</section>
+
+<!-- Слайд 2 — Сравнительная таблица методов -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Три подхода к multiple-pass</div>
+    <h2 class="section">Single pass, R20 и R0 / PFD</h2>
+    <p class="lead">Все три метода отвечают на один вопрос — как за визит воздействовать на пигмент несколько раз, не упираясь в whitening. Отличается только цена этого решения по времени.</p>
+    <table class="cmp">
+      <thead>
+        <tr>
+          <th>Метод</th>
+          <th>Проходы</th>
+          <th>Интервал</th>
+          <th>Время</th>
+          <th>Проблема</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="cmp"><b>Single pass</b></td>
+          <td class="cmp">1</td>
+          <td class="cmp">—</td>
+          <td class="cmp">минуты</td>
+          <td class="cmp">меньше воздействия за визит</td>
+        </tr>
+        <tr>
+          <td class="cmp"><b>R20</b></td>
+          <td class="cmp">3–4</td>
+          <td class="cmp">~20 минут</td>
+          <td class="cmp"><span class="pill lo">до ~60 минут</span></td>
+          <td class="cmp">долго</td>
+        </tr>
+        <tr>
+          <td class="cmp"><b>R0 / PFD</b></td>
+          <td class="cmp">3–4</td>
+          <td class="cmp">секунды</td>
+          <td class="cmp"><span class="pill hi">~5 минут</span></td>
+          <td class="cmp">зависит от техники и правильных параметров</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="key-findings compact" style="margin-top:clamp(10px,1vw,16px);">
+      <div class="kf"><span class="kf-bullet green">S</span><div><b>Single pass</b> — самый простой: один проход, минимум логистики.</div></div>
+      <div class="kf"><span class="kf-bullet">20</span><div><b>R20</b> использует физиологическое исчезновение газовой фазы — просто ждём ~20 минут между проходами.</div></div>
+      <div class="kf"><span class="kf-bullet purple">0</span><div><b>R0</b> использует физико-химические свойства PFD, чтобы ускорить это исчезновение до секунд.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 3 — Что понимаем, а чего не знаем -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Честность модели</div>
+    <h2 class="section">Что мы точно НЕ знаем</h2>
+    <p class="lead">Разделим уверенно установленное и то, что звучит логично, но пока не доказано именно для удаления татуировок.</p>
+    <div class="grid-2">
+      <div class="stat-card">
+        <div class="eyebrow" style="color:var(--green);">Понимаем достаточно хорошо</div>
+        <div class="key-findings compact" style="margin-top:clamp(8px,0.8vw,14px);">
+          <div class="kf"><span class="kf-bullet green">1</span><div>PFD <b>ускоряет</b> визуальное исчезновение whitening.</div></div>
+          <div class="kf"><span class="kf-bullet green">2</span><div>Позволяет выполнить <b>multiple-pass</b> за короткое время.</div></div>
+          <div class="kf"><span class="kf-bullet green">3</span><div>Улучшает <b>оптическую доступность</b> для следующих проходов.</div></div>
+          <div class="kf"><span class="kf-bullet green">4</span><div>Может уменьшать <b>поверхностный тепловой</b> эффект.</div></div>
+          <div class="kf"><span class="kf-bullet green">5</span><div>Может снижать <b>выброс частиц</b> и аэрозоля.</div></div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="eyebrow" style="color:#ffd69a;">Недостаточно доказано</div>
+        <div class="key-findings compact" style="margin-top:clamp(8px,0.8vw,14px);">
+          <div class="kf"><span class="kf-bullet red">1</span><div>Что PFD существенно меняет долгосрочную <b>иммунологическую элиминацию</b> пигмента.</div></div>
+          <div class="kf"><span class="kf-bullet red">2</span><div>Что он сам <b>стимулирует макрофаги</b>.</div></div>
+          <div class="kf"><span class="kf-bullet red">3</span><div>Что кислородорастворимость PFD <b>улучшает заживление</b> после удаления тату.</div></div>
+          <div class="kf"><span class="kf-bullet red">4</span><div>Что multiple-pass <b>всегда</b> уменьшает общее число сеансов.</div></div>
+          <div class="kf"><span class="kf-bullet red">5</span><div>Что метод одинаково эффективен для <b>всех цветов</b>.</div></div>
+          <div class="kf"><span class="kf-bullet red">6</span><div>Что безопасность одинакова для <b>всех типов кожи</b> и всех пикосекундных лазеров.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 4 — Нелинейность проходов -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Вопрос к аудитории</div>
+    <h2 class="section">Почему 4 прохода — это НЕ просто 4× энергии?</h2>
+    <p class="lead">После первого прохода ткань уже не та, что была. Каждый следующий импульс встречает изменённую среду — и меняет её снова. После первого прохода меняются:</p>
+    <div class="key-findings compact">
+      <div class="kf"><span class="kf-bullet">1</span><div>Состояние <b>пигмента</b>.</div></div>
+      <div class="kf"><span class="kf-bullet">2</span><div>Размер <b>частиц</b>.</div></div>
+      <div class="kf"><span class="kf-bullet">3</span><div><b>Газовая фаза</b> в ткани.</div></div>
+      <div class="kf"><span class="kf-bullet">4</span><div><b>Акустическая</b> среда.</div></div>
+      <div class="kf"><span class="kf-bullet">5</span><div>Оптическое <b>рассеяние</b>.</div></div>
+      <div class="kf"><span class="kf-bullet amber">6</span><div><b>Температура</b> зоны.</div></div>
+      <div class="kf"><span class="kf-bullet amber">7</span><div>Состояние <b>эпидермиса</b>.</div></div>
+      <div class="kf"><span class="kf-bullet amber">8</span><div>Доступность <b>глубжележащего</b> пигмента.</div></div>
+    </div>
+    <div class="eqn boxed" style="margin-top:clamp(10px,1vw,16px);">
+      <div class="expr">
+        <span class="t-blue">эффект</span>
+        <span class="op">≠</span>
+        <span class="t-purple">проходы</span>
+        <span class="op">×</span>
+        <span>эффект одного прохода</span>
+      </div>
+      <div class="cap">PFD меняет именно эту промежуточную среду — а не просто добавляет ещё одну порцию энергии.</div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 5 — Защита эпидермиса: аккуратно -->
+<section class="slide amber">
+  <div class="slide-inner">
+    <div class="eyebrow">Осторожно с формулировками</div>
+    <h2 class="section">«Защищает ли PFD эпидермис»?</h2>
+    <p class="lead big">В исследованиях с PFD-патчем описывали меньшую эритему, меньший отёк и потенциально меньший рост температуры поверхности.</p>
+    <div class="grid-2">
+      <div class="stat-card">
+        <div class="eyebrow" style="color:#ffb3ab;">Так говорить нельзя</div>
+        <p style="margin-top:clamp(6px,0.6vw,10px);">«PFD <b>защищает</b> эпидермис от лазера». Абсолютной защиты нет — энергия всё равно проходит через кожу, и повреждение при неверных параметрах возможно.</p>
+      </div>
+      <div class="stat-card">
+        <div class="eyebrow" style="color:#9df0ba;">Так корректно</div>
+        <p style="margin-top:clamp(6px,0.6vw,10px);">PFD-патч может <b>менять распределение</b> поверхностной тепловой и механической нагрузки и <b>уменьшать некоторые признаки</b> эпидермального повреждения.</p>
+      </div>
+    </div>
+    <blockquote class="q" style="border-left:none;text-align:center;margin:clamp(8px,1vw,16px) auto 0;max-width:1500px;font-size:clamp(26px,2.4vw,40px);">
+      Это тот же язык, что и во всей лекции: не «защита», а <b>управление нагрузкой</b> — контроль тепловой и воспалительной цены процедуры.
+      <span class="src" style="margin-top:20px;">© В. Микрюков, 2026</span>
+    </blockquote>
+  </div>
+</section>
+<!-- ===================== РАЗДЕЛ 09 · Авторская методология, практика, итог ===================== -->
+
+<!-- Слайд 1 — АВТОРСКИЙ интро: PFD в методологии контроля нагрузки -->
+<section class="slide purple">
+  <div class="slide-inner">
+    <div class="eyebrow">Авторский взгляд · © В. Микрюков, 2026</div>
+    <h2 class="section">PFD в методологии контроля нагрузки</h2>
+    <p class="lead big">PFD правильнее понимать не как «патч, который делает процедуру безопаснее сам по себе».</p>
+    <blockquote class="q" style="border-left:none;max-width:1500px;">
+      PFD — это <b>инструмент изменения кинетики доставки лазерной нагрузки</b>: он меняет не саму дозу, а то, <b>как во времени</b> эта доза приходит в ткань.
+      <span class="src">© В. Микрюков, 2026</span>
+    </blockquote>
+    <p class="lead" style="margin-top:6px;">Отсюда — и его сила, и его главный риск. Разберём обе стороны.</p>
+  </div>
+</section>
+
+<!-- Слайд 2 — ДВЕ ЦЕПОЧКИ рядом: без PFD / с PFD -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Кинетика доставки нагрузки</div>
+    <h2 class="section">Две траектории одной процедуры</h2>
+    <div class="grid-2" style="margin-top:4px;">
+      <div>
+        <p class="lead" style="text-align:center;margin-bottom:10px;font-weight:600;">Без PFD</p>
+        <div class="flow tight">
+          <div class="node">Лазерный импульс</div>
+          <div class="arrow"></div>
+          <div class="node">Поглощение пигментом</div>
+          <div class="arrow"></div>
+          <div class="node">Фототермическое / фотоакустическое воздействие</div>
+          <div class="arrow"></div>
+          <div class="node">Газовые структуры в ткани</div>
+          <div class="arrow"></div>
+          <div class="node">Оптическое экранирование</div>
+          <div class="arrow"></div>
+          <div class="node bad">Вынужденная пауза</div>
+        </div>
+      </div>
+      <div>
+        <p class="lead" style="text-align:center;margin-bottom:10px;font-weight:600;">С PFD</p>
+        <div class="flow tight">
+          <div class="node">Лазерный импульс</div>
+          <div class="arrow"></div>
+          <div class="node">Поглощение пигментом</div>
+          <div class="arrow"></div>
+          <div class="node">Фрагментация пигмента</div>
+          <div class="arrow"></div>
+          <div class="node">Газовая фаза</div>
+          <div class="arrow"></div>
+          <div class="node">Быстрое уменьшение газовой фазы</div>
+          <div class="arrow"></div>
+          <div class="node">Восстановление прозрачности</div>
+          <div class="arrow"></div>
+          <div class="node accent">Следующий проход</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 3 — КЛЮЧЕВОЙ ТЕЗИС -->
+<section class="slide blue">
+  <div class="slide-inner" style="align-items:center;text-align:center;">
+    <div class="eyebrow">Ключевой тезис</div>
+    <blockquote class="q" style="border-left:none;text-align:center;font-size:clamp(32px,3.6vw,56px);max-width:1600px;line-height:1.3;">
+      PFD <b>не уменьшает автоматически</b> суммарную биологическую нагрузку на ткань.<br>
+      Он позволяет <b>увеличить плотность событий во времени</b> — уложить больше проходов в короткий промежуток.
+      <span class="src" style="margin-top:26px;">© В. Микрюков, 2026</span>
+    </blockquote>
+  </div>
+</section>
+
+<!-- Слайд 4 — ПРЕДУПРЕЖДЕНИЕ -->
+<section class="slide red">
+  <div class="slide-inner">
+    <div class="eyebrow">Важное предупреждение</div>
+    <h2 class="section">Плотность нагрузки — это ответственность</h2>
+    <p class="lead">Если специалист делает 4 агрессивных прохода подряд, думая «патч защищает кожу», он создаёт <b>другую</b> проблему:</p>
+    <div class="key-findings" style="margin-top:4px;">
+      <div class="kf"><span class="kf-bullet red">1</span><div><b>Кумуляция повреждения</b> — эффекты проходов складываются.</div></div>
+      <div class="kf"><span class="kf-bullet red">2</span><div><b>Усиление воспалительной нагрузки</b> на ткань.</div></div>
+      <div class="kf"><span class="kf-bullet red">3</span><div><b>Превышение регенеративного ресурса</b> ткани.</div></div>
+    </div>
+    <blockquote class="q" style="border-left:none;margin-top:10px;max-width:1500px;">
+      PFD — инструмент управления оптической средой, а <b>не индульгенция</b> для повышения энергии.
+      <span class="src">© В. Микрюков, 2026</span>
+    </blockquote>
+  </div>
+</section>
+
+<!-- Слайд 5 — ДИВАЙДЕР: Практический алгоритм -->
+<section class="slide dark">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Раздел</div>
+    <div class="section-num">09</div>
+    <h1 class="title">Практический алгоритм</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">Как встроить PFD в процедуру осознанно — по шагам.</p>
+  </div>
+</section>
+
+<!-- Слайд 6 — АЛГОРИТМ (5 этапов) -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Пошаговый разбор</div>
+    <h2 class="section">Алгоритм работы с PFD</h2>
+    <div class="steps compact" style="margin-top:4px;">
+      <div class="step"><span class="n">1</span><div><b>Оценка.</b> Цвет, плотность, глубина, тип пигмента, давность, рубцовые изменения, тип кожи, история осложнений.</div></div>
+      <div class="step"><span class="n">2</span><div><b>Первый лазерный проход.</b> На адекватных, а не максимальных параметрах.</div></div>
+      <div class="step"><span class="n">3</span><div><b>Оценка конечной реакции.</b> Не «стало максимально белым — отлично», а: адекватна ли реакция? есть ли чрезмерная эпидермальная травма, кровоизлияние, пузыри? соответствует ли реакция плотности пигмента?</div></div>
+      <div class="step"><span class="n">4</span><div><b>PFD.</b> Прикладываем и ждём восстановления визуальной прозрачности ткани.</div></div>
+      <div class="step"><span class="n">5</span><div><b>Повторный проход.</b> Только после того, как среда снова стала прозрачной.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 7 — Нюанс к алгоритму -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Нюанс к шагу 5</div>
+    <h2 class="section">Второй проход — не копия первого</h2>
+    <div class="card" style="margin-top:4px;">
+      <p style="margin:0;">Параметры следующего прохода <b>не обязаны</b> быть идентичны первому. После первого прохода:</p>
+      <div class="key-findings compact" style="margin-top:14px;">
+        <div class="kf"><span class="kf-bullet">1</span><div>Пигмент уже <b>изменён</b> — фрагментирован, перераспределён.</div></div>
+        <div class="kf"><span class="kf-bullet">2</span><div>Оптические свойства ткани <b>другие</b>.</div></div>
+        <div class="kf"><span class="kf-bullet">3</span><div>Поглощение и распределение частиц <b>изменились</b>.</div></div>
+      </div>
+    </div>
+    <p class="lead" style="margin-top:8px;">Поэтому идеальная стратегия может быть <b>не</b> «4 одинаковых прохода». Это перспективное направление для будущих исследований.</p>
+  </div>
+</section>
+
+<!-- Слайд 8 — Где PFD особенно интересен -->
+<section class="slide green">
+  <div class="slide-inner">
+    <div class="eyebrow">Показания · где PFD раскрывается</div>
+    <h2 class="section">Где PFD особенно интересен</h2>
+    <div class="key-findings" style="margin-top:4px;">
+      <div class="kf"><span class="kf-bullet green">✓</span><div><b>Плотные чёрные татуировки</b> — сильная whitening-реакция.</div></div>
+      <div class="kf"><span class="kf-bullet green">✓</span><div><b>Тёмно-синие пигменты.</b></div></div>
+      <div class="kf"><span class="kf-bullet green">✓</span><div><b>Большие площади</b> — где важна скорость работы.</div></div>
+      <div class="kf"><span class="kf-bullet green">✓</span><div><b>Ситуации, где multiple-pass действительно обоснован.</b></div></div>
+      <div class="kf"><span class="kf-bullet green">✓</span><div><b>Опытные специалисты</b>, понимающие кумулятивную нагрузку.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 9 — Где нельзя автоматически переносить -->
+<section class="slide amber">
+  <div class="slide-inner">
+    <div class="eyebrow">Границы применимости</div>
+    <h2 class="section">Где нельзя переносить автоматически</h2>
+    <p class="lead">Здесь физика whitening и поведение пигмента другие — опыт с чёрными тату не переносится напрямую.</p>
+    <div class="key-findings" style="margin-top:4px;">
+      <div class="kf"><span class="kf-bullet amber">1</span><div><b>Красные, жёлтые, белые пигменты.</b></div></div>
+      <div class="kf"><span class="kf-bullet amber">2</span><div><b>Сложные смешанные</b> составы.</div></div>
+      <div class="kf"><span class="kf-bullet amber">3</span><div><b>Косметический татуаж</b> с TiO₂ и Fe₂O₃.</div></div>
+      <div class="kf"><span class="kf-bullet amber">4</span><div><b>Современные органические пигменты.</b></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 10 — PFD не решает химическую трансформацию пигмента -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Чего PFD не делает</div>
+    <h2 class="section">PFD не отменяет химию пигмента</h2>
+    <div class="card" style="border-left:6px solid var(--red);margin-top:4px;">
+      <p style="margin:0;">Некоторые пигменты — например <b>Fe₂O₃</b> и <b>TiO₂</b> — после лазерного импульса могут <b>менять химическое состояние</b>: спектр поглощения, цвет.</p>
+      <p style="margin-top:14px;">PFD управляет <b>оптической средой</b> вокруг пигмента. Но саму эту <b>физико-химическую трансформацию</b> частицы он <b>не отменяет</b> — здесь патч бессилен.</p>
+    </div>
+    <p class="lead" style="margin-top:8px;font-size:clamp(20px,1.5vw,28px);color:var(--ink-light);">Поэтому на татуаже с оксидами железа и титана осторожность важнее скорости.</p>
+  </div>
+</section>
+
+<!-- Слайд · Иллюстрация числа сеансов (с оговоркой) -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Иллюстрация · читать критически</div>
+    <h2 class="section">Обещание «меньше сеансов» — где нужна осторожность</h2>
+    <div class="split" style="align-items:center;">
+      <div class="illus" style="margin:0;">
+        <img src="pfd_assets/chart_sessions.png" alt="Прогноз числа сеансов против R0" style="width:100%;height:auto;max-height:46vh;object-fit:contain;display:block;margin:0 auto;">
+      </div>
+      <div>
+        <div class="card" style="border-left:5px solid #d97000;">
+          <p>Такие сравнения встречаются: прогноз по <span class="term">шкале Кирби-Десаи<span class="tip"><b>Шкала Кирби-Десаи</b> — балльная система прогноза числа сеансов для удаления татуировки.</span></span> против фактического числа сеансов с R0. Но это <b>иллюстративное сопоставление</b>, а не результат контролируемого RCT.</p>
+        </div>
+        <p style="margin-top:10px;">Убедительных доказательств, что R0 <b>стабильно</b> сокращает число сеансов на конкретный процент, пока недостаточно — об этом прямо на следующем слайде.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 11 — ОГРАНИЧЕНИЯ доказательной базы -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Честно о доказательствах</div>
+    <h2 class="section">Ограничения доказательной базы</h2>
+    <div class="key-findings compact" style="margin-top:4px;">
+      <div class="kf"><span class="kf-bullet">1</span><div><b>Маленькие исследования</b> — 17 / 22 / 30 пациентов.</div></div>
+      <div class="kf"><span class="kf-bullet">2</span><div><b>Разные лазеры</b> — ruby, Nd:YAG, Alexandrite; nanosecond и picosecond.</div></div>
+      <div class="kf"><span class="kf-bullet">3</span><div><b>Разные типы татуировок.</b></div></div>
+      <div class="kf"><span class="kf-bullet amber">4</span><div><b>Возможный конфликт интересов</b> (Danysz, 2020).</div></div>
+      <div class="kf"><span class="kf-bullet amber">5</span><div><b>Недостаток крупных долгосрочных RCT.</b></div></div>
+    </div>
+    <p class="lead" style="margin-top:8px;">Поэтому нет доказательства, что «PFD гарантированно сокращает число сеансов на X %». Есть обоснованный механизм и обнадёживающие ранние данные — не более.</p>
+  </div>
+</section>
+
+<!-- Слайд 12 — ИТОГ: 7 механизмов -->
+<section class="slide green">
+  <div class="slide-inner">
+    <div class="eyebrow">Синтез</div>
+    <h2 class="section">PFD — средство управления средой</h2>
+    <p class="lead big">Не средство удаления пигмента, а <b>средство управления средой удаления пигмента</b>. Семь его механизмов:</p>
+    <div class="key-findings compact" style="margin-top:4px;">
+      <div class="kf"><span class="kf-bullet green">1</span><div><b>Газорастворимость</b> — растворяет газовую фазу.</div></div>
+      <div class="kf"><span class="kf-bullet green">2</span><div><b>Быстрое уменьшение whitening.</b></div></div>
+      <div class="kf"><span class="kf-bullet green">3</span><div><b>Optical clearing</b> — восстановление прозрачности.</div></div>
+      <div class="kf"><span class="kf-bullet green">4</span><div><b>Изменение интерфейса</b> лазер–кожа.</div></div>
+      <div class="kf"><span class="kf-bullet green">5</span><div><b>Возможность multiple-pass</b> за короткое время.</div></div>
+      <div class="kf"><span class="kf-bullet green">6</span><div><b>Потенциальное уменьшение</b> поверхностной тепловой нагрузки.</div></div>
+      <div class="kf"><span class="kf-bullet green">7</span><div><b>Возможное уменьшение</b> выброса частиц.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 13 — Двойной тезис-итог -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Две стороны одного эффекта</div>
+    <h2 class="section">Что PFD даёт и чего требует</h2>
+    <div class="grid-2" style="margin-top:4px;">
+      <div class="card" style="border-left:6px solid var(--green);">
+        <div class="eyebrow" style="color:#0f8a3a;">Главный эффект</div>
+        <blockquote class="q" style="border-left:none;padding:8px 0 0;font-size:clamp(26px,2.2vw,38px);">
+          Превращает <b>20-минутное ожидание</b> между проходами в <b>секунды</b>.
+        </blockquote>
+      </div>
+      <div class="card" style="border-left:6px solid var(--orange);">
+        <div class="eyebrow" style="color:#a55c00;">Одновременно</div>
+        <blockquote class="q" style="border-left:none;padding:8px 0 0;font-size:clamp(26px,2.2vw,38px);">
+          Позволяет концентрировать <b>бо́льшую лазерную нагрузку</b> в короткий промежуток — а значит, требует <b>более точного контроля</b> суммарной воспалительной нагрузки.
+        </blockquote>
+      </div>
+    </div>
+    <p class="lead" style="margin-top:10px;text-align:center;color:var(--ink-light);font-size:clamp(18px,1.3vw,24px);">© В. Микрюков, 2026</p>
+  </div>
+</section>
+
+<!-- Слайд 14 — ФИНАЛ -->
+<section class="slide dark">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Итог лекции</div>
+    <h1 class="hero" style="font-size:clamp(48px,5.6vw,92px);">PFD управляет <b>средой</b> —<br>не отменяет <b>физиологию</b></h1>
+    <p class="lead big" style="margin:clamp(14px,1.8vw,26px) auto 0;max-width:1500px;">
+      Конечная цель остаётся прежней — <b>максимальная селективность</b> и контроль суммарной нагрузки. PFD расширяет возможности процедуры, но не снимает ответственности за дозу.
+    </p>
+    <div class="pill-row" style="margin-top:clamp(16px,2vw,28px);">
+      <span class="info-pill">Оптическая среда</span>
+      <span class="info-pill">Кинетика нагрузки</span>
+      <span class="info-pill">Multiple-pass</span>
+      <span class="info-pill">Контроль воспаления</span>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 15 — ЛИТЕРАТУРА -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Источники</div>
+    <h2 class="section">Литература</h2>
+    <div class="ref-grid" style="margin-top:6px;">
+      <div class="ref"><div><b>1. Reddy et al., 2013</b> — Topical perfluorodecalin resolves immediate whitening reactions… (фундамент метода R0)</div><span class="lbl">PubMed</span></div>
+      <div class="ref"><div><b>2. Biesman et al., 2015</b> — Rapid, high-fluence multi-pass QS laser treatment with a transparent PFD-infused patch (pilot)</div><span class="lbl">PubMed</span></div>
+      <div class="ref"><div><b>3. Biesman et al., 2017</b> — Evaluation of a transparent PFD-infused patch… a pivotal trial (30 пациентов, 3,7 против 1,4)</div><span class="lbl">PubMed</span></div>
+      <div class="ref"><div><b>4. Danysz et al., 2020</b> — Effect of the PFD patch on particle emission and skin temperature</div><span class="lbl">PubMed</span></div>
+      <div class="ref"><div><b>5. Lee et al., 2023</b> — Therapeutic effect of the R0 method on tattoo removal (пикосекундный Nd:YAG)</div><span class="lbl">PubMed</span></div>
+      <div class="ref"><div><b>6. 2025</b> — Comparative efficacy… single-shot vs two successive pass and diascopy (QS Nd:YAG)</div><span class="lbl">PubMed</span></div>
+      <div class="ref"><div><b>7. Обзор</b> — Perfluorocarbon-based oxygen carriers: from physics to physiology (физика PFC)</div><span class="lbl">PubMed</span></div>
+    </div>
+  </div>
+</section>
+</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const progressFill = document.getElementById('progressFill');
+let idx = 0;
+const total = slides.length;
+
+function setSlide(i){
+  i = Math.max(0, Math.min(total-1, i));
+  slides[idx].classList.remove('active');
+  slides[i].classList.add('active');
+  idx = i;
+  progressFill.style.width = ((i+1)/total*100) + '%';
+  if(i === 0) location.hash = '';
+  else location.hash = '#s' + (i+1);
+}
+
+document.addEventListener('keydown', (e)=>{
+  if(e.target.classList && e.target.classList.contains('term')) return;
+  if(e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown'){ e.preventDefault(); setSlide(idx+1); }
+  else if(e.key === 'ArrowLeft' || e.key === 'PageUp'){ e.preventDefault(); setSlide(idx-1); }
+  else if(e.key === 'Home'){ e.preventDefault(); setSlide(0); }
+  else if(e.key === 'End'){ e.preventDefault(); setSlide(total-1); }
+});
+
+let lastWheel = 0;
+window.addEventListener('wheel', (e)=>{
+  const now = Date.now();
+  if(now - lastWheel < 700) return;
+  if(Math.abs(e.deltaY) < 30) return;
+  lastWheel = now;
+  if(e.deltaY > 0) setSlide(idx+1); else setSlide(idx-1);
+}, {passive:true});
+
+let touchY = null;
+window.addEventListener('touchstart', e=>{touchY = e.touches[0].clientY;}, {passive:true});
+window.addEventListener('touchend', e=>{
+  if(touchY === null) return;
+  const dy = e.changedTouches[0].clientY - touchY;
+  if(Math.abs(dy) > 50){ if(dy < 0) setSlide(idx+1); else setSlide(idx-1); }
+  touchY = null;
+}, {passive:true});
+
+if(location.hash && location.hash.startsWith('#s')){
+  const n = parseInt(location.hash.slice(2),10);
+  if(!isNaN(n)) setSlide(n-1);
+}
+
+// ANIMATED NETWORK BACKGROUND
+(function(){
+  const canvas = document.getElementById('bgNet');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const DPR = Math.max(1, window.devicePixelRatio || 1);
+  let W = 0, H = 0, nodes = [], t = 0;
+
+  const BAND_PCT = 0.18;
+  const MAX_DIST = 200;
+  const NODE_COLOR = '60, 130, 220';
+  const FREE_RATIO = 0.12;
+
+  function resize(){
+    W = window.innerWidth; H = window.innerHeight;
+    canvas.width = W*DPR; canvas.height = H*DPR;
+    canvas.style.width = W+'px'; canvas.style.height = H+'px';
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    initNodes();
+  }
+  function initNodes(){
+    const bandH = H*BAND_PCT;
+    const bandArea = W*bandH;
+    let perBand = Math.round(bandArea/4500);
+    perBand = Math.max(75, Math.min(170, perBand));
+    nodes = [];
+    const zones = [{yMin:0,yMax:bandH},{yMin:H-bandH,yMax:H}];
+    for(const z of zones){
+      for(let i=0;i<perBand;i++){
+        const isFree = Math.random()<FREE_RATIO;
+        const ampX = isFree?(4+Math.random()*6):(8+Math.random()*10);
+        const ampY = isFree?(3+Math.random()*5):(5+Math.random()*7);
+        nodes.push({
+          ax:Math.random()*W,
+          ay:z.yMin+Math.random()*(z.yMax-z.yMin),
+          x:0, y:0,
+          phaseX:Math.random()*Math.PI*2,
+          phaseY:Math.random()*Math.PI*2,
+          freq:0.006+Math.random()*0.010,
+          ampX, ampY,
+          r:1.6+Math.random()*1.9,
+          isFree,
+          vax: isFree?(Math.random()-0.5)*0.45:0,
+          vay: isFree?(Math.random()-0.5)*0.08:0,
+          zone:z
+        });
+      }
+    }
+  }
+  function bandAlpha(n){
+    const distFromOuter = (n.zone.yMin===0)?n.y/n.zone.yMax:(H-n.y)/(H-n.zone.yMin);
+    return Math.max(0.05, 1-distFromOuter);
+  }
+  function tick(){
+    t++;
+    ctx.clearRect(0,0,W,H);
+    for(const n of nodes){
+      if(n.isFree){
+        n.ax += n.vax; n.ay += n.vay;
+        if(n.ax<-20) n.ax = W+20; else if(n.ax>W+20) n.ax = -20;
+        if(n.ay<n.zone.yMin){n.ay=n.zone.yMin; n.vay=Math.abs(n.vay);}
+        if(n.ay>n.zone.yMax){n.ay=n.zone.yMax; n.vay=-Math.abs(n.vay);}
+      }
+      n.x = n.ax + Math.sin(t*n.freq+n.phaseX)*n.ampX;
+      n.y = n.ay + Math.cos(t*n.freq+n.phaseY)*n.ampY;
+    }
+    ctx.lineWidth = 0.8;
+    for(let i=0;i<nodes.length;i++){
+      const a = nodes[i];
+      const fadeA = bandAlpha(a);
+      for(let j=i+1;j<nodes.length;j++){
+        const b = nodes[j];
+        if(a.zone!==b.zone) continue;
+        const dx = a.x-b.x, dy = a.y-b.y;
+        const d2 = dx*dx+dy*dy;
+        if(d2 < MAX_DIST*MAX_DIST){
+          const d = Math.sqrt(d2);
+          const proximity = 1 - d/MAX_DIST;
+          const alpha = proximity*0.45*Math.min(fadeA, bandAlpha(b));
+          ctx.strokeStyle = 'rgba('+NODE_COLOR+','+alpha.toFixed(3)+')';
+          ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+        }
+      }
+    }
+    for(const n of nodes){
+      const fade = bandAlpha(n);
+      ctx.fillStyle = 'rgba('+NODE_COLOR+','+(0.88*fade).toFixed(3)+')';
+      ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = 'rgba('+NODE_COLOR+','+(0.22*fade).toFixed(3)+')';
+      ctx.beginPath(); ctx.arc(n.x, n.y, n.r*2.6, 0, Math.PI*2); ctx.fill();
+    }
+    requestAnimationFrame(tick);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  requestAnimationFrame(tick);
+})();
+</script>
+
+</body>
+</html>

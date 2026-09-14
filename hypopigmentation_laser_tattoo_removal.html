@@ -1,0 +1,2561 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="googlebot" content="noindex,nofollow,noarchive">
+<title>Гипопигментация после лазерного удаления татуировок · Лекция для клуба «ЛазерПРО»</title>
+<style>
+  :root{
+    --bg:#fbfbfd; --ink:#1d1d1f; --ink-soft:#3a3a3f; --ink-light:#86868b;
+    --line:#d2d2d7;
+    --blue:#0a84ff; --pink:#ff2d55; --green:#30d158;
+    --orange:#ff9500; --red:#ff3b30; --purple:#5e5ce6;
+    --teal:#5ac8fa; --brown:#8b5a2b;
+    --card:#ffffff;
+    --card-edge: rgba(0,0,0,0.05);
+    --shadow: 0 2px 12px rgba(0,0,0,0.04), 0 12px 40px rgba(0,0,0,0.06);
+    --radius: 22px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;
+    background:var(--bg); color:var(--ink);
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+    letter-spacing:-0.011em;
+  }
+
+  /* Network canvas background */
+  #bgNet{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+  .deck{z-index:1;position:relative;}
+
+  .deck{position:fixed;inset:0;}
+  .slide{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding: clamp(22px, 3.2vh, 52px) clamp(28px, 2.6vw, 60px);
+    opacity:0; transform:translateY(24px) scale(0.985);
+    transition: opacity .55s cubic-bezier(.2,.7,.2,1), transform .55s cubic-bezier(.2,.7,.2,1);
+    pointer-events:none; overflow:auto;
+  }
+  .slide.active{opacity:1;transform:none;pointer-events:auto;}
+  .slide-inner{
+    width:100%;
+    max-width: clamp(1200px, 95vw, 1920px);
+    margin:0 auto;
+    display:flex;flex-direction:column;
+    gap: clamp(10px, 1.1vw, 18px);
+  }
+
+  /* TYPOGRAPHY */
+  .eyebrow{text-transform:uppercase;letter-spacing:.18em;font-size:clamp(18px,1.2vw,22px);font-weight:600;color:var(--blue);}
+  h1.hero{
+    font-size: clamp(72px, 8.4vw, 144px);
+    line-height:.98; letter-spacing:-0.04em; font-weight:700;
+    background: linear-gradient(180deg,#1d1d1f 0%, #2a2a2e 60%, #6e6e73 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  h1.title{font-size: clamp(52px, 6vw, 100px); line-height:1.04; letter-spacing:-0.025em; font-weight:700; color:var(--ink);}
+  h2.section{font-size: clamp(44px, 4.6vw, 80px); line-height:1.08; letter-spacing:-0.02em; font-weight:700; color:var(--ink);}
+  .lead{font-size: clamp(28px, 2.2vw, 42px); line-height:1.45; color:var(--ink-soft); font-weight:400; max-width:1280px;}
+  .lead.big{font-size: clamp(32px, 2.6vw, 48px); line-height:1.35;}
+  .small-meta{font-size:17px;color:var(--ink-light);}
+  p{font-size: clamp(22px, 1.5vw, 28px); line-height:1.55; color:var(--ink);}
+
+  /* TOOLTIP TERMS */
+  .term{
+    border-bottom:1.5px dotted var(--blue); cursor:help; position:relative;
+    font-weight:600; color:var(--blue); white-space:nowrap;
+  }
+  .term .tip{
+    position:absolute; bottom:calc(100% + 12px); left:50%;
+    transform:translateX(-50%) translateY(6px);
+    background:rgba(20,20,22,0.96); color:#fff;
+    padding:14px 18px; border-radius:14px;
+    font-size:16px; font-weight:400; line-height:1.5;
+    white-space:normal; width:360px; max-width:80vw;
+    text-align:left; letter-spacing:0;
+    opacity:0; pointer-events:none;
+    transition: opacity .18s ease, transform .18s ease;
+    z-index:100;
+    box-shadow:0 10px 30px rgba(0,0,0,0.25);
+  }
+  .term .tip::before{
+    content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%);
+    border:7px solid transparent; border-top-color: rgba(20,20,22,0.96);
+  }
+  .term .tip b{color:#a8d8ff;}
+  .term:hover .tip, .term:focus .tip{opacity:1; transform:translateX(-50%) translateY(0);}
+  .slide.dark .term, .slide.blue .term, .slide.pink .term, .slide.red .term, .slide.green .term, .slide.amber .term, .slide.brown .term, .slide.purple .term, .slide.teal .term{color:#cfe8ff; border-bottom-color:#cfe8ff;}
+
+  .cite{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:15px;font-weight:500;color:var(--blue);
+    background:rgba(10,132,255,0.08); padding:8px 14px; border-radius:999px;
+    text-decoration:none; transition:background .2s ease, transform .2s ease;
+    border:1px solid rgba(10,132,255,0.15);
+  }
+  .cite:hover{background:rgba(10,132,255,0.14); transform:translateY(-1px);}
+  .cite-row{display:flex;flex-wrap:wrap;gap:8px;}
+
+  /* Cards & grids */
+  .card{
+    background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow);
+    padding: clamp(22px, 1.9vw, 34px); border:1px solid var(--card-edge); position:relative;
+  }
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:clamp(18px,1.4vw,26px);}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,1.2vw,22px);}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(14px,1vw,18px);}
+  @media (max-width:900px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}}
+
+  .stat-card{
+    background:var(--card); border-radius:20px;
+    padding: clamp(20px,1.7vw,30px);
+    border:1px solid var(--card-edge);
+    display:flex;flex-direction:column;gap:8px;
+    transition: transform .25s ease, box-shadow .25s ease;
+    font-size:clamp(24px,1.9vw,33px); font-weight:700; color:var(--ink); line-height:1.2;
+  }
+  .stat-card:hover{transform:translateY(-3px); box-shadow:0 14px 36px rgba(0,0,0,0.08);}
+  .stat-card .sub{display:block;font-size:0.72em;font-weight:400;color:var(--ink-soft);line-height:1.35;margin-top:6px;}
+  .stat-card p{font-weight:400;}
+  .slide.dark .stat-card, .slide.blue .stat-card, .slide.pink .stat-card, .slide.red .stat-card, .slide.green .stat-card, .slide.amber .stat-card, .slide.brown .stat-card, .slide.purple .stat-card, .slide.teal .stat-card{color:#fff;}
+  .slide.dark .stat-card .sub, .slide.blue .stat-card .sub, .slide.pink .stat-card .sub, .slide.red .stat-card .sub, .slide.green .stat-card .sub, .slide.amber .stat-card .sub, .slide.brown .stat-card .sub, .slide.purple .stat-card .sub, .slide.teal .stat-card .sub{color:rgba(255,255,255,0.8);}
+  .stat-num{
+    font-size:clamp(48px,5.2vw,84px);
+    font-weight:700; letter-spacing:-0.03em; line-height:1.05; color:var(--blue);
+  }
+  .stat-num.blue{color:var(--blue);}
+  .stat-num.purple{color:var(--purple);}
+  .stat-num.pink{color:var(--pink);}
+  .stat-num.green{color:var(--green);}
+  .stat-num.orange{color:var(--orange);}
+  .stat-num.red{color:var(--red);}
+  .stat-num.brown{color:var(--brown);}
+  .stat-label{font-size:clamp(20px,1.4vw,26px); color:var(--ink-soft); line-height:1.45; font-weight:400;}
+  .stat-label-big{font-size:clamp(24px,1.7vw,32px); color:var(--ink); line-height:1.4; font-weight:500;}
+
+  .split{display:grid;grid-template-columns:1.05fr 0.95fr;gap:36px;align-items:center;}
+  @media (max-width:900px){.split{grid-template-columns:1fr;}}
+
+  .chart-wrap{
+    background:var(--card); border-radius:var(--radius); padding:24px;
+    box-shadow:var(--shadow); border:1px solid rgba(0,0,0,0.04);
+  }
+  .chart-wrap canvas{max-height:360px;}
+  .chart-title{font-size:15px;color:var(--ink-soft);text-align:center;margin-top:12px;line-height:1.45;}
+
+  /* Pills */
+  .pill-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;}
+  .info-pill{
+    background:#fff;border:1px solid var(--line);border-radius:999px;
+    padding:clamp(10px,0.8vw,14px) clamp(16px,1.2vw,22px);
+    font-size:clamp(17px,1.2vw,22px); font-weight:500; color:var(--ink);
+    box-shadow:0 1px 2px rgba(0,0,0,0.02);
+  }
+  .info-pill.blue{background:rgba(10,132,255,0.08);color:var(--blue);border-color:rgba(10,132,255,0.2);}
+  .info-pill.pink{background:rgba(255,45,85,0.08);color:var(--pink);border-color:rgba(255,45,85,0.2);}
+  .info-pill.red{background:rgba(255,59,48,0.08);color:var(--red);border-color:rgba(255,59,48,0.2);}
+  .info-pill.green{background:rgba(48,209,88,0.12);color:#0f8a3a;border-color:rgba(48,209,88,0.25);}
+  .info-pill.amber{background:rgba(255,149,0,0.12);color:#a55c00;border-color:rgba(255,149,0,0.25);}
+  .slide.dark .info-pill, .slide.blue .info-pill, .slide.pink .info-pill, .slide.red .info-pill, .slide.green .info-pill, .slide.amber .info-pill, .slide.brown .info-pill, .slide.purple .info-pill{
+    background:rgba(255,255,255,0.12);color:#fff;border-color:rgba(255,255,255,0.22);
+  }
+
+  /* Section dividers */
+  .section-title-block{display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;}
+  .section-num{
+    font-size:clamp(140px,17vw,260px);
+    font-weight:800;letter-spacing:-0.06em;line-height:.9;
+    background:linear-gradient(180deg, var(--blue) 0%, var(--purple) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .section-num.pink{background:linear-gradient(180deg, var(--pink) 0%, var(--orange) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .section-num.red{background:linear-gradient(180deg, var(--red) 0%, var(--pink) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .section-num.green{background:linear-gradient(180deg, var(--green) 0%, var(--teal) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .section-num.amber{background:linear-gradient(180deg, var(--orange) 0%, var(--pink) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .section-num.brown{background:linear-gradient(180deg, var(--brown) 0%, var(--red) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .section-num.teal{background:linear-gradient(180deg, var(--teal) 0%, var(--blue) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+
+  /* Slides with colored backgrounds */
+  .slide.dark{background: radial-gradient(ellipse at 30% 20%, #1e1e22 0%, #000 70%);color:#fff;}
+  .slide.blue{background: linear-gradient(135deg, #0a1f5e 0%, #0050b8 50%, #0a84ff 100%);color:#fff;}
+  .slide.pink{background: linear-gradient(135deg, #5a0029 0%, #b8004a 50%, #ff2d55 100%);color:#fff;}
+  .slide.red{background: linear-gradient(135deg, #4a0008 0%, #a8000f 50%, #ff3b30 100%);color:#fff;}
+  .slide.green{background: linear-gradient(135deg, #003d1a 0%, #1c8a3a 50%, #30d158 100%);color:#fff;}
+  .slide.amber{background: linear-gradient(135deg, #4a2200 0%, #c87000 50%, #ff9500 100%);color:#fff;}
+  .slide.brown{background: linear-gradient(135deg, #2a1a0a 0%, #5a3010 50%, #8b5a2b 100%);color:#fff;}
+  .slide.purple{background: linear-gradient(135deg, #241a5e 0%, #4340a8 50%, #5e5ce6 100%);color:#fff;}
+  .slide.teal{background: linear-gradient(135deg, #06364a 0%, #0a7aa8 50%, #5ac8fa 100%);color:#fff;}
+
+  .slide.dark h1.hero,.slide.dark h1.title,.slide.dark h2.section,
+  .slide.blue h1.hero,.slide.blue h1.title,.slide.blue h2.section,
+  .slide.pink h1.hero,.slide.pink h1.title,.slide.pink h2.section,
+  .slide.red h1.hero,.slide.red h1.title,.slide.red h2.section,
+  .slide.green h1.hero,.slide.green h1.title,.slide.green h2.section,
+  .slide.amber h1.hero,.slide.amber h1.title,.slide.amber h2.section,
+  .slide.brown h1.hero,.slide.brown h1.title,.slide.brown h2.section,
+  .slide.purple h1.hero,.slide.purple h1.title,.slide.purple h2.section,
+  .slide.teal h1.hero,.slide.teal h1.title,.slide.teal h2.section{
+    color:#fff !important; background:none;-webkit-background-clip:initial;-webkit-text-fill-color:#fff;
+  }
+  .slide.dark .lead{color:#d6d6da;}
+  .slide.blue .lead, .slide.pink .lead, .slide.red .lead, .slide.green .lead, .slide.amber .lead, .slide.brown .lead, .slide.purple .lead, .slide.teal .lead{color:rgba(255,255,255,0.92);}
+  .slide.dark .eyebrow{color:var(--teal);}
+  .slide.blue .eyebrow{color:#a8d8ff;}
+  .slide.pink .eyebrow, .slide.red .eyebrow{color:#ffb3c4;}
+  .slide.green .eyebrow{color:#a8f0bd;}
+  .slide.amber .eyebrow{color:#ffd9a0;}
+  .slide.brown .eyebrow{color:#ffd5a0;}
+  .slide.purple .eyebrow{color:#c9c7ff;}
+  .slide.teal .eyebrow{color:#bde8ff;}
+
+  .slide.dark .card, .slide.blue .card, .slide.pink .card, .slide.red .card, .slide.green .card, .slide.amber .card, .slide.brown .card, .slide.purple .card, .slide.teal .card,
+  .slide.dark .stat-card, .slide.blue .stat-card, .slide.pink .stat-card, .slide.red .stat-card, .slide.green .stat-card, .slide.amber .stat-card, .slide.brown .stat-card, .slide.purple .stat-card, .slide.teal .stat-card{
+    background:rgba(255,255,255,0.10); border-color:rgba(255,255,255,0.18); color:#fff;
+    box-shadow:0 6px 22px rgba(0,0,0,0.18);
+    backdrop-filter:blur(14px);
+  }
+  .slide.dark .stat-num, .slide.blue .stat-num, .slide.pink .stat-num, .slide.red .stat-num, .slide.green .stat-num, .slide.amber .stat-num, .slide.brown .stat-num, .slide.purple .stat-num, .slide.teal .stat-num{color:#fff !important;}
+  .slide.dark .stat-label, .slide.blue .stat-label, .slide.pink .stat-label, .slide.red .stat-label, .slide.green .stat-label, .slide.amber .stat-label, .slide.brown .stat-label, .slide.purple .stat-label, .slide.teal .stat-label{color:rgba(255,255,255,0.88);}
+  .slide.dark p, .slide.blue p, .slide.pink p, .slide.red p, .slide.green p, .slide.amber p, .slide.brown p, .slide.purple p, .slide.teal p{color:rgba(255,255,255,0.9);}
+
+  /* Tables */
+  table.cmp{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);border:1px solid rgba(0,0,0,0.04);}
+  .cmp th, .cmp td{padding:clamp(18px,1.4vw,26px) clamp(20px,1.6vw,28px);text-align:left;font-size:clamp(22px,1.65vw,30px);border-bottom:1px solid var(--line);line-height:1.4;color:var(--ink);}
+  .cmp th{background:#f5f5f7;font-weight:600;color:var(--ink);font-size:clamp(21px,1.5vw,28px);}
+  .cmp tr:last-child td{border-bottom:none;}
+  .pill{display:inline-block;padding:6px 14px;border-radius:999px;font-size:clamp(15px,1vw,18px);font-weight:600;}
+  .pill.hi{background:rgba(48,209,88,.16);color:#0f8a3a;}
+  .pill.mid{background:rgba(255,149,0,.16);color:#a55c00;}
+  .pill.lo{background:rgba(255,45,85,.14);color:#b8163d;}
+  .pill.danger{background:rgba(255,59,48,.16);color:#a30010;}
+
+  /* Key findings */
+  .key-findings{display:flex;flex-direction:column;gap:clamp(12px,1.1vw,20px);}
+  .kf{display:flex;align-items:flex-start;gap:20px;font-size:clamp(24px,1.85vw,34px);line-height:1.42;}
+  .kf-bullet{
+    flex-shrink:0;
+    width:clamp(34px,2.4vw,44px); height:clamp(34px,2.4vw,44px);
+    border-radius:50%;
+    background:linear-gradient(135deg, var(--blue), var(--purple));
+    color:#fff; display:flex; align-items:center; justify-content:center;
+    font-size:clamp(15px,1.1vw,19px); font-weight:700; margin-top:3px;
+  }
+  .kf-bullet.red{background:linear-gradient(135deg, var(--red), var(--pink));}
+  .kf-bullet.green{background:linear-gradient(135deg, var(--green), var(--teal));}
+  .kf-bullet.amber{background:linear-gradient(135deg, var(--orange), var(--pink));}
+  .kf-bullet.purple{background:linear-gradient(135deg, var(--purple), var(--blue));}
+  .key-findings.compact{gap:clamp(10px,0.9vw,16px);}
+  .key-findings.compact .kf{font-size:clamp(20px,1.55vw,30px);line-height:1.36;gap:16px;}
+  .key-findings.compact .kf-bullet{width:clamp(30px,2.1vw,40px);height:clamp(30px,2.1vw,40px);font-size:clamp(14px,1vw,18px);margin-top:2px;}
+  .slide.dark .kf, .slide.blue .kf, .slide.red .kf, .slide.pink .kf, .slide.green .kf, .slide.amber .kf, .slide.brown .kf, .slide.purple .kf, .slide.teal .kf{color:rgba(255,255,255,0.94);}
+
+  /* Illustration container */
+  .illus{
+    background:#fff; border-radius:var(--radius);
+    padding: clamp(24px,2vw,36px);
+    box-shadow:var(--shadow); border:1px solid rgba(0,0,0,0.04);
+    text-align:center;
+  }
+  .illus svg{max-width:100%;height:auto;display:block;margin:0 auto;}
+  .illus-caption{font-size:clamp(18px,1.3vw,24px);color:var(--ink-soft);margin-top:18px;line-height:1.5;}
+
+  /* Blockquote */
+  blockquote.q{
+    font-size:clamp(28px,2.6vw,44px); line-height:1.32; letter-spacing:-0.015em;
+    font-weight:500; color:var(--ink);
+    border-left:5px solid var(--blue);
+    padding:6px 0 6px 28px; max-width:1280px;
+  }
+  blockquote.q .src{display:block;font-size:clamp(18px,1.2vw,22px);font-weight:500;color:var(--ink-light);margin-top:18px;letter-spacing:0;}
+  .slide.dark blockquote.q, .slide.blue blockquote.q, .slide.pink blockquote.q, .slide.red blockquote.q, .slide.green blockquote.q, .slide.amber blockquote.q, .slide.brown blockquote.q, .slide.purple blockquote.q, .slide.teal blockquote.q{color:#fff;border-left-color:rgba(255,255,255,0.8);}
+  .slide.dark blockquote.q .src, .slide.blue blockquote.q .src, .slide.pink blockquote.q .src, .slide.red blockquote.q .src, .slide.purple blockquote.q .src, .slide.teal blockquote.q .src{color:rgba(255,255,255,0.75);}
+
+  /* Photo frame */
+  .photo-frame{
+    aspect-ratio:1/1; background:linear-gradient(160deg,#f5f5f7 0%,#e8e8ed 100%);
+    border-radius:22px; border:1px solid var(--card-edge); box-shadow:var(--shadow);
+    overflow:hidden; position:relative; max-height:62vh; max-width:100%; margin:0 auto;
+  }
+  .photo-frame img.photo-img{width:100%;height:100%;object-fit:cover;display:block;}
+
+  /* Photo placeholder (пока Виталий не прислал фото) */
+  .photo-ph{
+    border:2px dashed var(--line); border-radius:var(--radius);
+    background:repeating-linear-gradient(45deg,#f7f7f9,#f7f7f9 14px,#f1f1f4 14px,#f1f1f4 28px);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+    min-height:clamp(220px,30vh,420px); text-align:center; padding:24px; color:var(--ink-light);
+  }
+  .photo-ph .ph-ic{font-size:clamp(34px,3vw,52px);opacity:0.5;}
+  .photo-ph .ph-t{font-size:clamp(18px,1.3vw,24px);font-weight:600;color:var(--ink-soft);}
+  .photo-ph .ph-s{font-size:clamp(15px,1.05vw,19px);color:var(--ink-light);line-height:1.4;}
+  .slide.dark .photo-ph, .slide.red .photo-ph, .slide.blue .photo-ph, .slide.pink .photo-ph, .slide.brown .photo-ph, .slide.purple .photo-ph, .slide.teal .photo-ph, .slide.green .photo-ph, .slide.amber .photo-ph{
+    background:repeating-linear-gradient(45deg,rgba(255,255,255,0.06),rgba(255,255,255,0.06) 14px,rgba(255,255,255,0.02) 14px,rgba(255,255,255,0.02) 28px);
+    border-color:rgba(255,255,255,0.3);
+  }
+  .slide.dark .photo-ph .ph-t, .slide.red .photo-ph .ph-t, .slide.blue .photo-ph .ph-t, .slide.pink .photo-ph .ph-t, .slide.brown .photo-ph .ph-t, .slide.purple .photo-ph .ph-t, .slide.teal .photo-ph .ph-t{color:rgba(255,255,255,0.92);}
+
+  /* Photo grids for clinical examples */
+  .pgrid{display:grid;gap:clamp(14px,1.4vw,24px);width:100%;}
+  .pgrid.c2{grid-template-columns:1fr 1fr;}
+  .pgrid.c3{grid-template-columns:1fr 1fr 1fr;}
+  @media (max-width:900px){.pgrid.c2,.pgrid.c3{grid-template-columns:1fr;}}
+  .pcard{display:flex;flex-direction:column;gap:clamp(8px,0.7vw,12px);}
+  .pimg{width:100%;border-radius:16px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--card-edge);background:#eef0f2;}
+  .pimg img{width:100%;height:clamp(280px,40vh,500px);object-fit:cover;object-position:center 38%;display:block;}
+  .pimg.tall img{height:clamp(320px,52vh,620px);}
+  .pcap{font-size:clamp(15px,1.1vw,21px);color:var(--ink-soft);line-height:1.35;text-align:center;}
+  .pcap b{color:var(--ink);font-weight:700;}
+  .pcap .st{display:inline-block;font-size:0.82em;font-weight:800;letter-spacing:0.07em;text-transform:uppercase;color:var(--blue);}
+  .slide.dark .pcap,.slide.blue .pcap,.slide.red .pcap,.slide.green .pcap,.slide.amber .pcap,.slide.brown .pcap,.slide.purple .pcap,.slide.teal .pcap,.slide.pink .pcap{color:rgba(255,255,255,0.85);}
+  .slide.dark .pcap b,.slide.blue .pcap b,.slide.red .pcap b,.slide.green .pcap b,.slide.amber .pcap b,.slide.brown .pcap b,.slide.purple .pcap b,.slide.teal .pcap b,.slide.pink .pcap b{color:#fff;}
+  .slide.dark .pcap .st,.slide.blue .pcap .st,.slide.red .pcap .st,.slide.green .pcap .st,.slide.amber .pcap .st,.slide.brown .pcap .st,.slide.purple .pcap .st,.slide.teal .pcap .st{color:#bcdcff;}
+
+  /* ============ FORMULA / EQUATION COMPONENTS ============ */
+  .eqn{
+    background:var(--card); border-radius:18px; border:1px solid var(--card-edge);
+    box-shadow:var(--shadow);
+    padding: clamp(18px,1.6vw,30px) clamp(20px,1.8vw,34px);
+    display:flex; flex-direction:column; gap:12px; align-items:center;
+  }
+  .eqn.boxed{ border:2px solid rgba(10,132,255,.35); border-left:6px solid var(--blue); }
+  .eqn.amberbox{ border:2px solid rgba(255,149,0,.35); border-left:6px solid var(--orange); }
+  .eqn .expr{
+    font-family:Georgia,'Times New Roman',serif;
+    font-size:clamp(26px,2.4vw,44px); font-style:italic; color:var(--ink);
+    line-height:1.25; text-align:center; letter-spacing:-0.005em;
+    display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:.12em .3em;
+  }
+  .eqn .expr b{ font-style:normal; font-weight:700; }
+  .eqn .expr sub{ font-size:.62em; font-style:normal; }
+  .eqn .op{ font-style:normal; color:var(--ink-light); font-weight:400; padding:0 .1em;}
+  .eqn .cap{
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",sans-serif;
+    font-style:normal; font-size:clamp(16px,1.15vw,22px); color:var(--ink-light);
+    text-align:center; line-height:1.45; max-width:1100px;
+  }
+  /* inline fraction */
+  .frac{ display:inline-flex; flex-direction:column; text-align:center; vertical-align:middle; margin:0 .18em; line-height:1.05;}
+  .frac .num{ border-bottom:2px solid currentColor; padding:0 .5em .08em; }
+  .frac .den{ padding:.08em .5em 0; }
+  /* colored terms inside formulas */
+  .t-blue{color:var(--blue);} .t-green{color:#1c9e46;} .t-orange{color:#c8770a;}
+  .t-red{color:var(--red);} .t-purple{color:var(--purple);} .t-brown{color:var(--brown);}
+  .t-teal{color:#0a8aa8;} .t-amber{color:#c8770a;}
+  /* dark-slide overrides for eqn */
+  .slide.dark .eqn, .slide.blue .eqn, .slide.pink .eqn, .slide.red .eqn, .slide.green .eqn, .slide.amber .eqn, .slide.brown .eqn, .slide.purple .eqn, .slide.teal .eqn{
+    background:rgba(255,255,255,0.10); border-color:rgba(255,255,255,0.20); backdrop-filter:blur(14px);
+  }
+  .slide.dark .eqn .expr, .slide.blue .eqn .expr, .slide.pink .eqn .expr, .slide.red .eqn .expr, .slide.green .eqn .expr, .slide.amber .eqn .expr, .slide.brown .eqn .expr, .slide.purple .eqn .expr, .slide.teal .eqn .expr{color:#fff;}
+  .slide.dark .eqn .cap, .slide.blue .eqn .cap, .slide.pink .eqn .cap, .slide.red .eqn .cap, .slide.green .eqn .cap, .slide.amber .eqn .cap, .slide.brown .eqn .cap, .slide.purple .eqn .cap, .slide.teal .eqn .cap{color:rgba(255,255,255,0.82);}
+  .slide.dark .eqn.boxed, .slide.blue .eqn.boxed, .slide.pink .eqn.boxed, .slide.red .eqn.boxed, .slide.green .eqn.boxed, .slide.amber .eqn.boxed, .slide.brown .eqn.boxed, .slide.purple .eqn.boxed, .slide.teal .eqn.boxed{border-left-color:rgba(255,255,255,0.85);}
+  .slide.dark .eqn.amberbox, .slide.blue .eqn.amberbox, .slide.pink .eqn.amberbox, .slide.red .eqn.amberbox, .slide.green .eqn.amberbox, .slide.amber .eqn.amberbox, .slide.brown .eqn.amberbox, .slide.purple .eqn.amberbox, .slide.teal .eqn.amberbox{border-left-color:rgba(255,255,255,0.85);}
+  /* Цветные термы формул — светлые варианты на ЛЮБОМ цветном фоне (контраст) */
+  .slide.dark .t-blue,.slide.blue .t-blue,.slide.pink .t-blue,.slide.red .t-blue,.slide.green .t-blue,.slide.amber .t-blue,.slide.brown .t-blue,.slide.purple .t-blue,.slide.teal .t-blue{color:#bcdcff;}
+  .slide.dark .t-green,.slide.blue .t-green,.slide.pink .t-green,.slide.red .t-green,.slide.green .t-green,.slide.amber .t-green,.slide.brown .t-green,.slide.purple .t-green,.slide.teal .t-green{color:#9df0ba;}
+  .slide.dark .t-orange,.slide.blue .t-orange,.slide.pink .t-orange,.slide.red .t-orange,.slide.green .t-orange,.slide.amber .t-orange,.slide.brown .t-orange,.slide.purple .t-orange,.slide.teal .t-orange,
+  .slide.dark .t-amber,.slide.blue .t-amber,.slide.pink .t-amber,.slide.red .t-amber,.slide.green .t-amber,.slide.amber .t-amber,.slide.brown .t-amber,.slide.purple .t-amber,.slide.teal .t-amber{color:#ffd69a;}
+  .slide.dark .t-red,.slide.blue .t-red,.slide.pink .t-red,.slide.red .t-red,.slide.green .t-red,.slide.amber .t-red,.slide.brown .t-red,.slide.purple .t-red,.slide.teal .t-red{color:#ffb3ab;}
+  .slide.dark .t-purple,.slide.blue .t-purple,.slide.pink .t-purple,.slide.red .t-purple,.slide.green .t-purple,.slide.amber .t-purple,.slide.brown .t-purple,.slide.purple .t-purple,.slide.teal .t-purple{color:#cfcdff;}
+  .slide.dark .t-teal,.slide.blue .t-teal,.slide.pink .t-teal,.slide.red .t-teal,.slide.green .t-teal,.slide.amber .t-teal,.slide.brown .t-teal,.slide.purple .t-teal,.slide.teal .t-teal{color:#bfe9ff;}
+  /* Оператор формулы — светло-серый на цветном фоне */
+  .slide.dark .eqn .op,.slide.blue .eqn .op,.slide.pink .eqn .op,.slide.red .eqn .op,.slide.green .eqn .op,.slide.amber .eqn .op,.slide.brown .eqn .op,.slide.purple .eqn .op,.slide.teal .eqn .op{color:rgba(255,255,255,0.72);}
+  /* Section-num на цветном фоне — светлый (а не в тон фону) */
+  .slide.blue .section-num,.slide.pink .section-num,.slide.red .section-num,.slide.green .section-num,.slide.amber .section-num,.slide.brown .section-num,.slide.purple .section-num,.slide.teal .section-num{background:linear-gradient(180deg,#ffffff 0%, rgba(255,255,255,0.55) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  /* kf-bullet на цветном фоне — белый кружок с тёмной цифрой (контраст) */
+  .slide.dark .kf-bullet,.slide.blue .kf-bullet,.slide.pink .kf-bullet,.slide.red .kf-bullet,.slide.green .kf-bullet,.slide.amber .kf-bullet,.slide.brown .kf-bullet,.slide.purple .kf-bullet,.slide.teal .kf-bullet{background:rgba(255,255,255,0.92)!important;color:#1d1d1f!important;}
+
+  /* ============ FLOW / PATHWAY (vertical text chain) ============ */
+  .flow{ display:flex; flex-direction:column; align-items:center; gap:0; }
+  .flow.horiz{ flex-direction:row; flex-wrap:wrap; justify-content:center; align-items:center; gap:0; }
+  .flow .node{
+    background:#fff; border:1px solid var(--card-edge); border-radius:14px;
+    padding:clamp(10px,0.9vw,16px) clamp(18px,1.5vw,28px);
+    font-size:clamp(21px,1.6vw,30px); font-weight:600; color:var(--ink);
+    box-shadow:var(--shadow); text-align:center; max-width:900px;
+  }
+  .flow .node .sub{display:block;font-size:.72em;font-weight:400;color:var(--ink-light);margin-top:2px;}
+  .flow .node.accent{border-color:rgba(10,132,255,.4);border-left:5px solid var(--blue);}
+  .flow .node.warn{border-color:rgba(255,149,0,.4);border-left:5px solid var(--orange);}
+  .flow .node.bad{border-color:rgba(255,59,48,.4);border-left:5px solid var(--red);}
+  .flow.tight .node{padding:clamp(6px,0.6vw,11px) clamp(16px,1.3vw,24px);font-size:clamp(17px,1.3vw,25px);}
+  .flow.tight .arrow{height:clamp(11px,1vw,17px);}
+  .flow .arrow{ width:2.5px; height:clamp(16px,1.5vw,26px); background:var(--blue); position:relative; flex:none;}
+  .flow .arrow::after{ content:''; position:absolute; bottom:-1px; left:50%; transform:translateX(-50%); border:6px solid transparent; border-top-color:var(--blue); }
+  .flow.horiz .arrow{ width:clamp(20px,1.8vw,34px); height:2.5px; }
+  .flow.horiz .arrow::after{ bottom:auto; top:50%; left:auto; right:-1px; transform:translateY(-50%); border-top-color:transparent; border-left-color:var(--blue); }
+  .flow .arrow.lbl{overflow:visible;}
+  .flow .arrow.lbl span{position:absolute;left:calc(100% + 8px);top:50%;transform:translateY(-50%);white-space:nowrap;font-size:clamp(14px,1vw,18px);font-weight:600;color:var(--ink-light);}
+  .slide.dark .flow .node, .slide.blue .flow .node, .slide.pink .flow .node, .slide.red .flow .node, .slide.green .flow .node, .slide.amber .flow .node, .slide.brown .flow .node, .slide.purple .flow .node, .slide.teal .flow .node{
+    background:rgba(255,255,255,0.12); color:#fff; border-color:rgba(255,255,255,0.22); backdrop-filter:blur(10px);
+  }
+  .slide.dark .flow .node .sub, .slide.blue .flow .node .sub, .slide.red .flow .node .sub, .slide.purple .flow .node .sub, .slide.teal .flow .node .sub{color:rgba(255,255,255,0.7);}
+
+  /* ============ PROGNOSIS BADGE ============ */
+  .prog{ display:inline-flex; align-items:center; gap:10px; padding:10px 20px; border-radius:999px; font-weight:700; font-size:clamp(17px,1.25vw,23px); }
+  .prog::before{content:'';width:12px;height:12px;border-radius:50%;background:currentColor;}
+  .prog.good{background:rgba(48,209,88,.14); color:#0f8a3a;}
+  .prog.mid{background:rgba(255,149,0,.16); color:#a55c00;}
+  .prog.bad{background:rgba(255,59,48,.14); color:#b8163d;}
+
+  /* ============ NUMBERED STEP LIST (do / dont) ============ */
+  .steps{display:flex;flex-direction:column;gap:clamp(10px,0.9vw,16px);}
+  .step{display:flex;align-items:flex-start;gap:18px;background:#fff;border:1px solid var(--card-edge);border-radius:16px;padding:clamp(14px,1.15vw,22px) clamp(18px,1.4vw,26px);box-shadow:var(--shadow);font-size:clamp(20px,1.5vw,28px);line-height:1.4;color:var(--ink);}
+  .step .n{flex:none;width:clamp(34px,2.4vw,44px);height:clamp(34px,2.4vw,44px);border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:clamp(16px,1.2vw,22px);}
+  .step.no .n{background:linear-gradient(135deg,var(--red),var(--pink));}
+  .step.no{border-color:rgba(255,59,48,0.2);}
+  .step .ic{flex:none;width:clamp(34px,2.4vw,44px);height:clamp(34px,2.4vw,44px);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:clamp(18px,1.4vw,24px);}
+  .step.no .ic{background:rgba(255,59,48,0.14);color:var(--red);}
+  .step.yes .ic{background:rgba(48,209,88,0.16);color:#0f8a3a;}
+  .slide.dark .step, .slide.blue .step, .slide.red .step, .slide.purple .step, .slide.teal .step, .slide.brown .step{background:rgba(255,255,255,0.10);color:#fff;border-color:rgba(255,255,255,0.18);backdrop-filter:blur(10px);}
+  .steps.compact{gap:clamp(8px,0.7vw,13px);}
+  .steps.compact .step{padding:clamp(10px,0.85vw,16px) clamp(16px,1.2vw,22px);font-size:clamp(18px,1.3vw,25px);}
+  .steps.compact .step .n,.steps.compact .step .ic{width:clamp(30px,2vw,38px);height:clamp(30px,2vw,38px);font-size:clamp(15px,1.05vw,19px);}
+
+  /* patient-speech card */
+  .speech{background:linear-gradient(135deg,#eef4ff 0%,#f5f0ff 100%);border:1px solid rgba(94,92,230,0.25);border-left:6px solid var(--purple);border-radius:20px;padding:clamp(24px,2.2vw,40px);font-size:clamp(24px,1.9vw,34px);line-height:1.5;color:var(--ink);font-style:italic;}
+  .speech b{color:var(--purple);font-style:normal;}
+
+  /* References */
+  .ref-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  @media (max-width:900px){.ref-grid{grid-template-columns:1fr;}}
+  .ref{
+    background:#fff;border:1px solid var(--line);border-radius:14px;
+    padding:14px 18px;font-size:16px;line-height:1.45;
+    display:flex;justify-content:space-between;align-items:center;gap:14px;
+  }
+  .ref a{color:var(--blue);text-decoration:none;font-weight:500;font-size:15px;flex-shrink:0;}
+  .ref a:hover{text-decoration:underline;}
+  .ref .lbl{color:var(--ink-light);font-size:13px;font-weight:600;flex-shrink:0;}
+
+  /* Progress bar */
+  .progress{position:fixed;top:0;left:0;right:0;height:2px;background:rgba(0,0,0,0.04);z-index:60;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--purple),var(--pink));width:0%;transition:width .4s cubic-bezier(.2,.7,.2,1);opacity:0.55;}
+
+  /* Animations */
+  @keyframes magicalFadeIn{
+    0%{opacity:0;transform:translateY(24px);filter:blur(3px);}
+    60%{filter:blur(0);}
+    100%{opacity:1;transform:translateY(0);filter:blur(0);}
+  }
+  .slide.active .stat-card,
+  .slide.active .card,
+  .slide.active .illus,
+  .slide.active blockquote.q,
+  .slide.active table.cmp,
+  .slide.active .ref,
+  .slide.active .eqn,
+  .slide.active .step,
+  .slide.active .speech,
+  .slide.active .chart-wrap{
+    animation: magicalFadeIn .8s cubic-bezier(.2,.7,.2,1) backwards;
+  }
+  .slide.active .grid-2 > *:nth-child(1),
+  .slide.active .grid-3 > *:nth-child(1),
+  .slide.active .grid-4 > *:nth-child(1){animation-delay:.12s;}
+  .slide.active .grid-2 > *:nth-child(2),
+  .slide.active .grid-3 > *:nth-child(2),
+  .slide.active .grid-4 > *:nth-child(2){animation-delay:.26s;}
+  .slide.active .grid-3 > *:nth-child(3),
+  .slide.active .grid-4 > *:nth-child(3){animation-delay:.40s;}
+  .slide.active .grid-4 > *:nth-child(4){animation-delay:.54s;}
+  .slide.active .steps .step:nth-child(1){animation-delay:.10s;}
+  .slide.active .steps .step:nth-child(2){animation-delay:.20s;}
+  .slide.active .steps .step:nth-child(3){animation-delay:.30s;}
+  .slide.active .steps .step:nth-child(4){animation-delay:.40s;}
+  .slide.active .steps .step:nth-child(5){animation-delay:.50s;}
+  .slide.active .steps .step:nth-child(6){animation-delay:.60s;}
+  .slide.active .steps .step:nth-child(7){animation-delay:.70s;}
+  .slide.active .steps .step:nth-child(8){animation-delay:.80s;}
+  .slide.active .key-findings .kf:nth-child(1){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .12s;}
+  .slide.active .key-findings .kf:nth-child(2){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .24s;}
+  .slide.active .key-findings .kf:nth-child(3){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .36s;}
+  .slide.active .key-findings .kf:nth-child(4){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .48s;}
+  .slide.active .key-findings .kf:nth-child(5){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .60s;}
+  .slide.active .key-findings .kf:nth-child(6){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .72s;}
+  .slide.active .key-findings .kf:nth-child(7){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .84s;}
+  .slide.active .key-findings .kf:nth-child(8){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .96s;}
+
+  /* Inflammation pulse */
+  @keyframes pulseStrong { 0%,100%{transform:scale(1);opacity:1;} 50%{transform:scale(1.28);opacity:0.45;} }
+  @keyframes pulseMid    { 0%,100%{transform:scale(1);opacity:1;} 50%{transform:scale(1.18);opacity:0.65;} }
+  @keyframes pulseGentle { 0%,100%{transform:scale(1);opacity:1;} 50%{transform:scale(1.10);opacity:0.78;} }
+  .halo-pulse-red, .halo-pulse-amber, .halo-pulse-green, .halo-pulse-blue{
+    transform-box: fill-box; transform-origin: center center;
+  }
+  .halo-pulse-red    { animation: pulseStrong  2.2s ease-in-out infinite; }
+  .halo-pulse-amber  { animation: pulseMid     3.0s ease-in-out infinite; }
+  .halo-pulse-green  { animation: pulseGentle  3.8s ease-in-out infinite; }
+  .halo-pulse-blue   { animation: pulseMid     3.2s ease-in-out infinite; }
+  .halo-pulse-red:nth-of-type(2n){animation-delay:0.35s;}
+  .halo-pulse-red:nth-of-type(3n){animation-delay:0.70s;}
+
+  /* Melanocyte breathing */
+  @keyframes melaPulse {
+    0%,100% { transform: scale(1); }
+    50%     { transform: scale(1.08); filter: brightness(1.15); }
+  }
+  .melanocyte-active{
+    transform-box: fill-box; transform-origin: center center;
+    animation: melaPulse 2.6s ease-in-out infinite;
+  }
+
+  /* snowflake / cooling drift */
+  @keyframes coolDrift {
+    0%   { transform: translateY(-6px); opacity:0.35; }
+    50%  { transform: translateY(4px);  opacity:0.9; }
+    100% { transform: translateY(-6px); opacity:0.35; }
+  }
+  .cool-pulse{ transform-box: fill-box; transform-origin:center; animation: coolDrift 3s ease-in-out infinite; }
+  .cool-pulse:nth-of-type(2n){animation-delay:0.5s;}
+  .cool-pulse:nth-of-type(3n){animation-delay:1.0s;}
+
+  /* Cascade arrow flow */
+  @keyframes cascadeFlow {
+    0%   { opacity:0; transform:translateY(-8px); }
+    100% { opacity:1; transform:translateY(0); }
+  }
+  .cascade-step{ animation: cascadeFlow .6s ease-out backwards; }
+  .slide.active .cascade-step:nth-child(1){ animation-delay:.10s; }
+  .slide.active .cascade-step:nth-child(2){ animation-delay:.30s; }
+  .slide.active .cascade-step:nth-child(3){ animation-delay:.50s; }
+  .slide.active .cascade-step:nth-child(4){ animation-delay:.70s; }
+  .slide.active .cascade-step:nth-child(5){ animation-delay:.90s; }
+  .slide.active .cascade-step:nth-child(6){ animation-delay:1.10s; }
+  .slide.active .cascade-step:nth-child(7){ animation-delay:1.30s; }
+  .slide.active .cascade-step:nth-child(8){ animation-delay:1.50s; }
+
+  /* flow node stagger */
+  .slide.active .flow > *{animation:cascadeFlow .5s ease-out backwards;}
+  .slide.active .flow > *:nth-child(2){animation-delay:.10s;}
+  .slide.active .flow > *:nth-child(3){animation-delay:.20s;}
+  .slide.active .flow > *:nth-child(4){animation-delay:.30s;}
+  .slide.active .flow > *:nth-child(5){animation-delay:.40s;}
+  .slide.active .flow > *:nth-child(6){animation-delay:.50s;}
+  .slide.active .flow > *:nth-child(7){animation-delay:.60s;}
+  .slide.active .flow > *:nth-child(8){animation-delay:.70s;}
+  .slide.active .flow > *:nth-child(9){animation-delay:.80s;}
+  .slide.active .flow > *:nth-child(10){animation-delay:.90s;}
+  .slide.active .flow > *:nth-child(11){animation-delay:1.0s;}
+  .slide.active .flow > *:nth-child(12){animation-delay:1.1s;}
+  .slide.active .flow > *:nth-child(13){animation-delay:1.2s;}
+
+  /* Risk gauge bar */
+  @keyframes barFill {
+    0% { width: 0%; }
+    100% { width: var(--bar-width, 100%); }
+  }
+  .risk-bar{
+    height: clamp(28px, 2vw, 38px);
+    border-radius: 999px; overflow:hidden;
+    background:rgba(0,0,0,0.05); position:relative;
+  }
+  .risk-bar-fill{
+    height: 100%; border-radius: 999px;
+    animation: barFill 1.6s cubic-bezier(.2,.7,.2,1) backwards;
+    animation-delay: 0.3s;
+  }
+
+  .slide::-webkit-scrollbar{width:0;}
+</style>
+</head>
+<body>
+
+<canvas id="bgNet" aria-hidden="true"></canvas>
+<div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="deck" id="deck">
+
+<!-- ============ 1. COVER ============ -->
+<section class="slide dark active">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Лекция для клуба «ЛазерПРО»</div>
+    <h1 class="hero">Гипопигментация<br>после лазера</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;max-width:1400px;">
+      От физики лазерного воздействия до восстановления меланоцитарной системы:<br>
+      механизмы, длины волн, накопленная нагрузка, охлаждение и профилактика.
+    </p>
+    <div class="pill-row" style="margin-top:24px;">
+      <span class="info-pill">Физиология меланоцита</span>
+      <span class="info-pill">532 и 1064 нм</span>
+      <span class="info-pill">Воспалительная нагрузка</span>
+      <span class="info-pill">Охлаждение</span>
+      <span class="info-pill">Профилактика и коррекция</span>
+    </div>
+    <p class="lead" style="margin:22px auto 0;text-align:center;font-size:clamp(20px,1.5vw,28px);color:rgba(255,255,255,0.8);">
+      Виталий Микрюков · врач-хирург, к.м.н.
+    </p>
+  </div>
+</section>
+
+<!-- ============ 1b. LIFETIME LEARNING (продающий) ============ -->
+<section class="slide teal">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Lifetime learning</div>
+    <blockquote class="q" style="border-left:none;text-align:center;font-size:clamp(34px,4vw,60px);max-width:1500px;line-height:1.3;">
+      Образование <b>не заканчивается</b> никогда. Специалист, который перестал учиться, начинает отставать — а в лазерном удалении это цена здоровья кожи пациента.
+    </blockquote>
+    <p class="lead big" style="margin:clamp(16px,2vw,28px) auto 0;max-width:1400px;">
+      Поэтому вы — в клубе <b>«ЛазерПРО»</b>. И я расту <b>вместе с вами</b>: разбираю новые случаи, обновляю протоколы, делюсь тем, что проверил сам.
+    </p>
+    <p class="lead" style="margin:12px auto 0;max-width:1300px;font-size:clamp(22px,1.7vw,30px);color:rgba(255,255,255,0.9);">
+      Оставайтесь там, где растут лучшие — в <b>лучшем месте для экспертов по лазерному удалению</b>.
+    </p>
+    <div class="pill-row" style="margin-top:clamp(16px,2vw,28px);">
+      <span class="info-pill">Клуб «ЛазерПРО»</span>
+      <span class="info-pill">Новые случаи в каждом разборе</span>
+      <span class="info-pill">Протоколы, проверенные практикой</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2. CORE THESIS ============ -->
+<section class="slide red">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Главный тезис лекции</div>
+    <blockquote class="q" style="border-left:none;text-align:center;font-size:clamp(34px,4vw,58px);max-width:1500px;line-height:1.3;">
+      Не спрашивайте только: «как <b>удалить пигмент</b>?».<br>
+      Спрашивайте: «как удалить пигмент с <b>минимальной воспалительной<br>и тепловой нагрузкой</b> на меланоцитарную систему?»
+      <span class="src" style="margin-top:28px;">Конечная цель лазерной процедуры — не максимальное разрушение, а <b>максимальная селективность</b>. · © В. Микрюков, 2026</span>
+    </blockquote>
+  </div>
+</section>
+
+<!-- ============ 3. STRUCTURE ============ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">О чём эта лекция</div>
+    <h2 class="section">Логика разбора</h2>
+    <p class="lead" style="margin-bottom:6px;">
+      Центральная цепочка: <b>лазерная энергия → оптическое взаимодействие → повреждение мишени и окружающей ткани → воспалительная нагрузка → состояние меланоцита → гипопигментация.</b>
+    </p>
+    <div class="grid-3" style="margin-top:6px;">
+      <div class="stat-card" style="border-top:5px solid var(--blue);">
+        <div class="stat-num blue" style="font-size:clamp(34px,3vw,52px);">I–II</div>
+        <div class="stat-label-big">Физиология меланоцита и почему лазер вообще способен его повредить</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--purple);">
+        <div class="stat-num purple" style="font-size:clamp(34px,3vw,52px);">III–IV</div>
+        <div class="stat-label-big">Длины волн, параметры, накопленная нагрузка и роль воспаления</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--teal);">
+        <div class="stat-num" style="color:var(--teal);font-size:clamp(34px,3vw,52px);">V–VI</div>
+        <div class="stat-label-big">Фототип и загар, охлаждение как контроль воспалительной нагрузки</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--orange);">
+        <div class="stat-num orange" style="font-size:clamp(34px,3vw,52px);">VII</div>
+        <div class="stat-label-big">Клиника: как распознать, вести и когда направлять к дерматологу</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--green);">
+        <div class="stat-num green" style="font-size:clamp(34px,3vw,52px);">VIII</div>
+        <div class="stat-label-big">Синтез, что подтверждено литературой, а что — рабочая концепция</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--pink);">
+        <div class="stat-num pink" style="font-size:clamp(34px,3vw,52px);">4</div>
+        <div class="stat-label-big">Ключевых принципа: селективность · один проход · текущий меланин · контроль нагрузки</div>
+      </div>
+    </div>
+    <p class="lead" style="margin-top:4px;font-size:clamp(20px,1.5vw,28px);color:var(--ink-light);">
+      Гиперпигментацию разбираем коротко — как контрастный механизм. Основной фокус — <b>гипопигментация</b>.
+    </p>
+  </div>
+</section>
+
+<section class="slide dark">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть I</div>
+    <div class="section-num">01</div>
+    <h1 class="title">Что такое гипопигментация</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">Осветление кожи после лазера — это не один диагноз, а несколько разных процессов.</p>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Механизмы · 1 из 2</div>
+    <h2 class="section">Гипопигментация — не один диагноз</h2>
+    <p class="lead">После лазерного удаления татуировки осветление может быть связано с принципиально разными процессами. Первые четыре — это преимущественно функциональные и структурные нарушения на уровне самой клетки.</p>
+    <div class="grid-4">
+      <div class="stat-card" style="border-top:5px solid var(--blue);">
+        <div class="stat-num blue">1</div>
+        <div class="stat-label-big">Временное снижение <span class="term">меланогенеза<span class="tip"><b>Меланогенез</b> — синтез меланина в меланоците.</span></span></div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--purple);">
+        <div class="stat-num purple">2</div>
+        <div class="stat-label-big">Нарушение передачи <span class="term">меланосом<span class="tip"><b>Меланосома</b> — органелла-контейнер, в которой хранится и переносится меланин.</span></span></div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--orange);">
+        <div class="stat-num orange">3</div>
+        <div class="stat-label-big">Повреждение меланосом</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--red);">
+        <div class="stat-num red">4</div>
+        <div class="stat-label-big">Повреждение меланоцитов</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Механизмы · 2 из 2</div>
+    <h2 class="section">Гипопигментация — не один диагноз</h2>
+    <p class="lead">Оставшиеся варианты связаны с воспалением, стойкой потерей клеток и изменениями ткани. Одно и то же осветление на глаз может иметь под собой совершенно разную физиологию.</p>
+    <div class="grid-4">
+      <div class="stat-card" style="border-top:5px solid var(--pink);">
+        <div class="stat-num pink">5</div>
+        <div class="stat-label-big">Поствоспалительная гипопигментация</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--red);">
+        <div class="stat-num red">6</div>
+        <div class="stat-label-big">Стойкая <span class="term">меланоцитопения<span class="tip"><b>Меланоцитопения</b> — снижение числа меланоцитов в коже.</span></span></div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--brown);">
+        <div class="stat-num brown">7</div>
+        <div class="stat-label-big">Рубцовые изменения</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--purple);">
+        <div class="stat-num purple">8</div>
+        <div class="stat-label-big">Витилиго-подобный процесс</div>
+      </div>
+    </div>
+    <p class="lead" style="margin-top:22px;">Главная задача специалиста — определить, какой именно механизм вероятнее всего произошёл: от этого зависит и прогноз, и тактика.</p>
+  </div>
+</section>
+
+<section class="slide blue">
+  <div class="slide-inner">
+    <div class="eyebrow">Патофизиология</div>
+    <h2 class="section">Три фундаментальных механизма</h2>
+    <p class="lead">Современный обзор поствоспалительной гипопигментации сводит всё многообразие причин к трём базовым механизмам.</p>
+    <div class="grid-3">
+      <div class="stat-card" style="border-top:5px solid var(--blue);">
+        <div class="stat-num blue">I</div>
+        <div class="stat-label-big">Снижение производства меланина</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--purple);">
+        <div class="stat-num purple">II</div>
+        <div class="stat-label-big">Нарушение передачи меланосом кератиноцитам</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--red);">
+        <div class="stat-num red">III</div>
+        <div class="stat-label-big">Повреждение или гибель меланоцитов</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Норма</div>
+    <h2 class="section">Как формируется нормальная пигментация</h2>
+    <div class="flow tight">
+      <div class="node accent">Меланоцит<span class="sub">пигментная клетка эпидермиса</span></div>
+      <div class="arrow"></div>
+      <div class="node">Тирозиназа и ферменты меланогенеза</div>
+      <div class="arrow"></div>
+      <div class="node">Образование меланина</div>
+      <div class="arrow"></div>
+      <div class="node">Формирование меланосом</div>
+      <div class="arrow"></div>
+      <div class="node">Транспорт по дендритам</div>
+      <div class="arrow"></div>
+      <div class="node">Передача кератиноцитам</div>
+      <div class="arrow"></div>
+      <div class="node">Распределение меланина в эпидермисе</div>
+      <div class="arrow"></div>
+      <div class="node accent">Видимая пигментация кожи</div>
+    </div>
+    <p class="lead" style="margin-top:12px;">Гипопигментация может возникнуть на любом из этих этапов — и от того, где именно нарушена цепочка, зависит, насколько восстановление вероятно.</p>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Глубина повреждения</div>
+    <h2 class="section">Три уровня гипопигментации</h2>
+    <p class="lead">Чем глубже затронут меланоцитарный аппарат, тем осторожнее прогноз восстановления.</p>
+    <div class="grid-3">
+      <div class="stat-card" style="border-top:5px solid var(--green);">
+        <div class="stat-num green">Ур. 1</div>
+        <div class="stat-label-big">Функциональная</div>
+        <p>Меланоцит жив, присутствует и потенциально способен восстановить функцию. Снижен синтез меланина, снижена активность тирозиназы, нарушена передача меланосом.</p>
+        <span class="prog good">Прогноз: относительно хороший</span>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--orange);">
+        <div class="stat-num orange">Ур. 2</div>
+        <div class="stat-label-big">Повреждение меланоцитарного аппарата</div>
+        <p>Разрушение меланосом, нарушение дендритов, снижение количества функциональных меланоцитов.</p>
+        <span class="prog mid">Прогноз: зависит от степени</span>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--red);">
+        <div class="stat-num red">Ур. 3</div>
+        <div class="stat-label-big">Меланоцитопения</div>
+        <p>При тяжёлом повреждении снижается само число меланоцитов.</p>
+        <div class="eqn boxed">
+          <div class="expr"><span class="t-red">N<sub>меланоцитов</sub></span> <span class="op">↓</span></div>
+          <div class="cap">Клеток, способных производить пигмент, становится меньше — восстановление существенно сложнее.</div>
+        </div>
+        <span class="prog bad">Прогноз: осторожный</span>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ===================== ЧАСТЬ II ===================== -->
+
+<!-- Слайд 1 — ДИВАЙДЕР Часть II -->
+<section class="slide teal">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть II</div>
+    <div class="section-num teal">02</div>
+    <h1 class="title">Почему лазер способен повредить меланоциты</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">Лазер взаимодействует со всей тканью по её оптическим свойствам — не только с татуировочным пигментом.</p>
+  </div>
+</section>
+
+<!-- Слайд 2 — Лазер не знает, что является татуировочным пигментом -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Оптика ткани</div>
+    <h2 class="section">Лазер «не знает», что является татуировочным пигментом</h2>
+    <p class="lead">Лазерный импульс взаимодействует с тканью по её <b>оптическим свойствам</b>. Он проходит через все слои и встречает на пути множество структур — не только чернила.</p>
+
+    <div class="flow horiz">
+      <div class="node accent">Лазер</div>
+      <div class="arrow"></div>
+      <div class="node">Эпидермис</div>
+      <div class="arrow"></div>
+      <div class="node">Дерма</div>
+      <div class="arrow"></div>
+      <div class="node accent">Татуировочный пигмент</div>
+    </div>
+
+    <p>На этом пути энергия <b>может</b> расходоваться по-разному:</p>
+    <div class="grid-4">
+      <div class="stat-card" style="border-top:5px solid var(--blue)">
+        <div class="stat-num">Поглощение</div>
+        <div class="stat-label-big">энергия принимается хромофором</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--teal)">
+        <div class="stat-num">Рассеяние</div>
+        <div class="stat-label-big">луч отклоняется в ткани</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--purple)">
+        <div class="stat-num">Отражение</div>
+        <div class="stat-label-big">часть возвращается от поверхности</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--amber)">
+        <div class="stat-num">Преобразование</div>
+        <div class="stat-label-big">энергия переходит в тепло / фотоакустику</div>
+      </div>
+    </div>
+
+    <p>Основная терапевтическая мишень — <b>татуировочный пигмент</b>. Но у него есть конкурирующие структуры: прежде всего <span class="term">меланин<span class="tip"><b>Меланин</b> — собственный пигмент кожи, вырабатываемый меланоцитами эпидермиса.</span></span> и другие компоненты ткани, которые тоже <b>потенциально</b> поглощают часть энергии.</p>
+  </div>
+</section>
+
+<!-- Слайд 3 — Почему 532 нм особенно важен -->
+<section class="slide amber">
+  <div class="slide-inner">
+    <div class="eyebrow">Длина волны 532 нм</div>
+    <h2 class="section">Почему 532 нм особенно важен для гипопигментации</h2>
+    <p class="lead">При <b>532 нм</b> существенно возрастает конкуренция с эпидермальным меланином. Часть энергии, которую мы хотим направить на красный и оранжевый татуировочный пигмент, <b>может</b> взаимодействовать также с меланином.</p>
+
+    <table class="cmp">
+      <thead>
+        <tr><th>Параметр</th><th>532 нм</th><th>1064 нм Nd:YAG</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Поглощение меланином</td>
+          <td><span class="pill danger">высокое</span></td>
+          <td><span class="pill lo">низкое</span></td>
+        </tr>
+        <tr>
+          <td>Удаление красного пигмента</td>
+          <td><span class="pill hi">эффективно</span></td>
+          <td><span class="pill mid">ограниченно</span></td>
+        </tr>
+        <tr>
+          <td>Пигментные осложнения</td>
+          <td><span class="pill danger">выше риск</span></td>
+          <td><span class="pill mid">реже</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p style="font-size:clamp(18px,1.25vw,24px);">Классическая работа по 532 и 1064 нм Nd:YAG <b>(Bernstein EF et al.)</b> показала:</p>
+    <div class="key-findings compact">
+      <div class="kf"><span class="kf-bullet green">1</span><div><b>1064 нм</b> значительно реже вызывает пигментные изменения.</div></div>
+      <div class="kf"><span class="kf-bullet amber">2</span><div><b>532 нм</b> эффективно удаляет красный пигмент.</div></div>
+      <div class="kf"><span class="kf-bullet red">3</span><div>При <b>532 нм</b> наблюдалась временная гипопигментация.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 3b — 532 нм: тест на чистой коже -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Наглядно · 532 нм</div>
+    <h2 class="section">532 нм действует на меланин даже без татуировки</h2>
+    <div class="split" style="grid-template-columns:1.1fr 0.9fr;align-items:center;">
+      <div class="pcard">
+        <div class="pimg tall"><img src="hypo_assets/test532.jpg" alt="Тест 532 нм на чистой коже"></div>
+        <div class="pcap">Тестовые точки 532 нм на коже <b>без татуировки</b>: сразу — покраснение, затем — стойкие светлые пятна</div>
+      </div>
+      <div>
+        <p class="lead">Если бы мишенью был только татуировочный пигмент, чистая кожа не реагировала бы. Но реагирует — потому что при 532 нм <b>сам меланин</b> становится мишенью.</p>
+        <div class="key-findings" style="margin-top:clamp(12px,1.2vw,20px);">
+          <div class="kf"><span class="kf-bullet amber">1</span><div>Красные точки — острая реакция сразу после импульса.</div></div>
+          <div class="kf"><span class="kf-bullet red">2</span><div>Белые точки позже — <b>гипопигментация</b> на месте теста.</div></div>
+          <div class="kf"><span class="kf-bullet">3</span><div>Отсюда — тест-зона и осторожные параметры на смуглой и загорелой коже.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 4 — Почему 1064 нм не абсолютно безопасен -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Длина волны 1064 нм</div>
+    <h2 class="section">Почему 1064 нм не является абсолютно безопасным для меланоцитов</h2>
+    <p class="lead"><b>1064 нм</b> значительно меньше поглощается меланином — прямое воздействие на эпидермальный меланин существенно ниже, чем при 532 нм. Это делает его более щадящим, но <b>не</b> полностью нейтральным.</p>
+
+    <p>Накопленное повреждение меланоцитарной системы <b>потенциально может</b> возникать при сочетании факторов:</p>
+    <div class="key-findings">
+      <div class="kf"><span class="kf-bullet amber">1</span><div><b>Многократные</b> процедуры.</div></div>
+      <div class="kf"><span class="kf-bullet amber">2</span><div><b>Недостаточные</b> интервалы между сеансами.</div></div>
+      <div class="kf"><span class="kf-bullet amber">3</span><div><b>Повторные</b> воздействия на одну зону.</div></div>
+      <div class="kf"><span class="kf-bullet red">4</span><div>Высокая <b>суммарная</b> энергетическая нагрузка.</div></div>
+    </div>
+
+    <div class="card">
+      <p style="margin:0;">Существуют клинические и гистологические данные о гипопигментации после <b>многократного</b> применения 1064 нм. Ключевое слово — <b>накопление</b>: единичное щадящее воздействие и серия интенсивных воздействий несут разный риск для меланоцитов.</p>
+    </div>
+  </div>
+</section>
+<!-- ===================== ЧАСТЬ III ===================== -->
+
+<!-- Слайд 1 — ДИВАЙДЕР Часть III -->
+<section class="slide purple">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть III</div>
+    <div class="section-num purple">03</div>
+    <h1 class="title">Физика: когда пигмента становится мало</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">Почему удаление последних процентов пигмента может стать проблемным — и почему <b>не</b> по той причине, о которой обычно думают.</p>
+  </div>
+</section>
+
+<!-- Слайд 2 — Исправление упрощения -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Частая ошибка мышления</div>
+    <h2 class="section">Что происходит, когда пигмента становится мало?</h2>
+
+    <div class="card" style="border-left:6px solid var(--red);">
+      <p style="margin:0;"><b style="color:var(--red);">Так объясняют часто, но это неточно:</b> «Пигмента стало мало → и лазерная энергия начинает сильнее поглощаться меланином».</p>
+    </div>
+
+    <p class="lead">Если параметры воздействия одинаковы, само по себе уменьшение количества татуировочного пигмента <b>не перенаправляет</b> энергию в меланин. Свет проходит ткань по её оптическим свойствам — путь остаётся прежним:</p>
+
+    <div class="flow horiz">
+      <div class="node accent">Лазер</div>
+      <div class="arrow"></div>
+      <div class="node">Эпидермис</div>
+      <div class="arrow"></div>
+      <div class="node">Дерма</div>
+      <div class="arrow"></div>
+      <div class="node accent">Остаточный пигмент</div>
+    </div>
+
+    <p>Меланин эпидермиса получает свою долю энергии по <b>тому же закону поглощения</b> — независимо от того, много или мало осталось татуировочного пигмента ниже.</p>
+  </div>
+</section>
+
+<!-- Слайд 3 — Что действительно меняется -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Изменение мишени</div>
+    <h2 class="section">Что действительно меняется</h2>
+    <p class="lead">Меняется не распределение энергии между слоями, а <b>сама мишень</b>. После серии процедур количество частиц пигмента снижается, но одновременно происходит несколько сдвигов:</p>
+
+    <div class="key-findings">
+      <div class="kf"><span class="kf-bullet amber">1</span><div>Частицы <b>фрагментируются</b> — меняется их размер.</div></div>
+      <div class="kf"><span class="kf-bullet amber">2</span><div>Меняется их <b>пространственное распределение</b> в ткани.</div></div>
+      <div class="kf"><span class="kf-bullet amber">3</span><div>Часть частиц оказывается <b>глубже</b> и труднодоступнее.</div></div>
+      <div class="kf"><span class="kf-bullet red">4</span><div>Снижается <b>вероятность</b> встречи конкретного импульса с частицей.</div></div>
+    </div>
+
+    <div class="eqn">
+      <div class="expr"><span class="t-green">E</span><sub>полезная → пигмент</sub> <span class="op">↓</span></div>
+      <div class="cap">При той же входной энергии до пигмента доходит и им поглощается меньше — потому что мишени физически меньше и она хуже доступна.</div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 4 — Три разные величины -->
+<section class="slide blue">
+  <div class="slide-inner">
+    <div class="eyebrow">Три величины, которые путают</div>
+    <h2 class="section">Не всё, что вошло, доходит и поглощается</h2>
+    <p class="lead">Важно различать три разные величины — их часто называют одним словом «энергия», и отсюда рождается путаница.</p>
+
+    <div class="grid-3">
+      <div class="stat-card" style="border-top:5px solid var(--blue);">
+        <div class="stat-num blue">F<sub>0</sub></div>
+        <div class="stat-label-big">Входная плотность энергии на поверхности кожи</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--purple);">
+        <div class="stat-num purple">F(z)</div>
+        <div class="stat-label-big">Плотность энергии на глубине мишени <span class="term">z<span class="tip"><b>z</b> — глубина залегания мишени в ткани.</span></span></div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--green);">
+        <div class="stat-num green">E<sub>abs</sub></div>
+        <div class="stat-label-big">Энергия, реально поглощённая мишенью</div>
+      </div>
+    </div>
+
+    <div class="eqn boxed">
+      <div class="expr"><span class="t-blue">F</span><sub>0</sub> <span class="op">≠</span> <span class="t-purple">F</span>(z) <span class="op">≠</span> <span class="t-green">E</span><sub>abs</sub></div>
+      <div class="cap">Ткань поглощает, рассеивает и меняет направление света и неоднородна по глубине — поэтому три величины не равны друг другу.</div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 5 — Почему последние проценты проблемны -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Последние проценты</div>
+    <h2 class="section">Почему их бывает трудно убрать</h2>
+    <p class="lead">Дело <b>не</b> в том, что энергия «переключается» на меланин. Цепочка иная:</p>
+
+    <div class="flow horiz">
+      <div class="node">Пигмента мало</div>
+      <div class="arrow"></div>
+      <div class="node warn">Эффективность взаимодействия ↓</div>
+      <div class="arrow"></div>
+      <div class="node warn">Растёт плотность энергии</div>
+      <div class="arrow"></div>
+      <div class="node bad">Нагрузка на ткань ↑</div>
+    </div>
+
+    <p>Мишени по-прежнему мало — а вот суммарная нагрузка на окружающую нормальную ткань растёт. Меняется соотношение:</p>
+
+    <div class="eqn amberbox">
+      <div class="expr"><span class="frac"><span class="num"><span class="t-red">E</span><sub>повреждение ткани</sub></span><span class="den"><span class="t-green">E</span><sub>полезное воздействие</sub></span></span> <span class="op">↑</span></div>
+      <div class="cap">Больше энергии приходится на нормальную ткань в расчёте на единицу полезного воздействия на пигмент.</div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 6 — Предельная стоимость -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Предельная стоимость</div>
+    <h2 class="section">Цена удаления остаточного пигмента</h2>
+    <p class="lead">Оценим «стоимость» каждой следующей небольшой доли удалённого пигмента через дополнительную нагрузку на нормальную кожу:</p>
+
+    <div class="eqn boxed">
+      <div class="expr"><span class="t-blue">C</span> <span class="op">=</span> <span class="frac"><span class="num">Δ<span class="t-red">E</span><sub>ткань</sub></span><span class="den">Δ<span class="t-green">P</span><sub>удалённого пигмента</sub></span></span></div>
+      <div class="cap">Если для очередной небольшой доли пигмента нужно всё больше дополнительной нагрузки на ткань, C растёт — и наращивать агрессивность всё менее выгодно.</div>
+    </div>
+
+    <div class="card" style="border-left:6px solid var(--orange);">
+      <p style="margin:0;"><b>Важная оговорка.</b> Это <b>не</b> значит, что последние 10 % всегда опаснее первых 50 %. Это значит другое: эффективность дополнительного энергетического воздействия <b>может снижаться быстрее</b>, чем снижается нагрузка на нормальную ткань.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 7 — Размер частиц -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Судьба частиц</div>
+    <h2 class="section">После лазера пигмент не просто исчезает</h2>
+    <p class="lead">Остаток — это не «недоудалённая» копия исходного. Частица проходит путь, в котором меняется её размер, глубина и доступность:</p>
+
+    <div class="flow">
+      <div class="node accent">Исходная крупная частица</div>
+      <div class="arrow"></div>
+      <div class="node">Лазерное воздействие</div>
+      <div class="arrow"></div>
+      <div class="node warn">Фрагментация</div>
+      <div class="arrow"></div>
+      <div class="node">Более мелкие частицы</div>
+      <div class="arrow"></div>
+      <div class="node">Частичное удаление макрофагами и лимфатической системой</div>
+      <div class="arrow"></div>
+      <div class="node accent">Остаточные частицы</div>
+    </div>
+
+    <div class="card">
+      <p style="margin:0;">Поэтому остаточные 10 % — это <b>не обязательно те же</b> 10 % исходных частиц. Это может быть <b>другая популяция</b>: по размеру, глубине, распределению и биологической доступности.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 8 — Размер пятна -->
+<section class="slide teal">
+  <div class="slide-inner">
+    <div class="eyebrow">Не только флюенс</div>
+    <h2 class="section">Размер пятна как физический рычаг</h2>
+    <p class="lead">Увеличение плотности энергии — не единственный способ усилить воздействие на глубокий пигмент. Иногда изменить <b>размер пятна</b> физически рациональнее.</p>
+
+    <p>Исследования показывают, что на глубину доставки энергии и эффективность удаления влияют:</p>
+    <div class="grid-3">
+      <div class="stat-card" style="border-top:5px solid var(--teal);">
+        <div class="stat-num teal">Размер пятна</div>
+        <div class="stat-label-big">крупнее пятно — глубже доходит энергия</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--blue);">
+        <div class="stat-num blue">Профиль луча</div>
+        <div class="stat-label-big">форма распределения энергии в пятне</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--purple);">
+        <div class="stat-num purple">Однородность</div>
+        <div class="stat-label-big">ровность луча по площади пятна</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p style="margin:0;">В клиническом исследовании <b>1064 нм</b> больший размер пятна и более однородный профиль луча сопровождались <b>низкой частотой</b> побочных эффектов — хотя гипер- и гипопигментация всё же наблюдались.</p>
+    </div>
+  </div>
+</section>
+<!-- ============ ЧАСТЬ IV — Накопленная нагрузка и роль воспаления ============ -->
+
+<!-- 1. ДИВАЙДЕР -->
+<section class="slide amber">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть IV</div>
+    <div class="section-num amber">04</div>
+    <h1 class="title">Накопленная нагрузка и роль воспаления</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">Не отдельный импульс, а суммарная и повторная нагрузка на ткань определяет пигментный ответ.</p>
+  </div>
+</section>
+
+<!-- 2. Многопроходность -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Оптика ткани</div>
+    <h2 class="section">Многопроходность</h2>
+    <p class="lead">После первого импульса ткань уже не оптически идентична исходной — среда, в которую приходит следующий импульс, изменилась.</p>
+    <div class="grid-3" style="margin-top:clamp(14px,1.4vw,22px);">
+      <div class="stat-card" style="border-top:5px solid var(--orange);">
+        <div style="font-size:clamp(24px,2vw,34px);font-weight:700;color:var(--orange);line-height:1.15;">Побеление и микровакуоли</div>
+        <div class="stat-label">Локальное вскипание внутритканевой жидкости, образование мельчайших полостей.</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--orange);">
+        <div style="font-size:clamp(24px,2vw,34px);font-weight:700;color:var(--orange);line-height:1.15;">Газообразование</div>
+        <div class="stat-label">Пузырьки газа временно меняют прозрачность и путь света.</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--orange);">
+        <div style="font-size:clamp(24px,2vw,34px);font-weight:700;color:var(--orange);line-height:1.15;">Рассеяние и структура</div>
+        <div class="stat-label">Меняется рассеяние и сама структура ткани — глубина проникновения сдвигается.</div>
+      </div>
+    </div>
+    <div class="eqn boxed" style="margin-top:clamp(14px,1.4vw,22px);">
+      <div class="expr"><span class="t-orange">проход 2</span> <span class="op">&ne;</span> <span class="t-orange">проход 1</span></div>
+      <div class="cap">С точки зрения оптической среды это уже разные воздействия.</div>
+    </div>
+    <p style="margin-top:clamp(12px,1.2vw,18px);"><strong>Вывод:</strong> многопроходность — это не просто арифметическое сложение плотности энергии.</p>
+  </div>
+</section>
+
+<!-- 3. Однократная обработка (авторский принцип) -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Авторский принцип · © В. Микрюков, 2026</div>
+    <h2 class="section">Однократная обработка</h2>
+    <div class="eqn boxed" style="margin-top:6px;">
+      <div class="expr" style="font-size:clamp(26px,2.4vw,40px);line-height:1.3;">Один участок — один контролируемый проход за одну процедуру, без ненужного перекрытия.</div>
+      <div class="cap">© В. Микрюков, 2026</div>
+    </div>
+    <div class="key-findings" style="margin-top:clamp(14px,1.4vw,22px);">
+      <div class="kf">Уменьшается локальная неоднородность дозы.</div>
+      <div class="kf">Уменьшается вероятность повторного попадания в одну точку.</div>
+      <div class="kf">Снижается вероятность локального перегрева.</div>
+      <div class="kf">Снижается риск формирования зон избыточной воспалительной нагрузки.</div>
+    </div>
+    <p style="margin-top:clamp(12px,1.2vw,18px);"><strong>Особенно важно:</strong> не пытаться компенсировать недостаточную эффективность бесконтрольным увеличением количества проходов.</p>
+  </div>
+</section>
+
+<!-- 4. Накопленная энергетическая нагрузка -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Суммирование дозы</div>
+    <h2 class="section">Накопленная энергетическая нагрузка</h2>
+    <div class="grid-2" style="margin-top:clamp(12px,1.2vw,20px);">
+      <div class="eqn boxed">
+        <div class="expr"><span class="t-blue">D</span><sub>общая</sub> <span class="op">=</span> Σ <span class="t-blue">D</span><sub>i</sub></div>
+        <div class="cap">Простая сумма отдельных воздействий.</div>
+      </div>
+      <div class="eqn boxed">
+        <div class="expr"><span class="t-purple">D</span><sub>биологическая</sub> <span class="op">=</span> <i>f</i>(<span class="t-blue">D</span><sub>i</sub>, Δt, R)</div>
+        <div class="cap">Биологическая нагрузка зависит не только от суммы.</div>
+      </div>
+    </div>
+    <div class="key-findings" style="margin-top:clamp(14px,1.4vw,22px);">
+      <div class="kf"><span class="t-blue"><strong>D</strong><sub>i</sub></span> — отдельное воздействие</div>
+      <div class="kf"><strong>Δt</strong> — интервал между воздействиями</div>
+      <div class="kf"><strong>R</strong> — степень восстановления ткани к моменту следующего импульса</div>
+    </div>
+    <div class="eqn boxed" style="margin-top:clamp(12px,1.2vw,18px);border-left:5px solid var(--orange);">
+      <div class="expr" style="font-size:clamp(24px,2.1vw,36px);">Воздействие <span class="op">до</span> восстановления <span class="op">&rarr;</span> <span class="t-orange">D</span><sub>накопленная</sub> <span class="t-orange">&uarr;</span></div>
+      <div class="cap">Если новое воздействие приходит раньше, чем ткань успела восстановиться.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. Почему это особенно важно для 1064 нм -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Nd:YAG 1064 нм</div>
+    <h2 class="section">Почему это особенно важно для 1064&nbsp;нм</h2>
+    <p class="lead">1064&nbsp;нм может быть очень щадящим для меланина при <strong>одном</strong> воздействии. Но щадящий эффект одного импульса не переносится автоматически на серию.</p>
+    <div class="eqn boxed" style="margin-top:clamp(12px,1.2vw,20px);">
+      <div class="expr">1064 <span class="op">&times;</span> 1 <span class="op">&ne;</span> 1064 <span class="op">&times;</span> 10</div>
+      <div class="cap">…если ткань между воздействиями не успевает восстановиться.</div>
+    </div>
+    <div class="grid-2" style="margin-top:clamp(14px,1.4vw,22px);">
+      <div class="stat-card" style="border-top:5px solid var(--purple);">
+        <div style="font-size:clamp(23px,1.9vw,32px);font-weight:700;color:var(--purple);line-height:1.15;">В одних публикациях</div>
+        <div class="stat-label">При частых воздействиях 1064&nbsp;нм отмечалось снижение меланина и изменение меланоцитов.</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--blue);">
+        <div style="font-size:clamp(23px,1.9vw,32px);font-weight:700;color:var(--blue);line-height:1.15;">В других</div>
+        <div class="stat-label">Меланоциты сохранялись при выраженном снижении меланина.</div>
+      </div>
+    </div>
+    <p style="margin-top:clamp(12px,1.2vw,18px);font-size:clamp(20px,1.35vw,26px);color:var(--ink-soft);">Клинические и гистологические данные о гипопигментации после частых воздействий 1064&nbsp;нм расходятся — это само по себе важный сигнал.</p>
+  </div>
+</section>
+
+<!-- 6. Гипопигментация при сохранённых меланоцитах -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Ключевой слайд</div>
+    <h2 class="section">Гипопигментация при сохранённых меланоцитах</h2>
+    <p class="lead">Гистологически возможна ситуация: меланоциты присутствуют, но пигмента почти нет.</p>
+    <div class="grid-2" style="margin-top:clamp(12px,1.2vw,20px);">
+      <div class="stat-card"><div style="font-size:clamp(22px,1.8vw,30px);font-weight:700;color:var(--blue);">Снижена активность</div><div class="stat-label">Меланоциты на месте, но их функциональная активность понижена.</div></div>
+      <div class="stat-card"><div style="font-size:clamp(22px,1.8vw,30px);font-weight:700;color:var(--blue);">Меньше меланина</div><div class="stat-label">Уменьшено количество синтезируемого пигмента.</div></div>
+      <div class="stat-card"><div style="font-size:clamp(22px,1.8vw,30px);font-weight:700;color:var(--blue);">Нарушена структура <span class="term">меланосом<span class="tip">Меланосома — внутриклеточная органелла, где образуется и хранится меланин.</span></span></div><div class="stat-label">Изменена морфология органелл, где хранится пигмент.</div></div>
+      <div class="stat-card"><div style="font-size:clamp(22px,1.8vw,30px);font-weight:700;color:var(--blue);">Нарушена передача</div><div class="stat-label">Меланин хуже передаётся в кератиноциты — кожа выглядит белой.</div></div>
+    </div>
+    <div class="eqn boxed" style="margin-top:clamp(14px,1.4vw,22px);border-left:5px solid var(--purple);background:var(--purple);">
+      <div class="expr" style="color:#fff;font-size:clamp(24px,2.1vw,38px);line-height:1.3;">Внешняя степень гипопигментации — <span style="text-decoration:underline;">не</span> прямое измерение количества живых меланоцитов.</div>
+      <div class="cap" style="color:#fff;opacity:.9;">Биологически меланоциты не обязательно уничтожены.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. Почему воспаление может привести к гипопигментации -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Развилка воспаления</div>
+    <h2 class="section">Почему воспаление может привести к гипопигментации</h2>
+    <div class="eqn boxed" style="margin-top:6px;">
+      <div class="expr" style="font-size:clamp(22px,1.9vw,34px);line-height:1.35;">Повреждение <span class="op">&rarr;</span> активация клеток кожи <span class="op">&rarr;</span> цитокины + активные формы кислорода + факторы роста</div>
+      <div class="cap">Один и тот же сигнальный поток ведёт к двум разным исходам.</div>
+    </div>
+    <div class="grid-2" style="margin-top:clamp(14px,1.4vw,22px);">
+      <div class="stat-card" style="border-top:6px solid var(--green);">
+        <div style="font-size:clamp(24px,2vw,34px);font-weight:700;color:var(--green);">Стимуляция меланоцита</div>
+        <div class="stat-label">Усиление синтеза пигмента — путь в сторону гиперпигментации.</div>
+      </div>
+      <div class="stat-card" style="border-top:6px solid var(--orange);">
+        <div style="font-size:clamp(24px,2vw,34px);font-weight:700;color:var(--orange);">Подавление / повреждение меланоцита</div>
+        <div class="stat-label">Снижение активности или повреждение клетки — путь в сторону гипопигментации.</div>
+      </div>
+    </div>
+    <p style="margin-top:clamp(12px,1.2vw,18px);"><strong>Вывод:</strong> воспаление само по себе не определяет направление изменения пигмента.</p>
+  </div>
+</section>
+
+<!-- 8. Очень коротко о гиперпигментации (слайд-контраст) -->
+<section class="slide brown">
+  <div class="slide-inner">
+    <div class="eyebrow">Контраст</div>
+    <h2 class="section">Очень коротко о гиперпигментации</h2>
+    <p class="lead">Тот же воспалительный процесс может пойти в противоположную сторону. Механизмы вы уже знаете — напомним пунктиром.</p>
+    <div class="key-findings" style="margin-top:clamp(12px,1.2vw,20px);">
+      <div class="kf">Усиление меланогенеза</div>
+      <div class="kf">Увеличение передачи меланосом в кератиноциты</div>
+      <div class="kf">Повреждение базального слоя и выход меланина в дерму</div>
+      <div class="kf">Образование меланофагов</div>
+    </div>
+    <blockquote class="q" style="border-left:none;text-align:center;margin-top:clamp(16px,1.6vw,26px);">
+      Наша задача — понять, почему тот же воспалительный процесс может дать противоположный результат: гипопигментацию.
+      <span class="src">© В. Микрюков, 2026</span>
+    </blockquote>
+  </div>
+</section>
+
+<!-- 9. Ключевое различие -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Три сценария</div>
+    <h2 class="section">Ключевое различие</h2>
+    <p class="lead">Направление пигментного ответа — это судьба меланоцита.</p>
+    <div class="grid-3" style="margin-top:clamp(14px,1.4vw,22px);">
+      <div class="stat-card" style="border-top:6px solid var(--brown);">
+        <div style="font-size:clamp(24px,2vw,34px);font-weight:700;color:var(--brown);">Гиперпигментация</div>
+        <div class="stat-label">Меланоцит преимущественно <strong>активируется</strong>.</div>
+      </div>
+      <div class="stat-card" style="border-top:6px solid var(--orange);">
+        <div style="font-size:clamp(24px,2vw,34px);font-weight:700;color:var(--orange);">Гипопигментация</div>
+        <div class="stat-label">Меланоцит преимущественно <strong>подавляется</strong> или <strong>повреждается</strong>.</div>
+      </div>
+      <div class="stat-card" style="border-top:6px solid var(--red);">
+        <div style="font-size:clamp(24px,2vw,34px);font-weight:700;color:var(--red);">Стойкая депигментация</div>
+        <div class="stat-label">Меланоцит <strong>утрачивается</strong> либо развивается отдельный аутоиммунный процесс.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10. Почему один и тот же лазер может дать противоположные реакции -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Итог части IV</div>
+    <h2 class="section">Почему один и тот же лазер может дать противоположные реакции</h2>
+    <div class="grid-2" style="margin-top:clamp(10px,1vw,18px);">
+      <div class="eqn boxed" style="border-left:5px solid var(--orange);">
+        <div class="expr">Outcome <span class="op">&ne;</span> <i>f</i>(F)</div>
+        <div class="cap">Результат не сводится к одному флюенсу.</div>
+      </div>
+      <div class="eqn boxed" style="border-left:5px solid var(--blue);">
+        <div class="expr" style="font-size:clamp(20px,1.8vw,32px);">Outcome <span class="op">=</span> <i>f</i>(λ, F, S, τ, N, I, M, UV, R)</div>
+        <div class="cap">Результат — функция многих связанных параметров.</div>
+      </div>
+    </div>
+    <div class="grid-3" style="margin-top:clamp(12px,1.2vw,20px);">
+      <div class="kf"><strong>λ</strong> — длина волны</div>
+      <div class="kf"><strong>F</strong> — флюенс</div>
+      <div class="kf"><strong>S</strong> — размер пятна</div>
+      <div class="kf"><strong>τ</strong> — длительность импульса</div>
+      <div class="kf"><strong>N</strong> — число проходов</div>
+      <div class="kf"><strong>I</strong> — интервал</div>
+      <div class="kf"><strong>M</strong> — меланиновая нагрузка</div>
+      <div class="kf"><strong>UV</strong> — загар</div>
+      <div class="kf"><strong>R</strong> — восстановление ткани</div>
+    </div>
+  </div>
+</section>
+<!-- ===================== ЧАСТЬ V ===================== -->
+
+<!-- Слайд 1 — ДИВАЙДЕР Часть V -->
+<section class="slide brown">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть V</div>
+    <div class="section-num brown">05</div>
+    <h1 class="title">Фототип, загар и текущая меланиновая нагрузка</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">Фототип — это конституция. Но лазер видит НЕ конституцию, а меланин, который в коже прямо сейчас.</p>
+  </div>
+</section>
+
+<!-- Слайд 2 — Фототип по Фицпатрику -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Определение</div>
+    <h2 class="section">Фототип по Фицпатрику</h2>
+    <p class="lead"><span class="term">Фототип<span class="tip"><b>Фототип по Фицпатрику</b> — классификация I–VI по конституциональной реакции кожи на ультрафиолет (склонность к загару и ожогу).</span></span> — это характеристика <b>конституциональной</b> реакции кожи на ультрафиолет. Он описывает, как кожа человека в целом склонна отвечать на солнце.</p>
+    <p>Но фототип — это <b>не</b> измерение текущего количества меланина в конкретной зоне кожи прямо сейчас. Это две разные величины, и путать их не следует.</p>
+
+    <div class="eqn boxed">
+      <div class="expr"><span class="t-brown">Fitzpatrick</span> <span class="op">≠</span> <span class="t-orange">текущая меланиновая нагрузка</span></div>
+      <div class="cap">Конституциональный фототип описывает предрасположенность кожи. Текущая меланиновая нагрузка — это фактическое количество пигмента в зоне обработки в данный момент.</div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 3 — Локальный загар -->
+<section class="slide amber">
+  <div class="slide-inner">
+    <div class="eyebrow">Локальный загар</div>
+    <h2 class="section">Когда зона загорела</h2>
+    <p class="lead">Пациент с конституциональным фототипом <b>II</b>. Но зона удаления татуировки недавно загорела: она значительно темнее остальной кожи и имеет <b>повышенную текущую меланиновую нагрузку</b>.</p>
+
+    <div class="grid-2">
+      <div class="stat-card" style="border-top:5px solid var(--red);">
+        <div class="stat-num red">Неправильно</div>
+        <div class="stat-label-big">«Теперь это фототип IV»</div>
+        <p>Фототип — конституциональная характеристика, он не меняется от приобретённого загара. Такая формулировка подменяет понятия.</p>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--green);">
+        <div class="stat-num green">Правильно</div>
+        <div class="stat-label-big">Конституциональный фототип II; локальная текущая меланиновая нагрузка повышена вследствие приобретённого загара</div>
+        <p>Именно эту текущую нагрузку и нужно учитывать при выборе параметров.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 4 — Почему это особенно важно при 532 нм -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Длина волны 532 нм</div>
+    <h2 class="section">Почему это особенно важно при 532 нм</h2>
+    <p class="lead">При <b>532 нм</b> меланин — сильный конкурирующий хромофор. Чем больше пигмента в зоне прямо сейчас, тем выше конкуренция за энергию импульса.</p>
+
+    <div class="eqn boxed">
+      <div class="expr"><span class="t-blue">532 нм</span> <span class="op">+</span> <span class="t-orange">↑ меланин</span> <span class="op">→</span> <span class="t-red">↑ конкуренция</span></div>
+      <div class="cap">Свежий загар в зоне обработки повышает поглощение энергии эпидермальным меланином.</div>
+    </div>
+
+    <p>Фототип II <b>без</b> загара и фототип II <b>с</b> выраженным загаром — это разные оптические условия для одного и того же импульса:</p>
+    <div class="grid-2">
+      <div class="stat-card" style="border-top:5px solid var(--green);">
+        <div class="stat-label-big">Фототип II без загара</div>
+        <p>Текущая меланиновая нагрузка низкая. Конкуренция меланина за энергию 532 нм минимальна.</p>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--orange);">
+        <div class="stat-label-big">Фототип II со свежим загаром</div>
+        <p>Текущая меланиновая нагрузка повышена. Конкуренция меланина за энергию 532 нм выше — параметры требуют осторожности.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 5 — Солярий и естественный загар -->
+<section class="slide amber">
+  <div class="slide-inner">
+    <div class="eyebrow">Солярий и естественный загар</div>
+    <h2 class="section">Свежий интенсивный загар</h2>
+    <p class="lead">И естественное солнце, и солярий работают одинаково: ультрафиолет запускает <b>стимуляцию меланогенеза</b> и одновременно вызывает <b>фотоповреждение</b> кожи.</p>
+
+    <div class="flow horiz">
+      <div class="node accent">Ультрафиолет</div>
+      <div class="arrow"></div>
+      <div class="node">Стимуляция меланогенеза</div>
+      <div class="arrow"></div>
+      <div class="node">Фотоповреждение кожи</div>
+    </div>
+
+    <div class="card">
+      <p style="margin:0;">Свежий интенсивный загар следует рассматривать как состояние <b>повышенной меланиновой нагрузки</b> и потенциально <b>изменённой реактивности</b> кожи. Это влияет и на оптику процедуры, и на восстановление.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 6 — Автозагар -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Автозагар</div>
+    <h2 class="section">Автозагар — отдельная ситуация</h2>
+    <p class="lead">Автозагар на основе <span class="term">DHA<span class="tip"><b>DHA</b> (дигидроксиацетон) — вещество, окрашивающее роговой слой через химическую реакцию с аминокислотами.</span></span> преимущественно окрашивает <b>роговой слой</b>: краситель образуется в химической реакции с аминокислотами, а не за счёт синтеза меланина.</p>
+
+    <div class="eqn boxed">
+      <div class="expr"><span class="t-brown">автозагар (DHA)</span> <span class="op">≠</span> <span class="t-orange">ультрафиолетовый меланогенез</span></div>
+      <div class="cap">Автозагар не эквивалентен настоящему ультрафиолетовому загару: он не отражает истинную меланиновую нагрузку.</div>
+    </div>
+
+    <p>Однако свежий автозагар перед лазерной процедурой всё равно <b>нежелателен</b>:</p>
+    <div class="key-findings">
+      <div class="kf"><span class="kf-bullet amber">1</span><div>Сложнее оценить <b>исходный цвет</b> кожи.</div></div>
+      <div class="kf"><span class="kf-bullet amber">2</span><div>Изменяется <b>оптический вид</b> кожи.</div></div>
+      <div class="kf"><span class="kf-bullet amber">3</span><div>Некоторые средства могут <b>раздражать</b> кожу.</div></div>
+      <div class="kf"><span class="kf-bullet red">4</span><div>Недостаточно <b>данных</b> именно для сочетания свежего автозагара с лазерным удалением татуировки.</div></div>
+    </div>
+  </div>
+</section>
+<!-- Слайд 7 — Фотозащита во время курса (можно работать летом) -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Фотозащита · работа летом</div>
+    <h2 class="section">Летом курс продолжают — если укрывают зону от солнца</h2>
+    <p class="lead" style="margin-bottom:clamp(8px,0.8vw,14px);">Светлый прямоугольник — это <b>защищённая</b> от солнца зона удаления: она осталась в исходном тоне, пока кожа вокруг загорела. Это <b>не депигментация</b>, а грамотная фотозащита, которая позволяет не прерывать курс.</p>
+    <div class="pgrid c3">
+      <div class="pcard"><div class="pimg"><img src="hypo_assets/sun1.jpg" alt="Защищённая зона светлее загара"></div><div class="pcap">Зона укрыта — светлее загоревшей кожи вокруг</div></div>
+      <div class="pcard"><div class="pimg"><img src="hypo_assets/sun2.jpg" alt="Граница загара = граница защиты"></div><div class="pcap">Чёткая граница загара = граница защиты</div></div>
+      <div class="pcard"><div class="pimg"><img src="hypo_assets/sun3.jpg" alt="Участок сохранил исходный тон"></div><div class="pcap">Защищённый участок сохранил исходный тон</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ЧАСТЬ VI · БЛОК A — Охлаждение и контроль воспалительной нагрузки (принцип и доказательства) -->
+
+<!-- 1 · ДИВАЙДЕР -->
+<section class="slide teal">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть VI</div>
+    <div class="section-num teal">06</div>
+    <h1 class="title">Охлаждение и контроль воспалительной нагрузки</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">Мы не можем полностью исключить повреждение ткани. Но мы можем контролировать его величину и продолжительность.</p>
+  </div>
+</section>
+
+<!-- 2 · ГЛАВНЫЙ ПРОФИЛАКТИЧЕСКИЙ ПРИНЦИП -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Главный профилактический принцип</div>
+    <h2 class="section">Задача — не просто разрушить пигмент</h2>
+    <p class="lead" style="max-width:1500px;">Наша настоящая задача — <b>контролировать воспалительную и тепловую нагрузку на кожу</b>. Именно величина и длительность этой нагрузки, а не только факт воздействия, во многом определяют пигментный ответ.</p>
+
+    <div class="flow horiz" style="margin-top:clamp(24px,3vw,48px);">
+      <div class="node bad">Лазерное повреждение</div>
+      <div class="arrow"></div>
+      <div class="node warn">Воспаление</div>
+      <div class="arrow"></div>
+      <div class="node accent">Пигментный ответ</div>
+    </div>
+
+    <p class="lead" style="max-width:1400px;margin-top:clamp(20px,2vw,34px);font-size:clamp(24px,1.8vw,34px);">Повлиять на первый шаг мы можем лишь отчасти — он неизбежен. Но <b>средний шаг, воспаление, поддаётся управлению</b> — и здесь охлаждение играет ключевую роль.</p>
+  </div>
+</section>
+
+<!-- 3 · ВОСПАЛИТЕЛЬНАЯ НАГРУЗКА (ФОРМУЛА) -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Авторская формула · © В. Микрюков, 2026</div>
+    <h2 class="section">Воспалительная нагрузка</h2>
+
+    <div class="eqn boxed" style="margin-top:clamp(18px,2vw,32px);">
+      <div class="expr"><span class="t-orange">I</span><sub>load</sub> <span class="op">=</span> <i>f</i>(E, t, S, N, перекрытие, состояние&nbsp;ткани, охлаждение, восстановление)</div>
+      <div class="cap">Воспалительная нагрузка — не одно число, а функция многих факторов. Мы не можем обнулить её, но можем осознанно смещать каждый из аргументов.</div>
+    </div>
+
+    <div class="grid-4" style="margin-top:clamp(18px,2vw,30px);">
+      <div class="stat-card"><div class="stat-num orange" style="font-size:clamp(30px,2.6vw,44px);">E</div><div class="stat-label">Количество доставленной энергии</div></div>
+      <div class="stat-card"><div class="stat-num orange" style="font-size:clamp(30px,2.6vw,44px);">S</div><div class="stat-label">Локальная концентрация энергии (плотность)</div></div>
+      <div class="stat-card"><div class="stat-num orange" style="font-size:clamp(30px,2.6vw,44px);">t</div><div class="stat-label">Длительность теплового воздействия</div></div>
+      <div class="stat-card"><div class="stat-num orange" style="font-size:clamp(30px,2.6vw,44px);">N</div><div class="stat-label">Повторные попадания в одну зону</div></div>
+      <div class="stat-card"><div class="stat-label-big">Перекрытие</div><div class="stat-label">Наложение соседних пятен воздействия</div></div>
+      <div class="stat-card"><div class="stat-label-big">Состояние ткани</div><div class="stat-label">Исходная реактивность и фототип кожи</div></div>
+      <div class="stat-card" style="border-top:5px solid var(--green);"><div class="stat-label-big">Охлаждение</div><div class="stat-label">Отвод тепла до, во время и после</div></div>
+      <div class="stat-card" style="border-top:5px solid var(--green);"><div class="stat-label-big">Восстановление</div><div class="stat-label">Интервал между процедурами</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 · ПОЧЕМУ ОХЛАЖДЕНИЕ ПРИНЦИПИАЛЬНО ВАЖНО -->
+<section class="slide green">
+  <div class="slide-inner">
+    <div class="eyebrow">Охлаждение — положительный фактор</div>
+    <h2 class="section">Почему охлаждение здесь принципиально важно</h2>
+    <p class="lead" style="max-width:1500px;">Охлаждение действует сразу на несколько аргументов воспалительной нагрузки. Каждая из функций ниже — вклад в снижение риска&nbsp;↓.</p>
+
+    <div class="grid-3" style="margin-top:clamp(18px,2vw,30px);">
+      <div class="stat-card"><div class="stat-label-big">Снижает температуру ткани</div><div class="stat-label">Ограничивает пиковый нагрев в зоне воздействия</div></div>
+      <div class="stat-card"><div class="stat-label-big">Ограничивает распространение тепла</div><div class="stat-label">Уменьшает теплопередачу в окружающие структуры</div></div>
+      <div class="stat-card"><div class="stat-label-big">Уменьшает термическое повреждение</div><div class="stat-label">Меньше страдает ткань вокруг цели</div></div>
+      <div class="stat-card"><div class="stat-label-big">Может снижать острое воспаление</div><div class="stat-label">Способно уменьшать выраженность ранней реакции</div></div>
+      <div class="stat-card"><div class="stat-label-big">Уменьшает боль</div><div class="stat-label">Повышает переносимость процедуры</div></div>
+      <div class="stat-card"><div class="stat-label-big">Может снижать пигментные нарушения</div><div class="stat-label">Потенциально уменьшает вероятность последующей дисхромии</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 · НАШ ПРОТОКОЛ ОХЛАЖДЕНИЯ -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Наш протокол охлаждения</div>
+    <h2 class="section">Охлаждаем во время — и умеренно сразу после</h2>
+    <p class="lead">«Охлаждение» — это не одно действие. Мы применяем его <b>только на двух этапах</b> и сознательно отказались от предварительного.</p>
+
+    <div class="grid-2" style="margin-top:clamp(14px,1.6vw,24px);">
+      <div class="stat-card" style="border-top:5px solid var(--blue);">
+        <div class="stat-label-big">Во время воздействия</div>
+        <p>Отводим тепло по ходу обработки — ограничиваем распространение тепла в окружающую ткань.</p>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--green);">
+        <div class="stat-label-big">Умеренно — сразу после</div>
+        <p>Контролируем остаточную тепловую и воспалительную нагрузку. Именно <b>умеренное</b> охлаждение, без сверхинтенсивного.</p>
+      </div>
+    </div>
+
+    <div class="card" style="border-left:5px solid var(--red);margin-top:clamp(14px,1.6vw,24px);">
+      <p><b>Предварительное охлаждение (до импульса) мы не используем.</b> Охлаждение ткани <b>до</b> воздействия сбивает нормальное течение последующего воспаления: отёк и воспалительная реакция держатся <b>дольше</b>. Поэтому охлаждаем только во время и умеренно сразу после.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 6 · ПОЧЕМУ ОХЛАЖДЕНИЕ ПОСЛЕ ПРОЦЕДУРЫ -->
+<section class="slide amber">
+  <div class="slide-inner">
+    <div class="eyebrow">Постпроцедурное охлаждение</div>
+    <h2 class="section">Почему охлаждение после процедуры может быть особенно полезно</h2>
+    <p class="lead" style="max-width:1500px;">После окончания воздействия энергия уже не поступает. Но ткань продолжает жить своей физиологией:</p>
+
+    <div class="key-findings" style="margin-top:clamp(16px,1.6vw,26px);max-width:1500px;">
+      <div class="kf"><div class="kf-bullet amber">1</div><div>Отдавать накопленное <b>тепло</b> в окружающие структуры</div></div>
+      <div class="kf"><div class="kf-bullet amber">2</div><div>Поддерживать <b>воспалительный ответ</b></div></div>
+      <div class="kf"><div class="kf-bullet amber">3</div><div>Активировать <b>сосудистые и клеточные медиаторы</b></div></div>
+    </div>
+
+    <blockquote class="q" style="border-left:none;text-align:center;margin-top:clamp(20px,2.4vw,40px);font-size:clamp(32px,3.4vw,52px);max-width:1500px;line-height:1.25;">Лазер закончился&nbsp;&ne;&nbsp;биологический процесс закончился</blockquote>
+
+    <p class="lead" style="max-width:1500px;margin:clamp(18px,2vw,30px) auto 0;text-align:center;font-size:clamp(24px,1.8vw,34px);">Охлаждение после процедуры потенциально позволяет уменьшить <b>вторичную тепловую и воспалительную нагрузку</b>.</p>
+  </div>
+</section>
+
+<!-- 7 · ПРЯМЫЕ ДАННЫЕ (FENG 2019) -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Прямые данные</div>
+    <h2 class="section">Охлаждение и пигментные осложнения</h2>
+    <p class="lead" style="max-width:1500px;">Есть работа, непосредственно посвящённая <b>охлаждённой гидрогелевой повязке после лазерного удаления татуировок</b> для уменьшения дисхромии.</p>
+
+    <blockquote class="q" style="border-left:6px solid var(--green);margin-top:clamp(20px,2.4vw,40px);max-width:1600px;font-size:clamp(28px,2.4vw,40px);line-height:1.32;">
+      Применение охлаждённой гидрогелевой повязки для уменьшения дисхромии после лазерного удаления татуировок — постпроцедурное охлаждение как способ снизить пигментные нарушения.
+      <span class="src">Feng, Christman, Geronemus. «Application of cooled hydrogel dressing to minimize dyspigmentation from laser tattoo removal». JAAD, 2019</span>
+    </blockquote>
+
+    <p class="lead" style="max-width:1500px;margin-top:clamp(18px,2vw,30px);font-size:clamp(24px,1.8vw,34px);">Это ключевой источник рядом с концепцией охлаждения: он показывает <b>клинический интерес</b> к тому, что происходит с тканью уже после выключения лазера.</p>
+  </div>
+</section>
+
+<!-- 8 · УРОВЕНЬ ДОКАЗАТЕЛЬНОСТИ (СЛАЙД ЧЕСТНОСТИ) -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Обозначим уровень доказательности</div>
+    <h2 class="section">Где проходит граница честной формулировки</h2>
+    <p class="lead" style="max-width:1600px;">Работа Feng и соавт. <b>не</b> доказывает универсальный протокол охлаждения для всех лазеров и всех типов кожи. Она показывает клинический интерес к постпроцедурному охлаждению как способу уменьшить дисхромию. Отсюда — важное различие в словах:</p>
+
+    <div class="grid-2" style="margin-top:clamp(18px,2vw,32px);">
+      <div class="stat-card" style="border-top:6px solid var(--green);">
+        <div class="stat-label-big" style="color:var(--green);font-weight:700;">Допустимо</div>
+        <p style="font-size:clamp(26px,2vw,36px);line-height:1.3;margin-top:10px;">«Охлаждение <b>может снижать</b> риск пигментных осложнений»</p>
+        <div class="stat-label" style="margin-top:12px;">Клинически обоснованная концепция с корректным уровнем уверенности</div>
+      </div>
+      <div class="stat-card" style="border-top:6px solid var(--red);">
+        <div class="stat-label-big" style="color:var(--red);font-weight:700;">Чрезмерно</div>
+        <p style="font-size:clamp(26px,2vw,36px);line-height:1.3;margin-top:10px;">«Охлаждение <b>гарантированно предотвращает</b> гипо- и гиперпигментацию»</p>
+        <div class="stat-label" style="margin-top:12px;">Научно чрезмерно — не подтверждается имеющимися данными</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 9 · БОЛЕЕ ШИРОКАЯ ЛИТЕРАТУРА -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Более широкая литература</div>
+    <h2 class="section">Охлаждение в РКИ лазерных и энергетических процедур</h2>
+    <p class="lead" style="max-width:1600px;">В РКИ различных лазерных и энергетических процедур <b>эпидермальное охлаждение</b> входило в число вмешательств, способных снижать частоту поствоспалительной гиперпигментации.</p>
+
+    <div class="grid-2" style="margin-top:clamp(18px,2vw,30px);">
+      <div class="stat-card" style="border-top:5px solid var(--green);">
+        <div class="stat-num green" style="font-size:clamp(40px,4vw,68px);">14 РКИ</div>
+        <div class="stat-label-big">Систематический обзор и сетевой метаанализ, 2026</div>
+        <div class="stat-label" style="margin-top:10px;">Статистически значимое <b>снижение риска</b>&nbsp;↓ поствоспалительной гиперпигментации при эпидермальном охлаждении по сравнению с одной только фотозащитой</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--orange);">
+        <div class="stat-label-big" style="color:var(--orange);font-weight:700;">Важная оговорка</div>
+        <p style="font-size:clamp(24px,1.8vw,32px);line-height:1.32;margin-top:10px;">Это доказательство относится к лазерным и энергетическим процедурам <b>в целом</b>, а не исключительно к удалению татуировок.</p>
+        <div class="stat-label" style="margin-top:12px;">Переносить вывод на удаление татуировок следует осторожно, как обоснованную гипотезу</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 9b · НАГЛЯДНЫЙ ПРИМЕР ИЗ ЭПИЛЯЦИИ -->
+<section class="slide dark">
+  <div class="slide-inner">
+    <div class="eyebrow">Наглядный пример из лазерной эпиляции</div>
+    <h2 class="section">Не только сколько энергии — но и где охлаждение</h2>
+    <p class="lead" style="max-width:1600px;">При криогенном охлаждении неправильное позиционирование распыления оставляло участки, которые получали лазерную энергию, но <b>охлаждались недостаточно</b>.</p>
+
+    <div class="flow horiz" style="margin-top:clamp(22px,2.6vw,44px);">
+      <div class="node warn">Смещение распыления</div>
+      <div class="arrow"></div>
+      <div class="node bad">Неохлаждённый участок</div>
+      <div class="arrow"></div>
+      <div class="node bad">Серповидное потемнение</div>
+    </div>
+
+    <p class="lead" style="max-width:1600px;margin-top:clamp(20px,2.4vw,38px);">Именно неохлаждённые зоны соответствовали характерному <b>серповидному / кольцевидному</b> поствоспалительному потемнению.</p>
+
+    <blockquote class="q" style="border-left:6px solid var(--teal);margin-top:clamp(18px,2vw,32px);max-width:1600px;font-size:clamp(28px,2.4vw,40px);line-height:1.3;">
+      Повреждение ткани определяет не только количество лазерной энергии, но и <b>пространственное распределение охлаждения</b>.
+    </blockquote>
+  </div>
+</section>
+<!-- ===================== ЧАСТЬ VI · блок B ===================== -->
+
+<!-- Слайд 1 — Охлаждение тоже должно быть контролируемым -->
+<section class="slide teal">
+  <div class="slide-inner">
+    <div class="eyebrow">Контролируемое охлаждение</div>
+    <h2 class="section">Охлаждение тоже должно быть контролируемым</h2>
+    <p class="lead">Охлаждение снижает тепловую и воспалительную нагрузку. Но слишком агрессивное охлаждение само может стать фактором травмы:</p>
+
+    <div class="grid-2">
+      <div class="stat-card" style="border-top:5px solid var(--orange);">
+        <div class="stat-label-big">Локальное холодовое повреждение</div>
+        <p>Способно повредить ткань не меньше, чем избыточное тепло.</p>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--orange);">
+        <div class="stat-label-big">Изменение кровотока</div>
+        <p>Меняет местное кровоснабжение и условия восстановления.</p>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--orange);">
+        <div class="stat-label-big">Неравномерная температура</div>
+        <p>Неоднородное распределение температуры по зоне.</p>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--red);">
+        <div class="stat-label-big">Самостоятельный фактор травмы</div>
+        <p>Превращается в отдельный источник повреждения.</p>
+      </div>
+    </div>
+
+    <div class="eqn boxed">
+      <div class="expr"><span class="t-teal">контролируемое умеренное охлаждение</span> <span class="op">≠</span> <span class="t-red">максимальное охлаждение</span></div>
+      <div class="cap">Цель — снять избыток тепла, а не создать новый фактор травмы.</div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 2 — Концепция воспалительной нагрузки (авторская) -->
+<section class="slide dark">
+  <div class="slide-inner">
+    <div class="eyebrow">Авторская концепция · © В. Микрюков, 2026</div>
+    <h2 class="section">Концепция воспалительной нагрузки</h2>
+    <p class="lead">Постпроцедурный клинический результат зависит <b>не только</b> от механического разрушения татуировочного пигмента, но и от величины и продолжительности <b>воспалительной нагрузки</b>, которую получает нормальная кожа.</p>
+
+    <p>Поэтому на риск осложнений мы можем воздействовать сразу по нескольким направлениям одновременно:</p>
+
+    <div class="eqn boxed">
+      <div class="expr">
+        <span class="t-blue">уменьшение избыточной энергии</span> <span class="op">+</span>
+        <span class="t-green">однократная обработка</span> <span class="op">+</span>
+        <span class="t-teal">отсутствие перекрытия</span> <span class="op">+</span>
+        <span class="t-amber">адекватный интервал</span> <span class="op">+</span>
+        <span class="t-purple">контролируемое охлаждение</span>
+      </div>
+      <div class="cap">© В. Микрюков, 2026. Управление воспалительной нагрузкой — это не один приём, а сумма согласованных решений на каждом этапе процедуры.</div>
+    </div>
+
+    <p>Каждое слагаемое по отдельности уменьшает нагрузку на здоровую кожу; вместе они формируют предсказуемое и щадящее восстановление.</p>
+  </div>
+</section>
+
+<!-- Слайд 3 — Однократная обработка + охлаждение -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Три этапа процедуры</div>
+    <h2 class="section">Однократная обработка + охлаждение</h2>
+    <p class="lead">Управление воспалительной нагрузкой распределено во времени — до, во время и после воздействия.</p>
+
+    <div class="grid-3">
+      <div class="stat-card" style="border-top:5px solid var(--blue);">
+        <div class="stat-label-big">До процедуры</div>
+        <p>Минимально необходимая энергия — ровно столько, сколько требуется для работы с пигментом.</p>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--green);">
+        <div class="stat-label-big">Во время</div>
+        <p>Однократное равномерное воздействие без повторного прохода по одному участку.</p>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--teal);">
+        <div class="stat-label-big">После</div>
+        <p>Контроль остаточной тепловой и воспалительной нагрузки — контролируемым умеренным охлаждением.</p>
+      </div>
+    </div>
+
+    <div class="flow horiz">
+      <div class="node accent">Контроль дозы</div>
+      <div class="arrow"></div>
+      <div class="node">Контроль повреждения</div>
+      <div class="arrow"></div>
+      <div class="node">Контроль воспаления</div>
+      <div class="arrow"></div>
+      <div class="node accent">Контроль пигментного ответа</div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 4 — Почему перекрытие пятен может быть проблемой -->
+<section class="slide amber">
+  <div class="slide-inner">
+    <div class="eyebrow">Перекрытие пятен</div>
+    <h2 class="section">Почему перекрытие пятен может быть проблемой</h2>
+    <p class="lead">При перекрытии соседних пятен локальная плотность энергии в зоне наложения возрастает — даже если <b>средняя</b> плотность энергии по всей зоне выглядит нормальной.</p>
+
+    <div class="eqn boxed">
+      <div class="expr">перекрытие <span class="op">→</span> <span class="t-red">D<sub>local</sub></span> <span class="op">↑</span></div>
+      <div class="cap">В точке наложения импульсов ткань получает суммарную дозу выше расчётной средней.</div>
+    </div>
+
+    <p>В участках наложения возникают локальные:</p>
+    <div class="grid-3">
+      <div class="stat-card" style="border-top:5px solid var(--orange);">
+        <div class="stat-label-big">Пики температуры</div>
+        <p>Местный перегрев ткани выше запланированного уровня.</p>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--orange);">
+        <div class="stat-label-big">Пики энергетической нагрузки</div>
+        <p>Суммарная доза в точке наложения превышает среднюю.</p>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--red);">
+        <div class="stat-label-big">Более выраженное воспаление</div>
+        <p>Локально усиленная реакция нормальной кожи.</p>
+      </div>
+    </div>
+
+    <p><b>Вывод:</b> однородность распределения энергии так же важна, как и её среднее значение.</p>
+  </div>
+</section>
+
+<!-- Слайд 5 — Пигментные осложнения как следствие пространственной неоднородности -->
+<section class="slide red">
+  <div class="slide-inner">
+    <div class="eyebrow">Пространственная неоднородность</div>
+    <h2 class="section">Пигментные осложнения как следствие неоднородности</h2>
+    <p class="lead">Кожа может получить среднюю дозу <b>X</b>, но отдельный участок — <b>2X</b> или даже <b>3X</b>. Именно локальные перегрузки, а не средняя доза, чаще стоят за пигментными осложнениями.</p>
+
+    <div class="grid-3">
+      <div class="stat-card" style="border-top:5px solid var(--orange);">
+        <div class="stat-label-big">Перекрытие</div>
+        <p>Наложение соседних пятен.</p>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--orange);">
+        <div class="stat-label-big">Повторное попадание</div>
+        <p>Повторный проход по участку.</p>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--orange);">
+        <div class="stat-label-big">Неоднородный профиль луча</div>
+        <p>Неравномерная энергия внутри пятна.</p>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--orange);">
+        <div class="stat-label-big">Медленное перемещение</div>
+        <p>Сгущает импульсы в одном месте.</p>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--red);">
+        <div class="stat-label-big">Задерживание наконечника</div>
+        <p>Задержка накапливает дозу.</p>
+      </div>
+    </div>
+
+    <div class="eqn boxed">
+      <div class="expr"><span class="t-blue">D<sub>средняя</sub></span> <span class="op">≠</span> <span class="t-red">D<sub>локальная</sub></span></div>
+      <div class="cap">Оценивать безопасность по одной средней дозе недостаточно — риск определяют локальные пики.</div>
+    </div>
+  </div>
+</section>
+<!-- ===================== ЧАСТЬ VII ===================== -->
+
+<!-- Слайд 1 — ДИВАЙДЕР Часть VII -->
+<section class="slide red">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть VII</div>
+    <div class="section-num red">07</div>
+    <h1 class="title">Клиника: распознать, вести, направить</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">Как отличить обратимое от стойкого, что делать сразу и когда обязательно подключать дерматолога.</p>
+  </div>
+</section>
+
+<!-- Слайд 2 — Не обязательно «пережог» -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Важное уточнение</div>
+    <h2 class="section">Гипопигментация — не обязательно «пережог»</h2>
+    <div class="split">
+      <div>
+        <p class="lead">Осветление может возникнуть даже <b>без</b> явного повреждения ткани. Отсутствие рубца не означает отсутствие воздействия на пигментную систему.</p>
+        <div class="key-findings">
+          <div class="kf"><span class="kf-bullet amber">1</span><div>Без выраженного <b>рубца</b>.</div></div>
+          <div class="kf"><span class="kf-bullet amber">2</span><div>Без глубокого <b>ожога</b>.</div></div>
+          <div class="kf"><span class="kf-bullet amber">3</span><div>Без длительной <b>эрозии</b>.</div></div>
+        </div>
+        <p>Причина в том, что <span class="term">меланоцит<span class="tip"><b>Меланоцит</b> — клетка, синтезирующая меланин в меланосомах и передающая его окружающим кератиноцитам.</span></span> и его органеллы могут оказаться значительно <b>чувствительнее</b> к определённому сочетанию длины волны, длительности импульса, повторных воздействий и тепловой нагрузки, чем окружающая соединительная ткань.</p>
+      </div>
+      <div class="pgrid c2" style="align-content:center;">
+        <div class="pcard">
+          <div class="pimg"><img src="hypo_assets/brow_after.jpg" alt="Бровь сразу после воздействия"></div>
+          <div class="pcap"><span class="st">Сразу после</span> — точечная реакция, кожа целая</div>
+        </div>
+        <div class="pcard">
+          <div class="pimg"><img src="hypo_assets/brow_depig.jpg" alt="Бровь позже — депигментация"></div>
+          <div class="pcap"><span class="st">Позже</span> — участок депигментации, без рубца</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 3 — Временная гипопигментация -->
+<section class="slide green">
+  <div class="slide-inner">
+    <div class="eyebrow">Обратимое состояние</div>
+    <h2 class="section">Временная гипопигментация</h2>
+    <div class="split" style="grid-template-columns:1fr;">
+      <div>
+        <p class="lead">Осветление, которое со временем восстанавливается. Пигментные клетки сохранены, снижена лишь их функция.</p>
+        <div class="key-findings">
+          <div class="kf"><span class="kf-bullet green">1</span><div>Появляется <b>после процедуры</b>.</div></div>
+          <div class="kf"><span class="kf-bullet green">2</span><div>Кожа остаётся <b>нормальной по текстуре</b>.</div></div>
+          <div class="kf"><span class="kf-bullet green">3</span><div>Границы могут быть <b>не очень чёткими</b>.</div></div>
+          <div class="kf"><span class="kf-bullet green">4</span><div>Цвет <b>постепенно возвращается</b>.</div></div>
+          <div class="kf"><span class="kf-bullet green">5</span><div>Нет <b>расширения очага</b>.</div></div>
+        </div>
+        <p>Возможный механизм — функциональное подавление <span class="term">меланогенеза<span class="tip"><b>Меланогенез</b> — процесс синтеза меланина в меланоцитах.</span></span> или временное нарушение работы меланосом при сохранном меланоците.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 4 — Стойкая гипопигментация -->
+<section class="slide amber">
+  <div class="slide-inner">
+    <div class="eyebrow">Настораживающая картина</div>
+    <h2 class="section">Стойкая гипопигментация</h2>
+    <div class="split">
+      <div>
+        <p class="lead">Осветление, которое не восстанавливается со временем. Здесь уже необходима <b>врачебная диагностика</b>.</p>
+        <div class="key-findings">
+          <div class="kf"><span class="kf-bullet amber">1</span><div>Сохранение в течение <b>нескольких месяцев</b>.</div></div>
+          <div class="kf"><span class="kf-bullet amber">2</span><div>Отсутствие <b>положительной динамики</b>.</div></div>
+          <div class="kf"><span class="kf-bullet amber">3</span><div>Очень светлый или <b>ахромный</b> цвет.</div></div>
+          <div class="kf"><span class="kf-bullet amber">4</span><div><b>Чёткие границы</b> очага.</div></div>
+          <div class="kf"><span class="kf-bullet red">5</span><div>Появление <b>новых очагов</b>.</div></div>
+          <div class="kf"><span class="kf-bullet red">6</span><div><b>Депигментация волос</b> в зоне.</div></div>
+        </div>
+      </div>
+      <div class="pcard" style="align-self:center;">
+        <div class="pimg tall"><img src="hypo_assets/depig_light.png" alt="Стойкая гипопигментация на светлой коже"></div>
+        <div class="pcap">Светлая кожа: <b>чёткие границы</b>, ахромные участки, сохраняются месяцами</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 4b — Депигментация на разных фототипах -->
+<section class="slide dark">
+  <div class="slide-inner">
+    <div class="eyebrow">Разные фототипы</div>
+    <h2 class="section">На тёмной и смуглой коже это заметнее</h2>
+    <p class="lead" style="margin-bottom:clamp(10px,1vw,18px);">Чем темнее конституциональный фон, тем сильнее контрастирует осветлённый участок — и тем выше стигматизирующий эффект осложнения.</p>
+    <div class="pgrid c2">
+      <div class="pcard">
+        <div class="pimg tall"><img src="hypo_assets/depig_dark.jpg" alt="Депигментация на тёмной коже"></div>
+        <div class="pcap"><b>Тёмная кожа.</b> По ходу курса вокруг рисунка проступает осветление</div>
+      </div>
+      <div class="pcard">
+        <div class="pimg tall"><img src="hypo_assets/depig_olive.jpg" alt="Депигментация на смуглой коже"></div>
+        <div class="pcap"><b>Смуглая кожа.</b> После удаления — очаг гипопигментации на месте пигмента</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 4c — Клинический случай: красная татуировка -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Клинический случай</div>
+    <h2 class="section">Красная татуировка — курс с исходом в депигментацию</h2>
+    <div class="pgrid c3">
+      <div class="pcard">
+        <div class="pimg"><img src="hypo_assets/case_before.jpg" alt="До воздействия"></div>
+        <div class="pcap"><span class="st">До</span> красный дракон, кожа интактна</div>
+      </div>
+      <div class="pcard">
+        <div class="pimg"><img src="hypo_assets/case_during.jpg" alt="В процессе курса"></div>
+        <div class="pcap"><span class="st">В процессе</span> пигмент светлеет, идёт реакция</div>
+      </div>
+      <div class="pcard">
+        <div class="pimg"><img src="hypo_assets/case_end.jpg" alt="В конце курса — депигментация"></div>
+        <div class="pcap"><span class="st">В конце</span> рисунок ушёл, но остался очаг депигментации</div>
+      </div>
+    </div>
+    <p class="lead" style="margin-top:clamp(10px,1vw,18px);font-size:clamp(20px,1.5vw,28px);">Красные пигменты часто требуют коротких длин волн — а это выше конкуренция с меланином и выше риск пигментного следа.</p>
+  </div>
+</section>
+
+<!-- Слайд 5 — Витилиго-подобная реакция -->
+<section class="slide red">
+  <div class="slide-inner">
+    <div class="eyebrow">Особый сценарий</div>
+    <h2 class="section">Витилиго-подобная реакция</h2>
+    <div class="split">
+      <div>
+        <div class="flow">
+          <div class="node bad">Лазерная травма</div>
+          <div class="arrow"></div>
+          <div class="node">Воспалительная активация</div>
+          <div class="arrow"></div>
+          <div class="node">Иммунная реакция</div>
+          <div class="arrow"></div>
+          <div class="node">Повреждение меланоцитов</div>
+          <div class="arrow"></div>
+          <div class="node bad">Депигментация</div>
+        </div>
+      </div>
+      <div>
+        <p class="lead">Нужно исключать <span class="term">витилиго<span class="tip"><b>Витилиго</b> — приобретённая депигментация вследствие аутоиммунного разрушения меланоцитов; способна распространяться за пределы исходного очага.</span></span>, если:</p>
+        <div class="key-findings">
+          <div class="kf"><span class="kf-bullet red">1</span><div>Очаг <b>расширяется</b>.</div></div>
+          <div class="kf"><span class="kf-bullet red">2</span><div>Возникают <b>новые очаги</b>.</div></div>
+          <div class="kf"><span class="kf-bullet red">3</span><div>Поражаются участки <b>вне зоны лазера</b>.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 6 — Что делать при появлении -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Тактика на месте</div>
+    <h2 class="section">Что делать при появлении гипопигментации</h2>
+    <div class="steps compact">
+      <div class="step"><span class="n">1</span><div>Прекратить лазерное воздействие на этот участок.</div></div>
+      <div class="step"><span class="n">2</span><div>Не пытаться увеличить энергию.</div></div>
+      <div class="step"><span class="n">3</span><div>Не добавлять проходы.</div></div>
+      <div class="step"><span class="n">4</span><div>Не сокращать интервал между процедурами.</div></div>
+      <div class="step"><span class="n">5</span><div>Контролировать воспаление.</div></div>
+      <div class="step"><span class="n">6</span><div>Обеспечить фотозащиту зоны.</div></div>
+      <div class="step"><span class="n">7</span><div>Наблюдать динамику во времени.</div></div>
+      <div class="step"><span class="n">8</span><div>При стойком процессе — направить к дерматологу.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 7 — Когда думать о репигментации -->
+<section class="slide teal">
+  <div class="slide-inner">
+    <div class="eyebrow">Направление лечения</div>
+    <h2 class="section">Когда можно думать о репигментации</h2>
+    <p class="lead">Если очаг <b>стабилен</b>, длительно сохраняется и не демонстрирует спонтанного восстановления — можно рассматривать врачебные методы восстановления пигмента.</p>
+    <div class="key-findings">
+      <div class="kf"><span class="kf-bullet purple">1</span><div>Узкополосное <b>ультрафиолетовое воздействие</b>.</div></div>
+      <div class="kf"><span class="kf-bullet purple">2</span><div><span class="term">Эксимер 308 нм<span class="tip"><b>Эксимерный лазер 308 нм</b> — источник узкополосного ультрафиолета B, применяемый для локальной стимуляции репигментации.</span></span>.</div></div>
+      <div class="kf"><span class="kf-bullet purple">3</span><div>Стимуляция <b>меланогенеза</b>.</div></div>
+      <div class="kf"><span class="kf-bullet purple">4</span><div>В отдельных случаях — <b>фракционные методы</b> с доставкой препаратов.</div></div>
+      <div class="kf"><span class="kf-bullet purple">5</span><div>При глубокой стойкой <b>меланоцитопении</b> — специализированные методы репигментации.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 8 — Эксимер 308 нм -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Доказательная база</div>
+    <h2 class="section">Эксимер 308 нм</h2>
+    <p class="lead">Опубликован клинический случай стойкой гипопигментации после удаления татуировки Nd:YAG, которую лечили эксимерным лазером 308 нм с достижением репигментации <b>(Gundogan et al., 2004)</b>.</p>
+    <div class="grid-2">
+      <div class="stat-card" style="border-top:5px solid var(--teal);">
+        <div class="stat-label-big">Прямая релевантность</div>
+        <p>Это непосредственно относящееся к теме доказательство: та же природа осложнения и целенаправленное лечение репигментации.</p>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--orange);">
+        <div class="stat-label-big">Ограничение</div>
+        <p>Один клинический случай <b>не является</b> доказательством универсальной эффективности метода.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 9 — Биматопрост -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Смежные данные</div>
+    <h2 class="section">Биматопрост</h2>
+    <p class="lead">Есть данные о стимуляции репигментации с помощью <span class="term">биматопроста<span class="tip"><b>Биматопрост</b> — аналог простагландина; при местном применении способен стимулировать пигментацию.</span></span>, в том числе в сочетании с фракционными лазерными методами.</p>
+    <p>Отдельная современная работа исследовала фракционный неабляционный лазер с доставкой биматопроста при поствоспалительной <b>гипопигментации</b> после косметических процедур.</p>
+    <div class="card">
+      <p style="margin:0;">Однако это уже <b>экстраполяция</b> из смежной области, а не стандарт лечения осложнений именно после удаления татуировок.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 10 — Что делать НЕЛЬЗЯ -->
+<section class="slide red">
+  <div class="slide-inner">
+    <div class="eyebrow">Ошибки ведения</div>
+    <h2 class="section">Что делать нельзя</h2>
+    <div class="steps">
+      <div class="step no"><span class="ic">✕</span><div>Лечить гипопигментацию новым лазером без понимания механизма.</div></div>
+      <div class="step no"><span class="ic">✕</span><div>Загорать участок.</div></div>
+      <div class="step no"><span class="ic">✕</span><div>Выполнять агрессивные пилинги.</div></div>
+      <div class="step no"><span class="ic">✕</span><div>Бесконтрольно использовать кортикостероиды.</div></div>
+      <div class="step no"><span class="ic">✕</span><div>Проводить самостоятельное микроигольчатое повреждение.</div></div>
+      <div class="step no"><span class="ic">✕</span><div>Обещать полное восстановление.</div></div>
+      <div class="step no"><span class="ic">✕</span><div>Продолжать удаление татуировки через зону активной гипопигментации.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Слайд 11 — Что говорить пациенту -->
+<section class="slide purple">
+  <div class="slide-inner">
+    <div class="eyebrow">Речь пациенту</div>
+    <h2 class="section">Что говорить пациенту</h2>
+    <div class="speech">«Осветление кожи после лазерного воздействия не обязательно означает необратимое повреждение меланоцитов. Иногда клетки, отвечающие за образование пигмента, сохраняются, но временно снижается образование или передача меланина. Поэтому сейчас мы не будем дополнительно травмировать этот участок. Нам важно дать коже <b>восстановиться</b> и оценивать динамику. Если восстановление будет недостаточным, потребуется <b>дерматологическая оценка</b> и, при необходимости, лечение репигментации».</div>
+  </div>
+</section>
+
+<!-- Слайд 12 — Когда направлять к дерматологу -->
+<section class="slide amber">
+  <div class="slide-inner">
+    <div class="eyebrow">Маршрутизация</div>
+    <h2 class="section">Когда обязательно направлять к дерматологу</h2>
+    <div class="grid-2">
+      <div class="key-findings">
+        <div class="kf"><span class="kf-bullet amber">1</span><div>Стойкая <b>гипопигментация</b>.</div></div>
+        <div class="kf"><span class="kf-bullet amber">2</span><div><b>Расширение</b> очага.</div></div>
+        <div class="kf"><span class="kf-bullet amber">3</span><div><b>Новые</b> очаги.</div></div>
+        <div class="kf"><span class="kf-bullet red">4</span><div><b>Белые волосы</b> в зоне.</div></div>
+        <div class="kf"><span class="kf-bullet red">5</span><div>Подозрение на <b>витилиго</b>.</div></div>
+      </div>
+      <div class="key-findings">
+        <div class="kf"><span class="kf-bullet amber">6</span><div>Отсутствие <b>восстановления</b>.</div></div>
+        <div class="kf"><span class="kf-bullet red">7</span><div>Выраженное <b>воспаление</b>.</div></div>
+        <div class="kf"><span class="kf-bullet red">8</span><div><b>Рубцевание</b>.</div></div>
+        <div class="kf"><span class="kf-bullet red">9</span><div><b>Атрофия</b> кожи.</div></div>
+        <div class="kf"><span class="kf-bullet amber">10</span><div>Неоднозначная <b>клиническая картина</b>.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ЧАСТЬ VIII · СИНТЕЗ · В. Микрюков, 2026 -->
+
+<!-- 1 · ДИВАЙДЕР -->
+<section class="slide green">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть VIII</div>
+    <div class="section-num green">08</div>
+    <h1 class="title">Синтез: единая модель</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">Как всё соединяется в одну практическую модель — от подготовки до оценки восстановления.</p>
+  </div>
+</section>
+
+<!-- 2 · Главная практическая модель -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Практическая модель</div>
+    <h2 class="section">Главная практическая модель</h2>
+    <div class="flow">
+      <div class="node accent">Перед процедурой
+        <span class="sub">фототип · локальная меланиновая нагрузка · загар · состояние кожи · характер татуировки · предыдущая нагрузка</span>
+      </div>
+      <div class="arrow"></div>
+      <div class="node">Выбор параметров</div>
+      <div class="arrow"></div>
+      <div class="node">Однократная равномерная обработка</div>
+      <div class="arrow"></div>
+      <div class="node">Контроль локальной температуры</div>
+      <div class="arrow"></div>
+      <div class="node">Умеренное продолжительное охлаждение</div>
+      <div class="arrow"></div>
+      <div class="node">Контроль воспаления</div>
+      <div class="arrow"></div>
+      <div class="node">Адекватный интервал</div>
+      <div class="arrow"></div>
+      <div class="node accent">Оценка восстановления</div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 · Центральная концепция лекции -->
+<section class="slide teal">
+  <div class="slide-inner">
+    <div class="eyebrow">Центральная концепция</div>
+    <h2 class="section">Мы не можем исключить повреждение — но можем им управлять</h2>
+    <p class="lead">Полностью исключить повреждение ткани при эффективном лазерном удалении пигмента нельзя. Но мы можем контролировать величину и продолжительность этого повреждения.</p>
+    <div class="eqn boxed">
+      <div class="expr">
+        <span class="t-blue">контроль энергетической нагрузки</span>
+        <span class="op">+</span>
+        <span class="t-orange">контроль тепловой нагрузки</span>
+        <span class="op">+</span>
+        <span class="t-red">контроль воспалительной нагрузки</span>
+        <span class="op">→</span>
+        <span class="t-green">снижение вероятности осложнений</span>
+      </div>
+      <div class="cap">Управляемая нагрузка вместо недостижимого «нулевого повреждения»</div>
+    </div>
+    <blockquote class="q">Задача — не убрать повреждение, а держать его величину и длительность в управляемых пределах.<span class="src">© В. Микрюков, 2026</span></blockquote>
+  </div>
+</section>
+
+<!-- 4 · Охлаждение как часть контроля воспалительной нагрузки -->
+<section class="slide blue">
+  <div class="slide-inner">
+    <div class="eyebrow">Роль охлаждения</div>
+    <h2 class="section">Охлаждение как часть контроля воспалительной нагрузки</h2>
+    <div class="flow horiz">
+      <div class="node">Лазер</div>
+      <div class="arrow"></div>
+      <div class="node">Энергия</div>
+      <div class="arrow"></div>
+      <div class="node">Нагрев</div>
+      <div class="arrow"></div>
+      <div class="node">Повреждение</div>
+      <div class="arrow"></div>
+      <div class="node">Воспаление</div>
+      <div class="arrow"></div>
+      <div class="node">Пигментный ответ</div>
+    </div>
+    <p class="lead">Охлаждение вмешивается в цепочку: на этапе нагрева оно ограничивает тепловую нагрузку, а потенциально ведёт к тому, что воспаление ↓ → риск дисхромии ↓.</p>
+    <p>Для постпроцедурного охлаждения после удаления татуировки существует отдельная публикация об охлаждённой гидрогелевой повязке для уменьшения дисхромии (Feng, Christman, Geronemus, 2019).</p>
+  </div>
+</section>
+
+<!-- 5 · Охлаждение не заменяет правильные параметры -->
+<section class="slide amber">
+  <div class="slide-inner">
+    <div class="eyebrow">Важное ограничение</div>
+    <h2 class="section">Охлаждение не заменяет правильные параметры</h2>
+    <p class="lead">Нельзя чрезмерно увеличить энергетическую нагрузку, а затем «компенсировать» её охлаждением. Охлаждение — дополнение к грамотным параметрам, а не замена им.</p>
+    <div class="flow" style="margin-top:clamp(10px,1.2vw,20px);">
+      <div class="node accent">Минимально необходимая энергия</div>
+      <div class="arrow"></div>
+      <div class="node">Равномерная доставка</div>
+      <div class="arrow"></div>
+      <div class="node">Однократное воздействие</div>
+      <div class="arrow"></div>
+      <div class="node accent">Контролируемое охлаждение</div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 · Единая система -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Единая система</div>
+    <h2 class="section">Как факторы работают вместе</h2>
+    <div class="grid-2">
+      <div class="stat-card">Однократная обработка<span class="sub">не допускает ненужного накопления локальной энергии</span></div>
+      <div class="stat-card">Отсутствие перекрытия<span class="sub">уменьшает локальные пики дозы</span></div>
+      <div class="stat-card">Охлаждение<span class="sub">ограничивает остаточную тепловую нагрузку</span></div>
+      <div class="stat-card">Интервал<span class="sub">позволяет ткани восстановиться</span></div>
+    </div>
+    <div class="flow horiz">
+      <div class="node">Доза</div>
+      <div class="arrow"></div>
+      <div class="node">Тепло</div>
+      <div class="arrow"></div>
+      <div class="node">Воспаление</div>
+      <div class="arrow"></div>
+      <div class="node">Пигмент</div>
+    </div>
+  </div>
+</section>
+
+<!-- 7 · Что подтверждено, а что рабочая концепция -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Честность модели</div>
+    <h2 class="section">Что подтверждено литературой, а что — рабочая концепция</h2>
+    <div class="grid-2">
+      <div class="stat-card">
+        <div class="eyebrow green">Хорошо подтверждено</div>
+        <div class="key-findings compact">
+          <div class="kf">532 нм сильнее взаимодействует с меланином</div>
+          <div class="kf">1064 нм более щадящ для эпидермального меланина</div>
+          <div class="kf">Гипопигментация возможна после обоих диапазонов</div>
+          <div class="kf">Многократные воздействия 1064 нм могут приводить к гипопигментации</div>
+          <div class="kf">Гипопигментация возможна при сохранённых меланоцитах</div>
+          <div class="kf">Пигментные осложнения зависят от фототипа и параметров</div>
+          <div class="kf">Охлаждение способно уменьшать пигментные осложнения в ряде лазерных процедур</div>
+          <div class="kf">После удаления татуировки описана охлаждённая гидрогелевая повязка для уменьшения дисхромии</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="eyebrow purple">Вероятная физиологическая модель</div>
+        <div class="key-findings compact">
+          <div class="kf">Уменьшение остаточного пигмента повышает относительную «стоимость» агрессивного воздействия</div>
+          <div class="kf">Накопленная воспалительная нагрузка способствует осложнениям</div>
+          <div class="kf">Однократная равномерная обработка и отсутствие перекрытия должны уменьшать локальные пики нагрузки</div>
+        </div>
+      </div>
+    </div>
+    <p style="font-size:clamp(18px,1.25vw,24px);">Последние пункты — обоснованная физико-биологическая модель, но не утверждение, что крупные РКИ доказали каждую её часть именно для удаления татуировок.</p>
+  </div>
+</section>
+
+<!-- 8 · Вывод 1 -->
+<section class="slide purple">
+  <div class="slide-inner">
+    <div class="eyebrow">Вывод 1</div>
+    <h2 class="section">Гипопигментация — не обязательно потеря меланоцитов</h2>
+    <p class="lead">Она может быть разной природы — и от этого зависит обратимость.</p>
+    <div class="grid-2">
+      <div class="stat-card">Функциональная<span class="sub">→ обратимая</span></div>
+      <div class="stat-card">Меланосомальная<span class="sub">→ потенциально обратимая</span></div>
+      <div class="stat-card">Меланоцитарная<span class="sub">→ более стойкая</span></div>
+      <div class="stat-card">Аутоиммунная<span class="sub">→ отдельное заболевание</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 9 · Вывод 2 -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Вывод 2</div>
+    <h2 class="section">Остаточный пигмент ≠ поглощённая меланином энергия</h2>
+    <p class="lead">Количество остаточного татуировочного пигмента напрямую не определяет количество энергии, поглощённой меланином. Проблема возникает через ряд промежуточных факторов.</p>
+    <div class="grid-3">
+      <div class="stat-card">Изменение мишени</div>
+      <div class="stat-card">Фрагментация</div>
+      <div class="stat-card">Уменьшение количества частиц</div>
+      <div class="stat-card">Изменение их распределения</div>
+      <div class="stat-card">Увеличение плотности энергии</div>
+      <div class="stat-card">Изменение размера пятна</div>
+      <div class="stat-card">Повторные проходы</div>
+      <div class="stat-card">Перекрытие</div>
+      <div class="stat-card">Накопленная нагрузка</div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 · Вывод 3 -->
+<section class="slide brown">
+  <div class="slide-inner">
+    <div class="eyebrow">Вывод 3</div>
+    <h2 class="section">Фицпатрик — только исходная характеристика</h2>
+    <p class="lead">Фототип по Фицпатрику — стартовая точка. Оценивать нужно её вместе с текущей локальной меланиновой нагрузкой.</p>
+    <div class="eqn boxed">
+      <div class="expr">
+        <span class="t-blue">Фототип</span>
+        <span class="op">+</span>
+        <span class="t-orange">текущая локальная меланиновая нагрузка</span>
+      </div>
+      <div class="cap">Оцениваем не только тип кожи, но и её состояние здесь и сейчас</div>
+    </div>
+    <div class="eqn boxed">
+      <div class="expr">
+        <span class="t-red">Фицпатрик II + сильный локальный загар</span>
+        <span class="op">≠</span>
+        <span class="t-green">Фицпатрик II без загара</span>
+      </div>
+      <div class="cap">Один и тот же фототип ведёт себя по-разному в зависимости от загара</div>
+    </div>
+  </div>
+</section>
+
+<!-- 11 · Вывод 4 -->
+<section class="slide teal">
+  <div class="slide-inner">
+    <div class="eyebrow">Вывод 4</div>
+    <h2 class="section">Охлаждение — не только про боль</h2>
+    <p class="lead">Это потенциальный инструмент управления нагрузкой на ткань.</p>
+    <div class="key-findings">
+      <div class="kf">Ограничение тепловой нагрузки</div>
+      <div class="kf">Уменьшение повреждения окружающей ткани</div>
+      <div class="kf">Контроль воспалительной реакции</div>
+      <div class="kf">Снижение вероятности некоторых пигментных осложнений</div>
+    </div>
+    <p>Для удаления татуировок существует публикация, специально посвящённая охлаждённой гидрогелевой повязке для уменьшения дисхромии.</p>
+  </div>
+</section>
+
+<!-- 12 · Финальная формула лекции -->
+<section class="slide dark">
+  <div class="slide-inner">
+    <div class="eyebrow">Финальная формула</div>
+    <h2 class="section">Две формулы, обобщающие лекцию</h2>
+    <div class="eqn boxed">
+      <div class="expr">
+        <span class="t-green">Безопасное удаление</span>
+        <span class="op">=</span>
+        <span class="t-blue">эффективное воздействие на пигмент</span>
+        <span class="op">−</span>
+        <span class="t-orange">минимально необходимое повреждение ткани</span>
+      </div>
+      <div class="cap">Баланс эффективности и щадящего отношения к ткани</div>
+    </div>
+    <div class="eqn boxed">
+      <div class="expr">
+        <span class="t-red">Риск гипопигментации</span>
+        <span class="op">=</span>
+        <i>f</i>(λ, F, S, τ, N, перекрытие, интервал, фототип, локальный меланин, UV, охлаждение, восстановление)
+      </div>
+      <div class="cap">Осложнение — функция многих управляемых переменных, а не одного параметра</div>
+    </div>
+  </div>
+</section>
+
+<!-- 13 · Финальный слайд -->
+<section class="slide dark">
+  <div class="slide-inner" style="text-align:center;">
+    <h1 class="hero" style="font-size:clamp(44px,5vw,78px);">Не спрашивайте только: <b>как удалить пигмент?</b></h1>
+    <p class="lead big">Спрашивайте: как удалить пигмент с минимальной воспалительной и тепловой нагрузкой на меланоцитарную систему?</p>
+    <p class="lead">Конечная цель лазерной процедуры — не максимальное разрушение. Конечная цель — максимальная селективность.</p>
+    <div class="pill-row">
+      <div class="info-pill">Селективность</div>
+      <div class="info-pill">Один проход</div>
+      <div class="info-pill">Текущий меланин</div>
+      <div class="info-pill">Контроль нагрузки</div>
+      <div class="info-pill">© Микрюков, 2026</div>
+    </div>
+  </div>
+</section>
+
+<!-- 14 · Литература -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Литература</div>
+    <h2 class="section">Ключевые источники</h2>
+    <div class="ref-grid">
+      <div class="ref"><div>Gundogan C, Greve B, Hausser I, Raulin C, 2004 — репигментация стойкой лазер-индуцированной гипопигментации эксимером 308 нм после удаления татуировки.</div><span class="lbl">PubMed</span></div>
+      <div class="ref"><div>Wong et al. — гипопигментация после частых воздействий 1064 нм: клинические и гистологические данные о накопленном повреждении.</div><span class="lbl">PubMed</span></div>
+      <div class="ref"><div>Гистологическая оценка меланина и меланоцитов после 1064 нм — вариант с сохранёнными меланоцитами при выраженном снижении меланина.</div><span class="lbl">PMC</span></div>
+      <div class="ref"><div>Bernstein EF et al. — 532/1064 нм при удалении татуировок: различия в поглощении меланином и пигментных осложнениях.</div><span class="lbl">PubMed</span></div>
+      <div class="ref"><div>Kuperman-Beade et al. — сравнение лазерных систем и пигментных осложнений.</div><span class="lbl">PubMed</span></div>
+      <div class="ref"><div>Влияние размера пятна и профиля луча на эффективность удаления и побочные эффекты при 1064 нм.</div><span class="lbl">PMC</span></div>
+      <div class="ref"><div>Пикосекундное vs наносекундное удаление татуировок — гипопигментация только в наносекундной группе, гиперпигментация в обеих.</div><span class="lbl">PubMed</span></div>
+      <div class="ref"><div>Feng H, Christman MP, Geronemus RG, 2019 (JAAD) — охлаждённая гидрогелевая повязка для уменьшения дисхромии после удаления татуировок.</div><span class="lbl">PubMed</span></div>
+      <div class="ref"><div>Динамическое охлаждение при лечении сосудистых поражений — снижение повреждения эпидермиса и пигментных изменений (общий механизм, не удаление тату).</div><span class="lbl">PMC</span></div>
+      <div class="ref"><div>Систематический обзор и сетевой метаанализ 2026 — эпидермальное охлаждение снижает риск поствоспалительной гиперпигментации (14 РКИ).</div><span class="lbl">PubMed</span></div>
+      <div class="ref"><div>Серповидная/кольцевидная гиперпигментация при лазерной эпиляции — важность равномерного распределения охлаждения.</div><span class="lbl">PMC</span></div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const progressFill = document.getElementById('progressFill');
+let idx = 0;
+const total = slides.length;
+
+function setSlide(i){
+  i = Math.max(0, Math.min(total-1, i));
+  slides[idx].classList.remove('active');
+  slides[i].classList.add('active');
+  idx = i;
+  progressFill.style.width = ((i+1)/total*100) + '%';
+  if(i === 0) location.hash = '';
+  else location.hash = '#s' + (i+1);
+}
+
+document.addEventListener('keydown', (e)=>{
+  if(e.target.classList && e.target.classList.contains('term')) return;
+  if(e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown'){ e.preventDefault(); setSlide(idx+1); }
+  else if(e.key === 'ArrowLeft' || e.key === 'PageUp'){ e.preventDefault(); setSlide(idx-1); }
+  else if(e.key === 'Home'){ e.preventDefault(); setSlide(0); }
+  else if(e.key === 'End'){ e.preventDefault(); setSlide(total-1); }
+});
+
+let lastWheel = 0;
+window.addEventListener('wheel', (e)=>{
+  const now = Date.now();
+  if(now - lastWheel < 700) return;
+  if(Math.abs(e.deltaY) < 30) return;
+  lastWheel = now;
+  if(e.deltaY > 0) setSlide(idx+1); else setSlide(idx-1);
+}, {passive:true});
+
+let touchY = null;
+window.addEventListener('touchstart', e=>{touchY = e.touches[0].clientY;}, {passive:true});
+window.addEventListener('touchend', e=>{
+  if(touchY === null) return;
+  const dy = e.changedTouches[0].clientY - touchY;
+  if(Math.abs(dy) > 50){ if(dy < 0) setSlide(idx+1); else setSlide(idx-1); }
+  touchY = null;
+}, {passive:true});
+
+if(location.hash && location.hash.startsWith('#s')){
+  const n = parseInt(location.hash.slice(2),10);
+  if(!isNaN(n)) setSlide(n-1);
+}
+
+// ANIMATED NETWORK BACKGROUND
+(function(){
+  const canvas = document.getElementById('bgNet');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const DPR = Math.max(1, window.devicePixelRatio || 1);
+  let W = 0, H = 0, nodes = [], t = 0;
+
+  const BAND_PCT = 0.18;
+  const MAX_DIST = 200;
+  const NODE_COLOR = '60, 130, 220';
+  const FREE_RATIO = 0.12;
+
+  function resize(){
+    W = window.innerWidth; H = window.innerHeight;
+    canvas.width = W*DPR; canvas.height = H*DPR;
+    canvas.style.width = W+'px'; canvas.style.height = H+'px';
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    initNodes();
+  }
+  function initNodes(){
+    const bandH = H*BAND_PCT;
+    const bandArea = W*bandH;
+    let perBand = Math.round(bandArea/4500);
+    perBand = Math.max(75, Math.min(170, perBand));
+    nodes = [];
+    const zones = [{yMin:0,yMax:bandH},{yMin:H-bandH,yMax:H}];
+    for(const z of zones){
+      for(let i=0;i<perBand;i++){
+        const isFree = Math.random()<FREE_RATIO;
+        const ampX = isFree?(4+Math.random()*6):(8+Math.random()*10);
+        const ampY = isFree?(3+Math.random()*5):(5+Math.random()*7);
+        nodes.push({
+          ax:Math.random()*W,
+          ay:z.yMin+Math.random()*(z.yMax-z.yMin),
+          x:0, y:0,
+          phaseX:Math.random()*Math.PI*2,
+          phaseY:Math.random()*Math.PI*2,
+          freq:0.006+Math.random()*0.010,
+          ampX, ampY,
+          r:1.6+Math.random()*1.9,
+          isFree,
+          vax: isFree?(Math.random()-0.5)*0.45:0,
+          vay: isFree?(Math.random()-0.5)*0.08:0,
+          zone:z
+        });
+      }
+    }
+  }
+  function bandAlpha(n){
+    const distFromOuter = (n.zone.yMin===0)?n.y/n.zone.yMax:(H-n.y)/(H-n.zone.yMin);
+    return Math.max(0.05, 1-distFromOuter);
+  }
+  function tick(){
+    t++;
+    ctx.clearRect(0,0,W,H);
+    for(const n of nodes){
+      if(n.isFree){
+        n.ax += n.vax; n.ay += n.vay;
+        if(n.ax<-20) n.ax = W+20; else if(n.ax>W+20) n.ax = -20;
+        if(n.ay<n.zone.yMin){n.ay=n.zone.yMin; n.vay=Math.abs(n.vay);}
+        if(n.ay>n.zone.yMax){n.ay=n.zone.yMax; n.vay=-Math.abs(n.vay);}
+      }
+      n.x = n.ax + Math.sin(t*n.freq+n.phaseX)*n.ampX;
+      n.y = n.ay + Math.cos(t*n.freq+n.phaseY)*n.ampY;
+    }
+    ctx.lineWidth = 0.8;
+    for(let i=0;i<nodes.length;i++){
+      const a = nodes[i];
+      const fadeA = bandAlpha(a);
+      for(let j=i+1;j<nodes.length;j++){
+        const b = nodes[j];
+        if(a.zone!==b.zone) continue;
+        const dx = a.x-b.x, dy = a.y-b.y;
+        const d2 = dx*dx+dy*dy;
+        if(d2 < MAX_DIST*MAX_DIST){
+          const d = Math.sqrt(d2);
+          const proximity = 1 - d/MAX_DIST;
+          const alpha = proximity*0.45*Math.min(fadeA, bandAlpha(b));
+          ctx.strokeStyle = 'rgba('+NODE_COLOR+','+alpha.toFixed(3)+')';
+          ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+        }
+      }
+    }
+    for(const n of nodes){
+      const fade = bandAlpha(n);
+      ctx.fillStyle = 'rgba('+NODE_COLOR+','+(0.88*fade).toFixed(3)+')';
+      ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = 'rgba('+NODE_COLOR+','+(0.22*fade).toFixed(3)+')';
+      ctx.beginPath(); ctx.arc(n.x, n.y, n.r*2.6, 0, Math.PI*2); ctx.fill();
+    }
+    requestAnimationFrame(tick);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  requestAnimationFrame(tick);
+})();
+</script>
+
+</body>
+</html>

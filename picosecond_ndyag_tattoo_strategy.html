@@ -1,0 +1,1713 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="googlebot" content="noindex,nofollow,noarchive">
+<title>Пикосекундные Nd:YAG при удалении татуировок · Клиническая стратегия</title>
+<style>
+  :root{
+    --bg:#fbfbfd; --ink:#1d1d1f; --ink-soft:#3a3a3f; --ink-light:#86868b;
+    --line:#d2d2d7;
+    --blue:#0a84ff; --pink:#ff2d55; --green:#30d158;
+    --orange:#ff9500; --red:#ff3b30; --purple:#5e5ce6;
+    --teal:#5ac8fa; --brown:#8b5a2b;
+    --card:#ffffff;
+    --card-edge: rgba(0,0,0,0.05);
+    --shadow: 0 2px 12px rgba(0,0,0,0.04), 0 12px 40px rgba(0,0,0,0.06);
+    --radius: 22px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;
+    background:var(--bg); color:var(--ink);
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+    letter-spacing:-0.011em;
+  }
+  #bgNet{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+  .deck{z-index:1;position:relative;}
+  .deck{position:fixed;inset:0;}
+  .slide{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding: clamp(40px, 5vh, 80px) clamp(28px, 2.6vw, 60px);
+    opacity:0; transform:translateY(24px) scale(0.985);
+    transition: opacity .55s cubic-bezier(.2,.7,.2,1), transform .55s cubic-bezier(.2,.7,.2,1);
+    pointer-events:none; overflow:auto;
+  }
+  .slide.active{opacity:1;transform:none;pointer-events:auto;}
+  .slide-inner{
+    width:100%;
+    max-width: clamp(1200px, 95vw, 1920px);
+    margin:0 auto;
+    display:flex;flex-direction:column;
+    gap: clamp(12px, 1.4vw, 22px);
+  }
+
+  /* TYPOGRAPHY */
+  .eyebrow{text-transform:uppercase;letter-spacing:.18em;font-size:clamp(18px,1.2vw,22px);font-weight:600;color:var(--blue);}
+  h1.hero{
+    font-size: clamp(64px, 7.4vw, 128px);
+    line-height:.98; letter-spacing:-0.04em; font-weight:700;
+    background: linear-gradient(180deg,#1d1d1f 0%, #2a2a2e 60%, #6e6e73 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  h1.title{font-size: clamp(52px, 6vw, 100px); line-height:1.04; letter-spacing:-0.025em; font-weight:700; color:var(--ink);}
+  h2.section{font-size: clamp(40px, 4.2vw, 74px); line-height:1.08; letter-spacing:-0.02em; font-weight:700; color:var(--ink);}
+  .lead{font-size: clamp(28px, 2.2vw, 42px); line-height:1.45; color:var(--ink-soft); font-weight:400; max-width:1280px;}
+  .lead.big{font-size: clamp(32px, 2.6vw, 48px); line-height:1.35;}
+  .small-meta{font-size:17px;color:var(--ink-light);}
+  p{font-size: clamp(22px, 1.5vw, 28px); line-height:1.55; color:var(--ink);}
+
+  /* TOOLTIP TERMS */
+  .term{border-bottom:1.5px dotted var(--blue); cursor:help; position:relative; font-weight:600; color:var(--blue); white-space:nowrap;}
+  .term .tip{
+    position:absolute; bottom:calc(100% + 12px); left:50%;
+    transform:translateX(-50%) translateY(6px);
+    background:rgba(20,20,22,0.96); color:#fff;
+    padding:14px 18px; border-radius:14px;
+    font-size:16px; font-weight:400; line-height:1.5;
+    white-space:normal; width:360px; max-width:80vw;
+    text-align:left; letter-spacing:0;
+    opacity:0; pointer-events:none;
+    transition: opacity .18s ease, transform .18s ease;
+    z-index:100; box-shadow:0 10px 30px rgba(0,0,0,0.25);
+  }
+  .term .tip::before{content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%); border:7px solid transparent; border-top-color: rgba(20,20,22,0.96);}
+  .term .tip b{color:#a8d8ff;}
+  .term:hover .tip, .term:focus .tip{opacity:1; transform:translateX(-50%) translateY(0);}
+  .slide.dark .term, .slide.blue .term, .slide.pink .term, .slide.red .term{color:#a8d8ff; border-bottom-color:#a8d8ff;}
+
+  /* Evidence-level chips (3 уровня доказательности) */
+  .ev{display:inline-flex;align-items:center;gap:10px;padding:8px 18px;border-radius:999px;font-size:clamp(15px,1.1vw,20px);font-weight:700;letter-spacing:.03em;line-height:1;}
+  .ev::before{content:"";width:14px;height:14px;border-radius:50%;flex:none;}
+  .ev.proven{background:rgba(48,209,88,.14);color:#0f8a3a;border:1.5px solid rgba(48,209,88,.35);}
+  .ev.proven::before{background:#30d158;}
+  .ev.mech{background:rgba(255,149,0,.15);color:#a55c00;border:1.5px solid rgba(255,149,0,.35);}
+  .ev.mech::before{background:#ff9500;}
+  .ev.hyp{background:rgba(255,59,48,.12);color:#b8163d;border:1.5px solid rgba(255,59,48,.35);}
+  .ev.hyp::before{background:#ff3b30;}
+  .ev-row{display:flex;flex-wrap:wrap;gap:12px;}
+  /* On colored slides: solid light pill so the colored text stays readable */
+  .slide.dark .ev, .slide.blue .ev, .slide.pink .ev, .slide.red .ev, .slide.green .ev, .slide.amber .ev, .slide.brown .ev{background:rgba(255,255,255,0.94)!important;border-color:rgba(255,255,255,0.55)!important;}
+
+  /* Illustration placeholder */
+  .ph{border:2px dashed var(--blue);border-radius:22px;padding:clamp(22px,2.6vw,44px);text-align:center;color:var(--blue);background:rgba(10,132,255,0.04);display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:center;min-height:clamp(180px,28vh,340px);}
+  .ph .ph-t{font-size:clamp(20px,1.5vw,28px);font-weight:700;letter-spacing:.02em;}
+  .ph .ph-d{font-size:clamp(16px,1.15vw,22px);color:var(--ink-soft);max-width:760px;line-height:1.5;}
+
+  .cite{display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:500;color:var(--blue);background:rgba(10,132,255,0.08); padding:8px 14px; border-radius:999px; text-decoration:none; transition:background .2s ease, transform .2s ease; border:1px solid rgba(10,132,255,0.15);}
+  .cite:hover{background:rgba(10,132,255,0.14); transform:translateY(-1px);}
+  .cite-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+  .src-chip{font-size:clamp(15px,1.05vw,19px);color:var(--ink-light);font-style:italic;}
+
+  /* Cards & grids */
+  .card{background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding: clamp(22px, 1.9vw, 34px); border:1px solid var(--card-edge); position:relative;}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:clamp(18px,1.4vw,26px);}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,1.2vw,22px);}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(14px,1vw,18px);}
+  @media (max-width:900px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}}
+
+  .stat-card{background:var(--card); border-radius:20px; padding: clamp(20px,1.7vw,30px); border:1px solid var(--card-edge); display:flex;flex-direction:column;gap:8px; transition: transform .25s ease, box-shadow .25s ease;}
+  .stat-card:hover{transform:translateY(-3px); box-shadow:0 14px 36px rgba(0,0,0,0.08);}
+  .stat-num{font-size:clamp(44px,4.8vw,78px); font-weight:700; letter-spacing:-0.03em; line-height:1.05; color:var(--blue);}
+  .stat-num.blue{color:var(--blue);} .stat-num.purple{color:var(--purple);} .stat-num.pink{color:var(--pink);}
+  .stat-num.green{color:var(--green);} .stat-num.orange{color:var(--orange);} .stat-num.red{color:var(--red);} .stat-num.brown{color:var(--brown);}
+  .stat-label{font-size:clamp(20px,1.4vw,26px); color:var(--ink-soft); line-height:1.45;}
+  .stat-label-big{font-size:clamp(24px,1.7vw,32px); color:var(--ink); line-height:1.4; font-weight:500;}
+
+  .split{display:grid;grid-template-columns:1.05fr 0.95fr;gap:36px;align-items:center;}
+  @media (max-width:900px){.split{grid-template-columns:1fr;}}
+
+  /* Pills */
+  .pill-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;}
+  .info-pill{background:#fff;border:1px solid var(--line);border-radius:999px; padding:clamp(10px,0.8vw,14px) clamp(16px,1.2vw,22px); font-size:clamp(17px,1.2vw,22px); font-weight:500; color:var(--ink); box-shadow:0 1px 2px rgba(0,0,0,0.02);}
+  .slide.dark .info-pill, .slide.blue .info-pill, .slide.pink .info-pill, .slide.red .info-pill, .slide.green .info-pill, .slide.amber .info-pill{background:rgba(255,255,255,0.12);color:#fff;border-color:rgba(255,255,255,0.22);}
+
+  /* Section dividers */
+  .section-title-block{display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;}
+  .section-num{font-size:clamp(140px,17vw,260px); font-weight:800;letter-spacing:-0.06em;line-height:.9; background:linear-gradient(180deg, var(--blue) 0%, var(--purple) 100%); -webkit-background-clip:text;background-clip:text;color:transparent;}
+  .section-num.pink{background:linear-gradient(180deg, var(--pink) 0%, var(--orange) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .section-num.red{background:linear-gradient(180deg, var(--red) 0%, var(--pink) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .section-num.green{background:linear-gradient(180deg, var(--green) 0%, var(--teal) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .section-num.amber{background:linear-gradient(180deg, var(--orange) 0%, var(--pink) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .section-num.brown{background:linear-gradient(180deg, var(--brown) 0%, var(--red) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+
+  /* Slides with colored backgrounds */
+  .slide.dark{background: radial-gradient(ellipse at 30% 20%, #1e1e22 0%, #000 70%);color:#fff;}
+  .slide.blue{background: linear-gradient(135deg, #0a1f5e 0%, #0050b8 50%, #0a84ff 100%);color:#fff;}
+  .slide.pink{background: linear-gradient(135deg, #5a0029 0%, #b8004a 50%, #ff2d55 100%);color:#fff;}
+  .slide.red{background: linear-gradient(135deg, #4a0008 0%, #a8000f 50%, #ff3b30 100%);color:#fff;}
+  .slide.green{background: linear-gradient(135deg, #003d1a 0%, #1c8a3a 50%, #30d158 100%);color:#fff;}
+  .slide.amber{background: linear-gradient(135deg, #4a2200 0%, #c87000 50%, #ff9500 100%);color:#fff;}
+  .slide.brown{background: linear-gradient(135deg, #2a1a0a 0%, #5a3010 50%, #8b5a2b 100%);color:#fff;}
+
+  .slide.dark h1.hero,.slide.dark h1.title,.slide.dark h2.section,
+  .slide.blue h1.hero,.slide.blue h1.title,.slide.blue h2.section,
+  .slide.pink h1.hero,.slide.pink h1.title,.slide.pink h2.section,
+  .slide.red h1.hero,.slide.red h1.title,.slide.red h2.section,
+  .slide.green h1.hero,.slide.green h1.title,.slide.green h2.section,
+  .slide.amber h1.hero,.slide.amber h1.title,.slide.amber h2.section,
+  .slide.brown h1.hero,.slide.brown h1.title,.slide.brown h2.section{color:#fff !important; background:none;-webkit-background-clip:initial;-webkit-text-fill-color:#fff;}
+  .slide.dark .lead{color:#d6d6da;}
+  .slide.blue .lead, .slide.pink .lead, .slide.red .lead, .slide.green .lead, .slide.amber .lead, .slide.brown .lead{color:rgba(255,255,255,0.92);}
+  .slide.dark .eyebrow{color:var(--teal);}
+  .slide.blue .eyebrow{color:#a8d8ff;}
+  .slide.pink .eyebrow, .slide.red .eyebrow{color:#ffb3c4;}
+  .slide.green .eyebrow{color:#a8f0bd;}
+  .slide.amber .eyebrow{color:#ffd9a0;}
+  .slide.brown .eyebrow{color:#ffd5a0;}
+
+  .slide.dark .card, .slide.blue .card, .slide.pink .card, .slide.red .card, .slide.green .card, .slide.amber .card, .slide.brown .card,
+  .slide.dark .stat-card, .slide.blue .stat-card, .slide.pink .stat-card, .slide.red .stat-card, .slide.green .stat-card, .slide.amber .stat-card, .slide.brown .stat-card{
+    background:rgba(255,255,255,0.10); border-color:rgba(255,255,255,0.18); color:#fff; box-shadow:0 6px 22px rgba(0,0,0,0.18); backdrop-filter:blur(14px);}
+  .slide.dark .stat-num, .slide.blue .stat-num, .slide.pink .stat-num, .slide.red .stat-num, .slide.green .stat-num, .slide.amber .stat-num, .slide.brown .stat-num{color:#fff !important;}
+  .slide.dark .stat-label, .slide.blue .stat-label, .slide.pink .stat-label, .slide.red .stat-label, .slide.green .stat-label, .slide.amber .stat-label, .slide.brown .stat-label{color:rgba(255,255,255,0.88);}
+  .slide.dark p, .slide.blue p, .slide.pink p, .slide.red p, .slide.green p, .slide.amber p, .slide.brown p{color:rgba(255,255,255,0.9);}
+  .slide.dark .ph, .slide.blue .ph, .slide.red .ph, .slide.brown .ph{border-color:rgba(255,255,255,0.5);color:#fff;background:rgba(255,255,255,0.06);}
+  .slide.dark .ph .ph-d, .slide.blue .ph .ph-d, .slide.red .ph .ph-d, .slide.brown .ph .ph-d{color:rgba(255,255,255,0.85);}
+
+  /* Tables */
+  table.cmp{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);border:1px solid rgba(0,0,0,0.04);}
+  .cmp th, .cmp td{padding:clamp(14px,1.15vw,22px) clamp(18px,1.4vw,26px);text-align:left;font-size:clamp(20px,1.5vw,28px);border-bottom:1px solid var(--line);line-height:1.35;}
+  .cmp th{background:#f5f5f7;font-weight:600;color:var(--ink);font-size:clamp(19px,1.35vw,25px);}
+  .cmp tr:last-child td{border-bottom:none;}
+  .cmp td.num{font-variant-numeric:tabular-nums;font-weight:600;}
+  .pill{display:inline-block;padding:6px 14px;border-radius:999px;font-size:clamp(15px,1vw,18px);font-weight:600;}
+  .pill.hi{background:rgba(48,209,88,.16);color:#0f8a3a;}
+  .pill.mid{background:rgba(255,149,0,.16);color:#a55c00;}
+  .pill.lo{background:rgba(255,45,85,.14);color:#b8163d;}
+  .pill.danger{background:rgba(255,59,48,.16);color:#a30010;}
+
+  /* Key findings */
+  .key-findings{display:flex;flex-direction:column;gap:clamp(12px,1.1vw,20px);}
+  .kf{display:flex;align-items:flex-start;gap:20px;font-size:clamp(23px,1.75vw,32px);line-height:1.42;}
+  .kf-bullet{flex-shrink:0; width:clamp(34px,2.4vw,44px); height:clamp(34px,2.4vw,44px); border-radius:50%; background:linear-gradient(135deg, var(--blue), var(--purple)); color:#fff; display:flex; align-items:center; justify-content:center; font-size:clamp(15px,1.1vw,19px); font-weight:700; margin-top:3px;}
+  .kf-bullet.red{background:linear-gradient(135deg, var(--red), var(--pink));}
+  .kf-bullet.green{background:linear-gradient(135deg, var(--green), var(--teal));}
+  .kf-bullet.amber{background:linear-gradient(135deg, var(--orange), var(--pink));}
+
+  /* Illustration container */
+  .illus{background:#fff; border-radius:var(--radius); padding: clamp(20px,1.7vw,32px); box-shadow:var(--shadow); border:1px solid rgba(0,0,0,0.04); text-align:center;}
+  .illus svg{max-width:100%;height:auto;display:block;margin:0 auto;}
+  .illus-caption{font-size:clamp(18px,1.3vw,24px);color:var(--ink-soft);margin-top:16px;line-height:1.5;}
+
+  /* Blockquote */
+  blockquote.q{font-size:clamp(28px,2.6vw,44px); line-height:1.32; letter-spacing:-0.015em; font-weight:500; color:var(--ink); border-left:5px solid var(--blue); padding:6px 0 6px 28px; max-width:1280px;}
+  blockquote.q .src{display:block;font-size:clamp(18px,1.2vw,22px);font-weight:500;color:var(--ink-light);margin-top:18px;letter-spacing:0;}
+  .slide.dark blockquote.q, .slide.blue blockquote.q, .slide.pink blockquote.q, .slide.red blockquote.q, .slide.green blockquote.q, .slide.amber blockquote.q, .slide.brown blockquote.q{color:#fff;border-left-color:rgba(255,255,255,0.8);}
+  .slide.dark blockquote.q .src, .slide.blue blockquote.q .src, .slide.pink blockquote.q .src, .slide.red blockquote.q .src{color:rgba(255,255,255,0.75);}
+
+  /* Formula strip */
+  .formula{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:clamp(10px,1.2vw,22px);font-weight:700;text-align:center;}
+  .formula .term-box{padding:clamp(14px,1.4vw,26px) clamp(16px,1.6vw,30px);border-radius:18px;line-height:1.1;font-size:clamp(22px,2vw,34px);}
+  .formula .op{font-size:clamp(30px,3vw,52px);color:var(--ink-light);font-weight:400;}
+  .slide.dark .formula .op, .slide.blue .formula .op{color:rgba(255,255,255,0.7);}
+
+  /* References */
+  .ref-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  @media (max-width:900px){.ref-grid{grid-template-columns:1fr;}}
+  .ref{background:#fff;border:1px solid var(--line);border-radius:14px; padding:14px 18px;font-size:clamp(16px,1.15vw,21px);line-height:1.45; display:flex;justify-content:space-between;align-items:center;gap:14px;}
+  .ref a{color:var(--blue);text-decoration:none;font-weight:500;font-size:15px;flex-shrink:0;}
+  .ref a:hover{text-decoration:underline;}
+
+  /* Progress bar */
+  .progress{position:fixed;top:0;left:0;right:0;height:2px;background:rgba(0,0,0,0.04);z-index:60;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--purple),var(--pink));width:0%;transition:width .4s cubic-bezier(.2,.7,.2,1);opacity:0.55;}
+
+  /* Animations */
+  @keyframes magicalFadeIn{0%{opacity:0;transform:translateY(24px);filter:blur(3px);}60%{filter:blur(0);}100%{opacity:1;transform:translateY(0);filter:blur(0);}}
+  .slide.active .stat-card,.slide.active .card,.slide.active .illus,.slide.active blockquote.q,.slide.active table.cmp,.slide.active .ref,.slide.active .ph{animation: magicalFadeIn .8s cubic-bezier(.2,.7,.2,1) backwards;}
+  .slide.active .grid-2 > *:nth-child(1),.slide.active .grid-3 > *:nth-child(1),.slide.active .grid-4 > *:nth-child(1){animation-delay:.12s;}
+  .slide.active .grid-2 > *:nth-child(2),.slide.active .grid-3 > *:nth-child(2),.slide.active .grid-4 > *:nth-child(2){animation-delay:.26s;}
+  .slide.active .grid-3 > *:nth-child(3),.slide.active .grid-4 > *:nth-child(3){animation-delay:.40s;}
+  .slide.active .grid-4 > *:nth-child(4){animation-delay:.54s;}
+  .slide.active .key-findings .kf:nth-child(1){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .12s;}
+  .slide.active .key-findings .kf:nth-child(2){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .24s;}
+  .slide.active .key-findings .kf:nth-child(3){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .36s;}
+  .slide.active .key-findings .kf:nth-child(4){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .48s;}
+  .slide.active .key-findings .kf:nth-child(5){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .60s;}
+  .slide.active .key-findings .kf:nth-child(6){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .72s;}
+  .slide::-webkit-scrollbar{width:0;}
+</style>
+</head>
+<body>
+
+<canvas id="bgNet" aria-hidden="true"></canvas>
+<div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="deck" id="deck">
+
+<!-- ========== 1. COVER ========== -->
+<section class="slide dark active">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Клуб «Лазер Про» · клиническая лекция</div>
+    <h1 class="hero">Пикосекундные Nd:YAG<br>при удалении татуировок</h1>
+    <p class="lead big" style="margin:8px auto 0;text-align:center;">
+      От фрагментации пигмента — к клинической стратегии.<br>
+      Как меняется тактика при переходе от QS-Nd:YAG к pico-Nd:YAG<br>и где реально находится преимущество pico.
+    </p>
+    <div class="pill-row" style="margin-top:24px;">
+      <span class="info-pill">≈ 90 минут</span>
+      <span class="info-pill">3 ключевые работы: Wong · Hur · Nguyen</span>
+      <span class="info-pill">3 уровня доказательности</span>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 2. ВВОДНЫЙ КЛИНИЧЕСКИЙ ВОПРОС ========== -->
+<section class="slide blue">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Пациент с чёрно-синей татуировкой</div>
+    <h2 class="section" style="max-width:1400px;">Два вопроса, которые задают всю лекцию.</h2>
+    <div class="grid-2" style="margin-top:14px;max-width:1500px;">
+      <div class="card" style="border-left:5px solid #fff;text-align:left;">
+        <div style="font-size:clamp(20px,1.4vw,26px);font-weight:700;opacity:.8;">Вопрос 1</div>
+        <div style="font-size:clamp(26px,2vw,38px);font-weight:700;line-height:1.2;margin-top:8px;">Зачем вообще менять 5&nbsp;ns Nd:YAG на 450&nbsp;ps Nd:YAG?</div>
+      </div>
+      <div class="card" style="border-left:5px solid #fff;text-align:left;">
+        <div style="font-size:clamp(20px,1.4vw,26px);font-weight:700;opacity:.8;">Вопрос 2</div>
+        <div style="font-size:clamp(26px,2vw,38px);font-weight:700;line-height:1.2;margin-top:8px;">Если pico фрагментирует пигмент лучше — почему не делать pico сразу всем?</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 3. ЛЕГЕНДА: 3 УРОВНЯ ДОКАЗАТЕЛЬНОСТИ ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Как читать эту лекцию</div>
+    <h2 class="section">Три уровня доказательности.</h2>
+    <p class="lead">На каждом слайде метка показывает статус утверждения — чтобы отделять доказанное от механизма и от клинической гипотезы.</p>
+    <div class="grid-3" style="margin-top:14px;">
+      <div class="stat-card" style="border-top:5px solid var(--green);">
+        <span class="ev proven" style="align-self:flex-start;">Доказано исследованиями</span>
+        <div style="font-size:clamp(20px,1.5vw,27px);color:var(--ink-soft);line-height:1.45;margin-top:10px;">Клинические данные подтверждают. Например: pico может быть эффективнее при меньшей флюенс.</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--orange);">
+        <span class="ev mech" style="align-self:flex-start;">Механизм / эксперимент</span>
+        <div style="font-size:clamp(20px,1.5vw,27px);color:var(--ink-soft);line-height:1.45;margin-top:10px;">Подтверждается физикой и лабораторными работами: паровой пузырь, cavitation, steam–carbon реакция.</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--red);">
+        <span class="ev hyp" style="align-self:flex-start;">Клиническая гипотеза</span>
+        <div style="font-size:clamp(20px,1.5vw,27px);color:var(--ink-soft);line-height:1.45;margin-top:10px;">Рабочая модель автора: последовательная стратегия nano на плотном пигменте → pico на мелком остаточном.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 4. ТРИ РАБОТЫ = КАРТА ЛЕКЦИИ ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Каркас лекции</div>
+    <h2 class="section">Три работы — три вопроса.</h2>
+    <div class="grid-3" style="margin-top:14px;">
+      <div class="stat-card" style="border-top:5px solid var(--blue);">
+        <div style="font-size:clamp(13px,0.95vw,17px);font-weight:700;color:var(--blue);letter-spacing:.16em;text-transform:uppercase;">Wong · 2026</div>
+        <div style="font-size:clamp(24px,1.9vw,32px);font-weight:700;color:var(--blue);line-height:1.15;">Что происходит в клинике?</div>
+        <div style="font-size:clamp(19px,1.4vw,25px);color:var(--ink-soft);line-height:1.45;">Систематический обзор: где Nd:YAG работает и что известно про pico vs nano.</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--purple);">
+        <div style="font-size:clamp(13px,0.95vw,17px);font-weight:700;color:var(--purple);letter-spacing:.16em;text-transform:uppercase;">Hur · 2026</div>
+        <div style="font-size:clamp(24px,1.9vw,32px);font-weight:700;color:var(--purple);line-height:1.15;">Как параметры меняют безопасность?</div>
+        <div style="font-size:clamp(19px,1.4vw,25px);color:var(--ink-soft);line-height:1.45;">Один и тот же 450&nbsp;ps — либо хороший результат, либо хроническая травма.</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--green);">
+        <div style="font-size:clamp(13px,0.95vw,17px);font-weight:700;color:#0f8a3a;letter-spacing:.16em;text-transform:uppercase;">Nguyen · 2025</div>
+        <div style="font-size:clamp(24px,1.9vw,32px);font-weight:700;color:#0f8a3a;line-height:1.15;">Что происходит после лазера?</div>
+        <div style="font-size:clamp(19px,1.4vw,25px);color:var(--ink-soft);line-height:1.45;">Куда девается пигмент: очищение продолжается недели и месяцы.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 5. SECTION 01 — ФИЗИКА ========== -->
+<section class="slide dark">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть I</div>
+    <div class="section-num">01</div>
+    <h1 class="title">Nano vs Pico:<br>только необходимая физика</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">Без 20 минут селективного фототермолиза — только то, что меняет тактику.</p>
+  </div>
+</section>
+
+<!-- ========== 6. QS vs PICO — таблица ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Два инструмента</div>
+    <h2 class="section">QS-Nd:YAG против pico-Nd:YAG.</h2>
+    <table class="cmp" style="margin-top:12px;">
+      <tr><th>Параметр</th><th>QS-Nd:YAG (нано)</th><th>Pico-Nd:YAG</th></tr>
+      <tr><td>Длительность импульса</td><td class="num">≈ 5&nbsp;нс</td><td class="num">≈ 300–750&nbsp;пс</td></tr>
+      <tr><td>Длина волны</td><td class="num">1064&nbsp;нм</td><td class="num">1064 / 532&nbsp;нм</td></tr>
+      <tr><td>Флюенс</td><td>высокая</td><td>ниже при сопоставимой энергии</td></tr>
+      <tr><td>Пиковая мощность</td><td>ниже</td><td>значительно выше</td></tr>
+      <tr><td>Ведущий компонент</td><td>заметная тепловая составляющая</td><td>фотоакустический / фотомеханический</td></tr>
+    </table>
+    <div class="cite-row" style="margin-top:14px;">
+      <span class="src-chip">Значения для клинических систем · обзор Wong, 2026</span>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 7. ОДНА ФОРМУЛА ФИЗИКИ ========== -->
+<section class="slide blue">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Вся физика в одну строку</div>
+    <div class="formula" style="margin-top:20px;">
+      <div class="term-box" style="background:rgba(255,255,255,0.14);">Длительность<br>импульса ↓</div>
+      <div class="op">→</div>
+      <div class="term-box" style="background:rgba(255,255,255,0.14);">Пиковая<br>мощность ↑</div>
+      <div class="op">→</div>
+      <div class="term-box" style="background:rgba(255,255,255,0.22);">Фотоакустическая<br>фрагментация ↑</div>
+    </div>
+    <p class="lead" style="margin-top:26px;max-width:1200px;">Короче импульс — выше пиковая мощность — сильнее механическое дробление частицы при той же доставленной энергии.</p>
+    <span class="ev proven" style="margin-top:18px;">Доказано исследованиями</span>
+  </div>
+</section>
+
+<!-- ========== 8. КОНТЕКСТ ОБЗОРА 2026 ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Где мы находимся в 2026</div>
+    <h2 class="section">Большинство данных — всё ещё по нано.</h2>
+    <p class="lead">В обзоре 2026 года большинство клинических исследований по-прежнему относятся к QS-Nd:YAG. Современные pico-Nd:YAG показывают сходное или иногда лучшее очищение при меньшей флюенс и меньшем числе процедур.</p>
+    <div class="card" style="border-left:5px solid var(--red);margin-top:12px;">
+      <p style="margin:0;font-size:clamp(24px,1.9vw,34px);line-height:1.4;"><b>Доказанного универсального превосходства pico — нет.</b> Это ключевая рамка, к которой мы будем возвращаться весь доклад.</p>
+    </div>
+    <div class="ev-row" style="margin-top:16px;"><span class="ev proven">Сходное очищение при меньшей флюенс</span><span class="ev hyp">Универсальное превосходство не доказано</span></div>
+  </div>
+</section>
+
+<!-- ========== 9. SECTION 02 — WONG ========== -->
+<section class="slide dark">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть II · Wong, 2026</div>
+    <div class="section-num">02</div>
+    <h1 class="title">Что на сегодня<br>реально известно?</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">Систематический обзор как каркас всей лекции.</p>
+  </div>
+</section>
+
+<!-- ========== 10. WONG — ДИЗАЙН ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Wong, 2026 · дизайн</div>
+    <h2 class="section">Систематический обзор.</h2>
+    <div class="grid-4" style="margin-top:14px;">
+      <div class="stat-card"><div class="stat-num blue">46</div><div class="stat-label">клинических исследований</div></div>
+      <div class="stat-card"><div class="stat-num purple">4 базы</div><div class="stat-label">MEDLINE · EMBASE · Scopus · Cochrane</div></div>
+      <div class="stat-card"><div class="stat-num green">≥ 10</div><div class="stat-label">пациентов — критерий включения</div></div>
+      <div class="stat-card"><div class="stat-num orange">11.12.2025</div><div class="stat-label">дата отсечки поиска</div></div>
+    </div>
+    <div class="cite-row" style="margin-top:16px;"><span class="src-chip">Wong et al., J of Cosmetic Dermatology, 2026 — «Efficacy of Nd:YAG Lasers for Tattoo Removal: Systematic Review»</span></div>
+  </div>
+</section>
+
+<!-- ========== 11. WONG — ГЛАВНЫЙ РЕЗУЛЬТАТ ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Wong, 2026 · главный результат</div>
+    <h2 class="section">Nd:YAG хорошо работает — но не везде.</h2>
+    <div class="grid-2" style="margin-top:12px;">
+      <div class="card" style="border-left:5px solid var(--green);">
+        <div style="font-size:clamp(22px,1.7vw,30px);font-weight:700;color:#0f8a3a;">Где работает</div>
+        <div style="font-size:clamp(20px,1.5vw,27px);color:var(--ink-soft);line-height:1.5;margin-top:8px;">Чёрный, синий, сине-чёрный пигмент. Для ≥&nbsp;75% очищения обычно нужно <b>4–8 процедур</b> — но разброс огромный.</div>
+      </div>
+      <div class="card" style="border-left:5px solid var(--orange);">
+        <div style="font-size:clamp(22px,1.7vw,30px);font-weight:700;color:#a55c00;">Где сложнее</div>
+        <div style="font-size:clamp(20px,1.5vw,27px);color:var(--ink-soft);line-height:1.5;margin-top:8px;">Профессиональные татуировки хуже любительских. Цветные пигменты значительно менее предсказуемы.</div>
+      </div>
+    </div>
+    <span class="ev proven" style="margin-top:16px;">Доказано исследованиями</span>
+  </div>
+</section>
+
+<!-- ========== 12. WONG — САМЫЙ ВАЖНЫЙ СЛАЙД: PICO vs NANO ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Wong, 2026 · pico vs nano — ключевой слайд</div>
+    <h2 class="section">Pico перспективен. Но…</h2>
+    <div class="grid-2" style="margin-top:10px;">
+      <div class="card" style="border-left:5px solid var(--blue);">
+        <div style="font-size:clamp(21px,1.6vw,29px);font-weight:700;color:var(--blue);">Что даёт pico</div>
+        <ul style="margin:10px 0 0 22px;font-size:clamp(20px,1.5vw,27px);line-height:1.5;color:var(--ink-soft);">
+          <li>Сопоставимое очищение</li>
+          <li>В части исследований — меньше процедур</li>
+          <li>В части — меньшая флюенс</li>
+          <li>Часто — меньше боли</li>
+        </ul>
+      </div>
+      <div class="card" style="border-left:5px solid var(--red);background:#fff5f4;">
+        <div style="font-size:clamp(21px,1.6vw,29px);font-weight:700;color:#b8163d;">Чего нет</div>
+        <div style="font-size:clamp(24px,1.9vw,34px);font-weight:700;color:#b8163d;line-height:1.35;margin-top:10px;">Устойчивое превосходство pico над наносекундным Nd:YAG <u>не доказано.</u></div>
+      </div>
+    </div>
+    <div class="ev-row" style="margin-top:16px;"><span class="ev proven">Меньше флюенс / меньше боли</span><span class="ev hyp">Consistent superiority не доказана</span></div>
+  </div>
+</section>
+
+<!-- ========== 13. WONG — ПОЧЕМУ НЕТ МЕТА-АНАЛИЗА ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Wong, 2026 · почему нет количественного мета-анализа</div>
+    <h2 class="section">Слишком разные исследования.</h2>
+    <p class="lead">Различались флюенс, размер пятна, длительность импульса, длина волны, тип и происхождение татуировки, фототип по Фитцпатрику, число процедур, интервалы и критерии очищения.</p>
+    <div class="card" style="border-left:5px solid var(--purple);margin-top:12px;">
+      <p style="margin:0;font-size:clamp(22px,1.7vw,31px);line-height:1.45;">Поэтому — <b>narrative synthesis</b>, а не количественный мета-анализ. Общая достоверность доказательств оценена как <b>low–very low</b>.</p>
+    </div>
+    <div class="card" style="border-left:5px solid var(--red);margin-top:12px;background:#fff5f4;">
+      <p style="margin:0;font-size:clamp(22px,1.7vw,31px);line-height:1.45;color:#b8163d;">Вывод для практики: <b>универсальной цифры «pico эффективнее на X%» сегодня не существует.</b></p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 13A. CHEN 2026 — QS vs pico 1064 клиника ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Свежее клиническое подтверждение · Chen et al., 2026</div>
+    <h2 class="section">QS против pico 1064 — 130 пациентов.</h2>
+    <div style="background:#fff;border-radius:18px;border:1px solid var(--card-edge);box-shadow:var(--shadow);padding:clamp(8px,0.7vw,12px);margin-top:6px;">
+      <img src="chen2026_fig1_pico.png" alt="Прогрессия удаления тату pico 1064: до, после 1, после 2 сеансов" style="width:100%;height:auto;display:block;border-radius:8px;max-height:34vh;object-fit:contain;">
+      <div class="src-chip" style="margin-top:6px;text-align:center;display:block;">Fig.&nbsp;1 · Chen et al., J Cosmetic Dermatology 2026 · pico 1064: до&nbsp;→&nbsp;после 1&nbsp;→&nbsp;после 2 сеансов</div>
+    </div>
+    <div class="grid-3" style="margin-top:12px;">
+      <div class="stat-card" style="border-top:5px solid var(--green);"><div style="font-size:clamp(13px,0.95vw,17px);font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#0f8a3a;">Отличное очищение</div><div style="font-size:clamp(22px,1.7vw,30px);font-weight:700;margin-top:4px;">78,1% <span style="color:var(--ink-light);font-weight:500;">vs</span> 54,4%</div><div class="stat-label">pico vs QS · p=0,029</div></div>
+      <div class="stat-card" style="border-top:5px solid var(--blue);"><div style="font-size:clamp(13px,0.95vw,17px);font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);">Медиана сеансов</div><div style="font-size:clamp(22px,1.7vw,30px);font-weight:700;margin-top:4px;">3 <span style="color:var(--ink-light);font-weight:500;">vs</span> 4</div><div class="stat-label">pico меньше · p=0,020</div></div>
+      <div class="stat-card" style="border-top:5px solid var(--orange);"><div style="font-size:clamp(13px,0.95vw,17px);font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#a55c00;">Общий эффект &gt;50%</div><div style="font-size:clamp(22px,1.7vw,30px);font-weight:700;margin-top:4px;">94,5% <span style="color:var(--ink-light);font-weight:500;">vs</span> 86%</div><div class="stat-label">p=0,094 — незначимо</div></div>
+    </div>
+    <div class="ev-row" style="margin-top:12px;"><span class="ev proven">Выше отличное очищение + меньше сеансов у pico</span><span class="ev hyp">Превосходство по общему эффекту не доказано (NS)</span></div>
+    <div class="cite-row" style="margin-top:8px;"><span class="src-chip">Ретроспектива, QS MedLite C6 vs pico Syneron-Candela; подгруппа blue/black — отличное 80% vs 55,8% (p=0,007); безопасность сопоставима (транзиторная эритема/отёк). 3-мес наблюдение — «гипотеза, не окончательное превосходство».</span></div>
+  </div>
+</section>
+
+<!-- ========== 14. SECTION 03 — 5 ИССЛЕДОВАНИЙ ========== -->
+<section class="slide dark">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть III</div>
+    <div class="section-num">03</div>
+    <h1 class="title">5 исследований,<br>а не 46</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">Разбираем конкретные работы внутри обзора Wong.</p>
+  </div>
+</section>
+
+<!-- ========== 15. ROSS 1998 ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Исследование 1 · Ross, 1998</div>
+    <h2 class="section">35&nbsp;пс против 10&nbsp;нс.</h2>
+    <div class="grid-3" style="margin-top:12px;">
+      <div class="stat-card"><div class="stat-num blue">16</div><div class="stat-label">пациентов, преимущественно чёрные татуировки</div></div>
+      <div class="stat-card"><div class="stat-num green">12 / 16</div><div class="stat-label">татуировок — pico оказался лучше</div></div>
+      <div class="stat-card"><div class="stat-num purple">p &lt; 0,002</div><div class="stat-label">статистическая значимость</div></div>
+    </div>
+    <div class="card" style="border-left:5px solid var(--blue);margin-top:14px;">
+      <p style="margin:0;font-size:clamp(20px,1.5vw,27px);line-height:1.45;">Важная деталь: в сравнении Ross преимущество pico сохранялось <b>при одинаковой флюенс 0,65&nbsp;Дж/см²</b> — авторы связывали это с более высокой пиковой температурой и изменением оптических свойств пигмента.</p>
+    </div>
+    <span class="ev proven" style="margin-top:14px;">Доказано исследованиями</span>
+  </div>
+</section>
+
+<!-- ========== 16. BÄUMLER 2002 ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Исследование 2 · Bäumler, 2002</div>
+    <h2 class="section">Pico численно лучше — но без значимости.</h2>
+    <div class="key-findings" style="margin-top:12px;">
+      <div class="kf"><div class="kf-bullet">1</div><div>23 пациента, 8 процедур.</div></div>
+      <div class="kf"><div class="kf-bullet">2</div><div>Pico был эффективнее <b>численно</b>, но разница <b>не достигла статистической значимости</b>.</div></div>
+      <div class="kf"><div class="kf-bullet green">3</div><div>Транзиторные реакции — меньше и короче на pico.</div></div>
+      <div class="kf"><div class="kf-bullet green">4</div><div>Гипопигментация — только в группе нано.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 17. PINTO 2016 ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Исследование 3 · Pinto, 2016 · важное противоречие</div>
+    <h2 class="section">Короткий горизонт стирает разницу.</h2>
+    <div class="grid-2" style="margin-top:10px;">
+      <div class="card" style="border-left:5px solid var(--blue);">
+        <div style="font-size:clamp(20px,1.5vw,27px);color:var(--ink-soft);line-height:1.5;">21 пациент · 30 татуировок · 1064&nbsp;нм · <b>450&nbsp;пс против 5&nbsp;нс</b> · только 2 процедуры · оценка через 6 недель.</div>
+      </div>
+      <div class="card" style="border-left:5px solid var(--orange);">
+        <div style="font-size:clamp(20px,1.5vw,27px);color:var(--ink-soft);line-height:1.5;">Медианное очищение <b>25–36%</b>, значимой разницы между pico и nano <b>не было</b>. Транзиторно: пузыри, корки, отёк; сообщали о гипо- и гиперпигментации.</div>
+      </div>
+    </div>
+    <div class="card" style="border-left:5px solid var(--purple);margin-top:14px;">
+      <p style="margin:0;font-size:clamp(22px,1.7vw,31px);line-height:1.45;">Физически pico привлекательнее — но <b>за короткий клинический горизонт преимущество может не проявиться.</b></p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 18. KONO 2020 — подробно ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Исследование 4 · Kono, 2020 · подробно</div>
+    <h2 class="section">Профессиональные мультиколор-татуировки.</h2>
+    <div class="grid-3" style="margin-top:12px;">
+      <div class="stat-card"><div class="stat-num blue">11 / 37</div><div class="stat-label">пациентов / татуировок</div></div>
+      <div class="stat-card"><div class="stat-num purple">4</div><div class="stat-label">процедуры, интервал 4 недели · 532 и 1064&nbsp;нм</div></div>
+      <div class="stat-card"><div class="stat-num green">pico&nbsp;&gt;&nbsp;nano</div><div class="stat-label">для чёрного, красного и зелёного</div></div>
+    </div>
+    <div class="card" style="border-left:5px solid var(--orange);margin-top:14px;">
+      <p style="margin:0;font-size:clamp(20px,1.5vw,27px);line-height:1.45;">Оборотная сторона: PIH в <b>21,6–35,1%</b> татуировок; парадоксальное потемнение — <b>5,4%</b>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 19. KONO 2020 — параметры (ключевой вывод) ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Kono, 2020 · параметры</div>
+    <h2 class="section">Тот же эффект — при меньшей флюенс.</h2>
+    <div class="grid-2" style="margin-top:12px;">
+      <div class="stat-card" style="border-top:5px solid var(--blue);">
+        <div style="font-size:clamp(13px,0.95vw,17px);font-weight:700;color:var(--blue);letter-spacing:.16em;text-transform:uppercase;">Pico</div>
+        <div class="stat-num blue">2,3–3,4</div><div class="stat-label">Дж/см² · пятно 3&nbsp;мм · 450–750&nbsp;пс</div>
+      </div>
+      <div class="stat-card" style="border-top:5px solid var(--orange);">
+        <div style="font-size:clamp(13px,0.95vw,17px);font-weight:700;color:#a55c00;letter-spacing:.16em;text-transform:uppercase;">Nano</div>
+        <div class="stat-num orange">5,5–7,0</div><div class="stat-label">Дж/см² · пятно 3&nbsp;мм · нс-импульс</div>
+      </div>
+    </div>
+    <div class="card" style="border-left:5px solid var(--green);margin-top:14px;">
+      <p style="margin:0;font-size:clamp(23px,1.8vw,33px);line-height:1.4;">Pico достигает сопоставимого или лучшего эффекта при <b>существенно меньшей флюенс</b> — это сильнее, чем просто «pico лучше разбивает пигмент».</p>
+    </div>
+    <span class="ev proven" style="margin-top:12px;">Доказано исследованиями</span>
+  </div>
+</section>
+
+<!-- ========== 20. МОСТ: физика ≠ клиника ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Почему клиника отличается от физики</div>
+    <h2 class="section">Лазер — только первый шаг.</h2>
+    <div class="illus" style="margin-top:8px;">
+      <svg viewBox="0 0 1360 300" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrMain" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#86868b"/></marker>
+        </defs>
+        <g font-family="-apple-system,Arial" text-anchor="middle">
+          <rect x="20" y="110" width="250" height="90" rx="16" fill="#eef4ff" stroke="#0a84ff" stroke-width="3"/>
+          <text x="145" y="150" font-size="24" font-weight="700" fill="#0a84ff">Лазер</text>
+          <text x="145" y="180" font-size="19" fill="#3a3a3f">фрагментация</text>
+
+          <line x1="278" y1="155" x2="360" y2="155" stroke="#86868b" stroke-width="3" marker-end="url(#arrMain)"/>
+
+          <rect x="368" y="110" width="250" height="90" rx="16" fill="#f3f0ff" stroke="#5e5ce6" stroke-width="3"/>
+          <text x="493" y="150" font-size="24" font-weight="700" fill="#5e5ce6">Макрофаг</text>
+          <text x="493" y="180" font-size="19" fill="#3a3a3f">захват частиц</text>
+
+          <line x1="626" y1="155" x2="708" y2="155" stroke="#86868b" stroke-width="3" marker-end="url(#arrMain)"/>
+
+          <rect x="716" y="90" width="300" height="130" rx="16" fill="#ecfbf1" stroke="#30a14e" stroke-width="3"/>
+          <text x="866" y="135" font-size="23" font-weight="700" fill="#0f8a3a">Выведение</text>
+          <text x="866" y="168" font-size="18" fill="#3a3a3f">лимфа · сосуды ·</text>
+          <text x="866" y="192" font-size="18" fill="#3a3a3f">трансэпидермально</text>
+
+          <line x1="1024" y1="155" x2="1106" y2="155" stroke="#86868b" stroke-width="3" marker-end="url(#arrMain)"/>
+
+          <rect x="1114" y="110" width="230" height="90" rx="16" fill="#fff" stroke="#d2d2d7" stroke-width="3"/>
+          <text x="1229" y="150" font-size="22" font-weight="700" fill="#1d1d1f">Недели —</text>
+          <text x="1229" y="180" font-size="22" font-weight="700" fill="#1d1d1f">месяцы</text>
+        </g>
+      </svg>
+      <div class="illus-caption">Лазер заканчивает работу за миллисекунды — организм работает с пигментом недели и месяцы.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 21. SECTION 04 — NGUYEN ========== -->
+<section class="slide dark">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть IV · Nguyen, 2025</div>
+    <div class="section-num green">04</div>
+    <h1 class="title">Куда девается<br>пигмент после pico?</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">Не «сколько процентов исчезло», а «где физически находится пигмент».</p>
+  </div>
+</section>
+
+<!-- ========== 22. NGUYEN — ДИЗАЙН ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Nguyen, 2025 · дизайн</div>
+    <h2 class="section">Прижизненная микроскопия кожи.</h2>
+    <div class="grid-4" style="margin-top:12px;">
+      <div class="stat-card"><div class="stat-num blue">9 / 11</div><div class="stat-label">пациентов / татуировок, только чёрные</div></div>
+      <div class="stat-card"><div class="stat-num purple">1</div><div class="stat-label">процедура · 1064&nbsp;нм PicoPlus · 4&nbsp;мм</div></div>
+      <div class="stat-card"><div class="stat-num orange">0,7–1,0</div><div class="stat-label">Дж/см² · конечная точка — побеление (whitening)</div></div>
+      <div class="stat-card"><div class="stat-num green">6 и 12</div><div class="stat-label">недель наблюдения</div></div>
+    </div>
+    <div class="card" style="border-left:5px solid var(--purple);margin-top:14px;">
+      <p style="margin:0;font-size:clamp(20px,1.5vw,27px);line-height:1.45;">Метод: <b>мультифотонная томография + FLIM</b>. Фототипы IV–VI исключены.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 23. NGUYEN — ДО ЛАЗЕРА ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Nguyen, 2025 · до лазера</div>
+    <h2 class="section">Мишень — не идеальная наночастица.</h2>
+    <div class="split" style="grid-template-columns:1.12fr 0.88fr;align-items:center;">
+      <div style="background:#fff;border-radius:20px;border:1px solid var(--card-edge);box-shadow:var(--shadow);padding:clamp(10px,0.9vw,16px);">
+        <img src="nguyen2025_fig1_before.png" alt="MPT-FLIM: пигмент в дерме до лазера, эпидермис чистый" style="width:100%;height:auto;display:block;border-radius:10px;max-height:62vh;object-fit:contain;">
+        <div class="src-chip" style="margin-top:8px;text-align:center;display:block;">Fig.&nbsp;1 · Nguyen et al., Skin Res Technol 2025 · ряды: a — многофотонная, b — SHG, c — FLIM; столбцы — зернистый / шиповатый / дермальный слой</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;justify-content:center;">
+        <div class="card" style="border-left:5px solid var(--brown);"><div style="font-size:clamp(20px,1.5vw,27px);line-height:1.45;">Пигмент — <b>только в дерме</b>, между коллагеновыми пучками (яркие кластеры в правом столбце).</div></div>
+        <div class="card" style="border-left:5px solid var(--brown);"><div style="font-size:clamp(20px,1.5vw,27px);line-height:1.45;">В эпидермисе (левый и средний столбцы) — практически отсутствует.</div></div>
+        <div class="card" style="border-left:5px solid var(--brown);"><div style="font-size:clamp(20px,1.5vw,27px);line-height:1.45;">Конгломераты <b>1–11&nbsp;мкм</b> — крупные и нерегулярные.</div></div>
+      </div>
+    </div>
+    <span class="ev proven" style="margin-top:10px;">Доказано (прижизненная микроскопия)</span>
+  </div>
+</section>
+
+<!-- ========== 24. NGUYEN — 6 НЕДЕЛЬ ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Nguyen, 2025 · через 6 недель</div>
+    <h2 class="section">Пигмент движется через эпидермис.</h2>
+    <div class="split" style="grid-template-columns:1.12fr 0.88fr;align-items:center;">
+      <div style="background:#fff;border-radius:20px;border:1px solid var(--card-edge);box-shadow:var(--shadow);padding:clamp(10px,0.9vw,16px);">
+        <img src="nguyen2025_fig2_6wk.png" alt="MPT-FLIM 6 недель: пигмент во всех слоях эпидермиса и верхней дерме" style="width:100%;height:auto;display:block;border-radius:10px;max-height:62vh;object-fit:contain;">
+        <div class="src-chip" style="margin-top:8px;text-align:center;display:block;">Fig.&nbsp;2 · Nguyen et al., Skin Res Technol 2025 · фиолетовая стрелка — межклеточно, синяя — внутриклеточно</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;justify-content:center;">
+        <div class="card" style="border-left:5px solid var(--blue);"><div style="font-size:clamp(20px,1.5vw,27px);line-height:1.45;">Частицы — в эпидермисе, верхней дерме, <b>внутри и между клетками</b>.</div></div>
+        <div class="card" style="border-left:5px solid var(--orange);"><div style="font-size:clamp(20px,1.5vw,27px);line-height:1.45;">Межклеточные пространства расширены, признаки отёка и воспаления.</div></div>
+        <div class="card" style="border-left:5px solid var(--purple);"><div style="font-size:clamp(20px,1.5vw,27px);line-height:1.45;">Дермальные частицы — вокруг сосудистоподобных структур.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 25. NGUYEN — 12 НЕДЕЛЬ ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Nguyen, 2025 · через 12 недель</div>
+    <h2 class="section">Очищение продолжается месяцами.</h2>
+    <div class="split" style="grid-template-columns:1.12fr 0.88fr;align-items:center;">
+      <div style="background:#fff;border-radius:20px;border:1px solid var(--card-edge);box-shadow:var(--shadow);padding:clamp(10px,0.9vw,16px);">
+        <img src="nguyen2025_fig3_12wk.png" alt="MPT-FLIM 12 недель: пигмент ещё в эпидермисе и верхней дерме, количество уменьшилось" style="width:100%;height:auto;display:block;border-radius:10px;max-height:60vh;object-fit:contain;">
+        <div class="src-chip" style="margin-top:8px;text-align:center;display:block;">Fig.&nbsp;3 · Nguyen et al., Skin Res Technol 2025 · частиц меньше, чем на 6 неделе</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;justify-content:center;">
+        <div class="card" style="border-left:5px solid var(--green);"><div style="font-size:clamp(20px,1.5vw,27px);line-height:1.45;">Пигмент всё ещё присутствует, но его количество <b>уменьшается</b>; остаётся в эпидермисе и верхней дерме.</div></div>
+        <div class="card" style="border-left:5px solid var(--blue);"><div style="font-size:clamp(21px,1.6vw,29px);line-height:1.4;">Отсутствие мгновенного визуального ответа <b>не означает отсутствие биологического эффекта.</b></div></div>
+        <span class="ev proven" style="align-self:flex-start;">Доказано (прижизненная микроскопия)</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 26. NGUYEN — FLIM МЕТАБОЛИКА ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Nguyen, 2025 · FLIM · метаболический ответ</div>
+    <h2 class="section">Биологический ответ — длительный.</h2>
+    <div class="grid-3" style="margin-top:12px;">
+      <div class="stat-card" style="border-top:5px solid var(--ink-light);"><div style="font-size:clamp(14px,1vw,18px);font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-light);">Baseline</div><div class="stat-num">1006</div><div class="stat-label">τm, пс (± 178,5)</div></div>
+      <div class="stat-card" style="border-top:5px solid var(--red);"><div style="font-size:clamp(14px,1vw,18px);font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#b8163d;">6 недель</div><div class="stat-num red">1240</div><div class="stat-label">τm, пс (± 146,5) · p&lt;0,05</div></div>
+      <div class="stat-card" style="border-top:5px solid var(--orange);"><div style="font-size:clamp(14px,1vw,18px);font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#a55c00;">12 недель</div><div class="stat-num orange">1120</div><div class="stat-label">τm, пс (± 122,9)</div></div>
+    </div>
+    <div class="card" style="border-left:5px solid var(--purple);margin-top:14px;">
+      <p style="margin:0;font-size:clamp(21px,1.6vw,29px);line-height:1.45;">Метаболический/воспалительный сдвиг к 12 неделе уменьшается, но <b>к исходному не возвращается</b>. Pico вызывает длительный биологический ответ — несмотря на преимущественно фотомеханическую модель.</p>
+    </div>
+    <span class="ev proven" style="margin-top:12px;">Доказано исследованиями</span>
+  </div>
+</section>
+
+<!-- ========== 27. ИНТЕРВАЛЫ — связка Wong × Nguyen ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Клинический вопрос · интервалы</div>
+    <h2 class="section">Если pico быстрее дробит — проводить процедуры чаще?</h2>
+    <div class="grid-3" style="margin-top:12px;">
+      <div class="stat-card" style="border-top:5px solid var(--blue);"><div style="font-size:clamp(14px,1vw,18px);font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);">Классика · Wong</div><div style="font-size:clamp(24px,1.9vw,34px);font-weight:700;color:var(--blue);margin-top:6px;">4–8 недель</div><div class="stat-label">стандартный интервал в большинстве работ</div></div>
+      <div class="stat-card" style="border-top:5px solid var(--green);"><div style="font-size:clamp(14px,1vw,18px);font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#0f8a3a;">Nguyen</div><div style="font-size:clamp(24px,1.9vw,34px);font-weight:700;color:#0f8a3a;margin-top:6px;">и через 12 нед</div><div class="stat-label">пигмент всё ещё активно перемещается</div></div>
+      <div class="stat-card" style="border-top:5px solid var(--purple);"><div style="font-size:clamp(14px,1vw,18px);font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--purple);">Hur</div><div style="font-size:clamp(24px,1.9vw,34px);font-weight:700;color:var(--purple);margin-top:6px;">1 месяц</div><div class="stat-label">высокое очищение — но 1 мес не доказан как оптимум</div></div>
+    </div>
+    <div class="card" style="border-left:5px solid var(--red);margin-top:14px;background:#fff5f4;">
+      <p style="margin:0;font-size:clamp(23px,1.8vw,33px);line-height:1.4;color:#b8163d;">Pico <b>позволяет</b> проводить процедуру часто — но из этого <b>не следует</b>, что процедуру <b>надо</b> проводить часто.</p>
+    </div>
+    <span class="ev hyp" style="margin-top:12px;">Клинический вывод — прямого сравнения интервалов пока нет</span>
+  </div>
+</section>
+
+<!-- ========== 28. SECTION 05 — HUR ========== -->
+<section class="slide dark">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть V · Hur, 2026</div>
+    <div class="section-num">05</div>
+    <h1 class="title">Как параметры<br>меняют безопасность</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">UGPT — «единая золотая параметрическая терапия» на 438 пациентах.</p>
+  </div>
+</section>
+
+<!-- ========== 29. HUR — КОГОРТА ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Hur, 2026 · когорта</div>
+    <h2 class="section">438 пациентов, фототипы III–IV.</h2>
+    <div class="grid-3" style="margin-top:14px;">
+      <div class="stat-card" style="border-top:5px solid var(--blue);"><div class="stat-num blue">45,9%</div><div class="stat-label">синие татуировки</div></div>
+      <div class="stat-card" style="border-top:5px solid var(--ink);"><div class="stat-num">23,1%</div><div class="stat-label">чёрные татуировки</div></div>
+      <div class="stat-card" style="border-top:5px solid var(--purple);"><div class="stat-num purple">31,1%</div><div class="stat-label">мультиколор</div></div>
+    </div>
+    <div class="cite-row" style="margin-top:16px;"><span class="src-chip">Hur et al., Dermatologic Therapy, 2026 — «Unified Golden Parameter Therapy, high-fluence 1064-nm picosecond laser»</span></div>
+  </div>
+</section>
+
+<!-- ========== 30. HUR — ЧТО ТАКОЕ UGPT (параметры) ========== -->
+<section class="slide blue">
+  <div class="slide-inner">
+    <div class="eyebrow">Hur, 2026 · параметры UGPT</div>
+    <h2 class="section">Единый набор параметров.</h2>
+    <div class="grid-4" style="margin-top:16px;">
+      <div class="stat-card"><div class="stat-num">1064</div><div class="stat-label">нм</div></div>
+      <div class="stat-card"><div class="stat-num">450</div><div class="stat-label">пс</div></div>
+      <div class="stat-card"><div class="stat-num">7</div><div class="stat-label">мм · размер пятна</div></div>
+      <div class="stat-card"><div class="stat-num">0,75</div><div class="stat-label">Дж/см² · флюенс</div></div>
+    </div>
+    <div class="grid-2" style="margin-top:16px;">
+      <div class="stat-card"><div class="stat-num">10 Гц</div><div class="stat-label">частота</div></div>
+      <div class="stat-card"><div class="stat-num">30</div><div class="stat-label">ежемесячных процедур</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 31. HUR — принципиальное сравнение стратегий ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Hur, 2026 · та же длительность — другая стратегия</div>
+    <h2 class="section">450&nbsp;пс — но разная энергетика.</h2>
+    <table class="cmp" style="margin-top:12px;">
+      <tr><th>Параметр</th><th>Традиционный high-fluence pico 1064</th><th>UGPT</th></tr>
+      <tr><td>Размер пятна</td><td class="num">3&nbsp;мм</td><td class="num">7&nbsp;мм</td></tr>
+      <tr><td>Флюенс</td><td class="num">3–5&nbsp;Дж/см²</td><td class="num">0,75&nbsp;Дж/см²</td></tr>
+      <tr><td>Длительность</td><td class="num">450&nbsp;пс</td><td class="num">450&nbsp;пс</td></tr>
+      <tr><td>Частота</td><td class="num">2&nbsp;Гц</td><td class="num">10&nbsp;Гц</td></tr>
+    </table>
+    <div class="card" style="border-left:5px solid var(--purple);margin-top:14px;">
+      <p style="margin:0;font-size:clamp(21px,1.6vw,29px);line-height:1.45;">Та же длительность импульса — <b>совершенно другая энергетическая стратегия</b>. Это, пожалуй, главный практический урок Hur.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 32. HUR — РЕЗУЛЬТАТ UGPT ========== -->
+<section class="slide green">
+  <div class="slide-inner">
+    <div class="eyebrow">Hur, 2026 · результат UGPT · 30 ежемесячных процедур</div>
+    <h2 class="section">95% полного очищения — без осложнений.</h2>
+    <div style="background:rgba(255,255,255,0.16);border-radius:18px;padding:clamp(8px,0.7vw,12px);margin-top:6px;">
+      <img src="hur2026_fig4_ugpt_success.png" alt="Крупная мультиколор-тату до и после UGPT — отличное очищение без рубцов" style="width:100%;height:auto;display:block;border-radius:10px;max-height:42vh;object-fit:contain;">
+      <div style="margin-top:6px;text-align:center;font-size:clamp(15px,1.05vw,19px);color:rgba(255,255,255,0.82);font-style:italic;">Fig.&nbsp;4 · Hur et al., Dermatol Ther 2026 · крупная мультиколор-тату&nbsp;→&nbsp;отличное очищение без гипопигментации и рубцов</div>
+    </div>
+    <div class="grid-3" style="margin-top:12px;">
+      <div class="stat-card"><div class="stat-num">95%</div><div class="stat-label">полное очищение (152 / 160)</div></div>
+      <div class="stat-card"><div class="stat-num">5%</div><div class="stat-label">отличное очищение (8 / 160)</div></div>
+      <div class="stat-card"><div class="stat-num">5%</div><div class="stat-label">осложнения: гипопигментация 5%, лёгкий гипертроф. рубец 5%</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 33. HUR — сравнение с обычным high-fluence ========== -->
+<section class="slide red">
+  <div class="slide-inner">
+    <div class="eyebrow">Hur, 2026 · традиционный high-fluence pico 1064 · 52 пациента</div>
+    <h2 class="section">92,3% очищения — и 100% осложнений.</h2>
+    <div style="background:rgba(255,255,255,0.16);border-radius:16px;padding:clamp(8px,0.7vw,12px);margin-top:6px;">
+      <img src="hur2026_fig2_complication.png" alt="Традиционный high-fluence: пурпура с мокнущей эрозией, затем гипопигментация и рубец" style="width:100%;height:auto;display:block;border-radius:8px;max-height:38vh;object-fit:contain;">
+      <div style="margin-top:6px;text-align:center;font-size:clamp(15px,1.05vw,19px);color:rgba(255,255,255,0.85);font-style:italic;">Fig.&nbsp;2 · Hur et al., Dermatol Ther 2026 · (a) тату&nbsp;→&nbsp;(b) пурпура с мокнущей инвазивной эрозией&nbsp;→&nbsp;(c) стойкая гипопигментация (PH) и гипертрофический рубец (MHS)</div>
+    </div>
+    <div class="grid-2" style="margin-top:12px;">
+      <div class="card" style="border-left:5px solid #fff;">
+        <div style="font-size:clamp(20px,1.6vw,28px);font-weight:700;">92,3% полного очищения</div>
+        <div style="font-size:clamp(18px,1.4vw,25px);line-height:1.45;margin-top:4px;">3–5&nbsp;Дж/см² · пятно 3&nbsp;мм · 450&nbsp;пс · 30 процедур.</div>
+      </div>
+      <div class="card" style="border-left:5px solid #fff;">
+        <div style="font-size:clamp(20px,1.6vw,28px);font-weight:700;">Осложнения — у 100%</div>
+        <div style="font-size:clamp(18px,1.4vw,25px);line-height:1.4;margin-top:4px;">Гипопигментация 100% · гипертрофический рубец 86,5% · белый атрофический рубец 13,5%.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 34. HUR — ОБЯЗАТЕЛЬНАЯ КРИТИКА ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Hur, 2026 · как это читать</div>
+    <h2 class="section">Впечатляюще — но это не RCT.</h2>
+    <div class="key-findings" style="margin-top:12px;">
+      <div class="kf"><div class="kf-bullet red">!</div><div>Не рандомизированное прямое сравнение (head-to-head), а <b>ретроспективное исследование</b> с разными группами.</div></div>
+      <div class="kf"><div class="kf-bullet red">!</div><div>Все пациенты — фототипы III–IV; группы различались; татуировки не стандартизированы.</div></div>
+      <div class="kf"><div class="kf-bullet red">!</div><div>Объективный цифровой анализ цвета <b>не использовался</b> — на это указывает сам автор.</div></div>
+    </div>
+    <div class="card" style="border-left:5px solid var(--red);margin-top:14px;background:#fff5f4;">
+      <p style="margin:0;font-size:clamp(22px,1.7vw,31px);line-height:1.4;color:#b8163d;">Цифры Hur — <b>материал для гипотез, а не доказательство оптимального параметра.</b> Нельзя сказать студентам: «UGPT доказал, что 0,75&nbsp;Дж/см² лучше 3–5&nbsp;Дж/см²».</p>
+    </div>
+    <span class="ev hyp" style="margin-top:12px;">Клиническая гипотеза (hypothesis-generating)</span>
+  </div>
+</section>
+
+<!-- ========== 35. HUR — ENDPOINT ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Hur, 2026 · клиническая конечная точка</div>
+    <h2 class="section">Побеление и пурпура — но без мокнутия.</h2>
+    <div style="background:#fff;border-radius:16px;border:1px solid var(--card-edge);box-shadow:var(--shadow);padding:clamp(8px,0.7vw,12px);margin-top:6px;">
+      <img src="hur2026_fig1_endpoint_clean.png" alt="UGPT: пурпура без мокнущей инвазивной эрозии — целевая конечная точка" style="width:100%;height:auto;display:block;border-radius:8px;max-height:30vh;object-fit:contain;">
+      <div class="src-chip" style="margin-top:6px;text-align:center;display:block;">Fig.&nbsp;1 · Hur et al., Dermatol Ther 2026 · UGPT — пурпура без мокнущей инвазивной эрозии (целевая точка)</div>
+    </div>
+    <div class="grid-2" style="margin-top:12px;">
+      <div class="card" style="border-left:5px solid var(--green);">
+        <div style="font-size:clamp(22px,1.7vw,30px);font-weight:700;color:#0f8a3a;">Целевая точка</div>
+        <div style="font-size:clamp(20px,1.5vw,27px);color:var(--ink-soft);line-height:1.5;margin-top:6px;">Побеление (whitening) + пурпура, <b>без мокнущей эрозии (oozing)</b>.</div>
+      </div>
+      <div class="card" style="border-left:5px solid var(--red);">
+        <div style="font-size:clamp(22px,1.7vw,30px);font-weight:700;color:#b8163d;">Что связано с осложнениями</div>
+        <div style="font-size:clamp(20px,1.5vw,27px);color:var(--ink-soft);line-height:1.5;margin-top:6px;">Пурпура + мокнущая инвазивная эрозия → повреждение эпидермиса/дермы → гипопигментация и рубцы.</div>
+      </div>
+    </div>
+    <span class="ev hyp" style="margin-top:14px;">Наблюдение авторов</span>
+  </div>
+</section>
+
+<!-- ========== 36. HUR — параметры меняются по ходу курса ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Hur, 2026 · курс не статичен</div>
+    <h2 class="section">Мишень меняется — меняется и режим.</h2>
+    <div class="key-findings" style="margin-top:12px;">
+      <div class="kf"><div class="kf-bullet">1</div><div>Первые <b>1–4 процедуры</b> — режим фокусировки (focusing mode).</div></div>
+      <div class="kf"><div class="kf-bullet amber">2</div><div>После ~<b>5 процедур</b> побеление уже не возникает даже при воздействии — преобладает пурпура.</div></div>
+      <div class="kf"><div class="kf-bullet">3</div><div>Поэтому авторы переходят от фокусировки к <b>дефокусировке</b> — разбор на следующем слайде.</div></div>
+    </div>
+    <div class="card" style="border-left:5px solid var(--green);margin-top:14px;">
+      <p style="margin:0;font-size:clamp(21px,1.6vw,29px);line-height:1.45;">Связка с Nguyen: <b>мишень действительно меняется по ходу курса</b> — и режим должен следовать за ней.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 36A. HUR — ФОКУСИРОВКА vs ДЕФОКУСИРОВКА ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Hur, 2026 · зум-манипула · что такое дефокусировка</div>
+    <h2 class="section">Фокусировка&nbsp;→&nbsp;дефокусировка.</h2>
+    <p class="lead" style="font-size:clamp(22px,1.7vw,30px);margin-top:-2px;">Зум-манипула меняет схождение луча. По ходу курса меняется <b>задача</b> воздействия — и режим следует за ней.</p>
+    <div class="grid-2" style="margin-top:10px;">
+      <div class="card" style="border-left:5px solid var(--blue);">
+        <div style="font-size:clamp(14px,1vw,18px);font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);">Фокусировка · сессии 1–4</div>
+        <div style="font-size:clamp(20px,1.5vw,27px);line-height:1.45;color:var(--ink-soft);margin-top:8px;">Пигмент плотный. Сфокусированный луч даёт высокую локальную интенсивность → <b>побеление тканей</b> (дермальные газовые пузырьки — маркер фрагментации) + пурпура, <b>без</b> мокнущей эрозии.</div>
+      </div>
+      <div class="card" style="border-left:5px solid var(--orange);">
+        <div style="font-size:clamp(14px,1vw,18px);font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#a55c00;">Дефокусировка · после ~5 сессий</div>
+        <div style="font-size:clamp(20px,1.5vw,27px);line-height:1.45;color:var(--ink-soft);margin-top:8px;">Пигмент раздроблен — побеление уже не возникает даже при воздействии, только пурпура. Луч <b>дефокусируют</b>: мягче, ниже пиковая интенсивность на поверхности. Цель — пурпура <b>без мокнущей инвазивной эрозии.</b></div>
+      </div>
+    </div>
+    <div class="card" style="border-left:5px solid var(--green);margin-top:12px;">
+      <p style="margin:0;font-size:clamp(19px,1.45vw,26px);line-height:1.42;">Зачем так: пурпура <b>без мокнутия</b> не разрушает эпидермис и дерму, а <b>фотобиостимулирует пигмент-нагруженные дермальные макрофаги</b> — ускоряет их миграцию и выведение через лимфу. Мокнущая инвазивная эрозия, наоборот, повреждает кожу → гипопигментация и рубцы.</p>
+    </div>
+    <div class="ev-row" style="margin-top:10px;"><span class="ev hyp">Авторская стратегия и наблюдение · не RCT</span></div>
+    <div class="cite-row" style="margin-top:6px;"><span class="src-chip">Hur et al., Dermatol Ther 2026 · UGPT 7&nbsp;мм / 0,75&nbsp;Дж/см² / 450&nbsp;пс / 10&nbsp;Гц; целевая точка — Fig.&nbsp;1b (без мокнутия), нежелательная — Fig.&nbsp;2b (с мокнутием)</span></div>
+  </div>
+</section>
+
+<!-- ========== 37. HUR — самый красивый вывод ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Hur, 2026 · спонтанная регрессия</div>
+    <h2 class="section">Организм дорабатывает за лазером.</h2>
+    <div style="background:#fff;border-radius:16px;border:1px solid var(--card-edge);box-shadow:var(--shadow);padding:clamp(8px,0.7vw,12px);margin-top:6px;">
+      <img src="hur2026_fig12_spontaneous.png" alt="Спонтанная регрессия остаточной тату через 18 месяцев после UGPT без дополнительного лазера" style="width:100%;height:auto;display:block;border-radius:8px;max-height:32vh;object-fit:contain;">
+      <div class="src-chip" style="margin-top:6px;text-align:center;display:block;">Fig.&nbsp;12 · Hur et al., Dermatol Ther 2026 · тату&nbsp;→&nbsp;остаток после 20 сеансов&nbsp;→&nbsp;спонтанная регрессия через 18 мес без лазера</div>
+    </div>
+    <div class="grid-2" style="margin-top:12px;">
+      <div class="stat-card" style="border-top:5px solid var(--blue);"><div class="stat-num blue">45 / 45</div><div class="stat-label">пациентов с остаточной татуировкой после &gt;15 процедур дали <b>дальнейшее спонтанное осветление за 1–5 лет без лазера</b> — при том что побеление уже не возникало.</div></div>
+      <div class="card" style="border-left:5px solid var(--purple);display:flex;align-items:center;">
+        <p style="margin:0;font-size:clamp(20px,1.5vw,27px);line-height:1.45;">Гипотеза авторов: после дальнейшей фрагментации очень мелкие частицы уже не дают выраженной лазерной реакции, но продолжают удаляться иммунологически.</p>
+      </div>
+    </div>
+    <span class="ev hyp" style="margin-top:12px;">Гипотеза авторов (не доказанный механизм)</span>
+  </div>
+</section>
+
+<!-- ========== 38. ГЛАВНЫЙ КЛИНИЧЕСКИЙ ПАРАДОКС ========== -->
+<section class="slide pink">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Главный клинический парадокс лекции</div>
+    <blockquote class="q" style="border-left:none;text-align:center;font-size:clamp(30px,3.4vw,50px);max-width:1500px;line-height:1.3;">
+      Чем дальше идёт курс удаления — тем <b>меньше лазерная мишень</b>,<br>
+      и тем <b>меньше дополнительный эффект</b> очередного импульса.<br><br>
+      Возникает точка: лазер уже почти ничего не разрушает,<br>а организм продолжает удалять.
+      <span class="src" style="margin-top:24px;">Видно сразу в двух работах: Hur — спонтанная регрессия · Nguyen — очищение через 12 недель</span>
+    </blockquote>
+  </div>
+</section>
+
+<!-- ========== 39. SECTION 06 — литература vs практика ========== -->
+<section class="slide dark">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть VI · авторский блок</div>
+    <div class="section-num brown">06</div>
+    <h1 class="title">Литературные параметры vs<br>контролируемая практика</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">Почему цифры из публикаций нельзя переносить в кабинет напрямую.</p>
+  </div>
+</section>
+
+<!-- ========== 40. ТАБЛИЦА ЦЕДЕРМАНА 532 нм ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Клиническая практика · Дмитрий Цедерман · 532&nbsp;нм</div>
+    <h2 class="section">Рабочие параметры: 532&nbsp;нм.</h2>
+    <p class="lead" style="font-size:clamp(22px,1.7vw,30px);margin-top:-2px;">Параметры из практики <b>Дмитрия Цедермана</b> (CEDERMAN CLINIC) — экспертный клинический опыт: PicoSure&nbsp;755, PicoPlus&nbsp;1064/532, Melsytech QS Nd:YAG.</p>
+    <table class="cmp" style="margin-top:10px;">
+      <tr><th>Диаметр пятна</th><th>Плотность энергии</th><th>Клиническая оценка</th></tr>
+      <tr><td class="num">6,5&nbsp;мм</td><td class="num">0,36&nbsp;Дж/см²</td><td>~70% без пигментации</td></tr>
+      <tr><td class="num">6,5&nbsp;мм</td><td class="num">0,34&nbsp;Дж/см²</td><td>~99% без пигментации</td></tr>
+      <tr><td class="num">6,5&nbsp;мм</td><td class="num">0,32&nbsp;Дж/см²</td><td>~100% без пигментации</td></tr>
+    </table>
+    <div class="card" style="border-left:5px solid var(--ink-light);margin-top:12px;">
+      <p style="margin:0;font-size:clamp(18px,1.35vw,24px);color:var(--ink-soft);line-height:1.45;">Параметры ориентировочные. Аппараты различаются. Всегда оцениваем клиническую реакцию и выполняем тестовые вспышки.</p>
+    </div>
+    <span class="ev hyp" style="margin-top:12px;">Экспертная клиническая практика · Д. Цедерман, CEDERMAN CLINIC</span>
+  </div>
+</section>
+
+<!-- ========== 41. ТАБЛИЦА ЦЕДЕРМАНА 1064 нм ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Клиническая практика · Дмитрий Цедерман · 1064&nbsp;нм</div>
+    <h2 class="section">Рабочие параметры: 1064&nbsp;нм.</h2>
+    <table class="cmp" style="margin-top:12px;">
+      <tr><th>Диаметр пятна</th><th>Плотность энергии</th><th>Тип татуировки</th></tr>
+      <tr><td class="num">6&nbsp;мм</td><td class="num">0,8–1,2&nbsp;Дж/см²</td><td>насыщенные</td></tr>
+      <tr><td class="num">6&nbsp;мм</td><td class="num">1,2–1,6&nbsp;Дж/см²</td><td>средняя плотность</td></tr>
+      <tr><td class="num">6&nbsp;мм</td><td class="num">1,4–2&nbsp;Дж/см²</td><td>бледные</td></tr>
+      <tr><td class="num">6&nbsp;мм</td><td class="num">≥ 2&nbsp;Дж/см²</td><td><span class="pill danger">повышенное внимание ⚠</span></td></tr>
+    </table>
+    <div class="card" style="border-left:5px solid var(--ink-light);margin-top:12px;">
+      <p style="margin:0;font-size:clamp(18px,1.35vw,24px);color:var(--ink-soft);line-height:1.45;">Параметры ориентировочные. Аппараты различаются. Всегда оцениваем клиническую реакцию и выполняем тестовые вспышки.</p>
+    </div>
+    <span class="ev hyp" style="margin-top:12px;">Экспертная клиническая практика · Д. Цедерман, CEDERMAN CLINIC</span>
+  </div>
+</section>
+
+<!-- ========== 42. J/cm² БЕЗ ПЯТНА — БЕССМЫСЛЕННА ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Ловушка сравнения</div>
+    <h2 class="section">Дж/см² без диаметра пятна — почти пустая цифра.</h2>
+    <div class="grid-2" style="margin-top:10px;">
+      <div class="stat-card" style="border-top:5px solid var(--red);"><div style="font-size:clamp(13px,0.95vw,17px);font-weight:700;color:#b8163d;letter-spacing:.14em;text-transform:uppercase;">3&nbsp;мм · 5&nbsp;Дж/см²</div><div class="stat-num red">≈ 0,35 Дж</div><div class="stat-label">энергия одного импульса</div></div>
+      <div class="stat-card" style="border-top:5px solid var(--green);"><div style="font-size:clamp(13px,0.95vw,17px);font-weight:700;color:#0f8a3a;letter-spacing:.14em;text-transform:uppercase;">7&nbsp;мм · 0,75&nbsp;Дж/см²</div><div class="stat-num green">≈ 0,29 Дж</div><div class="stat-label">энергия одного импульса</div></div>
+    </div>
+    <div class="card" style="border-left:5px solid var(--blue);margin-top:14px;">
+      <p style="margin:0;font-size:clamp(20px,1.55vw,28px);line-height:1.45;">E = F&nbsp;·&nbsp;A. «5» против «0,75» выглядит как огромная разница — но <b>энергия импульса сопоставима</b>, просто распределена по совершенно разной площади. Меняются облучённость, глубина, профиль пучка, число импульсов, накопление тепла.</p>
+    </div>
+    <span class="ev proven" style="margin-top:12px;">Физика · расчёт из площади пятна</span>
+  </div>
+</section>
+
+<!-- ========== 43. ПРИНЦИП БЕЗОПАСНОСТИ ========== -->
+<section class="slide blue">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Авторский принцип</div>
+    <blockquote class="q" style="border-left:none;text-align:center;font-size:clamp(30px,3.4vw,52px);max-width:1400px;line-height:1.28;">
+      Мы работаем не лазером —<br>мы <b>управляем реакцией ткани.</b>
+      <span class="src" style="margin-top:22px;">© В. Микрюков, 2026</span>
+    </blockquote>
+    <div class="formula" style="margin-top:24px;">
+      <div class="term-box" style="background:rgba(255,255,255,0.16);">Минимальная<br>эффективная флюенс</div>
+      <div class="op">→</div>
+      <div class="term-box" style="background:rgba(255,255,255,0.16);">Адекватная<br>реакция пигмента</div>
+      <div class="op">→</div>
+      <div class="term-box" style="background:rgba(255,255,255,0.24);">Минимальное<br>повреждение кожи</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 45. SECTION 07 — стратегия следует за эволюцией частицы ========== -->
+<section class="slide dark">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть VII · авторская концепция</div>
+    <div class="section-num brown">07</div>
+    <h1 class="title">Стратегия следует за<br>эволюцией частицы</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">Не «Nano vs Pico», а «Nano → Pico» по мере изменения мишени.</p>
+  </div>
+</section>
+
+<!-- ========== 46. ПАРОУГЛЕРОДНАЯ РЕАКЦИЯ ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Механистика Carbon Black</div>
+    <h2 class="section">Пароуглеродная реакция — это не просто гипотеза.</h2>
+    <div class="grid-2" style="margin-top:10px;">
+      <div class="card" style="border-left:5px solid var(--orange);">
+        <div style="font-size:clamp(20px,1.5vw,27px);line-height:1.5;color:var(--ink-soft);">При лазерном облучении суспензии Carbon Black наблюдали высокотемпературные реакции с водой — образование H₂ и CO; потерю оптической плотности связывали с эндотермической <b>steam–carbon reaction</b> (Chen/Diebold).</div>
+      </div>
+      <div class="card" style="border-left:5px solid var(--orange);">
+        <div style="font-size:clamp(20px,1.5vw,27px);line-height:1.5;color:var(--ink-soft);">Модель Ho et al.: после парового пузыря пар проникает в трещины частицы и запускает steam–carbon реакцию; короткий импульс эффективнее создаёт <b>акустическое разрушение</b>.</div>
+      </div>
+    </div>
+    <div class="card" style="border-left:5px solid var(--red);margin-top:12px;background:#fff5f4;">
+      <p style="margin:0;font-size:clamp(19px,1.45vw,26px);line-height:1.45;color:#b8163d;">Поправка: доказательств, что nano <b>клинически</b> эффективнее pico именно из-за steam–carbon реакции, пока нет. А Ross показал преимущество pico при равной флюенс 0,65&nbsp;Дж/см².</p>
+    </div>
+    <span class="ev mech" style="margin-top:12px;">Механизм / эксперимент</span>
+  </div>
+</section>
+
+<!-- ========== 46A. JANG — меняем структуру ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Эксперимент · Jang et al., 2017</div>
+    <h2 class="section">Мы не просто дробим пигмент — мы меняем его структуру.</h2>
+    <p class="lead">На двухфотонной микроскопии (TPM) частицы до воздействия — преимущественно сферические, размером ~0,6–4&nbsp;мкм. После импульса они становятся расширенными, фрагментированными и с полыми центрами. Эти изменения подтвердили электронной микроскопией (FE-SEM).</p>
+    <div class="ev-row" style="margin-top:12px;"><span class="ev proven">Прямое наблюдение · TPM + FE-SEM</span></div>
+    <div class="cite-row" style="margin-top:14px;"><span class="src-chip">Jang W.H. et&nbsp;al. · Biomedical Optics Express 8(8):3735, 2017 · ns и ps лазеры 532&nbsp;нм · фантом и мышиная модель</span></div>
+  </div>
+</section>
+
+<!-- ========== 46B. JANG Fig 2 (TPM до/после) ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Jang et al., 2017 · двухфотонная микроскопия (TPM)</div>
+    <h2 class="section">До и после импульса: та же частица.</h2>
+    <div style="background:#fff;border-radius:20px;border:1px solid var(--card-edge);box-shadow:var(--shadow);padding:clamp(10px,0.9vw,16px);display:flex;justify-content:center;margin-top:6px;">
+      <img src="jang2017_fig2_tpm.png" alt="TPM-изображения частиц пигмента до и после лазера: сплошная сфера превращается в полую разорванную оболочку"
+           style="width:auto;max-width:100%;max-height:60vh;height:auto;display:block;border-radius:10px;">
+    </div>
+    <div class="cite-row" style="margin-top:12px;justify-content:space-between;">
+      <span class="src-chip">Ряды: наносекундный лазер 4&nbsp;Дж/см² (верх) и пикосекундный 2&nbsp;Дж/см² (низ); в каждом — до&nbsp;→&nbsp;после, справа увеличенные частицы. Сплошная сфера&nbsp;→&nbsp;полая/разорванная оболочка. Жёлтые стрелки — отслеженные частицы 1 и 2.</span>
+      <span class="src-chip">Fig.&nbsp;2 · © Optica · Jang et al., BOE 2017</span>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 46C. JANG Fig 3 (FE-SEM) ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Jang et al., 2017 · электронная микроскопия (FE-SEM)</div>
+    <h2 class="section">«Расширенные, смятые, разорванные» оболочки.</h2>
+    <div style="background:#fff;border-radius:20px;border:1px solid var(--card-edge);box-shadow:var(--shadow);padding:clamp(10px,0.9vw,16px);display:flex;justify-content:center;margin-top:6px;">
+      <img src="jang2017_fig3_fesem.png" alt="FE-SEM: разорванные полые оболочки частиц пигмента после нано- и пикосекундного лазера"
+           style="width:auto;max-width:100%;max-height:58vh;height:auto;display:block;border-radius:10px;">
+    </div>
+    <div class="cite-row" style="margin-top:12px;justify-content:space-between;">
+      <span class="src-chip">Наносекундный 4&nbsp;Дж/см² (верх) и пикосекундный 2&nbsp;Дж/см² (низ). Жёлтые стрелки — фрагментированные частицы, красные — интактные; вставки (b, d) — увеличенные разорванные оболочки. Масштаб 3&nbsp;мкм.</span>
+      <span class="src-chip">Fig.&nbsp;3 · © Optica · Jang et al., BOE 2017</span>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 46D. JANG — размер меняет эффективность ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Jang et al., 2017 · эффективность фрагментации по размеру частицы</div>
+    <h2 class="section">Размер частицы меняет эффективность лазера.</h2>
+    <table class="cmp" style="margin-top:10px;">
+      <tr><th>Размер частицы</th><th>Наносекундный (532&nbsp;нм)</th><th>Пикосекундный (532&nbsp;нм)</th></tr>
+      <tr><td>Крупные &gt;&nbsp;2&nbsp;мкм</td><td>≈&nbsp;100% при всех флюенс (1–4&nbsp;Дж/см²)</td><td>≈&nbsp;100% от 1,0&nbsp;Дж/см²; ≈&nbsp;50% при 0,5&nbsp;Дж/см²</td></tr>
+      <tr><td>Мелкие &lt;&nbsp;2&nbsp;мкм</td><td>≈&nbsp;60% при 1&nbsp;Дж/см²; ≈&nbsp;80% при 2&nbsp;Дж/см²</td><td>&lt;&nbsp;100% при всех флюенс</td></tr>
+    </table>
+    <div class="card" style="border-left:5px solid var(--green);margin-top:12px;">
+      <p style="margin:0;font-size:clamp(20px,1.55vw,28px);line-height:1.4;">При равной флюенс 1,0&nbsp;Дж/см²: <b>pico ≈&nbsp;80% против nano ≈&nbsp;60%</b>. А pico при 1,0&nbsp;Дж/см² даёт примерно ту же эффективность, что nano при <b>вдвое большей</b> 2,0&nbsp;Дж/см².</p>
+    </div>
+    <span class="ev proven" style="margin-top:12px;">Доказано экспериментально</span>
+  </div>
+</section>
+
+<!-- ========== 46E. КРИТИЧЕСКАЯ ОГОВОРКА ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Важная оговорка · не путать</div>
+    <h2 class="section">Оба лазера дробят крупные частицы лучше мелких.</h2>
+    <div class="card" style="border-left:5px solid var(--red);background:#fff5f4;margin-top:6px;">
+      <p style="margin:0;font-size:clamp(20px,1.55vw,28px);line-height:1.4;color:#b8163d;">Нельзя говорить «pico лучше для мелких, nano — для крупных». <b>Статья этого не показала</b> — наоборот, и nano, и pico фрагментировали крупные частицы эффективнее мелких.</p>
+    </div>
+    <div class="illus" style="margin-top:12px;">
+      <svg viewBox="0 0 1400 210" xmlns="http://www.w3.org/2000/svg">
+        <defs><marker id="arrLogic" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#5e5ce6"/></marker></defs>
+        <g font-family="-apple-system,Arial" text-anchor="middle" font-weight="600">
+          <rect x="10" y="70" width="230" height="72" rx="14" fill="#f0eeff" stroke="#5e5ce6" stroke-width="2.5"/><text x="125" y="100" font-size="18" fill="#3a2f8f">крупная частица</text><text x="125" y="124" font-size="16" fill="#5a5a63">легко разрушается</text>
+          <line x1="246" y1="106" x2="300" y2="106" stroke="#5e5ce6" stroke-width="3" marker-end="url(#arrLogic)"/>
+          <rect x="306" y="70" width="210" height="72" rx="14" fill="#f0eeff" stroke="#5e5ce6" stroke-width="2.5"/><text x="411" y="112" font-size="18" fill="#3a2f8f">становится меньше</text>
+          <line x1="522" y1="106" x2="576" y2="106" stroke="#5e5ce6" stroke-width="3" marker-end="url(#arrLogic)"/>
+          <rect x="582" y="70" width="250" height="72" rx="14" fill="#fff4e0" stroke="#ff9500" stroke-width="2.5"/><text x="707" y="100" font-size="18" fill="#a55c00">эффективность</text><text x="707" y="124" font-size="16" fill="#a55c00">следующего импульса ↓</text>
+          <line x1="838" y1="106" x2="892" y2="106" stroke="#5e5ce6" stroke-width="3" marker-end="url(#arrLogic)"/>
+          <rect x="898" y="60" width="270" height="92" rx="14" fill="#fff4e0" stroke="#ff9500" stroke-width="2.5"/><text x="1033" y="94" font-size="17" fill="#a55c00">нужно иное соотношение</text><text x="1033" y="118" font-size="15" fill="#5a5a63">длительность / флюенс / пик. мощность</text>
+          <line x1="1174" y1="106" x2="1228" y2="106" stroke="#5e5ce6" stroke-width="3" marker-end="url(#arrLogic)"/>
+          <rect x="1234" y="70" width="156" height="72" rx="14" fill="#eef4ff" stroke="#0a84ff" stroke-width="2.5"/><text x="1312" y="112" font-size="19" fill="#0a84ff" font-weight="700">смысл pico</text>
+        </g>
+      </svg>
+    </div>
+    <div class="ev-row" style="margin-top:10px;"><span class="ev proven">Крупные дробятся лучше мелких</span><span class="ev hyp">«Здесь появляется смысл pico» — наша интерпретация</span></div>
+  </div>
+</section>
+
+<!-- ========== 46F. AHN — пространственное распределение / последовательность ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Ahn et al., 2017 · фантом, 1064&nbsp;нм</div>
+    <h2 class="section">Повторные проходы: мельче и дальше от центра.</h2>
+    <p class="lead">После одного импульса и nano, и pico дают крупные фрагменты. После повторных воздействий крупные фрагменты становятся мельче и распределяются к границам зон повреждения.</p>
+    <div class="grid-3" style="margin-top:10px;">
+      <div class="stat-card" style="border-top:5px solid var(--blue);"><div style="font-size:clamp(19px,1.45vw,26px);font-weight:700;color:var(--blue);">Pico — равномернее</div><div class="stat-label">фрагменты распределены более однородно; разрушение центрального пигмента выраженнее</div></div>
+      <div class="stat-card" style="border-top:5px solid var(--green);"><div style="font-size:clamp(19px,1.45vw,26px);font-weight:700;color:#0f8a3a;">Nano&nbsp;→&nbsp;Pico</div><div class="stat-label">дополнительное разрушение заметнее, чем при Nano&nbsp;→&nbsp;Nano</div></div>
+      <div class="stat-card" style="border-top:5px solid var(--purple);"><div style="font-size:clamp(19px,1.45vw,26px);font-weight:700;color:var(--purple);">Pico&nbsp;→&nbsp;Pico</div><div class="stat-label">наибольшее разрушение и дисперсия центрального пигмента среди всех комбинаций</div></div>
+    </div>
+    <div class="card" style="border-left:5px solid var(--ink-light);margin-top:12px;">
+      <p style="margin:0;font-size:clamp(18px,1.35vw,24px);color:var(--ink-soft);line-height:1.4;">Это tissue-mimicking фантом, а не клиническое исследование пациентов — сильный экспериментальный аргумент, но не клиническое доказательство.</p>
+    </div>
+    <div class="cite-row" style="margin-top:10px;"><span class="src-chip">Ahn K.J. et al. · Scientific Reports 7:1533, 2017</span></div>
+  </div>
+</section>
+
+<!-- ========== 46G. AHN — однородность + кавитация → frosting ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Ahn et al., 2017 · характер разрушения</div>
+    <h2 class="section">Pico — более однородное разрушение.</h2>
+    <div class="illus" style="margin-top:4px;">
+      <svg viewBox="0 0 1360 320" xmlns="http://www.w3.org/2000/svg">
+        <defs><marker id="arrEven" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#86868b"/></marker></defs>
+        <!-- NANO row -->
+        <text x="70" y="90" font-size="20" font-weight="800" fill="#a55c00" font-family="-apple-system,Arial">NANO</text>
+        <rect x="150" y="40" width="150" height="90" rx="10" fill="#f5f5f7" stroke="#d2d2d7"/>
+        <circle cx="225" cy="85" r="34" fill="#1d1d1f"/>
+        <line x1="312" y1="85" x2="356" y2="85" stroke="#86868b" stroke-width="2.5" marker-end="url(#arrEven)"/>
+        <rect x="366" y="40" width="150" height="90" rx="10" fill="#f5f5f7" stroke="#d2d2d7"/>
+        <g fill="#1d1d1f"><circle cx="405" cy="70" r="16"/><circle cx="455" cy="95" r="20"/><circle cx="490" cy="60" r="10"/><circle cx="430" cy="110" r="9"/></g>
+        <line x1="528" y1="85" x2="572" y2="85" stroke="#86868b" stroke-width="2.5" marker-end="url(#arrEven)"/>
+        <rect x="582" y="40" width="150" height="90" rx="10" fill="#f5f5f7" stroke="#d2d2d7"/>
+        <g fill="#1d1d1f"><circle cx="615" cy="65" r="13"/><circle cx="670" cy="100" r="17"/><circle cx="705" cy="70" r="8"/></g>
+        <text x="820" y="80" font-size="19" fill="#a55c00" font-family="-apple-system,Arial" font-weight="600">неравномерно,</text>
+        <text x="820" y="106" font-size="19" fill="#a55c00" font-family="-apple-system,Arial" font-weight="600">пятнами (blotchy)</text>
+        <!-- PICO row -->
+        <text x="78" y="242" font-size="20" font-weight="800" fill="#0a84ff" font-family="-apple-system,Arial">PICO</text>
+        <rect x="150" y="192" width="150" height="90" rx="10" fill="#eef4ff" stroke="#bcd8ff"/>
+        <circle cx="225" cy="237" r="34" fill="#0a84ff"/>
+        <line x1="312" y1="237" x2="356" y2="237" stroke="#86868b" stroke-width="2.5" marker-end="url(#arrEven)"/>
+        <rect x="366" y="192" width="150" height="90" rx="10" fill="#eef4ff" stroke="#bcd8ff"/>
+        <g fill="#0a84ff"><circle cx="392" cy="212" r="5"/><circle cx="420" cy="232" r="5"/><circle cx="448" cy="212" r="5"/><circle cx="476" cy="232" r="5"/><circle cx="404" cy="258" r="5"/><circle cx="432" cy="212" r="5"/><circle cx="460" cy="258" r="5"/><circle cx="488" cy="256" r="5"/><circle cx="392" cy="236" r="5"/></g>
+        <line x1="528" y1="237" x2="572" y2="237" stroke="#86868b" stroke-width="2.5" marker-end="url(#arrEven)"/>
+        <rect x="582" y="192" width="150" height="90" rx="10" fill="#eef4ff" stroke="#bcd8ff"/>
+        <g fill="#0a84ff"><circle cx="608" cy="212" r="5"/><circle cx="636" cy="232" r="5"/><circle cx="664" cy="212" r="5"/><circle cx="692" cy="232" r="5"/><circle cx="620" cy="258" r="5"/><circle cx="648" cy="212" r="5"/><circle cx="676" cy="258" r="5"/><circle cx="704" cy="256" r="5"/><circle cx="708" cy="212" r="5"/></g>
+        <text x="820" y="232" font-size="19" fill="#0a84ff" font-family="-apple-system,Arial" font-weight="600">равномерно</text>
+        <text x="820" y="258" font-size="19" fill="#0a84ff" font-family="-apple-system,Arial" font-weight="600">по всей зоне</text>
+      </svg>
+    </div>
+    <div class="card" style="border-left:5px solid var(--blue);margin-top:6px;">
+      <p style="margin:0;font-size:clamp(18px,1.4vw,25px);line-height:1.4;">Кавитационные пузырьки заметнее после pico; число циклов расширения/коллапса выше, процесс длится сотни микросекунд — несколько миллисекунд. <b>Заиндевение (frosting) — визуальный маркер этих быстрых физических процессов, а не доказательство конкретной химической реакции.</b> Клиническое значение вакуолизации пока не определено.</p>
+    </div>
+    <span class="ev mech" style="margin-top:10px;">Механизм / эксперимент · фантом</span>
+  </div>
+</section>
+
+<!-- ========== 46H. JANG vs ROSS — частица vs оптика ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Две разные вещи — не смешиваем</div>
+    <h2 class="section">Что с частицей — и что с её оптикой.</h2>
+    <div class="grid-2" style="margin-top:10px;">
+      <div class="card" style="border-left:5px solid var(--purple);">
+        <div style="font-size:clamp(14px,1vw,18px);font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--purple);">Jang, 2017 — что с частицей?</div>
+        <div style="font-size:clamp(20px,1.5vw,27px);line-height:1.45;color:var(--ink-soft);margin-top:8px;">Расширение → внутренний стресс → полость / разрыв / фрагментация. Непосредственно наблюдали на TPM + FE-SEM.</div>
+        <span class="ev proven" style="margin-top:12px;align-self:flex-start;">Прямое наблюдение</span>
+      </div>
+      <div class="card" style="border-left:5px solid var(--orange);">
+        <div style="font-size:clamp(14px,1vw,18px);font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#a55c00;">Ross, 1998 — что с её оптикой?</div>
+        <div style="font-size:clamp(20px,1.5vw,27px);line-height:1.45;color:var(--ink-soft);margin-top:8px;">Изменение оптических свойств / оптической плотности пигмента после воздействия → татуировка выглядит светлее.</div>
+        <span class="ev mech" style="margin-top:12px;align-self:flex-start;">Механизм / обсуждалось у Ross</span>
+      </div>
+    </div>
+    <div class="card" style="border-left:5px solid var(--red);margin-top:12px;background:#fff5f4;">
+      <p style="margin:0;font-size:clamp(19px,1.45vw,26px);line-height:1.4;color:#b8163d;">Оптическое «исчезновение» пигмента <b>не приписываем</b> напрямую Jang&nbsp;2017 — для этого корректнее Ross&nbsp;1998.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 46I. СИНТЕЗ — что происходит с пигментом ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Синтез блока</div>
+    <h2 class="section">Что происходит с пигментом после лазера.</h2>
+    <div class="illus" style="margin-top:6px;">
+      <svg viewBox="0 0 1400 300" xmlns="http://www.w3.org/2000/svg">
+        <defs><marker id="arrSyn" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#86868b"/></marker></defs>
+        <g font-family="-apple-system,Arial" text-anchor="middle" font-weight="600" font-size="16">
+          <rect x="8" y="110" width="150" height="80" rx="12" fill="#f5f5f7" stroke="#d2d2d7"/><text x="83" y="146" fill="#1d1d1f">исходная</text><text x="83" y="168" fill="#1d1d1f">частица ●</text>
+          <line x1="160" y1="150" x2="196" y2="150" stroke="#86868b" stroke-width="2.5" marker-end="url(#arrSyn)"/>
+          <rect x="200" y="110" width="140" height="80" rx="12" fill="#ffeceb" stroke="#ff3b30"/><text x="270" y="156" fill="#b8163d">импульс</text>
+          <line x1="342" y1="150" x2="378" y2="150" stroke="#86868b" stroke-width="2.5" marker-end="url(#arrSyn)"/>
+          <rect x="382" y="110" width="170" height="80" rx="12" fill="#fff4e0" stroke="#ff9500"/><text x="467" y="146" fill="#a55c00">расширение +</text><text x="467" y="168" fill="#a55c00">внутр. стресс</text>
+          <line x1="554" y1="150" x2="590" y2="150" stroke="#86868b" stroke-width="2.5" marker-end="url(#arrSyn)"/>
+          <rect x="594" y="110" width="180" height="80" rx="12" fill="#fff4e0" stroke="#ff9500"/><text x="684" y="146" fill="#a55c00">полость / разрыв</text><text x="684" y="168" fill="#a55c00">фрагментация</text>
+          <line x1="776" y1="150" x2="812" y2="150" stroke="#86868b" stroke-width="2.5" marker-end="url(#arrSyn)"/>
+          <rect x="816" y="110" width="170" height="80" rx="12" fill="#f0eeff" stroke="#5e5ce6"/><text x="901" y="146" fill="#3a2f8f">изменение</text><text x="901" y="168" fill="#3a2f8f">распределения</text>
+          <line x1="988" y1="150" x2="1024" y2="150" stroke="#86868b" stroke-width="2.5" marker-end="url(#arrSyn)"/>
+          <rect x="1028" y="110" width="150" height="80" rx="12" fill="#f0eeff" stroke="#5e5ce6"/><text x="1103" y="146" fill="#3a2f8f">изменение</text><text x="1103" y="168" fill="#3a2f8f">оптики</text>
+          <line x1="1180" y1="150" x2="1216" y2="150" stroke="#86868b" stroke-width="2.5" marker-end="url(#arrSyn)"/>
+          <rect x="1220" y="100" width="172" height="100" rx="12" fill="#ecfbf1" stroke="#30a14e"/><text x="1306" y="138" fill="#0f8a3a">фагоцитоз +</text><text x="1306" y="160" fill="#0f8a3a">лимфа /</text><text x="1306" y="182" fill="#0f8a3a">клиренс</text>
+        </g>
+      </svg>
+    </div>
+    <div class="cite-row" style="margin-top:8px;"><span class="src-chip">Структурная часть (шаги 1–4) — прямое наблюдение Jang&nbsp;2017 (TPM + FE-SEM); оптика — Ross&nbsp;1998; клиренс — Nguyen&nbsp;2025</span></div>
+  </div>
+</section>
+
+<!-- ========== 46J. ПОЧЕМУ МЕНЯЕТСЯ ОПТИМАЛЬНЫЙ ЛАЗЕР ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Итог блока</div>
+    <h2 class="section">Почему оптимальный лазер может меняться по ходу курса.</h2>
+    <div class="card" style="border-left:5px solid var(--blue);margin-top:4px;">
+      <p style="margin:0;font-size:clamp(21px,1.6vw,29px);line-height:1.4;">Большой плотный агрегат ≠ мелкий фрагмент. <b>По ходу курса мишень физически меняется</b> — поэтому оптимальная стратегия может зависеть не только от цвета татуировки, но и от стадии деградации пигмента.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;margin-top:14px;">
+      <div class="card" style="border-left:5px solid var(--green);display:flex;gap:18px;align-items:center;">
+        <span class="ev proven" style="flex:none;">Доказано</span>
+        <div style="font-size:clamp(19px,1.45vw,26px);line-height:1.4;">Экспериментально: размер частицы влияет на эффективность фрагментации; pico при сопоставимой флюенс может давать бóльшую фрагментацию. <span class="src-chip">Jang, 2017</span></div>
+      </div>
+      <div class="card" style="border-left:5px solid var(--orange);display:flex;gap:18px;align-items:center;">
+        <span class="ev mech" style="flex:none;">Механизм</span>
+        <div style="font-size:clamp(19px,1.45vw,26px);line-height:1.4;">Механистически: pico даёт более выраженное и однородное разрушение с последующим перераспределением фрагментов. <span class="src-chip">Ahn, 2017</span></div>
+      </div>
+      <div class="card" style="border-left:5px solid var(--red);display:flex;gap:18px;align-items:center;">
+        <span class="ev hyp" style="flex:none;">Гипотеза</span>
+        <div style="font-size:clamp(19px,1.45vw,26px);line-height:1.4;">Наша клиническая: по ходу курса может меняться оптимальный режим и относительная ценность nano и pico. <span class="src-chip">© В. Микрюков, 2026</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 47. СТАДИЯ I ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Стадия I</div>
+    <h2 class="section">Плотный, насыщенный Carbon Black.</h2>
+    <p class="lead">Много пигмента, крупные агрегаты. Главная задача — сильно изменить и разрушить массив пигмента.</p>
+    <div class="grid-3" style="margin-top:10px;">
+      <div class="stat-card" style="border-top:5px solid var(--brown);"><div style="font-size:clamp(20px,1.5vw,27px);font-weight:700;">Быстрый нагрев</div><div class="stat-label">и образование парового пузыря</div></div>
+      <div class="stat-card" style="border-top:5px solid var(--brown);"><div style="font-size:clamp(20px,1.5vw,27px);font-weight:700;">Cavitation</div><div class="stat-label">механическое разрушение + steam–carbon реакция</div></div>
+      <div class="stat-card" style="border-top:5px solid var(--brown);"><div style="font-size:clamp(20px,1.5vw,27px);font-weight:700;">Изменение оптики</div><div class="stat-label">падение оптической плотности Carbon Black</div></div>
+    </div>
+    <span class="ev mech" style="margin-top:12px;">Механизм / эксперимент</span>
+  </div>
+</section>
+
+<!-- ========== 48. FROSTING КАК ENDPOINT ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Клиническая конечная точка</div>
+    <h2 class="section">Заиндевение (frosting) — это сигнал, а не «красиво побелело».</h2>
+    <p class="lead">Frosting — визуальное проявление образования газовых пузырьков в дерме, быстрого изменения локальной оптики и реакции пигмента; обычно быстро разрешается.</p>
+    <div class="card" style="border-left:5px solid var(--green);margin-top:12px;">
+      <p style="margin:0;font-size:clamp(20px,1.55vw,28px);line-height:1.45;">Современные протоколы QS-Nd:YAG: <b>самый широкий spot + минимальные настройки</b>, вызывающие немедленное побеление/frosting, затем корректировка по плотности пигмента и реакции.</p>
+    </div>
+    <div class="card" style="border-left:5px solid var(--blue);margin-top:12px;">
+      <p style="margin:0;font-size:clamp(21px,1.6vw,29px);line-height:1.4;">Философия: <b>не максимизировать энергию, а найти достаточную энергию для нужного endpoint.</b></p>
+    </div>
+    <span class="ev mech" style="margin-top:12px;">Механизм + клиническое наблюдение</span>
+  </div>
+</section>
+
+<!-- ========== 49. СТАДИЯ II ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Стадия II</div>
+    <h2 class="section">Пигмент уже значительно изменён.</h2>
+    <div class="illus" style="margin-top:6px;">
+      <svg viewBox="0 0 1360 240" xmlns="http://www.w3.org/2000/svg">
+        <defs><marker id="arrEvo" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#8b5a2b"/></marker></defs>
+        <g font-family="-apple-system,Arial" text-anchor="middle" font-size="19" fill="#5a3010" font-weight="600">
+          <rect x="20" y="90" width="230" height="70" rx="14" fill="#f2e6d8" stroke="#8b5a2b" stroke-width="2.5"/><text x="135" y="132">плотный Carbon Black</text>
+          <line x1="256" y1="125" x2="316" y2="125" stroke="#8b5a2b" stroke-width="3" marker-end="url(#arrEvo)"/>
+          <rect x="322" y="90" width="230" height="70" rx="14" fill="#f2e6d8" stroke="#8b5a2b" stroke-width="2.5"/><text x="437" y="132">изменённые агрегаты</text>
+          <line x1="558" y1="125" x2="618" y2="125" stroke="#8b5a2b" stroke-width="3" marker-end="url(#arrEvo)"/>
+          <rect x="624" y="90" width="210" height="70" rx="14" fill="#f2e6d8" stroke="#8b5a2b" stroke-width="2.5"/><text x="729" y="132">меньшие частицы</text>
+          <line x1="840" y1="125" x2="900" y2="125" stroke="#8b5a2b" stroke-width="3" marker-end="url(#arrEvo)"/>
+          <rect x="906" y="90" width="230" height="70" rx="14" fill="#f2e6d8" stroke="#8b5a2b" stroke-width="2.5"/><text x="1021" y="122">меньше оптич.</text><text x="1021" y="146">плотность</text>
+          <line x1="1142" y1="125" x2="1202" y2="125" stroke="#8b5a2b" stroke-width="3" marker-end="url(#arrEvo)"/>
+          <rect x="1208" y="90" width="130" height="70" rx="14" fill="#ffe9ec" stroke="#ff3b30" stroke-width="2.5"/><text x="1273" y="122" fill="#b8163d">слабее</text><text x="1273" y="146" fill="#b8163d">frosting</text>
+        </g>
+      </svg>
+    </div>
+    <div class="card" style="border-left:5px solid var(--blue);margin-top:10px;">
+      <p style="margin:0;font-size:clamp(20px,1.55vw,28px);line-height:1.4;">Здесь возрастает роль <b>пиковой мощности и фотоакустического эффекта</b> — pico даёт очень высокую пиковую мощность при значительно меньшей общей флюенс.</p>
+    </div>
+    <span class="ev mech" style="margin-top:10px;">Механизм / физическая модель</span>
+  </div>
+</section>
+
+<!-- ========== 50. КОНЦЕПЦИЯ NANO → PICO ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Авторская концепция</div>
+    <h2 class="section">Nano → Pico по мере эволюции мишени.</h2>
+    <div class="grid-3" style="margin-top:12px;">
+      <div class="stat-card" style="border-top:5px solid var(--brown);"><div style="font-size:clamp(14px,1vw,18px);font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#8b5a2b;">Ранний этап</div><div style="font-size:clamp(21px,1.6vw,29px);font-weight:700;margin-top:6px;">Плотный пигмент</div><div class="stat-label">эффективно изменить массив при контролируемой реакции кожи</div></div>
+      <div class="stat-card" style="border-top:5px solid var(--orange);"><div style="font-size:clamp(14px,1vw,18px);font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#a55c00;">Средний этап</div><div style="font-size:clamp(21px,1.6vw,29px);font-weight:700;margin-top:6px;">Пигмент менее плотный</div><div class="stat-label">фрагментация оставшихся агрегатов</div></div>
+      <div class="stat-card" style="border-top:5px solid var(--blue);"><div style="font-size:clamp(14px,1vw,18px);font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);">Поздний этап</div><div style="font-size:clamp(21px,1.6vw,29px);font-weight:700;margin-top:6px;">Мелкие частицы</div><div class="stat-label">не наращивать энергию: pico + интервал + время иммунной системе</div></div>
+    </div>
+    <div class="card" style="border-left:5px solid var(--purple);margin-top:12px;">
+      <p style="margin:0;font-size:clamp(19px,1.45vw,26px);line-height:1.45;">В обзоре Wong есть данные по комбинированному использованию <b>2&nbsp;нс + 750&nbsp;пс</b>, где среднее число процедур было меньше, чем при традиционном QS-подходе.</p>
+    </div>
+    <span class="ev hyp" style="margin-top:10px;">Клиническая гипотеза · требует прямого сравнения</span>
+  </div>
+</section>
+
+<!-- ========== 51. PICO ОПАСНЕЕ ИЛИ БЕЗОПАСНЕЕ? ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Реакция кожи</div>
+    <h2 class="section">Pico опаснее или безопаснее? — Неоднозначно.</h2>
+    <div class="grid-2" style="margin-top:10px;">
+      <div class="card" style="border-left:5px solid var(--green);">
+        <div style="font-size:clamp(20px,1.5vw,27px);line-height:1.5;color:var(--ink-soft);">По обзору: нежелательные явления — преимущественно лёгкие/транзиторные; пигментные — самые частые; стойкое рубцевание редко. Pico часто даёт <b>меньше боли и лучшую переносимость</b>.</div>
+      </div>
+      <div class="card" style="border-left:5px solid var(--red);">
+        <div style="font-size:clamp(20px,1.5vw,27px);line-height:1.5;color:var(--ink-soft);">Оборотная сторона (Hur): 450&nbsp;пс + маленький spot + 3–5&nbsp;Дж/см² + многократное ежемесячное воздействие → <b>тяжёлая хроническая травма кожи</b>.</div>
+      </div>
+    </div>
+    <div class="card" style="border-left:5px solid var(--blue);margin-top:12px;">
+      <p style="margin:0;font-size:clamp(21px,1.6vw,29px);line-height:1.4;">Pico сам по себе <b>не является причиной меньших осложнений</b>. Критична доза на ткань и конечная реакция.</p>
+    </div>
+    <div class="ev-row" style="margin-top:12px;"><span class="ev proven">Переносимость — доказана</span><span class="ev hyp">«Pico безопаснее» — неверная генерализация</span></div>
+  </div>
+</section>
+
+<!-- ========== 52. КОГДА ПЕРЕХОДИТЬ nano → pico ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Клиническое решение</div>
+    <h2 class="section">Когда оставаться на nano, когда — pico.</h2>
+    <div class="grid-2" style="margin-top:10px;">
+      <div class="card" style="border-left:5px solid var(--green);">
+        <div style="font-size:clamp(22px,1.7vw,30px);font-weight:700;color:#0f8a3a;">Оставаться на nano, если</div>
+        <ul style="margin:8px 0 0 22px;font-size:clamp(19px,1.45vw,26px);line-height:1.5;color:var(--ink-soft);">
+          <li>хороший клинический ответ</li>
+          <li>пигмент хорошо реагирует</li>
+          <li>нет избыточного повреждения ткани</li>
+          <li>улучшение стабильно от процедуры к процедуре</li>
+        </ul>
+      </div>
+      <div class="card" style="border-left:5px solid var(--blue);">
+        <div style="font-size:clamp(22px,1.7vw,30px);font-weight:700;color:var(--blue);">Рассматривать pico, если</div>
+        <ul style="margin:8px 0 0 22px;font-size:clamp(19px,1.45vw,26px);line-height:1.5;color:var(--ink-soft);">
+          <li>очищение замедляется, плато</li>
+          <li>остаётся плотный/резистентный пигмент</li>
+          <li>предполагается мелкая остаточная мишень</li>
+          <li>для nano приходится повышать флюенс, растёт риск</li>
+          <li>нужную фрагментацию можно получить при меньшей флюенс</li>
+        </ul>
+      </div>
+    </div>
+    <span class="ev hyp" style="margin-top:12px;">Согласуется с обзором: pico может снижать нагрузку курса, но superiority не доказана</span>
+  </div>
+</section>
+
+<!-- ========== 53. ГИПОТЕЗА ДЛЯ БУДУЩЕГО ИССЛЕДОВАНИЯ ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Проверяемая научная гипотеза</div>
+    <h2 class="section">Оптимальная длительность может зависеть от стадии.</h2>
+    <div class="card" style="border-left:5px solid var(--purple);margin-top:8px;">
+      <p style="margin:0;font-size:clamp(20px,1.55vw,28px);line-height:1.45;font-style:italic;">The optimal laser pulse duration may depend on the stage of tattoo pigment degradation rather than being constant throughout the treatment course.</p>
+    </div>
+    <div class="grid-2" style="margin-top:14px;">
+      <div class="card" style="border-left:5px solid var(--ink-light);"><div style="font-size:clamp(20px,1.5vw,27px);font-weight:700;">H₀</div><div style="font-size:clamp(19px,1.45vw,26px);color:var(--ink-soft);line-height:1.45;margin-top:6px;">Один тип лазера оптимален на всех стадиях.</div></div>
+      <div class="card" style="border-left:5px solid var(--green);"><div style="font-size:clamp(20px,1.5vw,27px);font-weight:700;">H₁</div><div style="font-size:clamp(19px,1.45vw,26px);color:var(--ink-soft);line-height:1.45;margin-top:6px;">QS-Nd:YAG → Pico-Nd:YAG даёт лучший баланс очищение / повреждение ткани, чем монотерапия pico или nano.</div></div>
+    </div>
+    <span class="ev hyp" style="margin-top:12px;">Клиническая гипотеза · © В. Микрюков, 2026</span>
+  </div>
+</section>
+
+<!-- ========== 54. КЛИНИЧЕСКИЙ АЛГОРИТМ (STEP 1–8) ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Практический алгоритм</div>
+    <h2 class="section">8 шагов у кресла.</h2>
+    <div class="ph" style="min-height:auto;padding:clamp(16px,1.6vw,26px);margin-bottom:6px;">
+      <div class="ph-t">🖼 Здесь позже соберём ветвящуюся SVG-схему (ромб-решения на шагах 6–8)</div>
+      <div class="ph-d">Пока — карточки-шаги ниже. Виталий: скажешь, где разветвлять и какие пороги подписать.</div>
+    </div>
+    <div class="grid-4">
+      <div class="stat-card" style="border-top:4px solid var(--blue);"><div style="font-size:clamp(18px,1.3vw,23px);font-weight:700;color:var(--blue);">1 · Оценка</div><div class="stat-label">цвет, плотность, глубина, проф/любит., фототип, прошлые процедуры</div></div>
+      <div class="stat-card" style="border-top:4px solid var(--blue);"><div style="font-size:clamp(18px,1.3vw,23px);font-weight:700;color:var(--blue);">2 · Тестовые вспышки</div><div class="stat-label">test spots перед основным воздействием</div></div>
+      <div class="stat-card" style="border-top:4px solid var(--blue);"><div style="font-size:clamp(18px,1.3vw,23px);font-weight:700;color:var(--blue);">3 · Подбор</div><div class="stat-label">длина волны + пятно + флюенс — по реакции, не по таблице «навсегда»</div></div>
+      <div class="stat-card" style="border-top:4px solid var(--green);"><div style="font-size:clamp(18px,1.3vw,23px);font-weight:700;color:#0f8a3a;">4 · Endpoint</div><div class="stat-label">достаточная реакция пигмента при сохранении кожи</div></div>
+      <div class="stat-card" style="border-top:4px solid var(--purple);"><div style="font-size:clamp(18px,1.3vw,23px);font-weight:700;color:var(--purple);">5 · Интервал</div><div class="stat-label">повтор через достаточный интервал, не механически каждый месяц</div></div>
+      <div class="stat-card" style="border-top:4px solid var(--green);"><div style="font-size:clamp(18px,1.3vw,23px);font-weight:700;color:#0f8a3a;">6 · Пигмент реагирует</div><div class="stat-label">плотный и хорошо отвечает → продолжаем текущую стратегию</div></div>
+      <div class="stat-card" style="border-top:4px solid var(--orange);"><div style="font-size:clamp(18px,1.3vw,23px);font-weight:700;color:#a55c00;">7 · Плато</div><div class="stat-label">мелкий/резистентный, ответ замедлился → pico / смена пятна / флюенс</div></div>
+      <div class="stat-card" style="border-top:4px solid var(--red);"><div style="font-size:clamp(18px,1.3vw,23px);font-weight:700;color:#b8163d;">8 · Реакции почти нет</div><div class="stat-label">не повышать энергию бесконечно — дать время иммунному очищению</div></div>
+    </div>
+    <span class="ev hyp" style="margin-top:10px;">Авторский клинический алгоритм · © В. Микрюков, 2026</span>
+  </div>
+</section>
+
+<!-- ========== 55. SECTION 08 — ИТОГИ ========== -->
+<section class="slide dark">
+  <div class="slide-inner section-title-block">
+    <div class="eyebrow">Часть VIII · итоги</div>
+    <div class="section-num green">08</div>
+    <h1 class="title">Что мы знаем<br>в 2026 году</h1>
+    <p class="lead big" style="margin:0 auto;text-align:center;">Отделяем доказанное от недоказанного.</p>
+  </div>
+</section>
+
+<!-- ========== 56. ДОКАЗАНО ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Доказано достаточно хорошо</div>
+    <h2 class="section">Пять устойчивых выводов.</h2>
+    <div class="key-findings" style="margin-top:10px;">
+      <div class="kf"><div class="kf-bullet green">1</div><div>Nd:YAG — один из основных лазеров для чёрных и синих татуировок.</div></div>
+      <div class="kf"><div class="kf-bullet green">2</div><div>1064&nbsp;нм особенно полезен для глубокого тёмного пигмента и более тёмных фототипов.</div></div>
+      <div class="kf"><div class="kf-bullet green">3</div><div>Pico часто позволяет добиться хорошей фрагментации при меньшей флюенс.</div></div>
+      <div class="kf"><div class="kf-bullet green">4</div><div>Pico часто лучше переносится.</div></div>
+      <div class="kf"><div class="kf-bullet green">5</div><div>После pico очищение продолжается значительно дольше, чем период видимого восстановления.</div></div>
+    </div>
+    <span class="ev proven" style="margin-top:10px;">Доказано исследованиями</span>
+  </div>
+</section>
+
+<!-- ========== 57. ПОКА НЕ ДОКАЗАНО ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Пока НЕ доказано</div>
+    <h2 class="section">Шесть вещей, которые нельзя утверждать.</h2>
+    <div class="key-findings" style="margin-top:8px;">
+      <div class="kf"><div class="kf-bullet red">1</div><div>Что pico всегда лучше nano.</div></div>
+      <div class="kf"><div class="kf-bullet red">2</div><div>Что всем пациентам нужно сразу начинать с pico.</div></div>
+      <div class="kf"><div class="kf-bullet red">3</div><div>Что короткий интервал между процедурами лучше длинного.</div></div>
+      <div class="kf"><div class="kf-bullet red">4</div><div>Что более высокая флюенс всегда означает лучшее очищение.</div></div>
+      <div class="kf"><div class="kf-bullet red">5</div><div>Что побеление должно быть максимально агрессивным.</div></div>
+      <div class="kf"><div class="kf-bullet red">6</div><div>Что 0,75&nbsp;Дж/см² / 7&nbsp;мм / 450&nbsp;пс — универсальный «золотой параметр».</div></div>
+    </div>
+    <div class="card" style="border-left:5px solid var(--red);margin-top:12px;background:#fff5f4;">
+      <p style="margin:0;font-size:clamp(19px,1.45vw,26px);line-height:1.4;color:#b8163d;">Последнее особенно важно: это одна большая ретроспективная серия, а не международный консенсус. Общая доказательность Nd:YAG-литературы в обзоре 2026 — low–very low.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 58. ТРИ РАБОТЫ → ТРИ ВЫВОДА ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Резюме</div>
+    <h2 class="section">Три работы — три вывода.</h2>
+    <div class="grid-3" style="margin-top:12px;">
+      <div class="stat-card" style="border-top:5px solid var(--blue);"><div style="font-size:clamp(13px,0.95vw,17px);font-weight:700;color:var(--blue);letter-spacing:.16em;text-transform:uppercase;">Wong · 2026</div><div style="font-size:clamp(20px,1.5vw,27px);line-height:1.4;margin-top:6px;">Pico перспективен, но универсального превосходства над nano нет.</div></div>
+      <div class="stat-card" style="border-top:5px solid var(--purple);"><div style="font-size:clamp(13px,0.95vw,17px);font-weight:700;color:var(--purple);letter-spacing:.16em;text-transform:uppercase;">Hur · 2026</div><div style="font-size:clamp(20px,1.5vw,27px);line-height:1.4;margin-top:6px;">Один и тот же 450&nbsp;пс — либо хорошее очищение с малым числом осложнений, либо почти гарантированная хроническая травма. Решает стратегия флюенс/пятно/endpoint.</div></div>
+      <div class="stat-card" style="border-top:5px solid var(--green);"><div style="font-size:clamp(13px,0.95vw,17px);font-weight:700;color:#0f8a3a;letter-spacing:.16em;text-transform:uppercase;">Nguyen · 2025</div><div style="font-size:clamp(20px,1.5vw,27px);line-height:1.4;margin-top:6px;">Лазер заканчивает работу за миллисекунды — организм работает с пигментом недели и месяцы.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 59. ГЛАВНАЯ ФРАЗА ЛЕКЦИИ ========== -->
+<section class="slide pink">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Главная мысль лекции</div>
+    <blockquote class="q" style="border-left:none;text-align:center;font-size:clamp(26px,3vw,44px);max-width:1600px;line-height:1.32;">
+      Пикосекундный Nd:YAG — это не просто «более мощный наносекундный лазер».<br><br>
+      Его преимущество — в возможности <b>изменить характер взаимодействия с пигментом</b>, особенно при меньшей флюенс. Но конечный результат определяет не длительность импульса сама по себе, а <b>сочетание длительности, флюенс, размера пятна, длины волны, числа воздействий</b> — и времени, которое нужно коже и иммунной системе, чтобы вывести уже фрагментированный пигмент.
+      <span class="src" style="margin-top:24px;">© В. Микрюков, 2026</span>
+    </blockquote>
+  </div>
+</section>
+
+<!-- ========== 60. ФИНАЛ ========== -->
+<section class="slide dark">
+  <div class="slide-inner" style="text-align:center;align-items:center;">
+    <div class="eyebrow">Клуб «Лазер Про»</div>
+    <h1 class="hero" style="font-size:clamp(44px,5vw,76px);">Стратегия важнее<br><b style="color:#a8d8ff;">выбора «лучшего лазера».</b></h1>
+    <p class="lead big" style="margin:22px auto 0;text-align:center;max-width:1400px;">Может быть, будущее — не в выборе лучшего лазера,<br>а в выборе правильной длительности импульса для конкретного этапа курса.</p>
+    <div class="pill-row" style="margin-top:30px;">
+      <span class="info-pill">Nano → Pico</span>
+      <span class="info-pill">Флюенс · пятно · endpoint</span>
+      <span class="info-pill">Время иммунному очищению</span>
+      <span class="info-pill">© Микрюков, 2026</span>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 61. ЛИТЕРАТУРА 1 ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Источники · блок 1 · три ключевые работы</div>
+    <h2 class="section">Основа лекции.</h2>
+    <div class="ref-grid" style="margin-top:8px;">
+      <div class="ref"><div><b>Wong et al., 2026</b> · Efficacy of Nd:YAG Lasers for Tattoo Removal: Systematic Review · J of Cosmetic Dermatology</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=Nd:YAG+tattoo+removal+systematic+review+2026">↗ PubMed</a></div>
+      <div class="ref"><div><b>Hur H. et al., 2026</b> · Unified Golden Parameter Therapy, high-fluence 1064-nm picosecond laser · Dermatologic Therapy 2026:6518041</div><a target="_blank" href="https://doi.org/10.1155/dth/6518041">↗ DOI</a></div>
+      <div class="ref"><div><b>Nguyen L. et al., 2025</b> · Intravital Visualization of Tattoo Particles After Picosecond Laser (MPT-FLIM) · Skin Res Technol 31:e70283</div><a target="_blank" href="https://doi.org/10.1111/srt.70283">↗ DOI</a></div>
+      <div class="ref"><div><b>Chen J. et al., 2026</b> · Q-Switched vs Picosecond 1064-nm Laser in Tattoo Removal · J Cosmetic Dermatology 25:e71098</div><a target="_blank" href="https://doi.org/10.1111/jocd.71098">↗ DOI</a></div>
+      <div class="ref"><div><b>Kono T. et al., 2020</b> · Picosecond vs nanosecond, multicolored professional tattoos</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=Kono+picosecond+nanosecond+tattoo+2020">↗ PubMed</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 62. ЛИТЕРАТУРА 2 ========== -->
+<section class="slide">
+  <div class="slide-inner">
+    <div class="eyebrow">Источники · блок 2 · частица, оптика, механистика</div>
+    <h2 class="section">Что происходит с частицей.</h2>
+    <div class="ref-grid" style="margin-top:8px;">
+      <div class="ref"><div><b>Jang W.H. et al., 2017</b> · Visualization of laser tattoo removal treatment effects in a mouse model by two-photon microscopy · Biomed Opt Express 8(8):3735</div><a target="_blank" href="https://doi.org/10.1364/BOE.8.003735">↗ DOI</a></div>
+      <div class="ref"><div><b>Ahn K.J. et al., 2017</b> · Pattern analysis of laser-tattoo interactions for ps- and ns-domain 1064-nm Nd:YAG in TM phantom · Sci Rep 7:1533</div><a target="_blank" href="https://doi.org/10.1038/s41598-017-01724-1">↗ DOI</a></div>
+      <div class="ref"><div><b>Ross V. et al., 1998</b> · 35 пс vs 10 нс, чёрные татуировки; изменение оптических свойств пигмента · Arch Dermatol 134(2):167</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=Ross+picosecond+nanosecond+tattoo+1998">↗ PubMed</a></div>
+      <div class="ref"><div><b>Bäumler W. et al., 2002</b> · пико- vs наносекундное удаление · Lasers Surg Med</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=Baumler+picosecond+tattoo+2002">↗ PubMed</a></div>
+      <div class="ref"><div><b>Pinto F. et al., 2016</b> · 450 пс vs 5 нс, 1064 нм, split-tattoo</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=Pinto+picosecond+nanosecond+tattoo+2016">↗ PubMed</a></div>
+      <div class="ref"><div><b>Ho / Diebold и соавт.</b> · паровой пузырь и steam–carbon reaction при лазерном нагреве Carbon Black</div><a target="_blank" href="https://scholar.google.com/scholar?q=carbon+black+laser+steam+carbon+reaction+vapor+bubble">↗ Scholar</a></div>
+      <div class="ref"><div><b>Kono T. et al., 2020</b> · пико- vs наносекундное удаление мультиколор-татуировок</div><a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/?term=Kono+picosecond+nanosecond+tattoo+2020">↗ PubMed</a></div>
+      <div class="ref"><div><b>CEDERMAN CLINIC</b> · Д. Цедерман · экспертная клиническая практика подбора лазера/параметров</div><a target="_blank" href="https://cederman.ru">↗ Сайт</a></div>
+    </div>
+    <div class="card" style="border-left:5px solid var(--ink-light);margin-top:12px;">
+      <p style="margin:0;font-size:clamp(16px,1.2vw,21px);color:var(--ink-soft);line-height:1.4;">Прямые DOI: Jang, Ahn, Hur, Nguyen, Chen. Только у Wong пока поиск PubMed — пришлёшь точный DOI/PMID, проставлю прямой.</p>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const progressFill = document.getElementById('progressFill');
+let idx = 0;
+const total = slides.length;
+
+function setSlide(i){
+  i = Math.max(0, Math.min(total-1, i));
+  slides[idx].classList.remove('active');
+  slides[i].classList.add('active');
+  idx = i;
+  progressFill.style.width = ((i+1)/total*100) + '%';
+  if(i === 0) location.hash = '';
+  else location.hash = '#s' + (i+1);
+}
+
+document.addEventListener('keydown', (e)=>{
+  if(e.target.classList && e.target.classList.contains('term')) return;
+  if(e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown'){ e.preventDefault(); setSlide(idx+1); }
+  else if(e.key === 'ArrowLeft' || e.key === 'PageUp'){ e.preventDefault(); setSlide(idx-1); }
+  else if(e.key === 'Home'){ e.preventDefault(); setSlide(0); }
+  else if(e.key === 'End'){ e.preventDefault(); setSlide(total-1); }
+});
+
+let lastWheel = 0;
+window.addEventListener('wheel', (e)=>{
+  const now = Date.now();
+  if(now - lastWheel < 700) return;
+  if(Math.abs(e.deltaY) < 30) return;
+  lastWheel = now;
+  if(e.deltaY > 0) setSlide(idx+1); else setSlide(idx-1);
+}, {passive:true});
+
+let touchY = null;
+window.addEventListener('touchstart', e=>{touchY = e.touches[0].clientY;}, {passive:true});
+window.addEventListener('touchend', e=>{
+  if(touchY === null) return;
+  const dy = e.changedTouches[0].clientY - touchY;
+  if(Math.abs(dy) > 50){ if(dy < 0) setSlide(idx+1); else setSlide(idx-1); }
+  touchY = null;
+}, {passive:true});
+
+if(location.hash && location.hash.startsWith('#s')){
+  const n = parseInt(location.hash.slice(2),10);
+  if(!isNaN(n)) setSlide(n-1);
+}
+
+// ANIMATED NETWORK BACKGROUND
+(function(){
+  const canvas = document.getElementById('bgNet');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const DPR = Math.max(1, window.devicePixelRatio || 1);
+  let W = 0, H = 0, nodes = [], t = 0;
+  const BAND_PCT = 0.18;
+  const MAX_DIST = 200;
+  const NODE_COLOR = '60, 130, 220';
+  const FREE_RATIO = 0.12;
+  function resize(){
+    W = window.innerWidth; H = window.innerHeight;
+    canvas.width = W*DPR; canvas.height = H*DPR;
+    canvas.style.width = W+'px'; canvas.style.height = H+'px';
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    initNodes();
+  }
+  function initNodes(){
+    const bandH = H*BAND_PCT;
+    const bandArea = W*bandH;
+    let perBand = Math.round(bandArea/4500);
+    perBand = Math.max(75, Math.min(170, perBand));
+    nodes = [];
+    const zones = [{yMin:0,yMax:bandH},{yMin:H-bandH,yMax:H}];
+    for(const z of zones){
+      for(let i=0;i<perBand;i++){
+        const isFree = Math.random()<FREE_RATIO;
+        const ampX = isFree?(4+Math.random()*6):(8+Math.random()*10);
+        const ampY = isFree?(3+Math.random()*5):(5+Math.random()*7);
+        nodes.push({
+          ax:Math.random()*W, ay:z.yMin+Math.random()*(z.yMax-z.yMin),
+          x:0, y:0, phaseX:Math.random()*Math.PI*2, phaseY:Math.random()*Math.PI*2,
+          freq:0.006+Math.random()*0.010, ampX, ampY, r:1.6+Math.random()*1.9,
+          isFree, vax: isFree?(Math.random()-0.5)*0.45:0, vay: isFree?(Math.random()-0.5)*0.08:0, zone:z
+        });
+      }
+    }
+  }
+  function bandAlpha(n){
+    const distFromOuter = (n.zone.yMin===0)?n.y/n.zone.yMax:(H-n.y)/(H-n.zone.yMin);
+    return Math.max(0.05, 1-distFromOuter);
+  }
+  function tick(){
+    t++;
+    ctx.clearRect(0,0,W,H);
+    for(const n of nodes){
+      if(n.isFree){
+        n.ax += n.vax; n.ay += n.vay;
+        if(n.ax<-20) n.ax = W+20; else if(n.ax>W+20) n.ax = -20;
+        if(n.ay<n.zone.yMin){n.ay=n.zone.yMin; n.vay=Math.abs(n.vay);}
+        if(n.ay>n.zone.yMax){n.ay=n.zone.yMax; n.vay=-Math.abs(n.vay);}
+      }
+      n.x = n.ax + Math.sin(t*n.freq+n.phaseX)*n.ampX;
+      n.y = n.ay + Math.cos(t*n.freq+n.phaseY)*n.ampY;
+    }
+    ctx.lineWidth = 0.8;
+    for(let i=0;i<nodes.length;i++){
+      const a = nodes[i]; const fadeA = bandAlpha(a);
+      for(let j=i+1;j<nodes.length;j++){
+        const b = nodes[j];
+        if(a.zone!==b.zone) continue;
+        const dx = a.x-b.x, dy = a.y-b.y; const d2 = dx*dx+dy*dy;
+        if(d2 < MAX_DIST*MAX_DIST){
+          const d = Math.sqrt(d2); const proximity = 1 - d/MAX_DIST;
+          const alpha = proximity*0.45*Math.min(fadeA, bandAlpha(b));
+          ctx.strokeStyle = 'rgba('+NODE_COLOR+','+alpha.toFixed(3)+')';
+          ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+        }
+      }
+    }
+    for(const n of nodes){
+      const fade = bandAlpha(n);
+      ctx.fillStyle = 'rgba('+NODE_COLOR+','+(0.88*fade).toFixed(3)+')';
+      ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = 'rgba('+NODE_COLOR+','+(0.22*fade).toFixed(3)+')';
+      ctx.beginPath(); ctx.arc(n.x, n.y, n.r*2.6, 0, Math.PI*2); ctx.fill();
+    }
+    requestAnimationFrame(tick);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  requestAnimationFrame(tick);
+})();
+</script>
+
+</body>
+</html>
