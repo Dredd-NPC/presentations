@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="ru"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow,noarchive"><meta name="googlebot" content="noindex,nofollow,noarchive">
+<title>Белый пигмент и «стареющая» кожа · Что происходит в зоне TiO₂</title>
+<style>
+  :root{
+    /* Apple-style palette, slightly brighter accents */
+    --bg:#fbfbfd; --ink:#1d1d1f; --ink-soft:#3a3a3f; --ink-light:#86868b;
+    --line:#d2d2d7;
+    --blue:#0a84ff; --blue-soft:#5ac8fa; --purple:#5e5ce6;
+    --pink:#ff2d55; --green:#30d158; --orange:#ff9500; --teal:#5ac8fa;
+    --red:#ff3b30; --cyan:#64d2ff;
+    --card:#ffffff;
+    --card-edge: rgba(0,0,0,0.05);
+    --shadow: 0 2px 12px rgba(0,0,0,0.04), 0 12px 40px rgba(0,0,0,0.06);
+    --radius: 22px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+    letter-spacing:-0.011em;
+  }
+
+  /* ANIMATED NETWORK BACKGROUND — concentrated top/bottom bands */
+  #bgNet{
+    position:fixed; top:0; left:0; width:100%; height:100%;
+    z-index:0; pointer-events:none;
+  }
+  .deck{ z-index: 1; position: relative; }
+  /* На цветных слайдах сетка слегка приглушена, чтобы не конкурировать с градиентом */
+  .slide.dark, .slide.blue, .slide.pink, .slide.red, .slide.green, .slide.amber{
+    z-index: 2; /* перекрывают canvas */
+  }
+
+  .deck{position:fixed;inset:0;}
+  .slide{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    /* Вертикальный padding уменьшен — больше места для контента, чтобы вмещался в окно.
+       Горизонтальный padding минимальный, чтобы блоки шли шире. */
+    padding: clamp(40px, 5vh, 80px) clamp(28px, 2.6vw, 60px);
+    opacity:0; transform:translateY(24px) scale(0.985);
+    transition: opacity .55s cubic-bezier(.2,.7,.2,1), transform .55s cubic-bezier(.2,.7,.2,1);
+    pointer-events:none; overflow:auto;
+  }
+  .slide.active{opacity:1;transform:none;pointer-events:auto;}
+  .slide-inner{
+    width:100%;
+    /* Заметно шире — выжимаем максимум из горизонтали, текст ложится более широкими строками,
+       значит вертикально занимает меньше места */
+    max-width: clamp(1200px, 95vw, 1920px);
+    margin:0 auto;
+    display:flex;flex-direction:column;
+    /* Меньше вертикальные промежутки между секциями */
+    gap: clamp(12px, 1.4vw, 22px);
+  }
+
+  /* TYPOGRAPHY — крупные адаптивные размеры для большого экрана в Zoom */
+  .eyebrow{ text-transform:uppercase;letter-spacing:.18em;
+    font-size: clamp(18px, 1.2vw, 22px); font-weight:600; color:var(--blue); }
+  h1.hero{
+    font-size: clamp(72px, 8.4vw, 144px);
+    line-height: .98; letter-spacing:-0.04em; font-weight:700;
+    background: linear-gradient(180deg,#1d1d1f 0%, #2a2a2e 60%, #6e6e73 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  h1.title{ font-size: clamp(52px, 6vw, 100px); line-height:1.04; letter-spacing:-0.025em; font-weight:700; color:var(--ink);}
+  h2.section{ font-size: clamp(44px, 4.6vw, 80px); line-height:1.08; letter-spacing:-0.02em; font-weight:700; color:var(--ink);}
+  .lead{
+    font-size: clamp(28px, 2.2vw, 42px);
+    line-height:1.45; color:var(--ink-soft); font-weight:400;
+    max-width: 1200px;
+  }
+  .lead.big{font-size: clamp(32px, 2.6vw, 48px); line-height:1.35;}
+  .small-meta{font-size:19px;color:var(--ink-light);}
+  p{font-size: clamp(22px, 1.5vw, 28px); line-height:1.55; color:var(--ink);}
+
+  /* TOOLTIP SYSTEM */
+  .term{
+    border-bottom: 1.5px dotted var(--blue);
+    cursor: help; position: relative;
+    font-weight: 600; color: var(--blue);
+    white-space: nowrap;
+  }
+  .term .tip{
+    position: absolute; bottom: calc(100% + 12px); left: 50%;
+    transform: translateX(-50%) translateY(6px);
+    background: rgba(20,20,22,0.96); color: #fff;
+    padding: 14px 18px; border-radius: 14px;
+    font-size: 16px; font-weight: 400; line-height: 1.5;
+    white-space: normal; width: 360px; max-width: 80vw;
+    text-align: left; letter-spacing: 0;
+    opacity: 0; pointer-events: none;
+    transition: opacity .18s ease, transform .18s ease;
+    z-index: 100;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  }
+  .term .tip::before{
+    content:''; position:absolute; top:100%; left:50%;
+    transform: translateX(-50%);
+    border: 7px solid transparent;
+    border-top-color: rgba(20,20,22,0.96);
+  }
+  .term .tip b{color:#a8d8ff;font-weight:600;}
+  .term:hover .tip, .term:focus .tip{
+    opacity: 1; transform: translateX(-50%) translateY(0);
+  }
+  .slide.dark .term, .slide.blue .term, .slide.pink .term, .slide.red .term{
+    color:#a8d8ff;border-bottom-color:#a8d8ff;
+  }
+  .slide.pink .term{color:#ffd0d8;border-bottom-color:#ffd0d8;}
+  .slide.red .term{color:#ffd0d8;border-bottom-color:#ffd0d8;}
+
+  /* Citation chip */
+  .cite{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:15px;font-weight:500;color:var(--blue);
+    background: rgba(0,113,227,0.08);
+    padding:8px 14px;border-radius:999px;
+    text-decoration:none;
+    transition: background .2s ease, transform .2s ease;
+    border:1px solid rgba(0,113,227,0.15);
+  }
+  .cite:hover{background:rgba(0,113,227,0.14); transform: translateY(-1px);}
+  .cite-row{display:flex;flex-wrap:wrap;gap:8px;}
+
+  /* Cards & Grids — Apple style. Padding ужат, чтобы карточки были не такими «жирными» по высоте */
+  .card{
+    background:var(--card); border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding: clamp(22px, 1.9vw, 34px);
+    border:1px solid var(--card-edge);
+    position:relative;
+  }
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap: clamp(18px, 1.4vw, 26px);}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap: clamp(16px, 1.2vw, 22px);}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap: clamp(14px, 1vw, 18px);}
+  @media (max-width: 900px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}}
+
+  .stat-card{
+    background:var(--card); border-radius:20px;
+    padding: clamp(20px, 1.7vw, 30px);
+    border:1px solid var(--card-edge);
+    display:flex;flex-direction:column;gap:8px;
+    transition: transform .25s ease, box-shadow .25s ease;
+  }
+  .stat-card:hover{transform:translateY(-3px); box-shadow:0 14px 36px rgba(0,0,0,0.08);}
+  .stat-num{
+    font-size: clamp(48px, 5.2vw, 84px);
+    font-weight:700; letter-spacing:-0.03em; line-height:1.05;
+    color: var(--blue);
+  }
+  .stat-num.blue{color:var(--blue);}
+  .stat-num.purple{color:var(--purple);}
+  .stat-num.pink{color:var(--pink);}
+  .stat-num.green{color:var(--green);}
+  .stat-num.orange{color:var(--orange);}
+  .stat-num.red{color:var(--red);}
+  .stat-label{font-size: clamp(20px, 1.4vw, 26px); color:var(--ink-soft); line-height:1.45;}
+  .stat-label-big{font-size: clamp(24px, 1.7vw, 32px); color:var(--ink); line-height:1.4; font-weight:500;}
+
+  .split{ display:grid; grid-template-columns: 1.05fr 0.95fr; gap: 36px; align-items:center; }
+  @media (max-width: 900px){.split{grid-template-columns:1fr;}}
+
+  .chart-wrap{
+    background:var(--card); border-radius:var(--radius); padding: 24px;
+    box-shadow:var(--shadow); border:1px solid rgba(0,0,0,0.04);
+  }
+  .chart-wrap canvas{max-height: 360px;}
+  .chart-title{font-size:15px;color:var(--ink-soft);text-align:center;margin-top:12px;line-height:1.45;}
+
+  /* Comparison table — bigger for back rows */
+  table.cmp{
+    width:100%;border-collapse:separate;border-spacing:0;
+    background:#fff;border-radius:var(--radius);overflow:hidden;
+    box-shadow:var(--shadow); border:1px solid rgba(0,0,0,0.04);
+  }
+  .cmp th, .cmp td{padding: clamp(18px, 1.4vw, 26px) clamp(20px, 1.6vw, 28px); text-align:left;
+    font-size: clamp(20px, 1.4vw, 26px); border-bottom:1px solid var(--line);}
+  .cmp th{background:#f5f5f7;font-weight:600;color:var(--ink);
+    font-size: clamp(19px, 1.3vw, 24px);}
+  .cmp tr:last-child td{border-bottom:none;}
+  .pill{ display:inline-block;padding:6px 14px;border-radius:999px;
+    font-size: clamp(15px, 1vw, 18px); font-weight:600;}
+  .pill.hi{background:rgba(48,209,88,.16);color:#0f8a3a;}
+  .pill.mid{background:rgba(255,159,10,.16);color:#a55c00;}
+  .pill.lo{background:rgba(255,55,95,.14);color:#b8163d;}
+  .pill.danger{background:rgba(215,0,21,.14);color:#a30010;}
+
+  .section-title-block{display:flex;flex-direction:column;align-items:center;gap:22px;text-align:center;}
+  .section-num{
+    font-size: clamp(140px, 17vw, 260px);
+    font-weight:800;letter-spacing:-0.06em;line-height:.9;
+    background: linear-gradient(180deg, var(--blue) 0%, var(--purple) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .section-num.pink{ background: linear-gradient(180deg, var(--pink) 0%, var(--orange) 100%); -webkit-background-clip:text;background-clip:text;color:transparent;}
+  .section-num.red{ background: linear-gradient(180deg, var(--red) 0%, var(--pink) 100%); -webkit-background-clip:text;background-clip:text;color:transparent;}
+  .section-num.green{ background: linear-gradient(180deg, var(--green) 0%, var(--cyan) 100%); -webkit-background-clip:text;background-clip:text;color:transparent;}
+  .section-num.orange{ background: linear-gradient(180deg, var(--orange) 0%, var(--pink) 100%); -webkit-background-clip:text;background-clip:text;color:transparent;}
+
+  .key-findings{display:flex;flex-direction:column;gap: clamp(10px, 0.9vw, 16px);}
+  .kf{display:flex;align-items:flex-start;gap:18px;
+    font-size: clamp(22px, 1.6vw, 30px); line-height:1.4;}
+  .kf-bullet{
+    flex-shrink:0;
+    width: clamp(34px, 2.4vw, 44px); height: clamp(34px, 2.4vw, 44px);
+    border-radius:50%;
+    background:linear-gradient(135deg,var(--blue),var(--purple));
+    color:#fff;display:flex;align-items:center;justify-content:center;
+    font-size: clamp(15px, 1.1vw, 19px); font-weight:700; margin-top:3px;
+  }
+  .kf-bullet.pink{background:linear-gradient(135deg,var(--pink),var(--orange));}
+  .kf-bullet.red{background:linear-gradient(135deg,var(--red),var(--pink));}
+  .kf-bullet.green{background:linear-gradient(135deg,var(--green),var(--cyan));}
+
+  /* Минимальная прогресс-полоска вверху — еле заметная, без текста */
+  .progress{position:fixed;top:0;left:0;right:0;height:2px;background:rgba(0,0,0,0.04);z-index:60;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--purple),var(--pink));width:0%;transition: width .4s cubic-bezier(.2,.7,.2,1);opacity:0.55;}
+
+  /* DARK / BLUE / PINK / RED slides — Apple style, brighter accents */
+  .slide.dark{background: radial-gradient(ellipse at 30% 20%, #1e1e22 0%, #000 70%);color:#fff;}
+  .slide.blue{background: linear-gradient(135deg, #0a1f5e 0%, #0050b8 50%, #0a84ff 100%);color:#fff;}
+  .slide.pink{background: linear-gradient(135deg, #5a0029 0%, #b8004a 50%, #ff2d55 100%);color:#fff;}
+  .slide.red{background: linear-gradient(135deg, #4a0008 0%, #a8000f 50%, #ff3b30 100%);color:#fff;}
+  .slide.green{background: linear-gradient(135deg, #003d1a 0%, #1c8a3a 50%, #30d158 100%);color:#fff;}
+  .slide.amber{background: linear-gradient(135deg, #4a2200 0%, #c87000 50%, #ff9500 100%);color:#fff;}
+
+  .slide.dark h1.hero,.slide.dark h1.title,.slide.dark h2.section,
+  .slide.blue h1.hero,.slide.blue h1.title,.slide.blue h2.section,
+  .slide.pink h1.hero,.slide.pink h1.title,.slide.pink h2.section,
+  .slide.red h1.hero,.slide.red h1.title,.slide.red h2.section,
+  .slide.green h1.hero,.slide.green h1.title,.slide.green h2.section,
+  .slide.amber h1.hero,.slide.amber h1.title,.slide.amber h2.section{
+    color:#fff !important;
+    background:none;-webkit-background-clip:initial;
+    -webkit-text-fill-color:#fff;
+  }
+  .slide.dark .lead{color:#d6d6da;}
+  .slide.blue .lead, .slide.pink .lead, .slide.red .lead, .slide.green .lead, .slide.amber .lead{color:rgba(255,255,255,0.92);}
+  .slide.dark .small-meta{color:#86868b;}
+  .slide.dark .eyebrow{color:var(--teal);}
+  .slide.blue .eyebrow{color:#a8d8ff;}
+  .slide.pink .eyebrow, .slide.red .eyebrow{color:#ffb3c4;}
+  .slide.green .eyebrow{color:#a8f0bd;}
+  .slide.amber .eyebrow{color:#ffd9a0;}
+
+  .slide.dark .card, .slide.blue .card, .slide.pink .card, .slide.red .card, .slide.green .card, .slide.amber .card,
+  .slide.dark .stat-card, .slide.blue .stat-card, .slide.pink .stat-card, .slide.red .stat-card, .slide.green .stat-card, .slide.amber .stat-card{
+    background: rgba(255,255,255,0.10);
+    border-color: rgba(255,255,255,0.18);
+    color:#fff;
+    box-shadow: 0 6px 22px rgba(0,0,0,0.18);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+  .slide.dark .stat-num, .slide.blue .stat-num, .slide.pink .stat-num, .slide.red .stat-num, .slide.green .stat-num, .slide.amber .stat-num{ color:#fff !important; }
+  .slide.dark .stat-label, .slide.blue .stat-label, .slide.pink .stat-label, .slide.red .stat-label, .slide.green .stat-label, .slide.amber .stat-label{ color:rgba(255,255,255,0.88); }
+  .slide.dark p, .slide.blue p, .slide.pink p, .slide.red p, .slide.green p, .slide.amber p { color: rgba(255,255,255,0.9); }
+
+  .slide.blue .cite, .slide.pink .cite, .slide.dark .cite, .slide.green .cite, .slide.red .cite, .slide.amber .cite{
+    background:rgba(255,255,255,0.16);color:#fff;border-color:rgba(255,255,255,0.24);
+  }
+
+  /* Blockquote — bigger */
+  blockquote.q{
+    font-size: clamp(28px, 2.6vw, 44px);
+    line-height:1.32; letter-spacing:-0.015em;
+    font-weight:500; color:var(--ink);
+    border-left: 5px solid var(--blue);
+    padding: 6px 0 6px 28px; max-width: 1200px;
+  }
+  blockquote.q.pink-q{border-left-color:var(--pink);}
+  blockquote.q .src{display:block;
+    font-size: clamp(18px, 1.2vw, 22px);
+    font-weight:500;color:var(--ink-light);margin-top:18px;letter-spacing:0;}
+  .slide.blue blockquote.q, .slide.pink blockquote.q, .slide.dark blockquote.q, .slide.green blockquote.q, .slide.red blockquote.q, .slide.amber blockquote.q{
+    color:#fff;border-left-color:rgba(255,255,255,0.8);
+  }
+  .slide.blue blockquote.q .src, .slide.pink blockquote.q .src, .slide.dark blockquote.q .src, .slide.red blockquote.q .src, .slide.amber blockquote.q .src{color:rgba(255,255,255,0.75);}
+
+  /* .hint и .kbd убраны — управление скрыто, навигация только с клавиатуры */
+
+  .pill-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;}
+  .info-pill{
+    background:#fff;border:1px solid var(--line);border-radius:999px;
+    padding: clamp(10px, 0.8vw, 14px) clamp(16px, 1.2vw, 22px);
+    font-size: clamp(17px, 1.2vw, 22px);
+    font-weight:500;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,0.02);
+  }
+  .info-pill.blue{background:rgba(0,113,227,0.08);color:var(--blue);border-color:rgba(0,113,227,0.2);}
+  .info-pill.pink{background:rgba(255,55,95,0.08);color:var(--pink);border-color:rgba(255,55,95,0.2);}
+  .info-pill.red{background:rgba(215,0,21,0.08);color:var(--red);border-color:rgba(215,0,21,0.2);}
+  .info-pill.green{background:rgba(48,209,88,0.12);color:var(--green);border-color:rgba(48,209,88,0.25);}
+  .info-pill.amber{background:rgba(255,159,10,0.12);color:#a55c00;border-color:rgba(255,159,10,0.25);}
+  .slide.dark .info-pill, .slide.blue .info-pill, .slide.pink .info-pill, .slide.red .info-pill, .slide.green .info-pill, .slide.amber .info-pill{
+    background:rgba(255,255,255,0.12);color:#fff;border-color:rgba(255,255,255,0.22);
+  }
+
+  .ref-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  @media (max-width: 900px){.ref-grid{grid-template-columns:1fr;}}
+  .ref{
+    background:#fff;border:1px solid var(--line);border-radius:14px;
+    padding:14px 18px;font-size:16px;line-height:1.45;
+    display:flex;justify-content:space-between;align-items:center;gap:14px;
+  }
+  .ref a{color:var(--blue);text-decoration:none;font-weight:500;font-size:15px;flex-shrink:0;}
+  .ref a:hover{text-decoration:underline;}
+
+  /* SVG illustration container */
+  .illus{
+    background:#fff; border-radius:var(--radius);
+    padding: clamp(24px, 2vw, 36px);
+    box-shadow:var(--shadow); border:1px solid rgba(0,0,0,0.04);
+    text-align:center;
+  }
+  .illus svg{max-width:100%;height:auto;display:block;margin:0 auto;}
+  .illus-caption{
+    font-size: clamp(18px, 1.3vw, 24px);
+    color:var(--ink-soft);margin-top:18px;line-height:1.5;
+  }
+
+  /* GLOSSARY card */
+  .glossary-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media (max-width: 900px){.glossary-grid{grid-template-columns:1fr;}}
+  .glossary-item{
+    background:#fff;border:1px solid var(--line);border-radius:14px;
+    padding:18px 22px;
+  }
+  .glossary-item .gh{display:flex;align-items:baseline;gap:10px;margin-bottom:6px;flex-wrap:wrap;}
+  .glossary-item .abbr{font-weight:700;font-size:22px;color:var(--blue);letter-spacing:-0.01em;}
+  .glossary-item .en{font-size:15px;color:var(--ink-light);font-weight:500;}
+  .glossary-item .ru-full{font-size:17px;color:var(--ink);font-weight:600;margin-bottom:6px;}
+  .glossary-item .desc{font-size:16px;color:var(--ink-soft);line-height:1.5;}
+
+  .slide.dark .glossary-item, .slide.blue .glossary-item, .slide.pink .glossary-item, .slide.green .glossary-item, .slide.red .glossary-item, .slide.amber .glossary-item{
+    background:rgba(255,255,255,0.10);border-color:rgba(255,255,255,0.18);
+  }
+  .slide.dark .glossary-item .abbr, .slide.blue .glossary-item .abbr, .slide.pink .glossary-item .abbr, .slide.green .glossary-item .abbr, .slide.red .glossary-item .abbr, .slide.amber .glossary-item .abbr{color:#fff;}
+  .slide.dark .glossary-item .ru-full, .slide.blue .glossary-item .ru-full, .slide.pink .glossary-item .ru-full, .slide.green .glossary-item .ru-full, .slide.red .glossary-item .ru-full, .slide.amber .glossary-item .ru-full{color:#fff;}
+  .slide.dark .glossary-item .desc, .slide.blue .glossary-item .desc, .slide.pink .glossary-item .desc, .slide.green .glossary-item .desc, .slide.red .glossary-item .desc, .slide.amber .glossary-item .desc{color:rgba(255,255,255,0.86);}
+  .slide.dark .glossary-item .en, .slide.blue .glossary-item .en, .slide.pink .glossary-item .en, .slide.green .glossary-item .en, .slide.red .glossary-item .en, .slide.amber .glossary-item .en{color:rgba(255,255,255,0.6);}
+
+  .formula{
+    font-size: clamp(28px, 3.5vw, 48px);
+    text-align:center; padding: 24px 0;
+    color:var(--ink); font-weight: 500;
+    letter-spacing:-0.01em;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-style: italic;
+  }
+  .slide.dark .formula, .slide.blue .formula, .slide.pink .formula, .slide.red .formula, .slide.green .formula, .slide.amber .formula{color:#fff;}
+  .formula .frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 6px;}
+  .formula .frac .num, .formula .frac .den{padding:4px 8px;}
+  .formula .frac .num{border-bottom: 2px solid currentColor;}
+
+  .slide::-webkit-scrollbar{width:0;}
+
+  /* ====== INFLAMMATION PULSING (3 levels of intensity) ====== */
+  /* Red — сильно и ярко · Amber — умеренно · Green — слабо */
+  @keyframes pulseStrong {
+    0%, 100% { transform: scale(1);    opacity: 1;    }
+    50%      { transform: scale(1.28); opacity: 0.45; }
+  }
+  @keyframes pulseMid {
+    0%, 100% { transform: scale(1);    opacity: 1;    }
+    50%      { transform: scale(1.18); opacity: 0.65; }
+  }
+  @keyframes pulseGentle {
+    0%, 100% { transform: scale(1);    opacity: 1;    }
+    50%      { transform: scale(1.10); opacity: 0.78; }
+  }
+  .halo-pulse-red,
+  .halo-pulse-amber,
+  .halo-pulse-green{
+    transform-box: fill-box;
+    transform-origin: center center;
+  }
+  .halo-pulse-red    { animation: pulseStrong 2.2s ease-in-out infinite; }
+  .halo-pulse-amber  { animation: pulseMid    3.0s ease-in-out infinite; }
+  .halo-pulse-green  { animation: pulseGentle 3.8s ease-in-out infinite; }
+  /* Lightweight stagger so the network breathes asynchronously */
+  .halo-pulse-red:nth-of-type(2n)   { animation-delay: 0.35s; }
+  .halo-pulse-red:nth-of-type(3n)   { animation-delay: 0.70s; }
+  .halo-pulse-red:nth-of-type(5n)   { animation-delay: 1.10s; }
+  .halo-pulse-amber:nth-of-type(2n) { animation-delay: 0.45s; }
+  .halo-pulse-amber:nth-of-type(3n) { animation-delay: 0.90s; }
+  .halo-pulse-green:nth-of-type(2n) { animation-delay: 0.55s; }
+  .halo-pulse-green:nth-of-type(3n) { animation-delay: 1.10s; }
+
+  /* === Laser beam pulse (slide 11 panel 2) === */
+  @keyframes beamPulse {
+    0%, 100% { opacity: 0.55; }
+    50%      { opacity: 1.00; }
+  }
+  .beam-pulse{
+    animation: beamPulse 0.9s ease-in-out infinite;
+  }
+
+  /* === Strong inflammation pulse for slide 11 panel 3 === */
+  @keyframes pulseInflammExtreme {
+    0%, 100% { transform: scale(1);    opacity: 1;    }
+    50%      { transform: scale(1.30); opacity: 0.45; }
+  }
+  .halo-pulse-extreme{
+    transform-box: fill-box;
+    transform-origin: center center;
+    animation: pulseInflammExtreme 1.8s ease-in-out infinite;
+  }
+  .halo-pulse-extreme:nth-of-type(2n){ animation-delay: 0.30s; }
+  .halo-pulse-extreme:nth-of-type(3n){ animation-delay: 0.60s; }
+  .halo-pulse-extreme:nth-of-type(5n){ animation-delay: 0.95s; }
+
+  /* === Vessel pulse (red, distressed) === */
+  @keyframes vesselPulse {
+    0%, 100% { opacity: 0.70; }
+    50%      { opacity: 1.00; }
+  }
+  .vessel-pulse{
+    animation: vesselPulse 1.6s ease-in-out infinite;
+  }
+
+  /* ====== MAGICAL FADE-IN ANIMATIONS for active slide ====== */
+  @keyframes magicalFadeIn{
+    0%   { opacity:0; transform: translateY(24px); filter: blur(3px); }
+    60%  { filter: blur(0); }
+    100% { opacity:1; transform: translateY(0); filter: blur(0); }
+  }
+  @keyframes goldShimmer{
+    0%, 100% { box-shadow: 0 0 0 0 rgba(200,155,60,0); }
+    50%      { box-shadow: 0 0 24px 4px rgba(200,155,60,0.18); }
+  }
+  /* Apply staggered reveal to cards / stat-cards / illus inside active slide */
+  .slide.active .stat-card,
+  .slide.active .card,
+  .slide.active .illus,
+  .slide.active blockquote.q,
+  .slide.active table.cmp,
+  .slide.active .ref{
+    animation: magicalFadeIn .8s cubic-bezier(.2,.7,.2,1) backwards;
+  }
+  .slide.active .grid-2 > *:nth-child(1),
+  .slide.active .grid-3 > *:nth-child(1),
+  .slide.active .grid-4 > *:nth-child(1){ animation-delay: .12s; }
+  .slide.active .grid-2 > *:nth-child(2),
+  .slide.active .grid-3 > *:nth-child(2),
+  .slide.active .grid-4 > *:nth-child(2){ animation-delay: .26s; }
+  .slide.active .grid-3 > *:nth-child(3),
+  .slide.active .grid-4 > *:nth-child(3){ animation-delay: .40s; }
+  .slide.active .grid-4 > *:nth-child(4){ animation-delay: .54s; }
+  .slide.active .key-findings .kf:nth-child(1){ animation: magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .12s; }
+  .slide.active .key-findings .kf:nth-child(2){ animation: magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .24s; }
+  .slide.active .key-findings .kf:nth-child(3){ animation: magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .36s; }
+  .slide.active .key-findings .kf:nth-child(4){ animation: magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .48s; }
+  .slide.active .key-findings .kf:nth-child(5){ animation: magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .60s; }
+
+  /* Photo frame — Apple-style clean square card with real photo */
+  .photo-frame{
+    aspect-ratio: 1 / 1;
+    background: linear-gradient(160deg, #f5f5f7 0%, #e8e8ed 100%);
+    border-radius: 22px;
+    border: 1px solid var(--card-edge);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    position: relative;
+    max-height: 62vh;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+  .photo-frame img.photo-img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+
+/*hypo*/
+
+  :root{
+    --bg:#fbfbfd; --ink:#1d1d1f; --ink-soft:#3a3a3f; --ink-light:#86868b;
+    --line:#d2d2d7;
+    --blue:#0a84ff; --pink:#ff2d55; --green:#30d158;
+    --orange:#ff9500; --red:#ff3b30; --purple:#5e5ce6;
+    --teal:#5ac8fa; --brown:#8b5a2b;
+    --card:#ffffff;
+    --card-edge: rgba(0,0,0,0.05);
+    --shadow: 0 2px 12px rgba(0,0,0,0.04), 0 12px 40px rgba(0,0,0,0.06);
+    --radius: 22px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;
+    background:var(--bg); color:var(--ink);
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+    letter-spacing:-0.011em;
+  }
+
+  /* Network canvas background */
+  #bgNet{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+  .deck{z-index:1;position:relative;}
+
+  .deck{position:fixed;inset:0;}
+  .slide{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding: clamp(22px, 3.2vh, 52px) clamp(28px, 2.6vw, 60px);
+    opacity:0; transform:translateY(24px) scale(0.985);
+    transition: opacity .55s cubic-bezier(.2,.7,.2,1), transform .55s cubic-bezier(.2,.7,.2,1);
+    pointer-events:none; overflow:auto;
+  }
+  .slide.active{opacity:1;transform:none;pointer-events:auto;}
+  .slide-inner{
+    width:100%;
+    max-width: clamp(1200px, 95vw, 1920px);
+    margin:0 auto;
+    display:flex;flex-direction:column;
+    gap: clamp(10px, 1.1vw, 18px);
+  }
+
+  /* TYPOGRAPHY */
+  .eyebrow{text-transform:uppercase;letter-spacing:.18em;font-size:clamp(18px,1.2vw,22px);font-weight:600;color:var(--blue);}
+  h1.hero{
+    font-size: clamp(72px, 8.4vw, 144px);
+    line-height:.98; letter-spacing:-0.04em; font-weight:700;
+    background: linear-gradient(180deg,#1d1d1f 0%, #2a2a2e 60%, #6e6e73 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  h1.title{font-size: clamp(52px, 6vw, 100px); line-height:1.04; letter-spacing:-0.025em; font-weight:700; color:var(--ink);}
+  h2.section{font-size: clamp(44px, 4.6vw, 80px); line-height:1.08; letter-spacing:-0.02em; font-weight:700; color:var(--ink);}
+  .lead{font-size: clamp(28px, 2.2vw, 42px); line-height:1.45; color:var(--ink-soft); font-weight:400; max-width:1280px;}
+  .lead.big{font-size: clamp(32px, 2.6vw, 48px); line-height:1.35;}
+  .small-meta{font-size:17px;color:var(--ink-light);}
+  p{font-size: clamp(22px, 1.5vw, 28px); line-height:1.55; color:var(--ink);}
+
+  /* TOOLTIP TERMS */
+  .term{
+    border-bottom:1.5px dotted var(--blue); cursor:help; position:relative;
+    font-weight:600; color:var(--blue); white-space:nowrap;
+  }
+  .term .tip{
+    position:absolute; bottom:calc(100% + 12px); left:50%;
+    transform:translateX(-50%) translateY(6px);
+    background:rgba(20,20,22,0.96); color:#fff;
+    padding:14px 18px; border-radius:14px;
+    font-size:16px; font-weight:400; line-height:1.5;
+    white-space:normal; width:360px; max-width:80vw;
+    text-align:left; letter-spacing:0;
+    opacity:0; pointer-events:none;
+    transition: opacity .18s ease, transform .18s ease;
+    z-index:100;
+    box-shadow:0 10px 30px rgba(0,0,0,0.25);
+  }
+  .term .tip::before{
+    content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%);
+    border:7px solid transparent; border-top-color: rgba(20,20,22,0.96);
+  }
+  .term .tip b{color:#a8d8ff;}
+  .term:hover .tip, .term:focus .tip{opacity:1; transform:translateX(-50%) translateY(0);}
+  .slide.dark .term, .slide.blue .term, .slide.pink .term, .slide.red .term, .slide.green .term, .slide.amber .term, .slide.brown .term, .slide.purple .term, .slide.teal .term{color:#cfe8ff; border-bottom-color:#cfe8ff;}
+
+  .cite{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:15px;font-weight:500;color:var(--blue);
+    background:rgba(10,132,255,0.08); padding:8px 14px; border-radius:999px;
+    text-decoration:none; transition:background .2s ease, transform .2s ease;
+    border:1px solid rgba(10,132,255,0.15);
+  }
+  .cite:hover{background:rgba(10,132,255,0.14); transform:translateY(-1px);}
+  .cite-row{display:flex;flex-wrap:wrap;gap:8px;}
+
+  /* Cards & grids */
+  .card{
+    background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow);
+    padding: clamp(22px, 1.9vw, 34px); border:1px solid var(--card-edge); position:relative;
+  }
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:clamp(18px,1.4vw,26px);}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,1.2vw,22px);}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(14px,1vw,18px);}
+  @media (max-width:900px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}}
+
+  .stat-card{
+    background:var(--card); border-radius:20px;
+    padding: clamp(20px,1.7vw,30px);
+    border:1px solid var(--card-edge);
+    display:flex;flex-direction:column;gap:8px;
+    transition: transform .25s ease, box-shadow .25s ease;
+    font-size:clamp(24px,1.9vw,33px); font-weight:700; color:var(--ink); line-height:1.2;
+  }
+  .stat-card:hover{transform:translateY(-3px); box-shadow:0 14px 36px rgba(0,0,0,0.08);}
+  .stat-card .sub{display:block;font-size:0.72em;font-weight:400;color:var(--ink-soft);line-height:1.35;margin-top:6px;}
+  .stat-card p{font-weight:400;}
+  .slide.dark .stat-card, .slide.blue .stat-card, .slide.pink .stat-card, .slide.red .stat-card, .slide.green .stat-card, .slide.amber .stat-card, .slide.brown .stat-card, .slide.purple .stat-card, .slide.teal .stat-card{color:#fff;}
+  .slide.dark .stat-card .sub, .slide.blue .stat-card .sub, .slide.pink .stat-card .sub, .slide.red .stat-card .sub, .slide.green .stat-card .sub, .slide.amber .stat-card .sub, .slide.brown .stat-card .sub, .slide.purple .stat-card .sub, .slide.teal .stat-card .sub{color:rgba(255,255,255,0.8);}
+  .stat-num{
+    font-size:clamp(48px,5.2vw,84px);
+    font-weight:700; letter-spacing:-0.03em; line-height:1.05; color:var(--blue);
+  }
+  .stat-num.blue{color:var(--blue);}
+  .stat-num.purple{color:var(--purple);}
+  .stat-num.pink{color:var(--pink);}
+  .stat-num.green{color:var(--green);}
+  .stat-num.orange{color:var(--orange);}
+  .stat-num.red{color:var(--red);}
+  .stat-num.brown{color:var(--brown);}
+  .stat-label{font-size:clamp(20px,1.4vw,26px); color:var(--ink-soft); line-height:1.45; font-weight:400;}
+  .stat-label-big{font-size:clamp(24px,1.7vw,32px); color:var(--ink); line-height:1.4; font-weight:500;}
+
+  .split{display:grid;grid-template-columns:1.05fr 0.95fr;gap:36px;align-items:center;}
+  @media (max-width:900px){.split{grid-template-columns:1fr;}}
+
+  .chart-wrap{
+    background:var(--card); border-radius:var(--radius); padding:24px;
+    box-shadow:var(--shadow); border:1px solid rgba(0,0,0,0.04);
+  }
+  .chart-wrap canvas{max-height:360px;}
+  .chart-title{font-size:15px;color:var(--ink-soft);text-align:center;margin-top:12px;line-height:1.45;}
+
+  /* Pills */
+  .pill-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;}
+  .info-pill{
+    background:#fff;border:1px solid var(--line);border-radius:999px;
+    padding:clamp(10px,0.8vw,14px) clamp(16px,1.2vw,22px);
+    font-size:clamp(17px,1.2vw,22px); font-weight:500; color:var(--ink);
+    box-shadow:0 1px 2px rgba(0,0,0,0.02);
+  }
+  .info-pill.blue{background:rgba(10,132,255,0.08);color:var(--blue);border-color:rgba(10,132,255,0.2);}
+  .info-pill.pink{background:rgba(255,45,85,0.08);color:var(--pink);border-color:rgba(255,45,85,0.2);}
+  .info-pill.red{background:rgba(255,59,48,0.08);color:var(--red);border-color:rgba(255,59,48,0.2);}
+  .info-pill.green{background:rgba(48,209,88,0.12);color:#0f8a3a;border-color:rgba(48,209,88,0.25);}
+  .info-pill.amber{background:rgba(255,149,0,0.12);color:#a55c00;border-color:rgba(255,149,0,0.25);}
+  .slide.dark .info-pill, .slide.blue .info-pill, .slide.pink .info-pill, .slide.red .info-pill, .slide.green .info-pill, .slide.amber .info-pill, .slide.brown .info-pill, .slide.purple .info-pill{
+    background:rgba(255,255,255,0.12);color:#fff;border-color:rgba(255,255,255,0.22);
+  }
+
+  /* Section dividers */
+  .section-title-block{display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;}
+  .section-num{
+    font-size:clamp(140px,17vw,260px);
+    font-weight:800;letter-spacing:-0.06em;line-height:.9;
+    background:linear-gradient(180deg, var(--blue) 0%, var(--purple) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .section-num.pink{background:linear-gradient(180deg, var(--pink) 0%, var(--orange) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .section-num.red{background:linear-gradient(180deg, var(--red) 0%, var(--pink) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .section-num.green{background:linear-gradient(180deg, var(--green) 0%, var(--teal) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .section-num.amber{background:linear-gradient(180deg, var(--orange) 0%, var(--pink) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .section-num.brown{background:linear-gradient(180deg, var(--brown) 0%, var(--red) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .section-num.teal{background:linear-gradient(180deg, var(--teal) 0%, var(--blue) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+
+  /* Slides with colored backgrounds */
+  .slide.dark{background: radial-gradient(ellipse at 30% 20%, #1e1e22 0%, #000 70%);color:#fff;}
+  .slide.blue{background: linear-gradient(135deg, #0a1f5e 0%, #0050b8 50%, #0a84ff 100%);color:#fff;}
+  .slide.pink{background: linear-gradient(135deg, #5a0029 0%, #b8004a 50%, #ff2d55 100%);color:#fff;}
+  .slide.red{background: linear-gradient(135deg, #4a0008 0%, #a8000f 50%, #ff3b30 100%);color:#fff;}
+  .slide.green{background: linear-gradient(135deg, #003d1a 0%, #1c8a3a 50%, #30d158 100%);color:#fff;}
+  .slide.amber{background: linear-gradient(135deg, #4a2200 0%, #c87000 50%, #ff9500 100%);color:#fff;}
+  .slide.brown{background: linear-gradient(135deg, #2a1a0a 0%, #5a3010 50%, #8b5a2b 100%);color:#fff;}
+  .slide.purple{background: linear-gradient(135deg, #241a5e 0%, #4340a8 50%, #5e5ce6 100%);color:#fff;}
+  .slide.teal{background: linear-gradient(135deg, #06364a 0%, #0a7aa8 50%, #5ac8fa 100%);color:#fff;}
+
+  .slide.dark h1.hero,.slide.dark h1.title,.slide.dark h2.section,
+  .slide.blue h1.hero,.slide.blue h1.title,.slide.blue h2.section,
+  .slide.pink h1.hero,.slide.pink h1.title,.slide.pink h2.section,
+  .slide.red h1.hero,.slide.red h1.title,.slide.red h2.section,
+  .slide.green h1.hero,.slide.green h1.title,.slide.green h2.section,
+  .slide.amber h1.hero,.slide.amber h1.title,.slide.amber h2.section,
+  .slide.brown h1.hero,.slide.brown h1.title,.slide.brown h2.section,
+  .slide.purple h1.hero,.slide.purple h1.title,.slide.purple h2.section,
+  .slide.teal h1.hero,.slide.teal h1.title,.slide.teal h2.section{
+    color:#fff !important; background:none;-webkit-background-clip:initial;-webkit-text-fill-color:#fff;
+  }
+  .slide.dark .lead{color:#d6d6da;}
+  .slide.blue .lead, .slide.pink .lead, .slide.red .lead, .slide.green .lead, .slide.amber .lead, .slide.brown .lead, .slide.purple .lead, .slide.teal .lead{color:rgba(255,255,255,0.92);}
+  .slide.dark .eyebrow{color:var(--teal);}
+  .slide.blue .eyebrow{color:#a8d8ff;}
+  .slide.pink .eyebrow, .slide.red .eyebrow{color:#ffb3c4;}
+  .slide.green .eyebrow{color:#a8f0bd;}
+  .slide.amber .eyebrow{color:#ffd9a0;}
+  .slide.brown .eyebrow{color:#ffd5a0;}
+  .slide.purple .eyebrow{color:#c9c7ff;}
+  .slide.teal .eyebrow{color:#bde8ff;}
+
+  .slide.dark .card, .slide.blue .card, .slide.pink .card, .slide.red .card, .slide.green .card, .slide.amber .card, .slide.brown .card, .slide.purple .card, .slide.teal .card,
+  .slide.dark .stat-card, .slide.blue .stat-card, .slide.pink .stat-card, .slide.red .stat-card, .slide.green .stat-card, .slide.amber .stat-card, .slide.brown .stat-card, .slide.purple .stat-card, .slide.teal .stat-card{
+    background:rgba(255,255,255,0.10); border-color:rgba(255,255,255,0.18); color:#fff;
+    box-shadow:0 6px 22px rgba(0,0,0,0.18);
+    backdrop-filter:blur(14px);
+  }
+  .slide.dark .stat-num, .slide.blue .stat-num, .slide.pink .stat-num, .slide.red .stat-num, .slide.green .stat-num, .slide.amber .stat-num, .slide.brown .stat-num, .slide.purple .stat-num, .slide.teal .stat-num{color:#fff !important;}
+  .slide.dark .stat-label, .slide.blue .stat-label, .slide.pink .stat-label, .slide.red .stat-label, .slide.green .stat-label, .slide.amber .stat-label, .slide.brown .stat-label, .slide.purple .stat-label, .slide.teal .stat-label{color:rgba(255,255,255,0.88);}
+  .slide.dark p, .slide.blue p, .slide.pink p, .slide.red p, .slide.green p, .slide.amber p, .slide.brown p, .slide.purple p, .slide.teal p{color:rgba(255,255,255,0.9);}
+
+  /* Tables */
+  table.cmp{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);border:1px solid rgba(0,0,0,0.04);}
+  .cmp th, .cmp td{padding:clamp(18px,1.4vw,26px) clamp(20px,1.6vw,28px);text-align:left;font-size:clamp(22px,1.65vw,30px);border-bottom:1px solid var(--line);line-height:1.4;color:var(--ink);}
+  .cmp th{background:#f5f5f7;font-weight:600;color:var(--ink);font-size:clamp(21px,1.5vw,28px);}
+  .cmp tr:last-child td{border-bottom:none;}
+  .pill{display:inline-block;padding:6px 14px;border-radius:999px;font-size:clamp(15px,1vw,18px);font-weight:600;}
+  .pill.hi{background:rgba(48,209,88,.16);color:#0f8a3a;}
+  .pill.mid{background:rgba(255,149,0,.16);color:#a55c00;}
+  .pill.lo{background:rgba(255,45,85,.14);color:#b8163d;}
+  .pill.danger{background:rgba(255,59,48,.16);color:#a30010;}
+
+  /* Key findings */
+  .key-findings{display:flex;flex-direction:column;gap:clamp(12px,1.1vw,20px);}
+  .kf{display:flex;align-items:flex-start;gap:20px;font-size:clamp(24px,1.85vw,34px);line-height:1.42;}
+  .kf-bullet{
+    flex-shrink:0;
+    width:clamp(34px,2.4vw,44px); height:clamp(34px,2.4vw,44px);
+    border-radius:50%;
+    background:linear-gradient(135deg, var(--blue), var(--purple));
+    color:#fff; display:flex; align-items:center; justify-content:center;
+    font-size:clamp(15px,1.1vw,19px); font-weight:700; margin-top:3px;
+  }
+  .kf-bullet.red{background:linear-gradient(135deg, var(--red), var(--pink));}
+  .kf-bullet.green{background:linear-gradient(135deg, var(--green), var(--teal));}
+  .kf-bullet.amber{background:linear-gradient(135deg, var(--orange), var(--pink));}
+  .kf-bullet.purple{background:linear-gradient(135deg, var(--purple), var(--blue));}
+  .key-findings.compact{gap:clamp(10px,0.9vw,16px);}
+  .key-findings.compact .kf{font-size:clamp(20px,1.55vw,30px);line-height:1.36;gap:16px;}
+  .key-findings.compact .kf-bullet{width:clamp(30px,2.1vw,40px);height:clamp(30px,2.1vw,40px);font-size:clamp(14px,1vw,18px);margin-top:2px;}
+  .slide.dark .kf, .slide.blue .kf, .slide.red .kf, .slide.pink .kf, .slide.green .kf, .slide.amber .kf, .slide.brown .kf, .slide.purple .kf, .slide.teal .kf{color:rgba(255,255,255,0.94);}
+
+  /* Illustration container */
+  .illus{
+    background:#fff; border-radius:var(--radius);
+    padding: clamp(24px,2vw,36px);
+    box-shadow:var(--shadow); border:1px solid rgba(0,0,0,0.04);
+    text-align:center;
+  }
+  .illus svg{max-width:100%;height:auto;display:block;margin:0 auto;}
+  .illus-caption{font-size:clamp(18px,1.3vw,24px);color:var(--ink-soft);margin-top:18px;line-height:1.5;}
+
+  /* Blockquote */
+  blockquote.q{
+    font-size:clamp(28px,2.6vw,44px); line-height:1.32; letter-spacing:-0.015em;
+    font-weight:500; color:var(--ink);
+    border-left:5px solid var(--blue);
+    padding:6px 0 6px 28px; max-width:1280px;
+  }
+  blockquote.q .src{display:block;font-size:clamp(18px,1.2vw,22px);font-weight:500;color:var(--ink-light);margin-top:18px;letter-spacing:0;}
+  .slide.dark blockquote.q, .slide.blue blockquote.q, .slide.pink blockquote.q, .slide.red blockquote.q, .slide.green blockquote.q, .slide.amber blockquote.q, .slide.brown blockquote.q, .slide.purple blockquote.q, .slide.teal blockquote.q{color:#fff;border-left-color:rgba(255,255,255,0.8);}
+  .slide.dark blockquote.q .src, .slide.blue blockquote.q .src, .slide.pink blockquote.q .src, .slide.red blockquote.q .src, .slide.purple blockquote.q .src, .slide.teal blockquote.q .src{color:rgba(255,255,255,0.75);}
+
+  /* Photo frame */
+  .photo-frame{
+    aspect-ratio:1/1; background:linear-gradient(160deg,#f5f5f7 0%,#e8e8ed 100%);
+    border-radius:22px; border:1px solid var(--card-edge); box-shadow:var(--shadow);
+    overflow:hidden; position:relative; max-height:62vh; max-width:100%; margin:0 auto;
+  }
+  .photo-frame img.photo-img{width:100%;height:100%;object-fit:cover;display:block;}
+
+  /* Photo placeholder (пока Виталий не прислал фото) */
+  .photo-ph{
+    border:2px dashed var(--line); border-radius:var(--radius);
+    background:repeating-linear-gradient(45deg,#f7f7f9,#f7f7f9 14px,#f1f1f4 14px,#f1f1f4 28px);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+    min-height:clamp(220px,30vh,420px); text-align:center; padding:24px; color:var(--ink-light);
+  }
+  .photo-ph .ph-ic{font-size:clamp(34px,3vw,52px);opacity:0.5;}
+  .photo-ph .ph-t{font-size:clamp(18px,1.3vw,24px);font-weight:600;color:var(--ink-soft);}
+  .photo-ph .ph-s{font-size:clamp(15px,1.05vw,19px);color:var(--ink-light);line-height:1.4;}
+  .slide.dark .photo-ph, .slide.red .photo-ph, .slide.blue .photo-ph, .slide.pink .photo-ph, .slide.brown .photo-ph, .slide.purple .photo-ph, .slide.teal .photo-ph, .slide.green .photo-ph, .slide.amber .photo-ph{
+    background:repeating-linear-gradient(45deg,rgba(255,255,255,0.06),rgba(255,255,255,0.06) 14px,rgba(255,255,255,0.02) 14px,rgba(255,255,255,0.02) 28px);
+    border-color:rgba(255,255,255,0.3);
+  }
+  .slide.dark .photo-ph .ph-t, .slide.red .photo-ph .ph-t, .slide.blue .photo-ph .ph-t, .slide.pink .photo-ph .ph-t, .slide.brown .photo-ph .ph-t, .slide.purple .photo-ph .ph-t, .slide.teal .photo-ph .ph-t{color:rgba(255,255,255,0.92);}
+
+  /* Photo grids for clinical examples */
+  .pgrid{display:grid;gap:clamp(14px,1.4vw,24px);width:100%;}
+  .pgrid.c2{grid-template-columns:1fr 1fr;}
+  .pgrid.c3{grid-template-columns:1fr 1fr 1fr;}
+  @media (max-width:900px){.pgrid.c2,.pgrid.c3{grid-template-columns:1fr;}}
+  .pcard{display:flex;flex-direction:column;gap:clamp(8px,0.7vw,12px);}
+  .pimg{width:100%;border-radius:16px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--card-edge);background:#eef0f2;}
+  .pimg img{width:100%;height:clamp(280px,40vh,500px);object-fit:cover;object-position:center 38%;display:block;}
+  .pimg.tall img{height:clamp(320px,52vh,620px);}
+  .pcap{font-size:clamp(15px,1.1vw,21px);color:var(--ink-soft);line-height:1.35;text-align:center;}
+  .pcap b{color:var(--ink);font-weight:700;}
+  .pcap .st{display:inline-block;font-size:0.82em;font-weight:800;letter-spacing:0.07em;text-transform:uppercase;color:var(--blue);}
+  .slide.dark .pcap,.slide.blue .pcap,.slide.red .pcap,.slide.green .pcap,.slide.amber .pcap,.slide.brown .pcap,.slide.purple .pcap,.slide.teal .pcap,.slide.pink .pcap{color:rgba(255,255,255,0.85);}
+  .slide.dark .pcap b,.slide.blue .pcap b,.slide.red .pcap b,.slide.green .pcap b,.slide.amber .pcap b,.slide.brown .pcap b,.slide.purple .pcap b,.slide.teal .pcap b,.slide.pink .pcap b{color:#fff;}
+  .slide.dark .pcap .st,.slide.blue .pcap .st,.slide.red .pcap .st,.slide.green .pcap .st,.slide.amber .pcap .st,.slide.brown .pcap .st,.slide.purple .pcap .st,.slide.teal .pcap .st{color:#bcdcff;}
+
+  /* ============ FORMULA / EQUATION COMPONENTS ============ */
+  .eqn{
+    background:var(--card); border-radius:18px; border:1px solid var(--card-edge);
+    box-shadow:var(--shadow);
+    padding: clamp(18px,1.6vw,30px) clamp(20px,1.8vw,34px);
+    display:flex; flex-direction:column; gap:12px; align-items:center;
+  }
+  .eqn.boxed{ border:2px solid rgba(10,132,255,.35); border-left:6px solid var(--blue); }
+  .eqn.amberbox{ border:2px solid rgba(255,149,0,.35); border-left:6px solid var(--orange); }
+  .eqn .expr{
+    font-family:Georgia,'Times New Roman',serif;
+    font-size:clamp(26px,2.4vw,44px); font-style:italic; color:var(--ink);
+    line-height:1.25; text-align:center; letter-spacing:-0.005em;
+    display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:.12em .3em;
+  }
+  .eqn .expr b{ font-style:normal; font-weight:700; }
+  .eqn .expr sub{ font-size:.62em; font-style:normal; }
+  .eqn .op{ font-style:normal; color:var(--ink-light); font-weight:400; padding:0 .1em;}
+  .eqn .cap{
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",sans-serif;
+    font-style:normal; font-size:clamp(16px,1.15vw,22px); color:var(--ink-light);
+    text-align:center; line-height:1.45; max-width:1100px;
+  }
+  /* inline fraction */
+  .frac{ display:inline-flex; flex-direction:column; text-align:center; vertical-align:middle; margin:0 .18em; line-height:1.05;}
+  .frac .num{ border-bottom:2px solid currentColor; padding:0 .5em .08em; }
+  .frac .den{ padding:.08em .5em 0; }
+  /* colored terms inside formulas */
+  .t-blue{color:var(--blue);} .t-green{color:#1c9e46;} .t-orange{color:#c8770a;}
+  .t-red{color:var(--red);} .t-purple{color:var(--purple);} .t-brown{color:var(--brown);}
+  .t-teal{color:#0a8aa8;} .t-amber{color:#c8770a;}
+  /* dark-slide overrides for eqn */
+  .slide.dark .eqn, .slide.blue .eqn, .slide.pink .eqn, .slide.red .eqn, .slide.green .eqn, .slide.amber .eqn, .slide.brown .eqn, .slide.purple .eqn, .slide.teal .eqn{
+    background:rgba(255,255,255,0.10); border-color:rgba(255,255,255,0.20); backdrop-filter:blur(14px);
+  }
+  .slide.dark .eqn .expr, .slide.blue .eqn .expr, .slide.pink .eqn .expr, .slide.red .eqn .expr, .slide.green .eqn .expr, .slide.amber .eqn .expr, .slide.brown .eqn .expr, .slide.purple .eqn .expr, .slide.teal .eqn .expr{color:#fff;}
+  .slide.dark .eqn .cap, .slide.blue .eqn .cap, .slide.pink .eqn .cap, .slide.red .eqn .cap, .slide.green .eqn .cap, .slide.amber .eqn .cap, .slide.brown .eqn .cap, .slide.purple .eqn .cap, .slide.teal .eqn .cap{color:rgba(255,255,255,0.82);}
+  .slide.dark .eqn.boxed, .slide.blue .eqn.boxed, .slide.pink .eqn.boxed, .slide.red .eqn.boxed, .slide.green .eqn.boxed, .slide.amber .eqn.boxed, .slide.brown .eqn.boxed, .slide.purple .eqn.boxed, .slide.teal .eqn.boxed{border-left-color:rgba(255,255,255,0.85);}
+  .slide.dark .eqn.amberbox, .slide.blue .eqn.amberbox, .slide.pink .eqn.amberbox, .slide.red .eqn.amberbox, .slide.green .eqn.amberbox, .slide.amber .eqn.amberbox, .slide.brown .eqn.amberbox, .slide.purple .eqn.amberbox, .slide.teal .eqn.amberbox{border-left-color:rgba(255,255,255,0.85);}
+  /* Цветные термы формул — светлые варианты на ЛЮБОМ цветном фоне (контраст) */
+  .slide.dark .t-blue,.slide.blue .t-blue,.slide.pink .t-blue,.slide.red .t-blue,.slide.green .t-blue,.slide.amber .t-blue,.slide.brown .t-blue,.slide.purple .t-blue,.slide.teal .t-blue{color:#bcdcff;}
+  .slide.dark .t-green,.slide.blue .t-green,.slide.pink .t-green,.slide.red .t-green,.slide.green .t-green,.slide.amber .t-green,.slide.brown .t-green,.slide.purple .t-green,.slide.teal .t-green{color:#9df0ba;}
+  .slide.dark .t-orange,.slide.blue .t-orange,.slide.pink .t-orange,.slide.red .t-orange,.slide.green .t-orange,.slide.amber .t-orange,.slide.brown .t-orange,.slide.purple .t-orange,.slide.teal .t-orange,
+  .slide.dark .t-amber,.slide.blue .t-amber,.slide.pink .t-amber,.slide.red .t-amber,.slide.green .t-amber,.slide.amber .t-amber,.slide.brown .t-amber,.slide.purple .t-amber,.slide.teal .t-amber{color:#ffd69a;}
+  .slide.dark .t-red,.slide.blue .t-red,.slide.pink .t-red,.slide.red .t-red,.slide.green .t-red,.slide.amber .t-red,.slide.brown .t-red,.slide.purple .t-red,.slide.teal .t-red{color:#ffb3ab;}
+  .slide.dark .t-purple,.slide.blue .t-purple,.slide.pink .t-purple,.slide.red .t-purple,.slide.green .t-purple,.slide.amber .t-purple,.slide.brown .t-purple,.slide.purple .t-purple,.slide.teal .t-purple{color:#cfcdff;}
+  .slide.dark .t-teal,.slide.blue .t-teal,.slide.pink .t-teal,.slide.red .t-teal,.slide.green .t-teal,.slide.amber .t-teal,.slide.brown .t-teal,.slide.purple .t-teal,.slide.teal .t-teal{color:#bfe9ff;}
+  /* Оператор формулы — светло-серый на цветном фоне */
+  .slide.dark .eqn .op,.slide.blue .eqn .op,.slide.pink .eqn .op,.slide.red .eqn .op,.slide.green .eqn .op,.slide.amber .eqn .op,.slide.brown .eqn .op,.slide.purple .eqn .op,.slide.teal .eqn .op{color:rgba(255,255,255,0.72);}
+  /* Section-num на цветном фоне — светлый (а не в тон фону) */
+  .slide.blue .section-num,.slide.pink .section-num,.slide.red .section-num,.slide.green .section-num,.slide.amber .section-num,.slide.brown .section-num,.slide.purple .section-num,.slide.teal .section-num{background:linear-gradient(180deg,#ffffff 0%, rgba(255,255,255,0.55) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  /* kf-bullet на цветном фоне — белый кружок с тёмной цифрой (контраст) */
+  .slide.dark .kf-bullet,.slide.blue .kf-bullet,.slide.pink .kf-bullet,.slide.red .kf-bullet,.slide.green .kf-bullet,.slide.amber .kf-bullet,.slide.brown .kf-bullet,.slide.purple .kf-bullet,.slide.teal .kf-bullet{background:rgba(255,255,255,0.92)!important;color:#1d1d1f!important;}
+
+  /* ============ FLOW / PATHWAY (vertical text chain) ============ */
+  .flow{ display:flex; flex-direction:column; align-items:center; gap:0; }
+  .flow.horiz{ flex-direction:row; flex-wrap:wrap; justify-content:center; align-items:center; gap:0; }
+  .flow .node{
+    background:#fff; border:1px solid var(--card-edge); border-radius:14px;
+    padding:clamp(10px,0.9vw,16px) clamp(18px,1.5vw,28px);
+    font-size:clamp(21px,1.6vw,30px); font-weight:600; color:var(--ink);
+    box-shadow:var(--shadow); text-align:center; max-width:900px;
+  }
+  .flow .node .sub{display:block;font-size:.72em;font-weight:400;color:var(--ink-light);margin-top:2px;}
+  .flow .node.accent{border-color:rgba(10,132,255,.4);border-left:5px solid var(--blue);}
+  .flow .node.warn{border-color:rgba(255,149,0,.4);border-left:5px solid var(--orange);}
+  .flow .node.bad{border-color:rgba(255,59,48,.4);border-left:5px solid var(--red);}
+  .flow.tight .node{padding:clamp(6px,0.6vw,11px) clamp(16px,1.3vw,24px);font-size:clamp(17px,1.3vw,25px);}
+  .flow.tight .arrow{height:clamp(11px,1vw,17px);}
+  .flow .arrow{ width:2.5px; height:clamp(16px,1.5vw,26px); background:var(--blue); position:relative; flex:none;}
+  .flow .arrow::after{ content:''; position:absolute; bottom:-1px; left:50%; transform:translateX(-50%); border:6px solid transparent; border-top-color:var(--blue); }
+  .flow.horiz .arrow{ width:clamp(20px,1.8vw,34px); height:2.5px; }
+  .flow.horiz .arrow::after{ bottom:auto; top:50%; left:auto; right:-1px; transform:translateY(-50%); border-top-color:transparent; border-left-color:var(--blue); }
+  .flow .arrow.lbl{overflow:visible;}
+  .flow .arrow.lbl span{position:absolute;left:calc(100% + 8px);top:50%;transform:translateY(-50%);white-space:nowrap;font-size:clamp(14px,1vw,18px);font-weight:600;color:var(--ink-light);}
+  .slide.dark .flow .node, .slide.blue .flow .node, .slide.pink .flow .node, .slide.red .flow .node, .slide.green .flow .node, .slide.amber .flow .node, .slide.brown .flow .node, .slide.purple .flow .node, .slide.teal .flow .node{
+    background:rgba(255,255,255,0.12); color:#fff; border-color:rgba(255,255,255,0.22); backdrop-filter:blur(10px);
+  }
+  .slide.dark .flow .node .sub, .slide.blue .flow .node .sub, .slide.red .flow .node .sub, .slide.purple .flow .node .sub, .slide.teal .flow .node .sub{color:rgba(255,255,255,0.7);}
+
+  /* ============ PROGNOSIS BADGE ============ */
+  .prog{ display:inline-flex; align-items:center; gap:10px; padding:10px 20px; border-radius:999px; font-weight:700; font-size:clamp(17px,1.25vw,23px); }
+  .prog::before{content:'';width:12px;height:12px;border-radius:50%;background:currentColor;}
+  .prog.good{background:rgba(48,209,88,.14); color:#0f8a3a;}
+  .prog.mid{background:rgba(255,149,0,.16); color:#a55c00;}
+  .prog.bad{background:rgba(255,59,48,.14); color:#b8163d;}
+
+  /* ============ NUMBERED STEP LIST (do / dont) ============ */
+  .steps{display:flex;flex-direction:column;gap:clamp(10px,0.9vw,16px);}
+  .step{display:flex;align-items:flex-start;gap:18px;background:#fff;border:1px solid var(--card-edge);border-radius:16px;padding:clamp(14px,1.15vw,22px) clamp(18px,1.4vw,26px);box-shadow:var(--shadow);font-size:clamp(20px,1.5vw,28px);line-height:1.4;color:var(--ink);}
+  .step .n{flex:none;width:clamp(34px,2.4vw,44px);height:clamp(34px,2.4vw,44px);border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:clamp(16px,1.2vw,22px);}
+  .step.no .n{background:linear-gradient(135deg,var(--red),var(--pink));}
+  .step.no{border-color:rgba(255,59,48,0.2);}
+  .step .ic{flex:none;width:clamp(34px,2.4vw,44px);height:clamp(34px,2.4vw,44px);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:clamp(18px,1.4vw,24px);}
+  .step.no .ic{background:rgba(255,59,48,0.14);color:var(--red);}
+  .step.yes .ic{background:rgba(48,209,88,0.16);color:#0f8a3a;}
+  .slide.dark .step, .slide.blue .step, .slide.red .step, .slide.purple .step, .slide.teal .step, .slide.brown .step{background:rgba(255,255,255,0.10);color:#fff;border-color:rgba(255,255,255,0.18);backdrop-filter:blur(10px);}
+  .steps.compact{gap:clamp(8px,0.7vw,13px);}
+  .steps.compact .step{padding:clamp(10px,0.85vw,16px) clamp(16px,1.2vw,22px);font-size:clamp(18px,1.3vw,25px);}
+  .steps.compact .step .n,.steps.compact .step .ic{width:clamp(30px,2vw,38px);height:clamp(30px,2vw,38px);font-size:clamp(15px,1.05vw,19px);}
+
+  /* patient-speech card */
+  .speech{background:linear-gradient(135deg,#eef4ff 0%,#f5f0ff 100%);border:1px solid rgba(94,92,230,0.25);border-left:6px solid var(--purple);border-radius:20px;padding:clamp(24px,2.2vw,40px);font-size:clamp(24px,1.9vw,34px);line-height:1.5;color:var(--ink);font-style:italic;}
+  .speech b{color:var(--purple);font-style:normal;}
+
+  /* References */
+  .ref-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  @media (max-width:900px){.ref-grid{grid-template-columns:1fr;}}
+  .ref{
+    background:#fff;border:1px solid var(--line);border-radius:14px;
+    padding:14px 18px;font-size:16px;line-height:1.45;
+    display:flex;justify-content:space-between;align-items:center;gap:14px;
+  }
+  .ref a{color:var(--blue);text-decoration:none;font-weight:500;font-size:15px;flex-shrink:0;}
+  .ref a:hover{text-decoration:underline;}
+  .ref .lbl{color:var(--ink-light);font-size:13px;font-weight:600;flex-shrink:0;}
+
+  /* Progress bar */
+  .progress{position:fixed;top:0;left:0;right:0;height:2px;background:rgba(0,0,0,0.04);z-index:60;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--purple),var(--pink));width:0%;transition:width .4s cubic-bezier(.2,.7,.2,1);opacity:0.55;}
+
+  /* Animations */
+  @keyframes magicalFadeIn{
+    0%{opacity:0;transform:translateY(24px);filter:blur(3px);}
+    60%{filter:blur(0);}
+    100%{opacity:1;transform:translateY(0);filter:blur(0);}
+  }
+  .slide.active .stat-card,
+  .slide.active .card,
+  .slide.active .illus,
+  .slide.active blockquote.q,
+  .slide.active table.cmp,
+  .slide.active .ref,
+  .slide.active .eqn,
+  .slide.active .step,
+  .slide.active .speech,
+  .slide.active .chart-wrap{
+    animation: magicalFadeIn .8s cubic-bezier(.2,.7,.2,1) backwards;
+  }
+  .slide.active .grid-2 > *:nth-child(1),
+  .slide.active .grid-3 > *:nth-child(1),
+  .slide.active .grid-4 > *:nth-child(1){animation-delay:.12s;}
+  .slide.active .grid-2 > *:nth-child(2),
+  .slide.active .grid-3 > *:nth-child(2),
+  .slide.active .grid-4 > *:nth-child(2){animation-delay:.26s;}
+  .slide.active .grid-3 > *:nth-child(3),
+  .slide.active .grid-4 > *:nth-child(3){animation-delay:.40s;}
+  .slide.active .grid-4 > *:nth-child(4){animation-delay:.54s;}
+  .slide.active .steps .step:nth-child(1){animation-delay:.10s;}
+  .slide.active .steps .step:nth-child(2){animation-delay:.20s;}
+  .slide.active .steps .step:nth-child(3){animation-delay:.30s;}
+  .slide.active .steps .step:nth-child(4){animation-delay:.40s;}
+  .slide.active .steps .step:nth-child(5){animation-delay:.50s;}
+  .slide.active .steps .step:nth-child(6){animation-delay:.60s;}
+  .slide.active .steps .step:nth-child(7){animation-delay:.70s;}
+  .slide.active .steps .step:nth-child(8){animation-delay:.80s;}
+  .slide.active .key-findings .kf:nth-child(1){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .12s;}
+  .slide.active .key-findings .kf:nth-child(2){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .24s;}
+  .slide.active .key-findings .kf:nth-child(3){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .36s;}
+  .slide.active .key-findings .kf:nth-child(4){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .48s;}
+  .slide.active .key-findings .kf:nth-child(5){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .60s;}
+  .slide.active .key-findings .kf:nth-child(6){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .72s;}
+  .slide.active .key-findings .kf:nth-child(7){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .84s;}
+  .slide.active .key-findings .kf:nth-child(8){animation:magicalFadeIn .7s cubic-bezier(.2,.7,.2,1) backwards .96s;}
+
+  /* Inflammation pulse */
+  @keyframes pulseStrong { 0%,100%{transform:scale(1);opacity:1;} 50%{transform:scale(1.28);opacity:0.45;} }
+  @keyframes pulseMid    { 0%,100%{transform:scale(1);opacity:1;} 50%{transform:scale(1.18);opacity:0.65;} }
+  @keyframes pulseGentle { 0%,100%{transform:scale(1);opacity:1;} 50%{transform:scale(1.10);opacity:0.78;} }
+  .halo-pulse-red, .halo-pulse-amber, .halo-pulse-green, .halo-pulse-blue{
+    transform-box: fill-box; transform-origin: center center;
+  }
+  .halo-pulse-red    { animation: pulseStrong  2.2s ease-in-out infinite; }
+  .halo-pulse-amber  { animation: pulseMid     3.0s ease-in-out infinite; }
+  .halo-pulse-green  { animation: pulseGentle  3.8s ease-in-out infinite; }
+  .halo-pulse-blue   { animation: pulseMid     3.2s ease-in-out infinite; }
+  .halo-pulse-red:nth-of-type(2n){animation-delay:0.35s;}
+  .halo-pulse-red:nth-of-type(3n){animation-delay:0.70s;}
+
+  /* Melanocyte breathing */
+  @keyframes melaPulse {
+    0%,100% { transform: scale(1); }
+    50%     { transform: scale(1.08); filter: brightness(1.15); }
+  }
+  .melanocyte-active{
+    transform-box: fill-box; transform-origin: center center;
+    animation: melaPulse 2.6s ease-in-out infinite;
+  }
+
+  /* snowflake / cooling drift */
+  @keyframes coolDrift {
+    0%   { transform: translateY(-6px); opacity:0.35; }
+    50%  { transform: translateY(4px);  opacity:0.9; }
+    100% { transform: translateY(-6px); opacity:0.35; }
+  }
+  .cool-pulse{ transform-box: fill-box; transform-origin:center; animation: coolDrift 3s ease-in-out infinite; }
+  .cool-pulse:nth-of-type(2n){animation-delay:0.5s;}
+  .cool-pulse:nth-of-type(3n){animation-delay:1.0s;}
+
+  /* Cascade arrow flow */
+  @keyframes cascadeFlow {
+    0%   { opacity:0; transform:translateY(-8px); }
+    100% { opacity:1; transform:translateY(0); }
+  }
+  .cascade-step{ animation: cascadeFlow .6s ease-out backwards; }
+  .slide.active .cascade-step:nth-child(1){ animation-delay:.10s; }
+  .slide.active .cascade-step:nth-child(2){ animation-delay:.30s; }
+  .slide.active .cascade-step:nth-child(3){ animation-delay:.50s; }
+  .slide.active .cascade-step:nth-child(4){ animation-delay:.70s; }
+  .slide.active .cascade-step:nth-child(5){ animation-delay:.90s; }
+  .slide.active .cascade-step:nth-child(6){ animation-delay:1.10s; }
+  .slide.active .cascade-step:nth-child(7){ animation-delay:1.30s; }
+  .slide.active .cascade-step:nth-child(8){ animation-delay:1.50s; }
+
+  /* flow node stagger */
+  .slide.active .flow > *{animation:cascadeFlow .5s ease-out backwards;}
+  .slide.active .flow > *:nth-child(2){animation-delay:.10s;}
+  .slide.active .flow > *:nth-child(3){animation-delay:.20s;}
+  .slide.active .flow > *:nth-child(4){animation-delay:.30s;}
+  .slide.active .flow > *:nth-child(5){animation-delay:.40s;}
+  .slide.active .flow > *:nth-child(6){animation-delay:.50s;}
+  .slide.active .flow > *:nth-child(7){animation-delay:.60s;}
+  .slide.active .flow > *:nth-child(8){animation-delay:.70s;}
+  .slide.active .flow > *:nth-child(9){animation-delay:.80s;}
+  .slide.active .flow > *:nth-child(10){animation-delay:.90s;}
+  .slide.active .flow > *:nth-child(11){animation-delay:1.0s;}
+  .slide.active .flow > *:nth-child(12){animation-delay:1.1s;}
+  .slide.active .flow > *:nth-child(13){animation-delay:1.2s;}
+
+  /* Risk gauge bar */
+  @keyframes barFill {
+    0% { width: 0%; }
+    100% { width: var(--bar-width, 100%); }
+  }
+  .risk-bar{
+    height: clamp(28px, 2vw, 38px);
+    border-radius: 999px; overflow:hidden;
+    background:rgba(0,0,0,0.05); position:relative;
+  }
+  .risk-bar-fill{
+    height: 100%; border-radius: 999px;
+    animation: barFill 1.6s cubic-bezier(.2,.7,.2,1) backwards;
+    animation-delay: 0.3s;
+  }
+
+  .slide::-webkit-scrollbar{width:0;}
+</style>
+</head><body>
+<canvas id="bgNet" aria-hidden="true"></canvas>
+<div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+<div class="deck" id="deck">
+<section class="slide dark active"><div class="slide-inner" style="text-align:center;align-items:center;"><div class="eyebrow">Клуб «ЛазерПРО» · кейс-разбор для специалистов</div><h1 class="hero">Белый пигмент и «стареющая» кожа</h1><p class="lead big" style="margin:10px auto 0;text-align:center;max-width:1400px;">Что происходит с кожей в зоне диоксида титана (TiO₂)? Разбираем клинический случай и строим <b>доказательную гипотезу</b> — от фотографии к механизму.</p><div class="pill-row" style="margin-top:24px;"><span class="info-pill">Химия и фотохимия TiO₂</span><span class="info-pill">ROS · окислительный стресс</span><span class="info-pill">Очаговый эластоз</span><span class="info-pill">Алгоритм специалиста</span></div></div></section>
+<section class="slide"><div class="slide-inner"><div class="eyebrow">Почему этот кейс</div><div class="split" style="grid-template-columns:1fr 1fr;align-items:center;"><div style="background:#fff;border-radius:20px;border:1px solid var(--card-edge);box-shadow:var(--shadow);padding:clamp(10px,0.9vw,16px);"><img src="case_tio2.jpg" alt="Яркая фотография: цветная тату на предплечье с выраженным изменением рельефа кожи над пастельными зонами" style="width:100%;height:auto;display:block;border-radius:10px;max-height:66vh;object-fit:contain;"><div style="margin-top:8px;text-align:center;font-size:clamp(14px,1vw,18px);color:var(--ink-light);font-style:italic;">Та самая фотография, с которой всё началось</div></div><div style="display:flex;flex-direction:column;gap:13px;justify-content:center;"><div class="card" style="border-left:5px solid var(--blue);"><p style="margin:0;font-size:clamp(19px,1.45vw,27px);line-height:1.42;">Эта фотография меня <b>зацепила</b>. Кожа над цветными участками выглядит заметно старше соседней — и граница этого изменения почти совпадает со светлым пигментом.</p></div><div class="card" style="border-left:5px solid var(--purple);"><p style="margin:0;font-size:clamp(19px,1.45vw,27px);line-height:1.42;">Она заставила меня <b>вернуться к исследованиям</b>, которые я когда-то смотрел: про диоксид титана, фототоксичность и судьбу пигмента в коже.</p></div><div class="card" style="border-left:5px solid var(--ink);"><p style="margin:0;font-size:clamp(19px,1.45vw,27px);line-height:1.42;">Сегодня я не дам вам готовый диагноз. Я покажу, <b>как я думаю</b> над таким случаем — и где заканчивается знание и начинается догадка.</p></div></div></div></div></section>
+<section class="slide"><div class="slide-inner"><div class="eyebrow">Шаг 1 · смотрим, не объясняем</div><h2 class="section">Что вы видите? Не что думаете — что объективно видите.</h2><div class="split" style="grid-template-columns:1fr 1fr;align-items:center;"><div style="background:#fff;border-radius:20px;border:1px solid var(--card-edge);box-shadow:var(--shadow);padding:clamp(10px,0.9vw,16px);"><img src="case_tio2.jpg" alt="Цветная тату на предплечье: кожа над пастельными зонами с выраженным смятым микрорельефом" style="width:100%;height:auto;display:block;border-radius:10px;max-height:66vh;object-fit:contain;"><div style="margin-top:8px;text-align:center;font-size:clamp(14px,1vw,18px);color:var(--ink-light);font-style:italic;">Кейс из практики · предплечье, многоцветная тату</div></div><div style="display:flex;flex-direction:column;gap:13px;justify-content:center;"><div class="card" style="border-left:5px solid var(--blue);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--blue);">Задача группы</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Перечислить только <b>факты</b>, без выводов. Диагноз — потом.</div></div><div class="card" style="border-left:5px solid var(--ink-light);"><p style="margin:0;font-size:clamp(19px,1.45vw,27px);line-height:1.42;">Цвет · текстура · кожный рисунок · ощущение сухости · рельеф · зоны светлого/белого пигмента · смешанные цвета · участки тёмного пигмента для сравнения · границы перехода</p></div></div></div></div></section>
+<section class="slide"><div class="slide-inner"><div class="eyebrow">Педагогический момент</div><h2 class="section">Мы не называем это «фотостарением от TiO₂».</h2><div class="grid-2" style="margin-top:10px;"><div class="card" style="border-left:5px solid var(--red);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--red);">Так — нельзя</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">«Это фотостарение из-за диоксида титана» — это вывод, которого мы ещё <b>не заслужили</b>. Мы увидели картинку, а не механизм.</div></div><div class="card" style="border-left:5px solid var(--green);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--green);">Так — правильно</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">«Сегодня проверим, <b>имеет ли право на жизнь</b> такая гипотеза». Разница между впечатлением и установленным диагнозом — главный навык.</div></div></div><div class="card" style="border-left:5px solid var(--blue);"><p style="margin:0;font-size:clamp(19px,1.45vw,27px);line-height:1.42;">Визуальное впечатление «кожа выглядит старше» и установленный диагноз «фотостарение» — это <b>два разных уровня знания</b>. Сегодня учимся их не путать.</p></div></div></section>
+<section class="slide dark"><div class="slide-inner section-title-block"><div class="eyebrow">Часть I</div><div class="section-num ">01</div><h1 class="title">Главный вопрос<br>лекции</h1><p class="lead big" style="margin:0 auto;text-align:center;">Может ли TiO₂-содержащий пигмент изменить свойства кожи вокруг себя?</p></div></section>
+<section class="slide"><div class="slide-inner"><div class="eyebrow">Разбиваем вопрос на уровни</div><h2 class="section">Один вопрос — четыре уровня доказательств.</h2><div class="grid-4" style="margin-top:12px;"><div class="card" style="border-left:5px solid var(--blue);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--blue);">1 · Клинически</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Может ли кожа <b>выглядеть</b> иначе — цвет, текстура, рельеф?</div></div><div class="card" style="border-left:5px solid var(--teal);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--teal);">2 · Гистологически</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Может ли <b>меняться дерма</b> — коллаген, эластин, матрикс?</div></div><div class="card" style="border-left:5px solid var(--orange);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--orange);">3 · Клеточно</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Может ли TiO₂ воздействовать на <b>фибробласты и кератиноциты</b>?</div></div><div class="card" style="border-left:5px solid var(--pink);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--pink);">4 · Фотохимически</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Может ли TiO₂ при освещении <b>генерировать ROS</b> — активные формы кислорода?</div></div></div><div class="card" style="border-left:5px solid var(--ink);"><p style="margin:0;font-size:clamp(19px,1.45vw,27px);line-height:1.42;">На каждом уровне доказательная сила <b>разная</b>. Смешивать их — главная ошибка. Пройдём снизу вверх: от фотохимии в пробирке к тому, что видно на коже.</p></div></div></section>
+<section class="slide dark"><div class="slide-inner section-title-block"><div class="eyebrow">Часть II</div><div class="section-num teal">02</div><h1 class="title">TiO₂ — это не просто<br>«белая краска»</h1><p class="lead big" style="margin:0 auto;text-align:center;">Один и тот же визуальный белый пигмент может иметь совершенно разный химический профиль.</p></div></section>
+<section class="slide"><div class="slide-inner"><div class="eyebrow">Химия · кристаллические формы</div><h2 class="section">Анатаз и рутил — две «личности» одного вещества.</h2><div class="grid-2" style="margin-top:10px;"><div class="card" style="border-left:5px solid var(--orange);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--orange);">Анатаз (anatase)</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Более широкая запрещённая зона, <b>высокая фотокаталитическая активность</b>. Под UV активнее генерирует активные формы кислорода. «Беспокойная» форма.</div></div><div class="card" style="border-left:5px solid var(--blue);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--blue);">Рутил (rutile)</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Термодинамически стабильнее, <b>ниже фотокатализ</b>. Чаще берут для солнцезащиты именно из-за меньшей реактивности. «Спокойная» форма.</div></div></div><div class="grid-3" style="margin-top:12px;"><div class="card" style="border-left:5px solid var(--teal);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--teal);">Размер частиц</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Нано- или микро- — меняет площадь поверхности и оптику.</div></div><div class="card" style="border-left:5px solid var(--teal);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--teal);">Поверхностная обработка</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Покрытие (silica, alumina) гасит фотокатализ. Есть оно или нет — заранее неизвестно.</div></div><div class="card" style="border-left:5px solid var(--teal);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--teal);">Концентрация и состав</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">В конкретном PMU-пигменте TiO₂ — лишь часть рецептуры.</div></div></div><div class="card" style="border-left:5px solid var(--ink);"><p style="margin:0;font-size:clamp(19px,1.45vw,27px);line-height:1.42;"><b>«Белый цвет» ≠ химически однородный материал.</b> Два одинаково белых пигмента могут вести себя под светом противоположно.</p></div></div></section>
+<section class="slide"><div class="slide-inner"><div class="eyebrow">Ключевой факт · Wamer & Yin</div><h2 class="section">Из 10 PMU-чернил — семь преимущественно анатаз.</h2><div class="grid-3" style="margin-top:12px;"><div class="stat-card"><div class="stat-num">7 / 10</div><div class="stat-label">чернил — преимущественно <b>анатаз</b> (более фотоактивная форма)</div></div><div class="stat-card"><div class="stat-num">8 / 10</div><div class="stat-label">чернил показали <b>фототоксичность</b> на дермальных фибробластах</div></div><div class="stat-card"><div class="stat-num">•OH</div><div class="stat-label">при фотоактивации обнаружены <b>гидроксильные радикалы</b></div></div></div><div class="card" style="border-left:5px solid var(--pink);"><p style="margin:0;font-size:clamp(19px,1.45vw,27px);line-height:1.42;">Вывод для специалиста: <b>визуально одинаковый</b> белый пигмент у разных производителей — это разные фотохимические профили. Цвет не говорит о реактивности.</p></div><div class="src" style="margin-top:14px;">Wamer WG, Yin JJ. J Cosmet Sci. 2011;62:535–547. PMID 22682398</div></div></section>
+<section class="slide"><div class="slide-inner"><div class="eyebrow">Судьба пигмента в коже</div><h2 class="section">Что происходит с TiO₂ после внесения в дерму.</h2><div style="display:flex;flex-direction:column;align-items:center;gap:clamp(5px,0.5vw,10px);margin-top:clamp(8px,1vw,16px);"><div style="background:#fff;border:1px solid var(--card-edge);box-shadow:var(--shadow);border-radius:14px;padding:clamp(9px,0.8vw,15px) clamp(16px,1.4vw,28px);font-size:clamp(17px,1.35vw,25px);font-weight:700;color:var(--ink);text-align:center;border-top:3px solid var(--teal);">PMU / тату-пигмент внесён в кожу</div><div style="color:var(--teal);font-size:clamp(18px,1.6vw,28px);line-height:0.7;">↓</div><div style="background:#fff;border:1px solid var(--card-edge);box-shadow:var(--shadow);border-radius:14px;padding:clamp(9px,0.8vw,15px) clamp(16px,1.4vw,28px);font-size:clamp(17px,1.35vw,25px);font-weight:700;color:var(--ink);text-align:center;border-top:3px solid var(--teal);">Частицы депонируются в дерме</div><div style="color:var(--teal);font-size:clamp(18px,1.6vw,28px);line-height:0.7;">↓</div><div style="background:#fff;border:1px solid var(--card-edge);box-shadow:var(--shadow);border-radius:14px;padding:clamp(9px,0.8vw,15px) clamp(16px,1.4vw,28px);font-size:clamp(17px,1.35vw,25px);font-weight:700;color:var(--ink);text-align:center;border-top:3px solid var(--teal);">Поглощение и рассеивание света (в т.ч. UVA)</div><div style="color:var(--teal);font-size:clamp(18px,1.6vw,28px);line-height:0.7;">↓</div><div style="background:#fff;border:1px solid var(--card-edge);box-shadow:var(--shadow);border-radius:14px;padding:clamp(9px,0.8vw,15px) clamp(16px,1.4vw,28px);font-size:clamp(17px,1.35vw,25px);font-weight:700;color:var(--ink);text-align:center;border-top:3px solid var(--teal);">Взаимодействие с клетками: макрофаги · фибробласты · матрикс (ECM)</div><div style="color:var(--teal);font-size:clamp(18px,1.6vw,28px);line-height:0.7;">↓</div><div style="background:#fff;border:1px solid var(--card-edge);box-shadow:var(--shadow);border-radius:14px;padding:clamp(9px,0.8vw,15px) clamp(16px,1.4vw,28px);font-size:clamp(17px,1.35vw,25px);font-weight:700;color:var(--ink);text-align:center;border-top:3px solid var(--teal);">Возможное хроническое ремоделирование ткани</div></div><div class="card" style="border-left:5px solid var(--orange);"><p style="margin:0;font-size:clamp(19px,1.45vw,27px);line-height:1.42;">Важно: мы <b>не утверждаем</b>, что каждый TiO₂-пигмент обязательно вызывает патологическое ремоделирование. Мы говорим, что есть основания эту цепочку <b>исследовать</b>.</p></div></div></section>
+<section class="slide dark"><div class="slide-inner section-title-block"><div class="eyebrow">Часть III</div><div class="section-num orange">03</div><h1 class="title">Фотохимия:<br>свет как триггер</h1><p class="lead big" style="margin:0 auto;text-align:center;">Как под действием света пигмент в коже превращается в локальный источник окислительного стресса.</p></div></section>
+<section class="slide"><div class="slide-inner"><div class="eyebrow">Механизм · фотокатализ</div><h2 class="section">TiO₂ + свет → активные формы кислорода.</h2><div class="split" style="grid-template-columns:1fr 1fr;align-items:center;"><div style="display:flex;flex-direction:column;align-items:center;gap:clamp(5px,0.5vw,10px);margin-top:clamp(8px,1vw,16px);"><div style="background:#fff;border:1px solid var(--card-edge);box-shadow:var(--shadow);border-radius:14px;padding:clamp(9px,0.8vw,15px) clamp(16px,1.4vw,28px);font-size:clamp(17px,1.35vw,25px);font-weight:700;color:var(--ink);text-align:center;border-top:3px solid var(--orange);">TiO₂ + фотон (UVA / видимый свет)</div><div style="color:var(--orange);font-size:clamp(18px,1.6vw,28px);line-height:0.7;">↓</div><div style="background:#fff;border:1px solid var(--card-edge);box-shadow:var(--shadow);border-radius:14px;padding:clamp(9px,0.8vw,15px) clamp(16px,1.4vw,28px);font-size:clamp(17px,1.35vw,25px);font-weight:700;color:var(--ink);text-align:center;border-top:3px solid var(--orange);">Пары «электрон — дырка» (e⁻ / h⁺)</div><div style="color:var(--orange);font-size:clamp(18px,1.6vw,28px);line-height:0.7;">↓</div><div style="background:#fff;border:1px solid var(--card-edge);box-shadow:var(--shadow);border-radius:14px;padding:clamp(9px,0.8vw,15px) clamp(16px,1.4vw,28px);font-size:clamp(17px,1.35vw,25px);font-weight:700;color:var(--ink);text-align:center;border-top:3px solid var(--orange);">Активные формы кислорода (ROS)</div><div style="color:var(--orange);font-size:clamp(18px,1.6vw,28px);line-height:0.7;">↓</div><div style="background:#fff;border:1px solid var(--card-edge);box-shadow:var(--shadow);border-radius:14px;padding:clamp(9px,0.8vw,15px) clamp(16px,1.4vw,28px);font-size:clamp(17px,1.35vw,25px);font-weight:700;color:var(--ink);text-align:center;border-top:3px solid var(--orange);">Гидроксильный радикал •OH</div><div style="color:var(--orange);font-size:clamp(18px,1.6vw,28px);line-height:0.7;">↓</div><div style="background:#fff;border:1px solid var(--card-edge);box-shadow:var(--shadow);border-radius:14px;padding:clamp(9px,0.8vw,15px) clamp(16px,1.4vw,28px);font-size:clamp(17px,1.35vw,25px);font-weight:700;color:var(--ink);text-align:center;border-top:3px solid var(--orange);">Окислительный стресс</div></div><div style="display:flex;flex-direction:column;gap:13px;justify-content:center;"><div class="card" style="border-left:5px solid var(--orange);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--orange);">Что это значит</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Полупроводник TiO₂ под светом работает как <b>микрофотокатализатор</b> прямо в точке депонирования пигмента.</div></div><div class="card" style="border-left:5px solid var(--red);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--red);">Мишени ROS</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Липиды, белки, клеточные структуры — <b>окисление</b> и повреждение прямо в дерме.</div></div></div></div></div></section>
+<section class="slide"><div class="slide-inner"><div class="eyebrow">Физика · почему анатаз активнее</div><h2 class="section">Запрещённая зона: откуда берутся e⁻ и h⁺.</h2><div class="split" style="grid-template-columns:1.05fr 0.95fr;align-items:center;"><svg viewBox="0 0 760 360" style="width:100%;height:auto;max-height:52vh;" xmlns="http://www.w3.org/2000/svg"><defs><marker id="ah" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#ff9500"/></marker><marker id="ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#ff3b30"/></marker></defs><g><text x="190" y="34" text-anchor="middle" font-size="26" font-weight="800" fill="#ff9500">Анатаз</text><text x="190" y="58" text-anchor="middle" font-size="16" fill="#86868b">шире зона · активнее</text><rect x="120" y="78" width="140" height="46" rx="8" fill="#d9ecff" stroke="#0a84ff" stroke-width="2.5"/><text x="190" y="106" text-anchor="middle" font-size="15" font-weight="700" fill="#0a84ff">зона проводимости</text><rect x="120" y="250" width="140" height="46" rx="8" fill="#eceef2" stroke="#5e5ce6" stroke-width="2.5"/><text x="190" y="278" text-anchor="middle" font-size="15" font-weight="700" fill="#5e5ce6">валентная зона</text><line x1="190" y1="250" x2="190" y2="124" stroke="#86868b" stroke-width="1.5" stroke-dasharray="4 4"/><text x="190" y="196" text-anchor="middle" font-size="17" font-weight="700" fill="#1d1d1f">≈ 3,2 эВ</text><path d="M 96 296 L 138 128" stroke="#ff9500" stroke-width="4" fill="none" marker-end="url(#ah)"/><text x="80" y="232" font-size="16" font-weight="800" fill="#ff9500">h&#957;</text><circle cx="278" cy="101" r="12" fill="#0a84ff"/><text x="278" y="106" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">e&#8315;</text><circle cx="278" cy="273" r="12" fill="#fff" stroke="#5e5ce6" stroke-width="2.5"/><text x="278" y="278" text-anchor="middle" font-size="13" font-weight="800" fill="#5e5ce6">h&#8314;</text></g><g><text x="540" y="34" text-anchor="middle" font-size="26" font-weight="800" fill="#0a84ff">Рутил</text><text x="540" y="58" text-anchor="middle" font-size="16" fill="#86868b">стабильнее · спокойнее</text><rect x="470" y="78" width="140" height="46" rx="8" fill="#d9ecff" stroke="#0a84ff" stroke-width="2.5"/><text x="540" y="106" text-anchor="middle" font-size="15" font-weight="700" fill="#0a84ff">зона проводимости</text><rect x="470" y="250" width="140" height="46" rx="8" fill="#eceef2" stroke="#5e5ce6" stroke-width="2.5"/><text x="540" y="278" text-anchor="middle" font-size="15" font-weight="700" fill="#5e5ce6">валентная зона</text><line x1="540" y1="250" x2="540" y2="124" stroke="#86868b" stroke-width="1.5" stroke-dasharray="4 4"/><text x="540" y="196" text-anchor="middle" font-size="17" font-weight="700" fill="#1d1d1f">≈ 3,0 эВ</text><path d="M 446 296 L 488 128" stroke="#ff9500" stroke-width="4" fill="none" marker-end="url(#ah)"/><text x="430" y="232" font-size="16" font-weight="800" fill="#ff9500">h&#957;</text><circle cx="628" cy="101" r="12" fill="#0a84ff"/><text x="628" y="106" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">e&#8315;</text><circle cx="628" cy="273" r="12" fill="#fff" stroke="#5e5ce6" stroke-width="2.5"/><text x="628" y="278" text-anchor="middle" font-size="13" font-weight="800" fill="#5e5ce6">h&#8314;</text></g><rect x="250" y="322" width="260" height="34" rx="10" fill="#fff0ee" stroke="#ff3b30" stroke-width="2"/><text x="380" y="344" text-anchor="middle" font-size="16" font-weight="800" fill="#ff3b30">e&#8315; / h&#8314; &#8594; ROS &#8594; &#8226;OH</text></svg><div style="display:flex;flex-direction:column;gap:13px;justify-content:center;"><div class="card" style="border-left:5px solid var(--orange);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--orange);">Полупроводник под светом</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Фотон с энергией выше запрещённой зоны выбивает электрон в зону проводимости, оставляя «дырку» h⁺. Пара e⁻/h⁺ и запускает химию.</div></div><div class="card" style="border-left:5px solid var(--blue);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--blue);">Почему форма важна</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">У анатаза и рутила близкая ширина зоны, но у анатаза дольше живут носители заряда и удобнее геометрия — поэтому на практике он <b>активнее</b> генерирует ROS.</div></div></div></div><div class="src" style="margin-top:14px;">Схема — упрощённо; концепция фотокатализа TiO₂ по Wamer & Yin, 2011</div></div></section>
+<section class="slide"><div class="slide-inner"><div class="eyebrow">Ключевой эксперимент №1</div><h2 class="section">Wamer & Yin: фототоксичность на фибробластах человека.</h2><div class="grid-2" style="margin-top:10px;"><div class="card" style="border-left:5px solid var(--blue);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--blue);">Что сделали</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Взяли <b>человеческие дермальные фибробласты</b>, добавили PMU-чернила с TiO₂ и облучили UVA + видимым светом.</div></div><div class="card" style="border-left:5px solid var(--pink);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--pink);">Что получили</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;"><b>8 из 10</b> чернил оказались фототоксичны. При фотоактивации — генерация гидроксильных радикалов •OH.</div></div></div><div class="card" style="border-left:5px solid var(--orange);"><p style="margin:0;font-size:clamp(19px,1.45vw,27px);line-height:1.42;">Это <b>доказанный механизм</b>: TiO₂-содержащие чернила под светом способны повреждать клетки кожи в культуре. Запомним уровень доказательности — он нам ещё понадобится.</p></div><div class="src" style="margin-top:14px;">Wamer WG, Yin JJ. J Cosmet Sci. 2011;62:535–547. PMID 22682398</div></div></section>
+<section class="slide"><div class="slide-inner"><div class="eyebrow">Пища для размышления</div><h2 class="section">Хронический микро-стресс — логика, а не доказательство.</h2><div class="grid-2" style="margin-top:10px;"><div class="card" style="border-left:5px solid var(--orange);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--orange);">Ход мысли</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Небольшой окислительный стресс, повторяющийся <b>годами</b> прямо в зоне депонирования пигмента, теоретически может постепенно менять дермальный матрикс. Это правдоподобно.</div></div><div class="card" style="border-left:5px solid var(--red);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--red);">Где осторожность</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">«Правдоподобно» — это ещё не «доказано». Разовый эксперимент в чашке не говорит, что то же идёт в живой коже десятилетиями.</div></div></div><div class="card" style="border-left:5px solid var(--blue);"><p style="margin:0;font-size:clamp(19px,1.45vw,27px);line-height:1.42;">Клиническое мышление начинается здесь: держим красивую гипотезу в голове — и сразу спрашиваем себя, <b>чем именно</b> она подтверждена. Дальше проверим это на модели живой кожи.</p></div></div></section>
+<section class="slide"><div class="slide-inner"><div class="eyebrow">Ловушка доказательств</div><h2 class="section">2D-культура клеток ≠ кожа человека.</h2><div class="grid-2" style="margin-top:10px;"><div class="card" style="border-left:5px solid var(--red);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--red);">2D-культура фибробластов</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Клетки голые, в чашке, без эпидермиса и матрикса. Свет и пигмент действуют <b>напрямую</b>. Эффект максимальный.</div></div><div class="card" style="border-left:5px solid var(--green);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--green);">3D-кожа человека</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Эпидермис, барьер, объём дермы, матрикс. Свет поглощается, пигмент окружён тканью. Условия <b>совсем другие</b>.</div></div></div><div class="card" style="border-left:5px solid var(--orange);"><p style="margin:0;font-size:clamp(19px,1.45vw,27px);line-height:1.42;">Поэтому фототоксичность «в чашке» — это ещё не доказательство вреда коже. Нужна <b>модель, где пигмент находится в настоящей дерме</b>.</p></div></div></section>
+<section class="slide"><div class="slide-inner"><div class="eyebrow">Ключевой эксперимент №2 · TatS</div><h2 class="section">Модель татуированной кожи человека: эффект гаснет.</h2><div class="split" style="grid-template-columns:1.1fr 0.9fr;align-items:center;"><div style="background:#fff;border-radius:18px;border:1px solid var(--card-edge);box-shadow:var(--shadow);padding:clamp(10px,0.9vw,16px);"><img src="lit_tats_viability.jpg" alt="График жизнеспособности: в 2D-культуре (NHDF 2D) TiO₂-анатаз снижает жизнеспособность до ~50% со значимостью, в 3D-коже и TatS эффекта нет" style="width:100%;height:auto;display:block;border-radius:8px;max-height:40vh;object-fit:contain;background:#fff;"><div style="margin-top:8px;font-size:clamp(13px,0.95vw,17px);color:var(--ink-light);line-height:1.35;"><span style="font-style:italic;">Жизнеспособность клеток: 2D (NHDF 2D) → 3D (NHDF 3D) → полная модель TatS. ▽ TiO₂-анатаз: значимое падение только в 2D (∗).</span><br><span style="font-size:0.92em;">Hering H. et al. Arch Toxicol 2020 · рис. 4 · CC BY 4.0</span></div></div><div style="display:flex;flex-direction:column;gap:13px;justify-content:center;"><div class="card" style="border-left:5px solid var(--red);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--red);">В 2D-культуре</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">TiO₂-анатаз <b>снижал</b> жизнеспособность (до ~50%) и <b>повышал IL-8</b>.</div></div><div class="card" style="border-left:5px solid var(--green);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--green);">В 3D-коже</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">В полнослойной модели с пигментом в дерме выраженного эффекта <b>не было</b>.</div></div><div class="card" style="border-left:5px solid var(--teal);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--teal);">Урок</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Полноценная ткань «гасит» реакцию. <b>Контекст ткани меняет исход.</b></div></div></div></div><div class="src" style="margin-top:14px;">Hering H, et al. TatS. Arch Toxicol. 2020. PMID 32661687 · CC BY 4.0</div></div></section>
+<section class="slide"><div class="slide-inner"><div class="eyebrow">Так устроена 3D-модель · TatS</div><h2 class="section">Пигмент — прямо в дерме, барьер кожи сохранён.</h2><div style="background:#fff;border-radius:18px;border:1px solid var(--card-edge);box-shadow:var(--shadow);padding:clamp(10px,0.9vw,16px);"><img src="lit_tats_histology.jpg" alt="Гистология H&E полнослойной модели кожи TatS с разными пигментами, включая TiO₂ анатаз и рутил; пигмент виден полосой в дерме" style="width:100%;height:auto;display:block;border-radius:8px;max-height:46vh;object-fit:contain;background:#fff;"><div style="margin-top:8px;font-size:clamp(13px,0.95vw,17px);color:var(--ink-light);line-height:1.35;"><span style="font-style:italic;">Гистология H&E: модель без пигмента · TiO₂ анатаз · TiO₂ рутил · P.O.13 · carbon black. Пигмент залегает полосой в дерме, эпидермис сформирован.</span><br><span style="font-size:0.92em;">Hering H. et al. Arch Toxicol 2020 · рис. 2 (фрагмент) · CC BY 4.0</span></div></div><div class="card" style="border-left:5px solid var(--ink);"><p style="margin:0;font-size:clamp(19px,1.45vw,27px);line-height:1.42;">Именно поэтому TatS сильнее 2D-культуры: пигмент окружён настоящим матриксом и прикрыт эпидермисом — как в реальной коже. Это и объясняет, почему «страшный» результат из чашки здесь <b>не повторился</b>.</p></div></div></section>
+<section class="slide"><div class="slide-inner"><div class="eyebrow">Правило ЛазерПРО №1</div><blockquote class="q" style="border-left:none;text-align:center;font-size:clamp(30px,3.2vw,50px);line-height:1.3;">Механизм доказан<br>≠<br>клинический эффект доказан.</blockquote><div class="grid-3" style="margin-top:14px;"><div class="card" style="border-left:5px solid var(--green);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--green);">Доказано</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">TiO₂ способен генерировать ROS.</div></div><div class="card" style="border-left:5px solid var(--green);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--green);">Доказано</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">TiO₂-чернила фототоксичны <i>in vitro</i>.</div></div><div class="card" style="border-left:5px solid var(--red);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--red);">Пока НЕ доказано</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">«TiO₂ вызывает локальное фотостарение кожи человека».</div></div></div><div class="card" style="border-left:5px solid var(--ink);"><p style="margin:0;font-size:clamp(19px,1.45vw,27px);line-height:1.42;">Это <b>принципиально разные утверждения</b>. Специалист обязан держать их отдельно и не выдавать одно за другое.</p></div></div></section>
+<section class="slide dark"><div class="slide-inner section-title-block"><div class="eyebrow">Часть IV</div><div class="section-num pink">04</div><h1 class="title">От пробирки<br>к пациенту</h1><p class="lead big" style="margin:0 auto;text-align:center;">Есть ли у человека что-то похожее — и что показывает гистология?</p></div></section>
+<section class="slide"><div class="slide-inner"><div class="eyebrow">Клиническое наблюдение · Aliakhnovich 2020</div><h2 class="section">Фотодерматит на TiO₂-содержащих татуировках.</h2><div class="grid-2" style="margin-top:10px;"><div class="card" style="border-left:5px solid var(--red);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--red);">После солнца — реакция</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Двое пациентов с сенсибилизацией к TiO₂: зуд, эритема, пузыри, экссудация, корки, <b>замедленное заживление</b>.</div></div><div class="card" style="border-left:5px solid var(--purple);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--purple);">Главное — гистология</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Вокруг зон накопления пигмента обнаружили <b>очаговый эластоз</b> (focal elastosis).</div></div></div><div class="card" style="border-left:5px solid var(--pink);"><p style="margin:0;font-size:clamp(19px,1.45vw,27px);line-height:1.42;">Это первый мостик от «механизма в пробирке» к <b>структурному изменению ткани</b> у живого человека рядом с TiO₂-пигментом.</p></div><div class="src" style="margin-top:14px;">Aliakhnovich NS, et al. Immunopathology, Allergology, Infectology. 2020;1:55–62. DOI 10.14427/jipai.2020.1.55</div></div></section>
+<section class="slide"><div class="slide-inner"><div class="eyebrow">Возвращаемся к фотографии</div><h2 class="section">А что, если «старение» — это изменение матрикса?</h2><div class="split" style="grid-template-columns:0.95fr 1.05fr;align-items:center;"><div style="background:#fff;border-radius:20px;border:1px solid var(--card-edge);box-shadow:var(--shadow);padding:clamp(10px,0.9vw,16px);"><img src="case_tio2_zoom.jpg" alt="Крупно: смятый, подчёркнутый микрорельеф кожи над пастельной зоной тату" style="width:100%;height:auto;display:block;border-radius:10px;max-height:66vh;object-fit:contain;"><div style="margin-top:8px;text-align:center;font-size:clamp(14px,1vw,18px);color:var(--ink-light);font-style:italic;">Зона пастельного/светлого пигмента · подчёркнутый «смятый» рельеф</div></div><div style="display:flex;flex-direction:column;gap:13px;justify-content:center;"><div class="card" style="border-left:5px solid var(--purple);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--purple);">Гипотеза, которую проверяем</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">То, что мы визуально называем «локальным фотостарением», может быть проявлением <b>изменённой структуры дермального матрикса</b>.</div></div><div class="card" style="border-left:5px solid var(--ink);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--ink);">Вводим термин</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;"><b>Очаговый эластоз</b> (focal elastosis) — локальная перестройка эластической ткани дермы.</div></div></div></div></div></section>
+<section class="slide"><div class="slide-inner"><div class="eyebrow">Что такое эластоз</div><h2 class="section">Нормальная дерма и эластотические изменения.</h2><div class="split" style="grid-template-columns:1.05fr 0.95fr;align-items:center;"><svg viewBox="0 0 700 380" style="width:100%;height:auto;max-height:54vh;" xmlns="http://www.w3.org/2000/svg"><rect x="20" y="60" width="300" height="300" rx="14" fill="#fff" stroke="var(--card-edge)" stroke-width="1.5"/><text x="170" y="42" text-anchor="middle" font-size="22" font-weight="800" fill="#30d158">Норма</text><rect x="20" y="60" width="300" height="34" rx="12" fill="#f3d9e6"/><text x="170" y="82" text-anchor="middle" font-size="13" fill="#9a4a6a">эпидермис</text><path d="M 36 118 q 40 -10 80 0 t 80 0 t 80 0 t 40 0" stroke="#8a84d6" stroke-width="2" fill="none" opacity="0.8"/><path d="M 36 144 q 40 -10 80 0 t 80 0 t 80 0 t 40 0" stroke="#8a84d6" stroke-width="2" fill="none" opacity="0.8"/><path d="M 36 170 q 40 -10 80 0 t 80 0 t 80 0 t 40 0" stroke="#8a84d6" stroke-width="2" fill="none" opacity="0.8"/><path d="M 36 196 q 40 -10 80 0 t 80 0 t 80 0 t 40 0" stroke="#8a84d6" stroke-width="2" fill="none" opacity="0.8"/><path d="M 36 222 q 40 -10 80 0 t 80 0 t 80 0 t 40 0" stroke="#8a84d6" stroke-width="2" fill="none" opacity="0.8"/><path d="M 36 248 q 40 -10 80 0 t 80 0 t 80 0 t 40 0" stroke="#8a84d6" stroke-width="2" fill="none" opacity="0.8"/><path d="M 36 274 q 40 -10 80 0 t 80 0 t 80 0 t 40 0" stroke="#8a84d6" stroke-width="2" fill="none" opacity="0.8"/><path d="M 36 300 q 40 -10 80 0 t 80 0 t 80 0 t 40 0" stroke="#8a84d6" stroke-width="2" fill="none" opacity="0.8"/><path d="M 36 326 q 40 -10 80 0 t 80 0 t 80 0 t 40 0" stroke="#8a84d6" stroke-width="2" fill="none" opacity="0.8"/><text x="170" y="348" text-anchor="middle" font-size="12" fill="#86868b">упорядоченные волокна эластина</text><rect x="380" y="60" width="300" height="300" rx="14" fill="#fff" stroke="var(--card-edge)" stroke-width="1.5"/><text x="530" y="42" text-anchor="middle" font-size="22" font-weight="800" fill="#ff9500">Эластоз</text><rect x="380" y="60" width="300" height="34" rx="12" fill="#f3d9e6"/><text x="530" y="82" text-anchor="middle" font-size="13" fill="#9a4a6a">эпидермис</text><ellipse cx="486" cy="152" rx="10" ry="6" transform="rotate(18 486 152)" fill="#5e5ce6" opacity="0.68"/><ellipse cx="428" cy="242" rx="12" ry="7" transform="rotate(54 428 242)" fill="#5e5ce6" opacity="0.36"/><ellipse cx="513" cy="135" rx="5" ry="3" transform="rotate(108 513 135)" fill="#5e5ce6" opacity="0.37"/><ellipse cx="546" cy="319" rx="10" ry="6" transform="rotate(149 546 319)" fill="#5e5ce6" opacity="0.73"/><ellipse cx="549" cy="203" rx="13" ry="8" transform="rotate(11 549 203)" fill="#5e5ce6" opacity="0.57"/><ellipse cx="438" cy="208" rx="9" ry="5" transform="rotate(146 438 208)" fill="#5e5ce6" opacity="0.47"/><ellipse cx="610" cy="158" rx="9" ry="6" transform="rotate(163 610 158)" fill="#5e5ce6" opacity="0.43"/><ellipse cx="429" cy="270" rx="9" ry="5" transform="rotate(158 429 270)" fill="#5e5ce6" opacity="0.43"/><ellipse cx="575" cy="210" rx="7" ry="4" transform="rotate(149 575 210)" fill="#5e5ce6" opacity="0.72"/><ellipse cx="495" cy="172" rx="6" ry="3" transform="rotate(62 495 172)" fill="#5e5ce6" opacity="0.38"/><ellipse cx="480" cy="224" rx="7" ry="4" transform="rotate(114 480 224)" fill="#5e5ce6" opacity="0.47"/><ellipse cx="651" cy="145" rx="8" ry="5" transform="rotate(87 651 145)" fill="#5e5ce6" opacity="0.41"/><ellipse cx="527" cy="128" rx="10" ry="6" transform="rotate(142 527 128)" fill="#5e5ce6" opacity="0.58"/><ellipse cx="625" cy="186" rx="10" ry="6" transform="rotate(152 625 186)" fill="#5e5ce6" opacity="0.55"/><ellipse cx="605" cy="134" rx="5" ry="3" transform="rotate(69 605 134)" fill="#5e5ce6" opacity="0.54"/><ellipse cx="571" cy="133" rx="10" ry="6" transform="rotate(165 571 133)" fill="#5e5ce6" opacity="0.58"/><ellipse cx="576" cy="214" rx="10" ry="6" transform="rotate(171 576 214)" fill="#5e5ce6" opacity="0.49"/><ellipse cx="641" cy="195" rx="9" ry="6" transform="rotate(126 641 195)" fill="#5e5ce6" opacity="0.37"/><ellipse cx="598" cy="147" rx="6" ry="4" transform="rotate(100 598 147)" fill="#5e5ce6" opacity="0.72"/><ellipse cx="529" cy="155" rx="8" ry="5" transform="rotate(71 529 155)" fill="#5e5ce6" opacity="0.70"/><ellipse cx="610" cy="301" rx="7" ry="4" transform="rotate(106 610 301)" fill="#5e5ce6" opacity="0.74"/><ellipse cx="576" cy="200" rx="6" ry="4" transform="rotate(21 576 200)" fill="#5e5ce6" opacity="0.42"/><ellipse cx="462" cy="169" rx="8" ry="5" transform="rotate(150 462 169)" fill="#5e5ce6" opacity="0.42"/><ellipse cx="475" cy="151" rx="9" ry="5" transform="rotate(156 475 151)" fill="#5e5ce6" opacity="0.58"/><ellipse cx="644" cy="265" rx="9" ry="5" transform="rotate(158 644 265)" fill="#5e5ce6" opacity="0.61"/><ellipse cx="590" cy="216" rx="12" ry="7" transform="rotate(174 590 216)" fill="#5e5ce6" opacity="0.67"/><ellipse cx="503" cy="204" rx="5" ry="3" transform="rotate(162 503 204)" fill="#5e5ce6" opacity="0.51"/><ellipse cx="452" cy="327" rx="8" ry="5" transform="rotate(28 452 327)" fill="#5e5ce6" opacity="0.49"/><ellipse cx="417" cy="120" rx="5" ry="3" transform="rotate(25 417 120)" fill="#5e5ce6" opacity="0.73"/><ellipse cx="559" cy="135" rx="6" ry="4" transform="rotate(96 559 135)" fill="#5e5ce6" opacity="0.41"/><ellipse cx="468" cy="193" rx="7" ry="4" transform="rotate(31 468 193)" fill="#5e5ce6" opacity="0.40"/><ellipse cx="527" cy="325" rx="8" ry="5" transform="rotate(79 527 325)" fill="#5e5ce6" opacity="0.38"/><ellipse cx="430" cy="192" rx="6" ry="4" transform="rotate(177 430 192)" fill="#5e5ce6" opacity="0.41"/><ellipse cx="410" cy="320" rx="9" ry="5" transform="rotate(37 410 320)" fill="#5e5ce6" opacity="0.63"/><ellipse cx="634" cy="279" rx="7" ry="4" transform="rotate(164 634 279)" fill="#5e5ce6" opacity="0.70"/><ellipse cx="579" cy="175" rx="7" ry="4" transform="rotate(42 579 175)" fill="#5e5ce6" opacity="0.49"/><ellipse cx="460" cy="234" rx="9" ry="5" transform="rotate(162 460 234)" fill="#5e5ce6" opacity="0.44"/><ellipse cx="609" cy="327" rx="12" ry="7" transform="rotate(61 609 327)" fill="#5e5ce6" opacity="0.68"/><ellipse cx="590" cy="168" rx="9" ry="5" transform="rotate(91 590 168)" fill="#5e5ce6" opacity="0.64"/><ellipse cx="653" cy="286" rx="8" ry="5" transform="rotate(49 653 286)" fill="#5e5ce6" opacity="0.63"/><ellipse cx="645" cy="214" rx="12" ry="7" transform="rotate(89 645 214)" fill="#5e5ce6" opacity="0.73"/><ellipse cx="496" cy="166" rx="6" ry="4" transform="rotate(50 496 166)" fill="#5e5ce6" opacity="0.49"/><ellipse cx="526" cy="327" rx="9" ry="6" transform="rotate(0 526 327)" fill="#5e5ce6" opacity="0.54"/><ellipse cx="569" cy="288" rx="5" ry="3" transform="rotate(169 569 288)" fill="#5e5ce6" opacity="0.40"/><ellipse cx="502" cy="269" rx="6" ry="3" transform="rotate(45 502 269)" fill="#5e5ce6" opacity="0.52"/><ellipse cx="564" cy="138" rx="13" ry="8" transform="rotate(101 564 138)" fill="#5e5ce6" opacity="0.54"/><text x="530" y="348" text-anchor="middle" font-size="12" fill="#86868b">фрагментированный эластин глыбками</text></svg><div style="display:flex;flex-direction:column;gap:13px;justify-content:center;"><div class="card" style="border-left:5px solid var(--green);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--green);">Норма</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Упорядоченные коллаген + эластин + ECM. Кожа упругая, рельеф ровный.</div></div><div class="card" style="border-left:5px solid var(--orange);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--orange);">Эластоз</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Эластиновые волокна фрагментируются и скапливаются глыбками, организация матрикса нарушается — кожа теряет упругость, появляется <b>«смятый»</b> рельеф.</div></div><div class="card" style="border-left:5px solid var(--red);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--red);">Осторожно с ярлыком</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Очаговый эластоз <b>≠ автоматически</b> solar elastosis (фотостарение). Природа может быть другой.</div></div></div></div><div class="src" style="margin-top:14px;">Схема — упрощённая иллюстрация; очаговый эластоз у TiO₂-пациентов описан в Aliakhnovich et al., 2020</div></div></section>
+<section class="slide"><div class="slide-inner"><div class="eyebrow">Белый пигмент — это не только TiO₂ · Kurz 2023</div><h2 class="section">В белом пигменте — целый коктейль веществ.</h2><div class="grid-2" style="margin-top:10px;"><div class="card" style="border-left:5px solid #a55c00;"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:#a55c00;">Химия белого пигмента</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">В одном белом пигменте нашли рутил TiO₂ — но <b>одновременно</b> Ni, Cr, Mn, Cd, Cu и другие компоненты.</div></div><div class="card" style="border-left:5px solid var(--pink);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--pink);">Гистология реакций</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Разные картины: эозинофильный инфильтрат, гранулёматозные реакции, псевдолимфома, CD3+ T-клеточный инфильтрат.</div></div></div><div class="card" style="border-left:5px solid var(--red);"><p style="margin:0;font-size:clamp(19px,1.45vw,27px);line-height:1.42;">Отсюда железное правило: <b>нельзя увидеть белый пигмент и сказать «это сделал TiO₂».</b> Нужно знать состав конкретного пигмента — виноват может быть и другой компонент.</p></div><div class="src" style="margin-top:14px;">Kurz B, et al. Dermatology. 2023;239:782–793. PMID 37231944</div></div></section>
+<section class="slide"><div class="slide-inner"><div class="eyebrow">Куда уходит пигмент · Schreiver 2017</div><h2 class="section">Пигмент мигрирует — его находят в лимфоузлах.</h2><div class="split" style="grid-template-columns:0.82fr 1.18fr;align-items:center;"><div style="background:#fff;border-radius:18px;border:1px solid var(--card-edge);box-shadow:var(--shadow);padding:clamp(10px,0.9vw,16px);"><img src="lit_schreiver_migration.jpg" alt="Фотографии: кусочки кожи и соответствующих лимфоузлов разных доноров — пигмент (зелёный, синий) виден и в коже, и в регионарных лимфоузлах; справа химические структуры пигментов" style="width:100%;height:auto;display:block;border-radius:8px;max-height:60vh;object-fit:contain;background:#fff;"><div style="margin-top:8px;font-size:clamp(13px,0.95vw,17px);color:var(--ink-light);line-height:1.35;"><span style="font-style:italic;">Кожа и регионарный лимфоузел у 4 доноров: окрашенный пигмент (в т.ч. зелёный, синий) обнаружен и в лимфоузлах. Справа — структуры пигментов.</span><br><span style="font-size:0.92em;">Schreiver I. et al. Sci Rep 2017;7:11395 · рис. 2 · CC BY 4.0</span></div></div><div style="display:flex;flex-direction:column;gap:13px;justify-content:center;"><div class="card" style="border-left:5px solid var(--teal);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--teal);">Методы</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Синхротронное µ-XRF + µ-FTIR: где лежит титан и что с его окружением.</div></div><div class="card" style="border-left:5px solid var(--orange);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--orange);">Миграция</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Частицы пигмента (включая Ti) находят не только в коже, но и в <b>регионарных лимфоузлах</b>.</div></div><div class="card" style="border-left:5px solid var(--purple);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--purple);">Вывод</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Пигмент в коже — <b>не застывшая точка</b>: он мигрирует, взаимодействует и меняет окружение годами.</div></div></div></div><div class="src" style="margin-top:14px;">Schreiver I, et al. Sci Rep. 2017;7:11395 · CC BY 4.0</div></div></section>
+<section class="slide dark"><div class="slide-inner section-title-block"><div class="eyebrow">Часть V</div><div class="section-num green">05</div><h1 class="title">Строим гипотезу<br>честно</h1><p class="lead big" style="margin:0 auto;text-align:center;">Собираем всё вместе — и сразу отмечаем, где заканчивается доказанное.</p></div></section>
+<section class="slide"><div class="slide-inner"><div class="eyebrow">Главная гипотеза</div><div class="split" style="grid-template-columns:1.1fr 0.9fr;align-items:center;"><div style="display:flex;flex-direction:column;align-items:center;gap:clamp(5px,0.5vw,10px);margin-top:clamp(8px,1vw,16px);"><div style="background:#fff;border:1px solid var(--card-edge);box-shadow:var(--shadow);border-radius:14px;padding:clamp(9px,0.8vw,15px) clamp(16px,1.4vw,28px);font-size:clamp(17px,1.35vw,25px);font-weight:700;color:var(--ink);text-align:center;border-top:3px solid var(--green);">TiO₂-пигмент в дерме</div><div style="color:var(--green);font-size:clamp(18px,1.6vw,28px);line-height:0.7;">↓</div><div style="background:#fff;border:1px solid var(--card-edge);box-shadow:var(--shadow);border-radius:14px;padding:clamp(9px,0.8vw,15px) clamp(16px,1.4vw,28px);font-size:clamp(17px,1.35vw,25px);font-weight:700;color:var(--ink);text-align:center;border-top:3px solid var(--green);">Фотохимическая активность под светом</div><div style="color:var(--green);font-size:clamp(18px,1.6vw,28px);line-height:0.7;">↓</div><div style="background:#fff;border:1px solid var(--card-edge);box-shadow:var(--shadow);border-radius:14px;padding:clamp(9px,0.8vw,15px) clamp(16px,1.4vw,28px);font-size:clamp(17px,1.35vw,25px);font-weight:700;color:var(--ink);text-align:center;border-top:3px solid var(--green);">ROS · окислительный стресс</div><div style="color:var(--green);font-size:clamp(18px,1.6vw,28px);line-height:0.7;">↓</div><div style="background:#fff;border:1px solid var(--card-edge);box-shadow:var(--shadow);border-radius:14px;padding:clamp(9px,0.8vw,15px) clamp(16px,1.4vw,28px);font-size:clamp(17px,1.35vw,25px);font-weight:700;color:var(--ink);text-align:center;border-top:3px solid var(--green);">Взаимодействие с фибробластами и ECM</div><div style="color:var(--green);font-size:clamp(18px,1.6vw,28px);line-height:0.7;">↓</div><div style="background:#fff;border:1px solid var(--card-edge);box-shadow:var(--shadow);border-radius:14px;padding:clamp(9px,0.8vw,15px) clamp(16px,1.4vw,28px);font-size:clamp(17px,1.35vw,25px);font-weight:700;color:var(--ink);text-align:center;border-top:3px solid var(--green);">Ремоделирование коллагена / эластина</div><div style="color:var(--green);font-size:clamp(18px,1.6vw,28px);line-height:0.7;">↓</div><div style="background:#fff;border:1px solid var(--card-edge);box-shadow:var(--shadow);border-radius:14px;padding:clamp(9px,0.8vw,15px) clamp(16px,1.4vw,28px);font-size:clamp(17px,1.35vw,25px);font-weight:700;color:var(--ink);text-align:center;border-top:3px solid var(--green);">Изменение текстуры кожи</div></div><div style="display:flex;flex-direction:column;gap:16px;justify-content:center;"><div style="background:linear-gradient(180deg,var(--orange),var(--red));color:#fff;border-radius:18px;padding:clamp(18px,1.8vw,30px);text-align:center;box-shadow:var(--shadow);"><div style="font-size:clamp(28px,2.6vw,44px);font-weight:800;line-height:1.1;">ГИПОТЕЗА</div><div style="font-size:clamp(18px,1.4vw,26px);margin-top:6px;opacity:0.95;">а не установленный диагноз</div></div><div class="card" style="border-left:5px solid var(--ink);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--ink);">Что это даёт студенту</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Не набор статей, а <b>клиническая модель мышления</b>, применимая к любому странному случаю после PMU.</div></div></div></div></div></section>
+<section class="slide"><div class="slide-inner"><div class="eyebrow">Честно · сколько под этим данных</div><h2 class="section">Пирамида доказательств — и где мы на ней.</h2><div class="grid-2" style="margin-top:8px;"><div class="card" style="border-left:5px solid var(--green);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--green);">✓ Крепко</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;"><b>Фотохимия TiO₂</b> (ROS, •OH) и фототоксичность чернил <i>in vitro</i> — воспроизведено в нескольких работах.</div></div><div class="card" style="border-left:5px solid var(--orange);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--orange);">~ С оговоркой</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;"><b>3D-модель кожи</b> (TatS) выраженного эффекта TiO₂ не показала — ткань «гасит» реакцию из пробирки.</div></div><div class="card" style="border-left:5px solid var(--red);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--red);">? Очень мало</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;"><b>Клинически</b> — по сути <b>одна работа, всего 2 пациента</b> с очаговым эластозом рядом с TiO₂-пигментом. Это наблюдение, не доказанная закономерность.</div></div><div class="card" style="border-left:5px solid var(--blue);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--blue);">· Наш уровень</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;"><b>Наша фотография</b> — одно наблюдение. Яркое, но это <b>повод подумать</b>, а не аргумент.</div></div></div><div class="card" style="border-left:5px solid var(--ink);"><p style="margin:0;font-size:clamp(19px,1.45vw,27px);line-height:1.42;">Вот честная картина: <b>механизм — сильный, клиника — почти пустая.</b> Хороший клиницист не стесняется сказать «данных мало» — и именно поэтому не спешит с диагнозом.</p></div></div></section>
+<section class="slide"><div class="slide-inner"><div class="eyebrow">Почему особенно интересны бело-ЦВЕТНЫЕ пигменты</div><h2 class="section">TiO₂ прячется в пастельных оттенках.</h2><div class="grid-4" style="margin-top:10px;"><div class="card" style="border-left:5px solid var(--pink);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--pink);">Красный + TiO₂</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">→ розовый</div></div><div class="card" style="border-left:5px solid var(--orange);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--orange);">Жёлтый + TiO₂</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">→ светло-жёлтый</div></div><div class="card" style="border-left:5px solid #a55c00;"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:#a55c00;">Коричневый + TiO₂</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">→ бежевый</div></div><div class="card" style="border-left:5px solid var(--green);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--green);">Зелёный + TiO₂</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">→ пастельный зелёный</div></div></div><div class="card" style="border-left:5px solid var(--red);"><p style="margin:0;font-size:clamp(19px,1.45vw,27px);line-height:1.42;">Человек видит «зелёный пигмент», а химически там <b>органический пигмент + TiO₂ + другие компоненты</b>. Поэтому корреляция «изменения только в белом» может быть <b>ложной</b> — смотреть надо ВСЕ зоны, где есть TiO₂: все пастельные и смешанные оттенки.</p></div></div></section>
+<section class="slide"><div class="slide-inner"><div class="eyebrow">Работаем с фото · шаг 2</div><h2 class="section">Отметьте подозрительную зону — не по цвету.</h2><div class="split" style="grid-template-columns:0.95fr 1.05fr;align-items:center;"><div style="background:#fff;border-radius:20px;border:1px solid var(--card-edge);box-shadow:var(--shadow);padding:clamp(10px,0.9vw,16px);"><img src="case_tio2.jpg" alt="Многоцветная тату: пастельные бирюзовые и жёлтые зоны с выраженным рельефом" style="width:100%;height:auto;display:block;border-radius:10px;max-height:66vh;object-fit:contain;"><div style="margin-top:8px;text-align:center;font-size:clamp(14px,1vw,18px);color:var(--ink-light);font-style:italic;">Оцениваем ВСЕ пастельные зоны, а не только белые</div></div><div style="display:flex;flex-direction:column;gap:13px;justify-content:center;"><div class="card" style="border-left:5px solid var(--blue);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--blue);">На что смотрим</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Текстура · рельеф · плотность пигмента · наличие светлых компонентов · границы перехода.</div></div><div class="card" style="border-left:5px solid var(--purple);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--purple);">Что проверяем</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Совпадает ли зона изменения кожи с зоной предполагаемого TiO₂ (пастель/смесь).</div></div><div class="card" style="border-left:5px solid var(--orange);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--orange);">Если совпадает</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Это <b>пространственная корреляция</b> — сильный аргумент. Но ещё <b>не причинность</b>.</div></div></div></div></div></section>
+<section class="slide dark"><div class="slide-inner section-title-block"><div class="eyebrow">Часть VI</div><div class="section-num amber">06</div><h1 class="title">А что ещё<br>это может быть?</h1><p class="lead big" style="margin:0 auto;text-align:center;">Прежде чем винить TiO₂ — честно перебираем все альтернативы.</p></div></section>
+<section class="slide"><div class="slide-inner"><div class="eyebrow">Дифференциальный ряд</div><h2 class="section">Девять механизмов одной картины.</h2><div class="grid-3" style="margin-top:10px;"><div class="card" style="border-left:5px solid var(--purple);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--purple);">A · Очаговый эластоз</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Перестройка эластической ткани.</div></div><div class="card" style="border-left:5px solid var(--orange);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--orange);">B · Хроническое вялое воспаление</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Low-grade, годами.</div></div><div class="card" style="border-left:5px solid var(--pink);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--pink);">C · Гранулёматозная реакция</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Ответ на инородное тело.</div></div><div class="card" style="border-left:5px solid var(--red);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--red);">D · Аллергия / гиперчувствительность</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">К компоненту пигмента.</div></div><div class="card" style="border-left:5px solid #a55c00;"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:#a55c00;">E · Пост-воспалительное ремоделирование</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">След прошлой реакции.</div></div><div class="card" style="border-left:5px solid var(--blue);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--blue);">F · Атрофия / рубцовое изменение</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Истончение, фиброз.</div></div><div class="card" style="border-left:5px solid var(--teal);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--teal);">G · Фотоповреждение</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Собственно solar elastosis.</div></div><div class="card" style="border-left:5px solid var(--green);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--green);">H · Оптический эффект</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Пигмент + изменение гидратации рогового слоя.</div></div><div class="card" style="border-left:5px solid var(--ink);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--ink);">I · Комбинация</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Несколько механизмов сразу — чаще всего.</div></div></div></div></section>
+<section class="slide"><div class="slide-inner"><div class="eyebrow">Граница честности</div><h2 class="section">Что мы НЕ можем и что можем утверждать.</h2><div class="split" style="grid-template-columns:1fr 1fr;align-items:center;"><div style="display:flex;flex-direction:column;gap:10px;"><div class="card" style="border-left:5px solid var(--red);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--red);">✕ Нельзя</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">«TiO₂ вызывает фотостарение кожи».</div></div><div class="card" style="border-left:5px solid var(--red);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--red);">✕ Нельзя</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">«Белый пигмент разрушает эластин».</div></div><div class="card" style="border-left:5px solid var(--red);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--red);">✕ Нельзя</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">«Любая сухость губ после PMU — от TiO₂».</div></div><div class="card" style="border-left:5px solid var(--red);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--red);">✕ Нельзя</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">«Сморщилась кожа — значит фототоксичность».</div></div></div><div style="display:flex;flex-direction:column;gap:10px;"><div class="card" style="border-left:5px solid var(--green);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--green);">✓ Можно</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">«TiO₂ способен участвовать в фотохимических реакциях».</div></div><div class="card" style="border-left:5px solid var(--green);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--green);">✓ Можно</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">«TiO₂-чернила показали фототоксичность <i>in vitro</i>».</div></div><div class="card" style="border-left:5px solid var(--green);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--green);">✓ Можно</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">«Описаны клинические реакции на TiO₂-тату и очаговый эластоз вокруг депо».</div></div><div class="card" style="border-left:5px solid var(--green);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--green);">✓ Можно</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">«По одной фотографии механизм установить нельзя».</div></div></div></div></div></section>
+<section class="slide"><div class="slide-inner"><div class="eyebrow">Отдельная история · губы</div><h2 class="section">Почему данные с предплечья нельзя переносить на губы.</h2><p class="lead">Мастера отмечают: «после большого количества белого пигмента губы сильно сохнут». Пока это <b>гипотеза</b> — у губ своя физиология.</p><div class="grid-3" style="margin-top:12px;"><div class="card" style="border-left:5px solid var(--pink);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--pink);">Барьер и эпителий</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Очень специфический барьер, другая структура эпителия, высокая чувствительность к раздражителям.</div></div><div class="card" style="border-left:5px solid var(--blue);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--blue);">Постоянные нагрузки</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Слюна, UV-воздействие, механическая нагрузка, мимика — ежедневно.</div></div><div class="card" style="border-left:5px solid var(--orange);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--orange);">Вывод</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Нельзя автоматически переносить данные из дермы предплечья на красную кайму губ.</div></div></div></div></section>
+<section class="slide dark"><div class="slide-inner section-title-block"><div class="eyebrow">Часть VII</div><div class="section-num red">07</div><h1 class="title">Что делать<br>специалисту</h1><p class="lead big" style="margin:0 auto;text-align:center;">Практический алгоритм ЛазерПРО, когда перед вами такая кожа.</p></div></section>
+<section class="slide"><div class="slide-inner"><div class="eyebrow">Алгоритм · 5 шагов</div><h2 class="section">От впечатления — к данным.</h2><div class="grid-2" style="margin-top:10px;"><div class="card" style="border-left:5px solid var(--blue);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--blue);">1 · Документировать</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Фото: одинаковое освещение и расстояние, поляризация если есть, макро, до/после.</div></div><div class="card" style="border-left:5px solid var(--teal);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--teal);">2 · Картировать цвета</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Где белый, пастель, смесь, красный, коричневый, чёрный — нарисовать карту зон.</div></div><div class="card" style="border-left:5px solid var(--orange);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--orange);">3 · Состав пигмента</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">INCI / декларация пигмента / CI-номер / SDS — если доступно.</div></div><div class="card" style="border-left:5px solid var(--purple);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--purple);">4 · Есть ли TiO₂?</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">И желательно — анатаз или рутил?</div></div></div><div class="card" style="border-left:5px solid var(--green);"><p style="margin:0;font-size:clamp(19px,1.45vw,27px);line-height:1.42;"><b>5 · Анамнез:</b> когда внесён пигмент · когда появились изменения · была ли инсоляция · были ли лазерные процедуры · есть ли зуд, эритема, шелушение, болезненность, отёк, мокнутие.</p></div></div></section>
+<section class="slide"><div class="slide-inner"><div class="eyebrow">Красные флаги</div><h2 class="section">Когда прекратить экспериментировать.</h2><div class="grid-3" style="margin-top:10px;"><div class="card" style="border-left:5px solid var(--red);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--red);">Острая реакция</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Выраженный зуд, эритема, отёк, пузыри, мокнутие, корки.</div></div><div class="card" style="border-left:5px solid var(--red);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--red);">Структурные изменения</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Стойкая инфильтрация, выраженная атрофия, гранулёматозные изменения.</div></div><div class="card" style="border-left:5px solid var(--red);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--red);">Связь с солнцем</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Быстрое ухудшение после инсоляции.</div></div></div><div class="card" style="border-left:5px solid var(--ink);"><p style="margin:0;font-size:clamp(19px,1.45vw,27px);line-height:1.42;">Это уже <b>не задача косметического специалиста</b>. Направление — дерматолог / дерматопатолог. Наша зона ответственности — вовремя распознать и передать.</p></div></div></section>
+<section class="slide"><div class="slide-inner"><div class="eyebrow">Как реально доказать гипотезу</div><h2 class="section">Дизайн мини-исследования: TiO₂-богатые зоны vs бедные.</h2><div class="split" style="grid-template-columns:0.9fr 1.1fr;align-items:center;"><div style="background:#fff;border-radius:18px;border:1px solid var(--card-edge);box-shadow:var(--shadow);padding:clamp(10px,0.9vw,16px);"><img src="lit_schreiver_xrf.jpg" alt="µ-XRF картирование: красным показано распределение титана (Ti) в коже и в лимфоузле, рядом спектры и XANES" style="width:100%;height:auto;display:block;border-radius:8px;max-height:58vh;object-fit:contain;background:#fff;"><div style="margin-top:8px;font-size:clamp(13px,0.95vw,17px);color:var(--ink-light);line-height:1.35;"><span style="font-style:italic;">µ-XRF: распределение титана (Ti, красный) в коже и лимфоузле + спектры. Так выглядит реальное элементное картирование.</span><br><span style="font-size:0.92em;">Schreiver I. et al. Sci Rep 2017 · рис. 3 · CC BY 4.0</span></div></div><div style="display:flex;flex-direction:column;gap:13px;justify-content:center;"><div class="card" style="border-left:5px solid var(--blue);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--blue);">Дерматоскопия</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">Микрорельеф · сосуды · пигментация · шелушение — сравнить зоны.</div></div><div class="card" style="border-left:5px solid var(--purple);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--purple);">Гистология / ИГХ</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">H&amp;E → Masson → Verhoeff–Van Gieson (эластин) → CD68, CD3 → MMP-1/3 → 8-OHdG / 4-HNE.</div></div><div class="card" style="border-left:5px solid var(--teal);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--teal);">Элементный анализ</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">XRF / SEM-EDX: подтвердить Ti именно в изменённой зоне.</div></div></div></div><div class="src" style="margin-top:14px;">Только так корреляция становится доказанной связью · пример метода: Schreiver et al., 2017 (CC BY 4.0)</div></div></section>
+<section class="slide dark"><div class="slide-inner section-title-block"><div class="eyebrow">Часть VIII</div><div class="section-num brown">08</div><h1 class="title">Финальная<br>модель</h1><p class="lead big" style="margin:0 auto;text-align:center;">Собираем всю цепочку в одну картину — и подписываем честно.</p></div></section>
+<section class="slide"><div class="slide-inner"><div class="eyebrow">Финальная схема для студентов</div><div class="split" style="grid-template-columns:1.15fr 0.85fr;align-items:center;"><div style="display:flex;flex-direction:column;align-items:center;gap:clamp(5px,0.5vw,10px);margin-top:6px;"><div style="background:#fff;border:1px solid var(--card-edge);box-shadow:var(--shadow);border-radius:14px;padding:clamp(9px,0.8vw,15px) clamp(16px,1.4vw,28px);font-size:clamp(17px,1.35vw,25px);font-weight:700;color:var(--ink);text-align:center;border-top:3px solid #a55c00;">TiO₂ в PMU / тату-пигменте</div><div style="color:#a55c00;font-size:clamp(18px,1.6vw,28px);line-height:0.7;">↓</div><div style="display:flex;gap:clamp(14px,1.6vw,30px);align-items:stretch;"><div style="background:#fff;border:1px solid var(--card-edge);box-shadow:var(--shadow);border-radius:14px;padding:clamp(9px,0.8vw,15px) clamp(16px,1.4vw,28px);font-size:clamp(17px,1.35vw,25px);font-weight:700;color:var(--ink);text-align:center;border-top:3px solid var(--orange);">АНАТАЗ<br><span style="font-weight:500;font-size:0.8em;color:var(--orange)">↑ фотокатализ</span></div><div style="background:#fff;border:1px solid var(--card-edge);box-shadow:var(--shadow);border-radius:14px;padding:clamp(9px,0.8vw,15px) clamp(16px,1.4vw,28px);font-size:clamp(17px,1.35vw,25px);font-weight:700;color:var(--ink);text-align:center;border-top:3px solid var(--blue);">РУТИЛ<br><span style="font-weight:500;font-size:0.8em;color:var(--blue)">↓ фотокатализ</span></div></div><div style="color:var(--orange);font-size:clamp(18px,1.6vw,28px);line-height:0.7;">↓</div><div style="background:#fff;border:1px solid var(--card-edge);box-shadow:var(--shadow);border-radius:14px;padding:clamp(9px,0.8vw,15px) clamp(16px,1.4vw,28px);font-size:clamp(17px,1.35vw,25px);font-weight:700;color:var(--ink);text-align:center;border-top:3px solid var(--orange);">UVA / видимый свет</div><div style="color:var(--orange);font-size:clamp(18px,1.6vw,28px);line-height:0.7;">↓</div><div style="background:#fff;border:1px solid var(--card-edge);box-shadow:var(--shadow);border-radius:14px;padding:clamp(9px,0.8vw,15px) clamp(16px,1.4vw,28px);font-size:clamp(17px,1.35vw,25px);font-weight:700;color:var(--ink);text-align:center;border-top:3px solid var(--red);">ROS → •OH → окислительный стресс</div><div style="color:var(--red);font-size:clamp(18px,1.6vw,28px);line-height:0.7;">↓</div><div style="display:flex;gap:clamp(14px,1.6vw,30px);align-items:stretch;"><div style="background:#fff;border:1px solid var(--card-edge);box-shadow:var(--shadow);border-radius:14px;padding:clamp(9px,0.8vw,15px) clamp(16px,1.4vw,28px);font-size:clamp(17px,1.35vw,25px);font-weight:700;color:var(--ink);text-align:center;border-top:3px solid var(--purple);">Клетки:<br>фибробласты · кератиноциты</div><div style="background:#fff;border:1px solid var(--card-edge);box-shadow:var(--shadow);border-radius:14px;padding:clamp(9px,0.8vw,15px) clamp(16px,1.4vw,28px);font-size:clamp(17px,1.35vw,25px);font-weight:700;color:var(--ink);text-align:center;border-top:3px solid var(--teal);">Матрикс (ECM):<br>коллаген · эластин</div></div><div style="color:var(--purple);font-size:clamp(18px,1.6vw,28px);line-height:0.7;">↓</div><div style="background:#fff;border:1px solid var(--card-edge);box-shadow:var(--shadow);border-radius:14px;padding:clamp(9px,0.8vw,15px) clamp(16px,1.4vw,28px);font-size:clamp(17px,1.35vw,25px);font-weight:700;color:var(--ink);text-align:center;border-top:3px solid var(--green);">Ремоделирование ткани</div><div style="color:var(--green);font-size:clamp(18px,1.6vw,28px);line-height:0.7;">↓</div><div style="background:#fff;border:1px solid var(--card-edge);box-shadow:var(--shadow);border-radius:14px;padding:clamp(9px,0.8vw,15px) clamp(16px,1.4vw,28px);font-size:clamp(17px,1.35vw,25px);font-weight:700;color:var(--ink);text-align:center;border-top:3px solid var(--ink);">Изменение текстуры кожи</div></div><div style="display:flex;flex-direction:column;gap:16px;justify-content:center;"><div style="background:var(--ink);color:#fff;border-radius:18px;padding:clamp(18px,1.8vw,30px);text-align:center;box-shadow:var(--shadow);"><div style="font-size:clamp(24px,2.2vw,38px);font-weight:800;line-height:1.15;">Clinical phenotype<br>≠ mechanism</div><div style="font-size:clamp(17px,1.35vw,24px);margin-top:8px;opacity:0.9;">Клиническая картина ≠ доказанный механизм</div></div><div class="card" style="border-left:5px solid var(--orange);"><div style="font-size:clamp(18px,1.4vw,26px);font-weight:700;color:var(--orange);">Каждая стрелка</div><div style="font-size:clamp(17px,1.3vw,23px);color:var(--ink-soft);line-height:1.42;margin-top:5px;">— это отдельное утверждение со своим уровнем доказательности. Часть доказана <i>in vitro</i>, часть — только гипотеза.</div></div></div></div></div></section>
+<section class="slide"><div class="slide-inner"><div class="eyebrow">Как теперь звучит зрелое суждение</div><h2 class="section">Разбор того же фото — языком клинициста.</h2><blockquote class="q" style="font-size:clamp(19px,1.5vw,27px);line-height:1.45;">«На фото — локальные изменения текстуры кожи, <b>пространственно совпадающие</b> с участками светлого/пастельного пигмента. Есть научно обоснованная гипотеза о роли TiO₂: для TiO₂-содержащих PMU показана фототоксичность <i>in vitro</i>, а в клиническом наблюдении (2 пациента) описан <b>очаговый эластоз</b> вокруг депо пигмента. Но по фотографии <b>нельзя установить причинность</b> и назвать это фотостарением. Нужно исключить воспалительную, аллергическую, гранулёматозную и другие формы ремоделирования дермы».</blockquote><div class="card" style="border-left:5px solid var(--green);"><p style="margin:0;font-size:clamp(19px,1.45vw,27px);line-height:1.42;">Почувствуйте разницу с первым слайдом: та же картинка — но теперь за словами стоит <b>структура рассуждения</b>, а не ярлык. Этому и учимся.</p></div></div></section>
+<section class="slide dark"><div class="slide-inner" style="text-align:center;align-items:center;"><div class="eyebrow">Кредо ЛазерПРО</div><blockquote class="q" style="border-left:none;text-align:center;font-size:clamp(34px,3.8vw,60px);line-height:1.25;">Мы не лечим фотографию.<br>Мы сначала устанавливаем <b>механизм.</b></blockquote><div class="pill-row" style="margin-top:26px;"><span class="info-pill">Впечатление ≠ диагноз</span><span class="info-pill">Механизм ≠ клинический эффект</span><span class="info-pill">Корреляция ≠ причинность</span></div></div></section>
+<section class="slide"><div class="slide-inner"><div class="eyebrow">Литература</div><h2 class="section">Доказательная база лекции.</h2><div style="display:flex;flex-direction:column;gap:9px;margin-top:10px;"><div class="card" style="border-left:4px solid var(--blue);padding:clamp(10px,0.8vw,16px) clamp(14px,1.1vw,22px);"><span style="font-weight:700;color:var(--blue);">1.</span> <span style="font-size:clamp(15px,1.1vw,20px);color:var(--ink-soft);line-height:1.4;">Wamer WG, Yin JJ. Photocytotoxicity in human dermal fibroblasts elicited by permanent makeup inks containing titanium dioxide. <i>J Cosmet Sci.</i> 2011;62:535–547. PMID 22682398.</span></div><div class="card" style="border-left:4px solid var(--blue);padding:clamp(10px,0.8vw,16px) clamp(14px,1.1vw,22px);"><span style="font-weight:700;color:var(--blue);">2.</span> <span style="font-size:clamp(15px,1.1vw,20px);color:var(--ink-soft);line-height:1.4;">Aliakhnovich NS, Mlyavy AN, Yanchenko UV. Photodermatitis in patients with tattoos and sensitization to titanium dioxide. <i>Immunopathology, Allergology, Infectology.</i> 2020;1:55–62. DOI 10.14427/jipai.2020.1.55.</span></div><div class="card" style="border-left:4px solid var(--blue);padding:clamp(10px,0.8vw,16px) clamp(14px,1.1vw,22px);"><span style="font-weight:700;color:var(--blue);">3.</span> <span style="font-size:clamp(15px,1.1vw,20px);color:var(--ink-soft);line-height:1.4;">Hering H, et al. TatS: a novel in vitro tattooed human skin model for improved pigment toxicology research. <i>Arch Toxicol.</i> 2020. PMID 32661687.</span></div><div class="card" style="border-left:4px solid var(--blue);padding:clamp(10px,0.8vw,16px) clamp(14px,1.1vw,22px);"><span style="font-weight:700;color:var(--blue);">4.</span> <span style="font-size:clamp(15px,1.1vw,20px);color:var(--ink-soft);line-height:1.4;">Kurz B, et al. Investigation of Adverse Reactions in Tattooed Skin through Histological and Chemical Analysis. <i>Dermatology.</i> 2023;239:782–793. PMID 37231944.</span></div><div class="card" style="border-left:4px solid var(--blue);padding:clamp(10px,0.8vw,16px) clamp(14px,1.1vw,22px);"><span style="font-weight:700;color:var(--blue);">5.</span> <span style="font-size:clamp(15px,1.1vw,20px);color:var(--ink-soft);line-height:1.4;">Schreiver I, et al. Synchrotron-based ν-XRF mapping and μ-FTIR microscopy enable to look into the fate and effects of tattoo pigments in human skin. <i>Sci Rep.</i> 2017;7:11395.</span></div></div></div></section>
+</div>
+<script>
+const slides = document.querySelectorAll('.slide');
+const progressFill = document.getElementById('progressFill');
+let idx = 0;
+const total = slides.length;
+
+function setSlide(i){
+  i = Math.max(0, Math.min(total-1, i));
+  slides[idx].classList.remove('active');
+  slides[i].classList.add('active');
+  idx = i;
+  progressFill.style.width = ((i+1)/total*100) + '%';
+  if(i === 0) location.hash = '';
+  else location.hash = '#s' + (i+1);
+}
+
+document.addEventListener('keydown', (e)=>{
+  if(e.target.classList && e.target.classList.contains('term')) return;
+  if(e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown'){ e.preventDefault(); setSlide(idx+1); }
+  else if(e.key === 'ArrowLeft' || e.key === 'PageUp'){ e.preventDefault(); setSlide(idx-1); }
+  else if(e.key === 'Home'){ e.preventDefault(); setSlide(0); }
+  else if(e.key === 'End'){ e.preventDefault(); setSlide(total-1); }
+});
+
+let lastWheel = 0;
+window.addEventListener('wheel', (e)=>{
+  const now = Date.now();
+  if(now - lastWheel < 700) return;
+  if(Math.abs(e.deltaY) < 30) return;
+  lastWheel = now;
+  if(e.deltaY > 0) setSlide(idx+1); else setSlide(idx-1);
+}, {passive:true});
+
+let touchY = null;
+window.addEventListener('touchstart', e=>{touchY = e.touches[0].clientY;}, {passive:true});
+window.addEventListener('touchend', e=>{
+  if(touchY === null) return;
+  const dy = e.changedTouches[0].clientY - touchY;
+  if(Math.abs(dy) > 50){ if(dy < 0) setSlide(idx+1); else setSlide(idx-1); }
+  touchY = null;
+}, {passive:true});
+
+if(location.hash && location.hash.startsWith('#s')){
+  const n = parseInt(location.hash.slice(2),10);
+  if(!isNaN(n)) setSlide(n-1);
+}
+
+// ANIMATED NETWORK BACKGROUND
+(function(){
+  const canvas = document.getElementById('bgNet');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const DPR = Math.max(1, window.devicePixelRatio || 1);
+  let W = 0, H = 0, nodes = [], t = 0;
+  const BAND_PCT = 0.18;
+  const MAX_DIST = 200;
+  const NODE_COLOR = '60, 130, 220';
+  const FREE_RATIO = 0.12;
+  function resize(){
+    W = window.innerWidth; H = window.innerHeight;
+    canvas.width = W*DPR; canvas.height = H*DPR;
+    canvas.style.width = W+'px'; canvas.style.height = H+'px';
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    initNodes();
+  }
+  function initNodes(){
+    const bandH = H*BAND_PCT;
+    const bandArea = W*bandH;
+    let perBand = Math.round(bandArea/4500);
+    perBand = Math.max(75, Math.min(170, perBand));
+    nodes = [];
+    const zones = [{yMin:0,yMax:bandH},{yMin:H-bandH,yMax:H}];
+    for(const z of zones){
+      for(let i=0;i<perBand;i++){
+        const isFree = Math.random()<FREE_RATIO;
+        const ampX = isFree?(4+Math.random()*6):(8+Math.random()*10);
+        const ampY = isFree?(3+Math.random()*5):(5+Math.random()*7);
+        nodes.push({
+          ax:Math.random()*W, ay:z.yMin+Math.random()*(z.yMax-z.yMin),
+          x:0, y:0, phaseX:Math.random()*Math.PI*2, phaseY:Math.random()*Math.PI*2,
+          freq:0.006+Math.random()*0.010, ampX, ampY, r:1.6+Math.random()*1.9,
+          isFree, vax: isFree?(Math.random()-0.5)*0.45:0, vay: isFree?(Math.random()-0.5)*0.08:0, zone:z
+        });
+      }
+    }
+  }
+  function bandAlpha(n){
+    const distFromOuter = (n.zone.yMin===0)?n.y/n.zone.yMax:(H-n.y)/(H-n.zone.yMin);
+    return Math.max(0.05, 1-distFromOuter);
+  }
+  function tick(){
+    t++;
+    ctx.clearRect(0,0,W,H);
+    for(const n of nodes){
+      if(n.isFree){
+        n.ax += n.vax; n.ay += n.vay;
+        if(n.ax<-20) n.ax = W+20; else if(n.ax>W+20) n.ax = -20;
+        if(n.ay<n.zone.yMin){n.ay=n.zone.yMin; n.vay=Math.abs(n.vay);}
+        if(n.ay>n.zone.yMax){n.ay=n.zone.yMax; n.vay=-Math.abs(n.vay);}
+      }
+      n.x = n.ax + Math.sin(t*n.freq+n.phaseX)*n.ampX;
+      n.y = n.ay + Math.cos(t*n.freq+n.phaseY)*n.ampY;
+    }
+    ctx.lineWidth = 0.8;
+    for(let i=0;i<nodes.length;i++){
+      const a = nodes[i]; const fadeA = bandAlpha(a);
+      for(let j=i+1;j<nodes.length;j++){
+        const b = nodes[j];
+        if(a.zone!==b.zone) continue;
+        const dx = a.x-b.x, dy = a.y-b.y; const d2 = dx*dx+dy*dy;
+        if(d2 < MAX_DIST*MAX_DIST){
+          const d = Math.sqrt(d2); const proximity = 1 - d/MAX_DIST;
+          const alpha = proximity*0.45*Math.min(fadeA, bandAlpha(b));
+          ctx.strokeStyle = 'rgba('+NODE_COLOR+','+alpha.toFixed(3)+')';
+          ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+        }
+      }
+    }
+    for(const n of nodes){
+      const fade = bandAlpha(n);
+      ctx.fillStyle = 'rgba('+NODE_COLOR+','+(0.88*fade).toFixed(3)+')';
+      ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = 'rgba('+NODE_COLOR+','+(0.22*fade).toFixed(3)+')';
+      ctx.beginPath(); ctx.arc(n.x, n.y, n.r*2.6, 0, Math.PI*2); ctx.fill();
+    }
+    requestAnimationFrame(tick);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  requestAnimationFrame(tick);
+})();
+</script>
+</body></html>
